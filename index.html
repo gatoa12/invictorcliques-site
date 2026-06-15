@@ -5487,7 +5487,7 @@ select option{background:#17131f;color:#fff;}
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v176.0001</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v177.0001</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -11155,25 +11155,36 @@ Poderia me ajudar? 🙏"
             var BACKUP_ID = '9f4d5ed88b7bc2a0d36f4681ce54e428';
             var BACKUP_FILE = 'backup.txt';
             const dataStr = JSON.stringify(data);
-            // Token NUNCA é usado no cliente. Publicação SEMPRE pelo proxy seguro da Vercel.
+            // Token NUNCA fica no cliente. Publicação vai por função serverless (proxy seguro).
+            // Funciona em QUALQUER host: tenta /api/gist (Vercel) e /.netlify/functions/gist (Netlify).
             const _proxyGist = (function(){ try{ return (JSON.parse(localStorage.getItem('invictorMarketplaces')||'{}')._proxyUrl||''); }catch(e){ return ''; } })();
-            const _gistProxyUrl = (_proxyGist ? _proxyGist.replace(/\/marketplace$/,'') : '') + '/api/gist';
+            const _proxyBase = _proxyGist ? _proxyGist.replace(/\/(api\/)?marketplace$/,'') : '';
+            const _gistProxyPaths = [
+                _proxyBase + '/api/gist',
+                _proxyBase + '/.netlify/functions/gist'
+            ];
 
             async function writeToGist(gistId, fileKey, label) {
-                try {
-                    const payload = { files: {} };
-                    payload.files[fileKey] = { content: dataStr };
-                    const r = await fetch(_gistProxyUrl + '?id=' + encodeURIComponent(gistId) + '&file=' + encodeURIComponent(fileKey), {
-                        method: 'POST', headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload), signal: AbortSignal.timeout(12000)
-                    });
-                    if (r.ok) { console.log('[Gist] Write to ' + label + ' OK (proxy)'); return true; }
-                    console.warn('[Gist] Write to ' + label + ' failed:', r.status);
-                    return false;
-                } catch(e) {
-                    console.warn('[Gist] Write to ' + label + ' error:', e.message);
-                    return false;
+                const payload = { files: {} };
+                payload.files[fileKey] = { content: dataStr };
+                let lastStatus = 0;
+                for (let i = 0; i < _gistProxyPaths.length; i++) {
+                    const url = _gistProxyPaths[i];
+                    try {
+                        const r = await fetch(url + '?id=' + encodeURIComponent(gistId) + '&file=' + encodeURIComponent(fileKey), {
+                            method: 'POST', headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload), signal: AbortSignal.timeout(12000)
+                        });
+                        if (r.ok) { console.log('[Gist] Write ' + label + ' OK via ' + url); return true; }
+                        lastStatus = r.status;
+                        // 404 = essa função não existe nesse host → tenta o próximo caminho
+                        if (r.status !== 404) { console.warn('[Gist] Write ' + label + ' failed:', r.status); return false; }
+                    } catch(e) {
+                        console.warn('[Gist] Write ' + label + ' error on ' + url + ':', e.message);
+                    }
                 }
+                console.warn('[Gist] Write ' + label + ' failed em todos os caminhos (último status ' + lastStatus + ')');
+                return false;
             }
 
             // Write to BOTH gists in parallel
@@ -11954,27 +11965,38 @@ Poderia me ajudar? 🙏"
             };
             show('🔎 Testando publicação na nuvem...', '#9aa');
             var gid = (function(){ try{ return localStorage.getItem('_cfg_gistId') || 'f885f57edb3757563b0da080fdbc35c7'; }catch(e){ return 'f885f57edb3757563b0da080fdbc35c7'; } })();
-            var base = (function(){ try{ var p=JSON.parse(localStorage.getItem('invictorMarketplaces')||'{}')._proxyUrl||''; return p?p.replace(/\/marketplace$/,''):''; }catch(e){ return ''; } })();
-            var proxy = base + '/api/gist';
+            var base = (function(){ try{ var p=JSON.parse(localStorage.getItem('invictorMarketplaces')||'{}')._proxyUrl||''; return p?p.replace(/\/(api\/)?marketplace$/,''):''; }catch(e){ return ''; } })();
+            var paths = [ base + '/api/gist', base + '/.netlify/functions/gist' ];
+            async function tryFetch(suffix, opts) {
+                var last = { status: 0, text: '', ok: false, none: true };
+                for (var i=0;i<paths.length;i++) {
+                    try {
+                        var r = await fetch(paths[i] + suffix, opts);
+                        if (r.status !== 404) { var t = await r.text(); return { status:r.status, text:t, ok:r.ok, url:paths[i] }; }
+                        last = { status: 404, text:'', ok:false };
+                    } catch(e) { last = { status: 0, text: e.message, ok:false }; }
+                }
+                return last;
+            }
             try {
                 // 1) lê o conteúdo atual (não destrutivo)
-                var rg = await fetch(proxy + '?id=' + encodeURIComponent(gid) + '&_=' + Date.now());
-                if (rg.status === 404) { show('❌ A função <b>/api/gist NÃO está no ar</b> (404).\nA versão nova (v175+) ainda não foi promovida na Vercel.\n👉 Vercel → Deployments → último deploy → ⋯ → <b>Promote to Production</b>.', '#FF6B6B'); return; }
-                if (!rg.ok) { var t0=await rg.text(); show('❌ Leitura falhou ('+rg.status+').\n'+t0.slice(0,180), '#FF6B6B'); return; }
-                var gj = await rg.json();
+                var rg = await tryFetch('?id=' + encodeURIComponent(gid) + '&_=' + Date.now(), {});
+                if (rg.status === 404 || rg.status === 0) { show('❌ A função de publicação <b>não está no ar</b> (404/sem resposta).\nA versão nova ainda não foi promovida, OU o host não tem a função.\n👉 Promova o deploy na Vercel, ou publique no Netlify (a função já vai junto).', '#FF6B6B'); return; }
+                if (!rg.ok) { show('❌ Leitura falhou ('+rg.status+').\n'+(rg.text||'').slice(0,180), '#FF6B6B'); return; }
+                var gj; try { gj = JSON.parse(rg.text); } catch(e) { gj = {}; }
                 var content = (gj.files && gj.files['gistfile1.txt'] && gj.files['gistfile1.txt'].content) || '{}';
                 var obj; try { obj = JSON.parse(content); } catch(e) { obj = {}; }
                 obj._pubTest = Date.now();
-                // 2) escreve de volta (com marcador) via proxy
-                var rw = await fetch(proxy + '?id=' + encodeURIComponent(gid) + '&file=gistfile1.txt', {
+                // 2) escreve de volta (com marcador)
+                var rw = await tryFetch('?id=' + encodeURIComponent(gid) + '&file=gistfile1.txt', {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ files: { 'gistfile1.txt': { content: JSON.stringify(obj) } } })
                 });
-                var txt = await rw.text();
+                var txt = rw.text || '';
                 if (rw.ok) { show('✅ <b>PUBLICAÇÃO FUNCIONANDO!</b> (status '+rw.status+')\nA escrita na nuvem deu certo — suas mudanças sobem pros visitantes.\nAgora clique em "🚀 Publicar Tudo" e teste em outro navegador.', '#51CF66'); return; }
-                if (rw.status === 404) { show('❌ Escrita 404 — versão antiga no ar.\n👉 Promova a v175 na Vercel (⋯ → Promote to Production).', '#FF6B6B'); return; }
-                if (rw.status === 500) { show('❌ Erro 500 — o <b>GIST_TOKEN</b> não está configurado/aplicado na Vercel.\n👉 Settings → Environment Variables → confira <b>GIST_TOKEN</b> → depois <b>Redeploy</b>.\n\n'+txt.slice(0,160), '#FF6B6B'); return; }
-                if (rw.status === 401 || rw.status === 403) { show('❌ Erro '+rw.status+' — o token não tem permissão pra escrever nesse Gist.\nConfira: o token foi criado na conta <b>gatoa12</b> (dona do Gist) com escopo <b>gist</b>?\n\n'+txt.slice(0,160), '#FF6B6B'); return; }
+                if (rw.status === 404 || rw.status === 0) { show('❌ A função de escrita não respondeu.\n👉 Promova a v177 na Vercel, ou publique no Netlify.', '#FF6B6B'); return; }
+                if (rw.status === 500) { show('❌ Erro 500 — o <b>GIST_TOKEN</b> não está configurado no host.\n👉 Vercel/Netlify → Environment Variables → adicione <b>GIST_TOKEN</b> → Redeploy.\n\n'+txt.slice(0,160), '#FF6B6B'); return; }
+                if (rw.status === 401 || rw.status === 403) { show('❌ Erro '+rw.status+' — o token não tem permissão pra escrever nesse Gist.\nO token foi criado na conta <b>gatoa12</b> (dona do Gist) com escopo <b>gist</b>?\n\n'+txt.slice(0,160), '#FF6B6B'); return; }
                 show('❌ Erro '+rw.status+'\n'+txt.slice(0,250), '#FF6B6B');
             } catch(e) {
                 show('❌ Erro de conexão: '+(e.message||e)+'\nProvável que a versão nova não esteja no ar ainda.', '#FF6B6B');
@@ -28232,7 +28254,7 @@ const _P1_VICTOR_BUILTIN_PRESETS = [{"id": "p1_01_cross_processing_yellow_light"
     <!-- SITE FOOTER v62 -->
     <footer class="site-footer">
         <div class="site-footer-brand">@invictorcliques</div>
-        <div class="site-footer-sub">Fotografia Esportiva Premium · Natal RN · 2026 · v176.0001</div>
+        <div class="site-footer-sub">Fotografia Esportiva Premium · Natal RN · 2026 · v177.0001</div>
         <div style="margin-top:12px;display:flex;justify-content:center;gap:16px;">
             <button onclick="openSocialLink('instagram')" style="background:none;border:none;color:#555;cursor:pointer;font-size:18px;transition:color .2s;" onmouseover="this.style.color='#E1306C'" onmouseout="this.style.color='#555'"><i class="fab fa-instagram"></i></button>
             <button onclick="openSocialLink('tiktok')" style="background:none;border:none;color:#555;cursor:pointer;font-size:18px;transition:color .2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#555'"><i class="fab fa-tiktok"></i></button>

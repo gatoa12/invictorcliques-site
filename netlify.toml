@@ -1,0 +1,9 @@
+# Configuração do Netlify para o site do @invictorcliques
+# Publica o site estático (index.html na raiz) e as funções serverless.
+
+[build]
+  publish = "."
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
