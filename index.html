@@ -5487,7 +5487,7 @@ select option{background:#17131f;color:#fff;}
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v174.0001</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v175.0001</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -10854,7 +10854,7 @@ Poderia me ajudar? 🙏"
         // Cache TTL: short when Gist is active (free, unlimited)
         // evaluated lazily so _gistId/_gistKey are already set
         function _getCacheTTL() {
-            return (_gistId && _gistKey) ? 500 : 55000; // 500ms with Gist — instant freshness
+            return (_gistId) ? 500 : 55000; // 500ms with Gist — instant freshness
         }
         const CACHE_TTL = 10000; // Will be overridden by _getCacheTTL()
 
@@ -10981,7 +10981,8 @@ Poderia me ajudar? 🙏"
             let gistOk = false;
 
             // ── Gist PRIMARY ──
-            if (_gistId && _gistKey) {
+            // Não exige _gistKey no cliente: a escrita vai pelo proxy seguro (/api/gist).
+            if (_gistId) {
                 gistOk = await _gistSet(data);
                 if (gistOk && !jsonbinOk) {
                     _syncState.working = true;
@@ -11043,7 +11044,7 @@ Poderia me ajudar? 🙏"
                         _syncState.consecutiveFails++;
                         // 403 "Host not in allowlist" = JSONBin domain restriction
                         // Don't mark as failed if Gist will handle it
-                        if (r.status !== 403 || !(_gistId && _gistKey)) {
+                        if (r.status !== 403 || !(_gistId)) {
                             _syncState.working = false;
                         }
                     }
@@ -11087,7 +11088,11 @@ Poderia me ajudar? 🙏"
         const _GIST_ID_DEFAULT  = 'f885f57edb3757563b0da080fdbc35c7';
         const _GIST_KEY_DEFAULT = '';
         let _gistId  = localStorage.getItem('_cfg_gistId')  || _GIST_ID_DEFAULT;
-        let _gistKey = localStorage.getItem('_cfg_gistKey') || _GIST_KEY_DEFAULT;
+        // SEGURANÇA: token nunca fica no cliente. Leitura é pública; escrita vai pelo proxy.
+        // Limpa qualquer token antigo (revogado) que tenha ficado salvo no navegador.
+        let _gistKey = '';
+        try { localStorage.removeItem('_cfg_gistKey'); } catch(e) {}
+        try { var _ok = localStorage.getItem('_cfg_gistKey'); if (_ok && /^ghp_|^github_pat_/.test(_ok)) localStorage.removeItem('_cfg_gistKey'); } catch(e) {}
         let _gistFile = 'gistfile1.txt'; // filename criado automaticamente pelo GitHub
         // Auto-set in localStorage if not already set
         // Always use the latest credentials (overwrite stale ones)
@@ -11148,32 +11153,19 @@ Poderia me ajudar? 🙏"
             var BACKUP_ID = '9f4d5ed88b7bc2a0d36f4681ce54e428';
             var BACKUP_FILE = 'backup.txt';
             const dataStr = JSON.stringify(data);
-            // Proxy da Vercel guarda o token com segurança (env var GIST_TOKEN).
-            // Se o admin colou um token manualmente, escreve direto; senão usa o proxy.
+            // Token NUNCA é usado no cliente. Publicação SEMPRE pelo proxy seguro da Vercel.
             const _proxyGist = (function(){ try{ return (JSON.parse(localStorage.getItem('invictorMarketplaces')||'{}')._proxyUrl||''); }catch(e){ return ''; } })();
             const _gistProxyUrl = (_proxyGist ? _proxyGist.replace(/\/marketplace$/,'') : '') + '/api/gist';
-            const authHeader = _gistKey ? (((_gistKey||'').startsWith('github_pat_') ? 'Bearer' : 'token') + ' ' + _gistKey) : '';
 
             async function writeToGist(gistId, fileKey, label) {
                 try {
                     const payload = { files: {} };
                     payload.files[fileKey] = { content: dataStr };
-                    let r;
-                    if (authHeader) {
-                        // token manual presente (localStorage) — escreve direto
-                        r = await fetch('https://api.github.com/gists/' + gistId, {
-                            method: 'PATCH',
-                            headers: { 'Authorization': authHeader, 'Accept': 'application/vnd.github+json', 'Content-Type': 'application/json', 'X-GitHub-Api-Version': '2022-11-28' },
-                            body: JSON.stringify(payload), signal: AbortSignal.timeout(10000)
-                        });
-                    } else {
-                        // sem token no cliente — publica via proxy seguro da Vercel
-                        r = await fetch(_gistProxyUrl + '?id=' + encodeURIComponent(gistId) + '&file=' + encodeURIComponent(fileKey), {
-                            method: 'POST', headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(payload), signal: AbortSignal.timeout(10000)
-                        });
-                    }
-                    if (r.ok) { console.log('[Gist] Write to ' + label + ' OK'); return true; }
+                    const r = await fetch(_gistProxyUrl + '?id=' + encodeURIComponent(gistId) + '&file=' + encodeURIComponent(fileKey), {
+                        method: 'POST', headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload), signal: AbortSignal.timeout(12000)
+                    });
+                    if (r.ok) { console.log('[Gist] Write to ' + label + ' OK (proxy)'); return true; }
                     console.warn('[Gist] Write to ' + label + ' failed:', r.status);
                     return false;
                 } catch(e) {
@@ -11292,7 +11284,7 @@ Poderia me ajudar? 🙏"
             const code = lastPutStatus || lastGetStatus || '?';
             const hasJSONBin   = !!(JSONBIN_BIN_ID && JSONBIN_API_KEY);
             const hasFirebase  = !!_firebaseUrl;
-            const hasGist      = !!(_gistId && _gistKey);
+            const hasGist      = !!(_gistId);
             const hasRemote    = hasJSONBin || hasFirebase || hasGist;
 
             // Update Storage tab badges
@@ -11326,7 +11318,9 @@ Poderia me ajudar? 🙏"
                     html = hasGist ? '<span style="color:#51CF66;font-size:10px;font-weight:700;">🐙 Gist Ativo</span>' :
                                      '<span style="color:#51CF66;font-size:10px;font-weight:700;">💾 Local Ativo</span>';
                 } else if ((code === 403 || code === 429)) {
-                    html = `<span style="color:#FFA726;font-size:10px;font-weight:700;cursor:pointer;" onclick="switchAdminTab(13)">⚠️ API expirou — configure Storage</span>`;
+                    html = hasGist
+                      ? '<span style="color:#51CF66;font-size:10px;font-weight:700;">🐙 Gist Ativo</span>'
+                      : `<span style="color:#FFA726;font-size:10px;font-weight:700;cursor:pointer;" onclick="switchAdminTab(13)">⚠️ API expirou — configure Storage</span>`;
                 } else {
                     html = `<span style="color:#FF6B6B;font-size:10px;font-weight:700;cursor:pointer;" onclick="switchAdminTab(13)">● Sync falhou (${code})</span>`;
                 }
@@ -11786,7 +11780,7 @@ Poderia me ajudar? 🙏"
                 const ok = await sharedSet(payload);
 
                 if (ok) {
-                    if (_gistId && _gistKey) {
+                    if (_gistId) {
                         // Gist active — trust the write, no verify needed
                         setAdminSaveStatus('saved');
                         showToast('✅ Publicado! Visitantes verão em segundos.', '🚀');
@@ -11978,7 +11972,7 @@ Poderia me ajudar? 🙏"
                 setTimeout(() => { bar.style.display = 'none'; }, 5000);
             } else if (state === 'local') {
                 // If Gist is active, treat as remote success — don't show warning
-                if (_gistId && _gistKey) {
+                if (_gistId) {
                     setAdminSaveStatus('remote');
                     return;
                 }
@@ -12288,7 +12282,7 @@ Poderia me ajudar? 🙏"
             // JSONBin free tier: 10k reqs/mês ÷ 30 dias = 333/dia ÷ 24h = ~14/hora
             // 90s interval = 40 req/hora per tab = safe para múltiplos visitantes
             // Gist has no rate limits — poll every 1 second for INSTANT sync
-            const hasGistActive = !!(_gistId && _gistKey);
+            const hasGistActive = !!(_gistId);
             const BASE_INTERVAL = hasGistActive ? 1000 : 60000; // 1s with Gist for instant updates
 
             // DISABLED: This old polling conflicted with InvictorSync (end of file).
@@ -28200,7 +28194,7 @@ const _P1_VICTOR_BUILTIN_PRESETS = [{"id": "p1_01_cross_processing_yellow_light"
     <!-- SITE FOOTER v62 -->
     <footer class="site-footer">
         <div class="site-footer-brand">@invictorcliques</div>
-        <div class="site-footer-sub">Fotografia Esportiva Premium · Natal RN · 2026 · v174.0001</div>
+        <div class="site-footer-sub">Fotografia Esportiva Premium · Natal RN · 2026 · v175.0001</div>
         <div style="margin-top:12px;display:flex;justify-content:center;gap:16px;">
             <button onclick="openSocialLink('instagram')" style="background:none;border:none;color:#555;cursor:pointer;font-size:18px;transition:color .2s;" onmouseover="this.style.color='#E1306C'" onmouseout="this.style.color='#555'"><i class="fab fa-instagram"></i></button>
             <button onclick="openSocialLink('tiktok')" style="background:none;border:none;color:#555;cursor:pointer;font-size:18px;transition:color .2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#555'"><i class="fab fa-tiktok"></i></button>
