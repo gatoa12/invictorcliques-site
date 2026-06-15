@@ -5487,7 +5487,7 @@ select option{background:#17131f;color:#fff;}
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v175.0001</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v176.0001</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -6100,6 +6100,8 @@ select option{background:#17131f;color:#fff;}
                             <div style="font-size:10px;color:#555;line-height:1.6;">Qualquer mudança feita no admin é salva localmente. Clique em <strong style="color:#51CF66;">🚀 Publicar Tudo</strong> para tornar visível a todos os visitantes imediatamente.</div>
                         </div>
                         <button onclick="forcePublishAll()" style="padding:10px 18px;background:linear-gradient(135deg,#51CF66,#2f9e44);color:#fff;border:none;border-radius:10px;font-weight:900;font-size:12px;cursor:pointer;white-space:nowrap;flex-shrink:0;">🚀 Publicar Tudo Agora</button>
+                        <button onclick="invTestPublish()" style="padding:10px 18px;background:linear-gradient(135deg,#6C63FF,#4f46e5);color:#fff;border:none;border-radius:10px;font-weight:900;font-size:12px;cursor:pointer;white-space:nowrap;flex-shrink:0;margin-left:8px;">🔧 Testar publicação</button>
+                        <div id="invTestPublishOut" style="display:none;width:100%;margin-top:10px;padding:11px 13px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.1);border-radius:10px;font-size:12px;line-height:1.55;"></div>
                     </div>
                     
                     <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-bottom:20px;">
@@ -11941,6 +11943,42 @@ Poderia me ajudar? 🙏"
         window._invPublish = function() {
             try { if (typeof saveData === 'function') { saveData(true); return; } } catch(e) {}
             try { if (typeof forcePublishAll === 'function') forcePublishAll(); } catch(e) {}
+        };
+
+        // DIAGNÓSTICO: testa a escrita real na nuvem e mostra o erro EXATO (não destrutivo)
+        window.invTestPublish = async function() {
+            var out = document.getElementById('invTestPublishOut');
+            var show = function(msg, color) {
+                if (out) { out.style.display='block'; out.style.color = color||'#fff'; out.innerHTML = msg.replace(/\n/g,'<br>'); }
+                else alert(msg.replace(/<[^>]+>/g,''));
+            };
+            show('🔎 Testando publicação na nuvem...', '#9aa');
+            var gid = (function(){ try{ return localStorage.getItem('_cfg_gistId') || 'f885f57edb3757563b0da080fdbc35c7'; }catch(e){ return 'f885f57edb3757563b0da080fdbc35c7'; } })();
+            var base = (function(){ try{ var p=JSON.parse(localStorage.getItem('invictorMarketplaces')||'{}')._proxyUrl||''; return p?p.replace(/\/marketplace$/,''):''; }catch(e){ return ''; } })();
+            var proxy = base + '/api/gist';
+            try {
+                // 1) lê o conteúdo atual (não destrutivo)
+                var rg = await fetch(proxy + '?id=' + encodeURIComponent(gid) + '&_=' + Date.now());
+                if (rg.status === 404) { show('❌ A função <b>/api/gist NÃO está no ar</b> (404).\nA versão nova (v175+) ainda não foi promovida na Vercel.\n👉 Vercel → Deployments → último deploy → ⋯ → <b>Promote to Production</b>.', '#FF6B6B'); return; }
+                if (!rg.ok) { var t0=await rg.text(); show('❌ Leitura falhou ('+rg.status+').\n'+t0.slice(0,180), '#FF6B6B'); return; }
+                var gj = await rg.json();
+                var content = (gj.files && gj.files['gistfile1.txt'] && gj.files['gistfile1.txt'].content) || '{}';
+                var obj; try { obj = JSON.parse(content); } catch(e) { obj = {}; }
+                obj._pubTest = Date.now();
+                // 2) escreve de volta (com marcador) via proxy
+                var rw = await fetch(proxy + '?id=' + encodeURIComponent(gid) + '&file=gistfile1.txt', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ files: { 'gistfile1.txt': { content: JSON.stringify(obj) } } })
+                });
+                var txt = await rw.text();
+                if (rw.ok) { show('✅ <b>PUBLICAÇÃO FUNCIONANDO!</b> (status '+rw.status+')\nA escrita na nuvem deu certo — suas mudanças sobem pros visitantes.\nAgora clique em "🚀 Publicar Tudo" e teste em outro navegador.', '#51CF66'); return; }
+                if (rw.status === 404) { show('❌ Escrita 404 — versão antiga no ar.\n👉 Promova a v175 na Vercel (⋯ → Promote to Production).', '#FF6B6B'); return; }
+                if (rw.status === 500) { show('❌ Erro 500 — o <b>GIST_TOKEN</b> não está configurado/aplicado na Vercel.\n👉 Settings → Environment Variables → confira <b>GIST_TOKEN</b> → depois <b>Redeploy</b>.\n\n'+txt.slice(0,160), '#FF6B6B'); return; }
+                if (rw.status === 401 || rw.status === 403) { show('❌ Erro '+rw.status+' — o token não tem permissão pra escrever nesse Gist.\nConfira: o token foi criado na conta <b>gatoa12</b> (dona do Gist) com escopo <b>gist</b>?\n\n'+txt.slice(0,160), '#FF6B6B'); return; }
+                show('❌ Erro '+rw.status+'\n'+txt.slice(0,250), '#FF6B6B');
+            } catch(e) {
+                show('❌ Erro de conexão: '+(e.message||e)+'\nProvável que a versão nova não esteja no ar ainda.', '#FF6B6B');
+            }
         };
 
         // Helper: força broadcast de atualização para todos os visitantes
@@ -28194,7 +28232,7 @@ const _P1_VICTOR_BUILTIN_PRESETS = [{"id": "p1_01_cross_processing_yellow_light"
     <!-- SITE FOOTER v62 -->
     <footer class="site-footer">
         <div class="site-footer-brand">@invictorcliques</div>
-        <div class="site-footer-sub">Fotografia Esportiva Premium · Natal RN · 2026 · v175.0001</div>
+        <div class="site-footer-sub">Fotografia Esportiva Premium · Natal RN · 2026 · v176.0001</div>
         <div style="margin-top:12px;display:flex;justify-content:center;gap:16px;">
             <button onclick="openSocialLink('instagram')" style="background:none;border:none;color:#555;cursor:pointer;font-size:18px;transition:color .2s;" onmouseover="this.style.color='#E1306C'" onmouseout="this.style.color='#555'"><i class="fab fa-instagram"></i></button>
             <button onclick="openSocialLink('tiktok')" style="background:none;border:none;color:#555;cursor:pointer;font-size:18px;transition:color .2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#555'"><i class="fab fa-tiktok"></i></button>
