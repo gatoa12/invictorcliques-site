@@ -5487,7 +5487,7 @@ select option{background:#17131f;color:#fff;}
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v180.0001</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v182.0001</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -10530,26 +10530,32 @@ Poderia me ajudar? 🙏"
         // ═══════════════════════════════════════════════════════════════
         const JSONBIN_ACCOUNTS = [
             {
-                name: 'CONTA 1',
-                masterKey: '$2a$10$3WFVxlm/X4UVn50zFhxwVOFocAu5qmInDu5korXKG74J1rAGpKpiu',
-                binId: '6a258e25da38895dfe95414b',
+                name: 'CONTA 1 (F1)',
+                masterKey: '$2a$10$v0gqkJJVSJlA3.Tqyhjq8uLbwtxGm1zToLpZrOgAe6neYU0oatomy',
+                binId: '6a317bbcda38895dfecad153',
                 active: true
             },
             {
-                name: 'CONTA 2 (VICTOR)',
-                masterKey: '$2a$10$Cfih86Jcgcya3XYTbL7kCu0xg1SLn9AlKmnVY.BkwD.SVgQE84.aS',
-                binId: '69f1730baaba8821974d461a',
+                name: 'CONTA 2 (F2)',
+                masterKey: '$2a$10$BDNfPxPgnk6x06CJpuJ3MuyHDa9gJORDDOgHgSeSjVJrgljHyBRby',
+                binId: '6a317c6dda38895dfecad57d',
+                active: false
+            },
+            {
+                name: 'CONTA 3 (F3)',
+                masterKey: '$2a$10$EUIPHys2ksKU7qikY34wD.IVpz8xGeR1i7lmiDBaaEPGk8uhdkVti',
+                binId: '6a317ce6f5f4af5e29fc5eaf',
                 active: false
             }
         ];
-// MIGRATION: Force reset to new bin ID (6a258e25da38895dfe95414b)
+// MIGRATION: Force reset to new bin IDs (F1/F2/F3)
         try {
             const savedRaw = localStorage.getItem('_jsonbinAccounts');
             if (savedRaw) {
                 const saved = JSON.parse(savedRaw);
-                if (!Array.isArray(saved) || !saved.find(a => a.binId === '6a258e25da38895dfe95414b')) {
+                if (!Array.isArray(saved) || !saved.find(a => a.binId === '6a317bbcda38895dfecad153')) {
                     localStorage.removeItem('_jsonbinAccounts');
-                    console.log('[Migration] Reset to new bin ID');
+                    console.log('[Migration] Reset to F1/F2/F3 bin IDs');
                 }
             }
         } catch(e) {}
@@ -10811,7 +10817,6 @@ Poderia me ajudar? 🙏"
                 headers: {
                     'Content-Type': 'application/json',
                     'X-Master-Key': apiKey.trim(),
-                    'X-Access-Key': '$2a$10$eiZ1WkJgyuDcwSHX2qeAHu2j4uxRAvSXmklO5nSfAhQpCtDRGzCUe',
                     'X-Bin-Private': 'false',
                     'X-Bin-Name': 'invictorcliques-config'
                 },
@@ -10922,7 +10927,7 @@ Poderia me ajudar? 🙏"
                 const timeoutId  = setTimeout(() => controller.abort(), 5000);
                 try {
                     const r = await fetch(JSONBIN_BASE_URL + '/latest?_=' + now, {
-                        headers: { 'X-Master-Key': JSONBIN_API_KEY, 'X-Access-Key': '$2a$10$eiZ1WkJgyuDcwSHX2qeAHu2j4uxRAvSXmklO5nSfAhQpCtDRGzCUe' },
+                        headers: { 'X-Master-Key': JSONBIN_API_KEY },
                         signal: controller.signal
                     });
                     clearTimeout(timeoutId);
@@ -11015,11 +11020,11 @@ Poderia me ajudar? 🙏"
             try { if (_bc) _bc.postMessage({ type: 'sync', ts: Date.now(), force: true }); } catch(e) {}
             try { localStorage.setItem('_invictorPublished', Date.now().toString()); } catch(e) {}
 
-            if (jsonbinOk || gistOk) {
-                return true;
-            }
+            // NÃO retorna aqui: queremos gravar TAMBÉM no JSONBin (prioridade do Victor),
+            // mantendo o Gist como rede de segurança. Marca sucesso mas segue para o JSONBin.
+            var _gistAlreadyOk = (jsonbinOk || gistOk);
 
-            // ── Fallback: JSONBin ──────────────────────────────────
+            // ── JSONBin (prioridade) — grava SEMPRE, com revezamento de contas ──
             if (JSONBIN_BIN_ID && JSONBIN_API_KEY) {
                 try {
                     const payload = JSON.stringify(data);
@@ -11039,7 +11044,7 @@ Poderia me ajudar? 🙏"
                     }
                     const r = await fetch(JSONBIN_BASE_URL, {
                         method: 'PUT',
-                        headers: { 'Content-Type': 'application/json', 'X-Master-Key': JSONBIN_API_KEY, 'X-Access-Key': '$2a$10$eiZ1WkJgyuDcwSHX2qeAHu2j4uxRAvSXmklO5nSfAhQpCtDRGzCUe' },
+                        headers: { 'Content-Type': 'application/json', 'X-Master-Key': JSONBIN_API_KEY },
                         body: JSON.stringify(dataToSend)
                     });
                     _syncState.lastPutStatus = r.status;
@@ -11053,8 +11058,15 @@ Poderia me ajudar? 🙏"
                     } else {
                         console.warn('[Sync] JSONBin PUT falhou:', r.status);
                         _syncState.consecutiveFails++;
-                        // 403 "Host not in allowlist" = JSONBin domain restriction
-                        // Don't mark as failed if Gist will handle it
+                        // 429 = quota esgotada nesta conta → tenta a próxima (F1→F2→F3)
+                        if (r.status === 429 && typeof switchToNextJsonbinAccount === 'function') {
+                            var nextAcc = switchToNextJsonbinAccount();
+                            if (nextAcc && typeof _applyBinCredentials === 'function') {
+                                _applyBinCredentials(nextAcc.binId, nextAcc.masterKey);
+                            }
+                        }
+                        // 403 "Host not in allowlist" = restrição de origem no JSONBin (precisa liberar no painel jsonbin.io)
+                        // Não marca como falha se o Gist resolve
                         if (r.status !== 403 || !(_gistId)) {
                             _syncState.working = false;
                         }
@@ -11105,13 +11117,16 @@ Poderia me ajudar? 🙏"
         let _gistFile = 'gistfile1.txt'; // filename criado automaticamente pelo GitHub
         localStorage.setItem('_cfg_gistId',  _GIST_ID_DEFAULT);
         // NÃO apaga mais o token salvo (esse era o bug que travava a publicação).
-        // JSONBin: set master key, keep existing Bin ID if valid
+        // JSONBin: usa SEMPRE a chave da conta ATIVA (F1) em JSONBIN_ACCOUNTS.
+        try { if (JSONBIN_API_KEY) localStorage.setItem('_cfg_binKey', JSONBIN_API_KEY); } catch(e) {}
+        if (false) { // bloco antigo desativado
         if (!localStorage.getItem('_cfg_binKey') || localStorage.getItem('_cfg_binKey') === '') {
             localStorage.setItem('_cfg_binKey', '$2a$10$Cfih86Jcgcya3XYTbL7kCu0xg1SLn9AlKmnVY.BkwD.SVgQE84.aS');
         } else {
             // Always update to latest key
             localStorage.setItem('_cfg_binKey', '$2a$10$Cfih86Jcgcya3XYTbL7kCu0xg1SLn9AlKmnVY.BkwD.SVgQE84.aS');
         }
+        } // fim do bloco antigo desativado
 
         async function _gistGet() {
             if (!_gistId) return null;
@@ -11438,7 +11453,7 @@ Poderia me ajudar? 🙏"
             try {
                 const url = `https://api.jsonbin.io/v3/b/${binId}/latest?_=${Date.now()}`;
                 const r = await fetch(url, {
-                    headers: { 'X-Master-Key': apiKey, 'X-Access-Key': '$2a$10$eiZ1WkJgyuDcwSHX2qeAHu2j4uxRAvSXmklO5nSfAhQpCtDRGzCUe' }
+                    headers: { 'X-Master-Key': apiKey }
             });
                 if (!r.ok) {
                     const body = await r.text().catch(() => '');
@@ -13494,7 +13509,7 @@ Poderia me ajudar? 🙏"
                   </a>
                 </div>
               </div>
-              <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px;">
+              <div class="inv-cat-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px;">
                 ${visiveis.map(renderFocoCard).join("")}
               </div>`;
 
@@ -28269,6 +28284,20 @@ const _P1_VICTOR_BUILTIN_PRESETS = [{"id": "p1_01_cross_processing_yellow_light"
       if(typeof showToast==='function')showToast(mode==='slider'?'Eventos: deslizar pro lado ↔️':'Eventos: descendo (vertical) ↕️','📐');
     };
 
+    // Botão "Colocar no ar agora" — publica tudo pros visitantes (JSON + Gist)
+    window.invPublishNow = function(){
+      var hasJsonbin = false, hasToken = false;
+      try{ hasToken = !!(localStorage.getItem('_cfg_gistKey')||''); }catch(e){}
+      try{ hasJsonbin = !!(localStorage.getItem('_cfg_binKey')||''); }catch(e){}
+      if(typeof showToast==='function') showToast('📤 Enviando tudo pros visitantes...','🚀');
+      var done=function(){ if(typeof showToast==='function') showToast('✅ No ar! Os visitantes já recebem via JSON/Gist.','📡'); };
+      try{
+        if(typeof forcePublishAll==='function'){ var p=forcePublishAll(); Promise.resolve(p).then(done).catch(done); }
+        else if(typeof saveData==='function'){ var p2=saveData(true); Promise.resolve(p2).then(done).catch(done); }
+        else if(typeof _invPublish==='function'){ _invPublish(); done(); }
+      }catch(e){ if(typeof showToast==='function') showToast('⚠️ Não consegui publicar — toque em Publicar Tudo','⚠️'); }
+    };
+
     // ── PALETAS DE COR DO SITE (admin) ──
     window.INV_PALETTES=[
       ['Laranja','#FF6A00','#D85400','#FF9540'],
@@ -28301,7 +28330,8 @@ const _P1_VICTOR_BUILTIN_PRESETS = [{"id": "p1_01_cross_processing_yellow_light"
       var layBtn=function(mode,ic,label){ var on=curLayout===mode||(mode==='grid'&&!curLayout); return '<button onclick="invSetCatalogLayout(\''+mode+'\')" style="flex:1;padding:11px;border-radius:11px;border:2px solid '+(on?'var(--primary)':'rgba(255,255,255,0.15)')+';background:'+(on?'rgba(255,106,0,0.12)':'rgba(255,255,255,0.04)')+';color:#fff;font-weight:800;font-size:12px;cursor:pointer;">'+ic+'<br><span style="font-size:10px;color:#9aa;">'+label+'</span></button>'; };
       box.innerHTML='<div style="font-size:14px;font-weight:900;color:var(--primary);margin-bottom:4px;">📐 Visualização dos catálogos de fotos</div>'
         +'<div style="font-size:11px;color:#9aa;margin-bottom:10px;">Como as fotos aparecem pro visitante.</div>'
-        +'<div style="display:flex;gap:8px;margin-bottom:20px;">'+layBtn('grid','↕️','Vertical (descendo)')+layBtn('slider','↔️','Deslizar pro lado')+'</div>'
+        +'<div style="display:flex;gap:8px;margin-bottom:12px;">'+layBtn('grid','↕️','Vertical (descendo)')+layBtn('slider','↔️','Deslizar pro lado')+'</div>'
+        +'<button onclick="invPublishNow()" style="width:100%;padding:14px;border-radius:12px;border:none;background:linear-gradient(135deg,#FF6A00,#FF9A00);color:#000;font-weight:900;font-size:14px;cursor:pointer;margin-bottom:20px;box-shadow:0 4px 14px rgba(255,106,0,0.35);line-height:1.3;">🚀 COLOCAR NO AR AGORA<br><span style="font-size:10px;font-weight:700;opacity:0.85;">envia tudo pros visitantes na hora</span></button>'
         +'<div style="font-size:14px;font-weight:900;color:var(--primary);margin-bottom:4px;">🎨 Cores rápidas do site</div>'
         +'<div style="font-size:11px;color:#9aa;margin-bottom:12px;">Toque numa cor — muda os botões, bordas e destaques na hora.</div>'
         +'<div style="display:flex;flex-wrap:wrap;gap:10px;">'
@@ -28341,7 +28371,7 @@ const _P1_VICTOR_BUILTIN_PRESETS = [{"id": "p1_01_cross_processing_yellow_light"
     <!-- SITE FOOTER v62 -->
     <footer class="site-footer">
         <div class="site-footer-brand">@invictorcliques</div>
-        <div class="site-footer-sub">Fotografia Esportiva Premium · Natal RN · 2026 · v180.0001</div>
+        <div class="site-footer-sub">Fotografia Esportiva Premium · Natal RN · 2026 · v182.0001</div>
         <div style="margin-top:12px;display:flex;justify-content:center;gap:16px;">
             <button onclick="openSocialLink('instagram')" style="background:none;border:none;color:#555;cursor:pointer;font-size:18px;transition:color .2s;" onmouseover="this.style.color='#E1306C'" onmouseout="this.style.color='#555'"><i class="fab fa-instagram"></i></button>
             <button onclick="openSocialLink('tiktok')" style="background:none;border:none;color:#555;cursor:pointer;font-size:18px;transition:color .2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#555'"><i class="fab fa-tiktok"></i></button>
