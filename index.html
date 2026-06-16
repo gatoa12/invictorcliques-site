@@ -5487,7 +5487,7 @@ select option{background:#17131f;color:#fff;}
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v182.0001</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v183.0001</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -10891,37 +10891,7 @@ Poderia me ajudar? 🙏"
             if (_gistCacheTs === 0) _sharedCache = null;
             if (_sharedCache && (now - _sharedCacheTs) < _ttl) return _sharedCache;
 
-            // ── GIST FIRST (JSONBin requer allowlist) ──
-            if (_gistId) {
-                const gistData = await _gistGet();
-                if (gistData && (gistData._lastUpdate || gistData.siteButtons)) {
-                    _sharedCache = gistData;
-                    _sharedCacheTs = now;
-                    _syncState.working = true;
-                    _syncState.lastGetStatus = 200;
-                    _syncState.lastGetTime = now;
-                    _syncState.consecutiveFails = 0;
-                    _updateSyncIndicator();
-                    return gistData;
-                }
-            }
-
-            // ── PRIORITY 2 (legacy fallback) ──
-            if (_gistId) {
-                const gistData = await _gistGet();
-                if (gistData && (gistData._lastUpdate || gistData.siteButtons)) {
-                    _sharedCache = gistData;
-                    _sharedCacheTs = now;
-                    _syncState.working = true;
-                    _syncState.lastGetStatus = 200;
-                    _syncState.lastGetTime = now;
-                    _syncState.consecutiveFails = 0;
-                    _updateSyncIndicator();
-                    return gistData;
-                }
-            }
-
-            // ── PRIORITY 3: Older JSONBin fallback (legacy) ──
+            // ── JSONBin PRIMEIRO (PRIORIDADE — Banco Principal) ──
             if (JSONBIN_BIN_ID && JSONBIN_API_KEY) {
                 const controller = new AbortController();
                 const timeoutId  = setTimeout(() => controller.abort(), 5000);
@@ -10935,32 +10905,45 @@ Poderia me ajudar? 🙏"
                     _syncState.lastGetTime = now;
                     if (r.ok) {
                         const d = await r.json();
-                        _sharedCache = d.record || {};
-                        _sharedCacheTs = now;
-                        _syncState.consecutiveFails = 0;
-                        _syncState.working = true;
-                        _updateSyncIndicator();
-                        // Sincronizar Firebase em background
-                        if (_firebaseUrl && _sharedCache) _firebaseSet(_sharedCache).catch(()=>{});
-                        return _sharedCache;
+                        const rec = d.record || {};
+                        if (rec && (rec._lastUpdate || rec.siteButtons)) {
+                            _sharedCache = rec;
+                            _sharedCacheTs = now;
+                            _syncState.consecutiveFails = 0;
+                            _syncState.working = true;
+                            _syncState.backend = 'jsonbin';
+                            _updateSyncIndicator();
+                            if (_firebaseUrl) _firebaseSet(_sharedCache).catch(()=>{});
+                            return _sharedCache;
+                        }
                     } else {
                         console.warn('[Sync] JSONBin GET falhou:', r.status);
                         _syncState.consecutiveFails++;
-                        _syncState.working = false;
-                        _updateSyncIndicator();
-                        // 403/429 = limite esgotado → tentar Firebase imediatamente
-                        if (r.status === 403 || r.status === 429) {
-                            const fbData = await _firebaseGet();
-                            if (fbData) { _sharedCache = fbData; _sharedCacheTs = now; return fbData; }
+                        // 429 = quota esgotada → tenta próxima conta (F1→F2→F3)
+                        if (r.status === 429 && typeof switchToNextJsonbinAccount === 'function') {
+                            var _na = switchToNextJsonbinAccount();
+                            if (_na && typeof _applyBinCredentials === 'function') _applyBinCredentials(_na.binId, _na.masterKey);
                         }
-                        return _sharedCache;
                     }
                 } catch(e) {
                     clearTimeout(timeoutId);
-                    _syncState.lastGetStatus = 0;
                     _syncState.consecutiveFails++;
-                    _syncState.working = false;
+                }
+            }
+
+            // ── Gist (REDE DE SEGURANÇA, caso o JSON falhe) ──
+            if (_gistId) {
+                const gistData = await _gistGet();
+                if (gistData && (gistData._lastUpdate || gistData.siteButtons)) {
+                    _sharedCache = gistData;
+                    _sharedCacheTs = now;
+                    _syncState.working = true;
+                    _syncState.lastGetStatus = 200;
+                    _syncState.lastGetTime = now;
+                    _syncState.consecutiveFails = 0;
+                    _syncState.backend = 'gist';
                     _updateSyncIndicator();
+                    return gistData;
                 }
             }
 
@@ -11346,10 +11329,10 @@ Poderia me ajudar? 🙏"
             } catch(e) {}
 
             if (working === true) {
-                if (hasGist) {
-                    html = '<span style="color:#51CF66;font-size:10px;font-weight:700;">● Sync Ativo</span>';
-                } else if (hasJSONBin && code !== 403 && code !== 429) {
-                    html = '<span style="color:#51CF66;font-size:10px;font-weight:700;">● JSONBin Ativo</span>';
+                if (hasJSONBin && code !== 403 && code !== 429) {
+                    html = '<span style="color:#51CF66;font-size:10px;font-weight:700;">📦 JSON Ativo</span>';
+                } else if (hasGist) {
+                    html = '<span style="color:#51CF66;font-size:10px;font-weight:700;">🐙 Gist (reserva) Ativo</span>';
                 } else if (hasFirebase) {
                     html = '<span style="color:#FFB300;font-size:10px;font-weight:700;">🔥 Firebase Ativo</span>';
                 } else {
@@ -28371,7 +28354,7 @@ const _P1_VICTOR_BUILTIN_PRESETS = [{"id": "p1_01_cross_processing_yellow_light"
     <!-- SITE FOOTER v62 -->
     <footer class="site-footer">
         <div class="site-footer-brand">@invictorcliques</div>
-        <div class="site-footer-sub">Fotografia Esportiva Premium · Natal RN · 2026 · v182.0001</div>
+        <div class="site-footer-sub">Fotografia Esportiva Premium · Natal RN · 2026 · v183.0001</div>
         <div style="margin-top:12px;display:flex;justify-content:center;gap:16px;">
             <button onclick="openSocialLink('instagram')" style="background:none;border:none;color:#555;cursor:pointer;font-size:18px;transition:color .2s;" onmouseover="this.style.color='#E1306C'" onmouseout="this.style.color='#555'"><i class="fab fa-instagram"></i></button>
             <button onclick="openSocialLink('tiktok')" style="background:none;border:none;color:#555;cursor:pointer;font-size:18px;transition:color .2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#555'"><i class="fab fa-tiktok"></i></button>
