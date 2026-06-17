@@ -5487,7 +5487,7 @@ select option{background:#17131f;color:#fff;}
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v185.0001</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v187.0001</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -10584,6 +10584,15 @@ Poderia me ajudar? 🙏"
 
         // Switch to next account (called when current hits quota limit)
         function switchToNextJsonbinAccount() {
+            // Anti-burst: se acabamos de trocar (<3s), não troca de novo.
+            // Evita que vários reads simultâneos no carregamento queimem F1→F2→F3 de uma vez.
+            try {
+                var _swNow = Date.now();
+                if (window.__lastJbSwitch && (_swNow - window.__lastJbSwitch) < 3000) {
+                    return getActiveJsonbinAccount();
+                }
+                window.__lastJbSwitch = _swNow;
+            } catch(e) {}
             const current = JSONBIN_ACCOUNTS.findIndex(a => a.active);
             if (current >= 0) JSONBIN_ACCOUNTS[current].active = false;
             // Find next account with valid credentials
@@ -10891,12 +10900,12 @@ Poderia me ajudar? 🙏"
             if (_gistCacheTs === 0) _sharedCache = null;
             if (_sharedCache && (now - _sharedCacheTs) < _ttl) return _sharedCache;
 
-            // ── Lê JSON e Gist e usa o MAIS NOVO (_lastUpdate). JSON tem prioridade no empate. ──
-            // Isso garante que uma atualização NUNCA seja "engolida" por um snapshot antigo.
-            var _jbData = null, _gistDataNew = null;
-
-            // JSON (Banco Principal)
-            if (JSONBIN_BIN_ID && JSONBIN_API_KEY) {
+            // ══ JSON ESTRITO, EM CASCATA (F1 → F2 → F3) — PRIORIDADE TOTAL ══
+            // Tenta a conta ativa. Se a quota esgotou (429), pula pra próxima conta e tenta de novo.
+            // Só cai pro Gist se TODAS as 3 contas JSON falharem/estiverem vazias.
+            var _tries = 0;
+            while ((JSONBIN_BIN_ID && JSONBIN_API_KEY) && _tries < JSONBIN_ACCOUNTS.length) {
+                _tries++;
                 const controller = new AbortController();
                 const timeoutId  = setTimeout(() => controller.abort(), 5000);
                 try {
@@ -10910,45 +10919,43 @@ Poderia me ajudar? 🙏"
                     if (r.ok) {
                         const d = await r.json();
                         const rec = d.record || {};
-                        if (rec && (rec._lastUpdate || rec.siteButtons)) _jbData = rec;
-                    } else {
-                        console.warn('[Sync] JSONBin GET falhou:', r.status);
-                        _syncState.consecutiveFails++;
-                        if (r.status === 429 && typeof switchToNextJsonbinAccount === 'function') {
-                            var _na = switchToNextJsonbinAccount();
-                            if (_na && typeof _applyBinCredentials === 'function') _applyBinCredentials(_na.binId, _na.masterKey);
+                        if (rec && (rec._lastUpdate || rec.siteButtons || rec.invictorAdminData || rec.focoEventosReais || rec.ofertas || rec.banlekProducts)) {
+                            _sharedCache = rec;
+                            _sharedCacheTs = now;
+                            _syncState.working = true;
+                            _syncState.consecutiveFails = 0;
+                            _syncState.backend = 'jsonbin';
+                            _updateSyncIndicator();
+                            return rec;
                         }
+                        break; // conta respondeu OK mas vazia → tenta Gist
+                    } else if (r.status === 429) {
+                        // Quota DESTA conta esgotada → sobe pra próxima (F1→F2→F3)
+                        var _na = (typeof switchToNextJsonbinAccount === 'function') ? switchToNextJsonbinAccount() : null;
+                        if (_na && typeof _applyBinCredentials === 'function') { _applyBinCredentials(_na.binId, _na.masterKey); continue; }
+                        break; // não há próxima conta → Gist
+                    } else {
+                        _syncState.consecutiveFails++;
+                        break; // outro erro (403/500/...) → Gist
                     }
-                } catch(e) { clearTimeout(timeoutId); _syncState.consecutiveFails++; }
+                } catch(e) { clearTimeout(timeoutId); _syncState.consecutiveFails++; break; }
             }
 
-            // Gist (rede de segurança)
+            // ── Gist (ÚLTIMO RECURSO, só se TODAS as contas JSON falharem) ──
             if (_gistId) {
                 try {
                     const g = await _gistGet();
-                    if (g && (g._lastUpdate || g.siteButtons)) _gistDataNew = g;
+                    if (g && (g._lastUpdate || g.siteButtons || g.invictorAdminData || g.focoEventosReais || g.ofertas || g.banlekProducts)) {
+                        _sharedCache = g;
+                        _sharedCacheTs = now;
+                        _syncState.working = true;
+                        _syncState.consecutiveFails = 0;
+                        _syncState.backend = 'gist';
+                        if (_syncState.lastGetStatus !== 200) _syncState.lastGetStatus = 200;
+                        _updateSyncIndicator();
+                        return g;
+                    }
                 } catch(e) {}
-            }
-
-            // Escolhe o mais novo (JSON ganha empate)
-            function _luTs(o){ var t = o && o._lastUpdate; t = parseInt(t, 10); return isNaN(t) ? 0 : t; }
-            var _chosen = null, _chosenBackend = '';
-            if (_jbData && _gistDataNew) {
-                if (_luTs(_gistDataNew) > _luTs(_jbData)) { _chosen = _gistDataNew; _chosenBackend = 'gist'; }
-                else { _chosen = _jbData; _chosenBackend = 'jsonbin'; }
-            } else if (_jbData) { _chosen = _jbData; _chosenBackend = 'jsonbin'; }
-            else if (_gistDataNew) { _chosen = _gistDataNew; _chosenBackend = 'gist'; }
-
-            if (_chosen) {
-                _sharedCache = _chosen;
-                _sharedCacheTs = now;
-                _syncState.working = true;
-                _syncState.consecutiveFails = 0;
-                _syncState.lastGetTime = now;
-                if (_syncState.lastGetStatus !== 200 && _chosenBackend === 'gist') _syncState.lastGetStatus = 200;
-                _syncState.backend = _chosenBackend;
-                _updateSyncIndicator();
-                return _chosen;
             }
 
             // ── Fallback: Firebase ─────────────────────────────────
@@ -11011,60 +11018,59 @@ Poderia me ajudar? 🙏"
             // mantendo o Gist como rede de segurança. Marca sucesso mas segue para o JSONBin.
             var _gistAlreadyOk = (jsonbinOk || gistOk);
 
-            // ── JSONBin (prioridade) — grava SEMPRE, com revezamento de contas ──
+            // ── JSONBin (PRIORIDADE) — grava em CASCATA (F1→F2→F3); ao trocar, SEEDA a nova conta ──
             if (JSONBIN_BIN_ID && JSONBIN_API_KEY) {
-                try {
-                    const payload = JSON.stringify(data);
-                    const sizeKB = Math.round(payload.length / 1024);
-                    let dataToSend = data;
-                    if (sizeKB > 95) {
-                        console.warn('[Sync] Payload muito grande:', sizeKB + 'KB. Limpando...');
-                        if (data.invictorAdminData) {
-                            try {
-                                const adminData = JSON.parse(data.invictorAdminData);
-                                if (adminData.profilePhoto && adminData.profilePhoto.startsWith('data:image')) {
-                                    adminData.profilePhoto = '';
-                                    dataToSend = { ...data, invictorAdminData: JSON.stringify(adminData) };
-                                }
-                            } catch(e) {}
-                        }
-                    }
-                    const r = await fetch(JSONBIN_BASE_URL, {
-                        method: 'PUT',
-                        headers: { 'Content-Type': 'application/json', 'X-Master-Key': JSONBIN_API_KEY },
-                        body: JSON.stringify(dataToSend)
-                    });
-                    _syncState.lastPutStatus = r.status;
-                    _syncState.lastPutTime = Date.now();
-                    if (r.ok) {
-                        jsonbinOk = true;
-                        _syncState.consecutiveFails = 0;
-                        _syncState.working = true;
-                        // Broadcast to all open tabs immediately
-                        if (typeof _broadcastPublish === 'function') _broadcastPublish();
-                    } else {
-                        console.warn('[Sync] JSONBin PUT falhou:', r.status);
-                        _syncState.consecutiveFails++;
-                        // 429 = quota esgotada nesta conta → tenta a próxima (F1→F2→F3)
-                        if (r.status === 429 && typeof switchToNextJsonbinAccount === 'function') {
-                            var nextAcc = switchToNextJsonbinAccount();
-                            if (nextAcc && typeof _applyBinCredentials === 'function') {
-                                _applyBinCredentials(nextAcc.binId, nextAcc.masterKey);
+                const payload = JSON.stringify(data);
+                const sizeKB = Math.round(payload.length / 1024);
+                let dataToSend = data;
+                if (sizeKB > 95) {
+                    console.warn('[Sync] Payload grande:', sizeKB + 'KB. Removendo foto base64...');
+                    if (data.invictorAdminData) {
+                        try {
+                            const adminData = JSON.parse(data.invictorAdminData);
+                            if (adminData.profilePhoto && adminData.profilePhoto.startsWith('data:image')) {
+                                adminData.profilePhoto = '';
+                                dataToSend = { ...data, invictorAdminData: JSON.stringify(adminData) };
                             }
-                        }
-                        // 403 "Host not in allowlist" = restrição de origem no JSONBin (precisa liberar no painel jsonbin.io)
-                        // Não marca como falha se o Gist resolve
-                        if (r.status !== 403 || !(_gistId)) {
-                            _syncState.working = false;
-                        }
+                        } catch(e) {}
                     }
-                    _updateSyncIndicator();
-                } catch(e) {
-                    console.warn('[Sync] Erro rede JSONBin:', e.message);
-                    _syncState.consecutiveFails++;
-                    _syncState.working = false;
-                    _updateSyncIndicator();
                 }
+                var _wtries = 0;
+                while (_wtries < JSONBIN_ACCOUNTS.length && JSONBIN_BIN_ID && JSONBIN_API_KEY) {
+                    _wtries++;
+                    try {
+                        const r = await fetch(JSONBIN_BASE_URL, {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json', 'X-Master-Key': JSONBIN_API_KEY },
+                            body: JSON.stringify(dataToSend)
+                        });
+                        _syncState.lastPutStatus = r.status;
+                        _syncState.lastPutTime = Date.now();
+                        if (r.ok) {
+                            jsonbinOk = true;
+                            _syncState.consecutiveFails = 0;
+                            _syncState.working = true;
+                            _syncState.backend = 'jsonbin';
+                            if (typeof _broadcastPublish === 'function') _broadcastPublish();
+                            break;
+                        } else if (r.status === 429) {
+                            // Quota DESTA conta esgotada → sobe pra próxima (F1→F2→F3) e grava nela
+                            var nextAcc = (typeof switchToNextJsonbinAccount === 'function') ? switchToNextJsonbinAccount() : null;
+                            if (nextAcc && typeof _applyBinCredentials === 'function') { _applyBinCredentials(nextAcc.binId, nextAcc.masterKey); continue; }
+                            break;
+                        } else {
+                            console.warn('[Sync] JSONBin PUT falhou:', r.status);
+                            _syncState.consecutiveFails++;
+                            if (r.status !== 403 || !(_gistId)) _syncState.working = false;
+                            break;
+                        }
+                    } catch(e) {
+                        console.warn('[Sync] Erro rede JSONBin:', e.message);
+                        _syncState.consecutiveFails++;
+                        break;
+                    }
+                }
+                _updateSyncIndicator();
             }
 
             // ── Tentar Firebase (sempre, como backup) ────────────
@@ -11075,6 +11081,7 @@ Poderia me ajudar? 🙏"
             }
 
             // (Gist já foi tentado primeiro)
+
 
             // ── Sempre salvar no localStorage (funciona offline) ──
             try {
@@ -28358,7 +28365,7 @@ const _P1_VICTOR_BUILTIN_PRESETS = [{"id": "p1_01_cross_processing_yellow_light"
     <!-- SITE FOOTER v62 -->
     <footer class="site-footer">
         <div class="site-footer-brand">@invictorcliques</div>
-        <div class="site-footer-sub">Fotografia Esportiva Premium · Natal RN · 2026 · v185.0001</div>
+        <div class="site-footer-sub">Fotografia Esportiva Premium · Natal RN · 2026 · v187.0001</div>
         <div style="margin-top:12px;display:flex;justify-content:center;gap:16px;">
             <button onclick="openSocialLink('instagram')" style="background:none;border:none;color:#555;cursor:pointer;font-size:18px;transition:color .2s;" onmouseover="this.style.color='#E1306C'" onmouseout="this.style.color='#555'"><i class="fab fa-instagram"></i></button>
             <button onclick="openSocialLink('tiktok')" style="background:none;border:none;color:#555;cursor:pointer;font-size:18px;transition:color .2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#555'"><i class="fab fa-tiktok"></i></button>
