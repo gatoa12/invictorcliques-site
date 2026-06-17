@@ -5487,7 +5487,7 @@ select option{background:#17131f;color:#fff;}
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v188.0001</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v190.0001</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -10987,41 +10987,17 @@ Poderia me ajudar? 🙏"
         }
 
         async function sharedSet(data) {
+            // Garante carimbo de tempo (newest-wins depende disso em todos os backends)
+            try { if (!data._lastUpdate) data._lastUpdate = Date.now().toString(); } catch(e) {}
+
             _sharedCache = data;
             _sharedCacheTs = Date.now();
             let jsonbinOk = false;
             let firebaseOk = false;
             let gistOk = false;
 
-            // ── Gist PRIMARY ──
-            // Não exige _gistKey no cliente: a escrita vai pelo proxy seguro (/api/gist).
-            if (_gistId) {
-                gistOk = await _gistSet(data);
-                if (gistOk && !jsonbinOk) {
-                    _syncState.working = true;
-                    _syncState.lastPutStatus = 200;
-                    _syncState.lastPutTime = Date.now();
-                    _syncState.consecutiveFails = 0;
-                    _updateSyncIndicator();
-                }
-            }
-
-            // Mirror to localStorage
-            try {
-                Object.entries(data).forEach(([k, v]) => {
-                    if (typeof v === 'string') localStorage.setItem(k, v);
-                });
-            } catch(e) {}
-
-            // Broadcast
-            try { if (_bc) _bc.postMessage({ type: 'sync', ts: Date.now(), force: true }); } catch(e) {}
-            try { localStorage.setItem('_invictorPublished', Date.now().toString()); } catch(e) {}
-
-            // NÃO retorna aqui: queremos gravar TAMBÉM no JSONBin (prioridade do Victor),
-            // mantendo o Gist como rede de segurança. Marca sucesso mas segue para o JSONBin.
-            var _gistAlreadyOk = (jsonbinOk || gistOk);
-
-            // ── JSONBin (PRIORIDADE) — grava em CASCATA (F1→F2→F3); ao trocar, SEEDA a nova conta ──
+            // ══ JSONBin = PRIORIDADE (grava PRIMEIRO) ══
+            // Cascata F1→F2→F3: se a conta ativa esgotou a quota (429), troca e grava na próxima.
             if (JSONBIN_BIN_ID && JSONBIN_API_KEY) {
                 const payload = JSON.stringify(data);
                 const sizeKB = Math.round(payload.length / 1024);
@@ -11074,19 +11050,47 @@ Poderia me ajudar? 🙏"
                     }
                 }
                 _updateSyncIndicator();
+
+                // ── ESPELHO EM TODAS AS CONTAS (F1/F2/F3) ──────────────────
+                // Grava o MESMO pacote nas outras contas em segundo plano
+                // (fire-and-forget). Assim, quando o failover trocar de conta
+                // por quota (429), a nova conta JÁ tem a versão mais recente —
+                // o visitante nunca recebe dado velho depois da troca.
+                try {
+                    JSONBIN_ACCOUNTS.forEach(function(acc){
+                        if (!acc || !acc.masterKey || !acc.binId) return;
+                        if (jsonbinOk && acc.binId === JSONBIN_BIN_ID) return; // já gravada
+                        fetch('https://api.jsonbin.io/v3/b/' + acc.binId, {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json', 'X-Master-Key': acc.masterKey },
+                            body: JSON.stringify(dataToSend)
+                        }).then(function(rr){ if (rr && rr.ok) jsonbinOk = true; }).catch(function(){});
+                    });
+                } catch(e) {}
             }
 
-            // ── Tentar Firebase (sempre, como backup) ────────────
+            // ── Gist = REDE DE SEGURANÇA (grava SEMPRE, mesmo timestamp) ──
+            // Mantém o Gist em paridade com o JSON para o newest-wins do visitante
+            // funcionar mesmo se a gravação no JSON falhar em algum visitante/host.
+            if (_gistId) {
+                gistOk = await _gistSet(data);
+                if (gistOk && !jsonbinOk) {
+                    _syncState.working = true;
+                    _syncState.lastPutStatus = 200;
+                    _syncState.lastPutTime = Date.now();
+                    _syncState.consecutiveFails = 0;
+                    _updateSyncIndicator();
+                }
+            }
+
+            // ── Firebase (backup adicional, se configurado) ──
             firebaseOk = await _firebaseSet(data);
-            if (firebaseOk && !jsonbinOk) {
+            if (firebaseOk && !jsonbinOk && !gistOk) {
                 _syncState.working = true;
                 _updateSyncIndicator();
             }
 
-            // (Gist já foi tentado primeiro)
-
-
-            // ── Sempre salvar no localStorage (funciona offline) ──
+            // ── localStorage (offline + mesmo aparelho) + broadcast entre abas ──
             try {
                 Object.entries(data).forEach(([k, v]) => {
                     if (typeof v === 'string') localStorage.setItem(k, v);
@@ -11096,6 +11100,8 @@ Poderia me ajudar? 🙏"
                     _updateSyncIndicator();
                 }
             } catch(e) {}
+            try { if (_bc) _bc.postMessage({ type: 'sync', ts: Date.now(), force: true }); } catch(e) {}
+            try { localStorage.setItem('_invictorPublished', Date.now().toString()); } catch(e) {}
 
             return jsonbinOk || firebaseOk || gistOk || true; // localStorage always succeeds
         }
@@ -28368,7 +28374,7 @@ const _P1_VICTOR_BUILTIN_PRESETS = [{"id": "p1_01_cross_processing_yellow_light"
     <!-- SITE FOOTER v62 -->
     <footer class="site-footer">
         <div class="site-footer-brand">@invictorcliques</div>
-        <div class="site-footer-sub">Fotografia Esportiva Premium · Natal RN · 2026 · v188.0001</div>
+        <div class="site-footer-sub">Fotografia Esportiva Premium · Natal RN · 2026 · v190.0001</div>
         <div style="margin-top:12px;display:flex;justify-content:center;gap:16px;">
             <button onclick="openSocialLink('instagram')" style="background:none;border:none;color:#555;cursor:pointer;font-size:18px;transition:color .2s;" onmouseover="this.style.color='#E1306C'" onmouseout="this.style.color='#555'"><i class="fab fa-instagram"></i></button>
             <button onclick="openSocialLink('tiktok')" style="background:none;border:none;color:#555;cursor:pointer;font-size:18px;transition:color .2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#555'"><i class="fab fa-tiktok"></i></button>
@@ -28715,8 +28721,12 @@ const _P1_VICTOR_BUILTIN_PRESETS = [{"id": "p1_01_cross_processing_yellow_light"
     var GIST_PRIMARY = 'f885f57edb3757563b0da080fdbc35c7';
     var GIST_BACKUP  = '9f4d5ed88b7bc2a0d36f4681ce54e428';
     var GIST_TOKEN   = '';
-    var POLL_MS = 1000;
-    var BUILD = 'v108-JSONBIN-' + Date.now();
+    // 18s entre polls. Antes era 1s = ~86k requisições/dia por visitante, o que
+    // estourava a quota gratuita do JSONBin (10k/mês) em minutos e fazia o 429
+    // travar as atualizações. 18s + pausa quando a aba está oculta mantém a
+    // quota saudável mesmo com várias contas. O Gist (grátis) cobre o resto.
+    var POLL_MS = 18000;
+    var BUILD = 'v190-FORCE-JSON-' + Date.now();
 
     window._invictorSync = {
         build: BUILD, log: [], lastFetch: 0, lastApplied: 0,
@@ -28780,6 +28790,17 @@ const _P1_VICTOR_BUILTIN_PRESETS = [{"id": "p1_01_cross_processing_yellow_light"
         });
 
         try { if (typeof _adjustMenuGrid === 'function') _adjustMenuGrid(); } catch(e) {}
+
+        // ── PROPAGAÇÃO TOTAL: tudo que está no painel admin reflete no visitante ──
+        // Só re-aplica o conteúdo pesado (preços, tema, perfil, PIX, cards, features)
+        // quando chega um pacote MAIS NOVO — evita re-render desnecessário e não
+        // reseta formulários do visitante (a função usa assinaturas internas).
+        try {
+            if (dataTs > (window.__lastFullApply || 0) && typeof window.applySyncFromSharedStorage === 'function') {
+                window.__lastFullApply = dataTs;
+                window.applySyncFromSharedStorage(data);
+            }
+        } catch(e) {}
         // (removido: force-show de foco/banlek — ignorava o estado ATIVO/OCULTO
         //  e era uma das causas do menu piscar)
     }
@@ -28836,6 +28857,33 @@ const _P1_VICTOR_BUILTIN_PRESETS = [{"id": "p1_01_cross_processing_yellow_light"
         });
     }
 
+    // Seed (self-heal): grava um pacote de volta no JSONBin para a conta ativa
+    // catch up quando o Gist está mais novo (i.e. a escrita no JSON tinha falhado).
+    function _seedJsonbin(acct, data) {
+        if (!acct || !acct.masterKey || !acct.binId) return;
+        var now = Date.now();
+        if (window._lastJbSeed && (now - window._lastJbSeed) < 15000) return; // throttle 15s
+        window._lastJbSeed = now;
+        try {
+            var body = data;
+            // remove foto base64 gigante pra não estourar o limite do plano free
+            try {
+                if (data.invictorAdminData) {
+                    var ad = JSON.parse(data.invictorAdminData);
+                    if (ad && ad.profilePhoto && typeof ad.profilePhoto === 'string' && ad.profilePhoto.length > 40000) {
+                        ad.profilePhoto = '';
+                        body = Object.assign({}, data, { invictorAdminData: JSON.stringify(ad) });
+                    }
+                }
+            } catch(e) {}
+            fetch('https://api.jsonbin.io/v3/b/' + acct.binId, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json', 'X-Master-Key': acct.masterKey },
+                body: JSON.stringify(body)
+            }).then(function(r){ if (r && r.ok) log('JSON re-sincronizado com a versão mais nova'); }).catch(function(){});
+        } catch(e) {}
+    }
+
     function syncOnce() {
         // PAUSE sync if admin panel is open (prevents overwriting in-progress changes)
         try {
@@ -28844,50 +28892,67 @@ const _P1_VICTOR_BUILTIN_PRESETS = [{"id": "p1_01_cross_processing_yellow_light"
                 return Promise.resolve(); // Skip this poll
             }
         } catch(e) {}
-        
+        // PAUSE if the tab is hidden — economiza quota do JSONBin (volta no focus)
+        try { if (document.hidden) return Promise.resolve(); } catch(e) {}
+
         window._invictorSync.fetches++;
 
-        // Optional JSONBin check (only if user has a working account configured)
         var jbAcct = getActiveJsonbinAccount();
-        var tryJsonBin = jbAcct && jbAcct.masterKey && jbAcct.binId && !window._jsonbinPermanentlyBlocked;
+        var nowTs = Date.now();
+        // 403 = cooldown temporário (3 min), NÃO bloqueio permanente — se você ajustar
+        // o allowlist no jsonbin.io ou deixar o bin público, volta sozinho sem recarregar.
+        var jbCooldown = window._jbCooldownUntil && nowTs < window._jbCooldownUntil;
+        var tryJsonBin = jbAcct && jbAcct.masterKey && jbAcct.binId && !jbCooldown;
 
-        var firstAttempt = tryJsonBin
-            ? fetchJsonBin().then(function(data) {
-                window._invictorSync.lastFetch = Date.now();
-                window._invictorSync.jsonbinOK++;
-                applyData(data, 'JSONBIN');
-              }).catch(function(jbErr) {
-                window._invictorSync.jsonbinFailures++;
-                // If blocked by allowlist, stop trying JSONBin this session
-                if (jbErr.message && jbErr.message.indexOf('403') !== -1) {
-                    window._jsonbinPermanentlyBlocked = true;
-                }
-                throw jbErr; // fall through to Gist
-              })
-            : Promise.reject(new Error('skip-jsonbin'));
-
-        // Gist is the reliable primary
-        return firstAttempt.catch(function() {
-            return fetchGist(GIST_PRIMARY, 'gistfile1.txt', 'GIST_P')
-                .then(function(data) {
-                    window._invictorSync.lastFetch = Date.now();
-                    window._invictorSync.gistOK++;
-                    applyData(data, 'GIST_PRIMARY');
+        // ── PEGA OS DOIS EM PARALELO: JSONBin (prioridade) + Gist (rede de segurança) ──
+        // O Gist é gratuito/ilimitado, então buscá-lo todo poll não custa quota.
+        // Depois aplicamos SEMPRE a versão MAIS NOVA (newest-wins) — assim,
+        // mesmo se a gravação em um backend falhar, o visitante vê o conteúdo mais recente.
+        var pJB = tryJsonBin
+            ? fetchJsonBin().then(function(d){ window._invictorSync.jsonbinOK++; return d; })
+                .catch(function(err){
+                    window._invictorSync.jsonbinFailures++;
+                    if (err && err.message && err.message.indexOf('403') !== -1) {
+                        // Sem allowlist nas contas, 403 só pode ser blip — espera curto (45s) e volta.
+                        window._jbCooldownUntil = Date.now() + 45000;
+                    }
+                    return null;
                 })
-                .catch(function(gpErr) {
-                    return fetchGist(GIST_BACKUP, 'backup.txt', 'GIST_B')
-                        .then(function(data) {
-                            window._invictorSync.lastFetch = Date.now();
-                            window._invictorSync.gistOK++;
-                            applyData(data, 'GIST_BACKUP');
-                        })
-                        .catch(function(gbErr) {
-                            window._invictorSync.errors++;
-                            if (window._invictorSync.errors % 30 === 1) {
-                                log('Sync temporariamente indisponivel');
-                            }
-                        });
-                });
+            : Promise.resolve(null);
+
+        var pGist = fetchGist(GIST_PRIMARY, 'gistfile1.txt', 'GIST_P')
+            .then(function(d){ window._invictorSync.gistOK++; return d; })
+            .catch(function(){
+                return fetchGist(GIST_BACKUP, 'backup.txt', 'GIST_B')
+                    .then(function(d){ window._invictorSync.gistOK++; return d; })
+                    .catch(function(){ return null; });
+            });
+
+        return Promise.all([pJB, pGist]).then(function(res){
+            var jb = res[0], gist = res[1];
+            if (jb === null && gist === null) {
+                window._invictorSync.errors++;
+                if (window._invictorSync.errors % 30 === 1) log('Sync temporariamente indisponivel');
+                return;
+            }
+            window._invictorSync.lastFetch = Date.now();
+
+            var jbTs = (jb && jb._lastUpdate) ? (parseInt(jb._lastUpdate, 10) || 0) : -1;
+            var gTs  = (gist && gist._lastUpdate) ? (parseInt(gist._lastUpdate, 10) || 0) : -1;
+
+            // NEWEST-WINS — JSON é prioridade no empate (>=)
+            var chosen, src;
+            if (jb !== null && jbTs >= gTs) { chosen = jb; src = 'JSONBIN'; }
+            else if (gist !== null)        { chosen = gist; src = 'GIST'; }
+            else                           { chosen = jb; src = 'JSONBIN'; }
+
+            applyData(chosen, src);
+
+            // SELF-HEAL: Gist está mais novo que o JSON → a escrita no JSON tinha falhado.
+            // Reescreve o JSON com a versão nova pra ele voltar a ser a fonte ativa.
+            if (src === 'GIST' && jb !== null && gTs > jbTs && jbAcct && !jbCooldown) {
+                _seedJsonbin(jbAcct, chosen);
+            }
         });
     }
 
@@ -28955,6 +29020,12 @@ const _P1_VICTOR_BUILTIN_PRESETS = [{"id": "p1_01_cross_processing_yellow_light"
 
         window.addEventListener('focus', syncOnce);
         window.addEventListener('online', syncOnce);
+        // Ao voltar pra aba, sincroniza na hora (sem esperar o próximo poll)
+        try {
+            document.addEventListener('visibilitychange', function(){
+                if (!document.hidden) syncOnce();
+            });
+        } catch(e) {}
 
         log('Started');
     }
