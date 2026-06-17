@@ -5487,7 +5487,7 @@ select option{background:#17131f;color:#fff;}
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v190.0001</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v194.0001</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -5540,7 +5540,7 @@ select option{background:#17131f;color:#fff;}
                     <!-- Barra de ações -->
                     <div class="ap-toolbar">
                         <button id="sidebarToggleBtn" onclick="toggleSidebarMobile()" class="ap-tool-menu">☰ Menu</button>
-                        <button id="forcePublishBtn" onclick="forcePublishAll()" class="ap-tool-publish">🚀 Publicar Tudo</button>
+                        <button id="forcePublishBtn" onclick="forcePublishAll()" class="ap-tool-publish">🚀 PUBLICAR TUDO (FORÇADO)</button>
                         <button onclick="hardReloadFromRemote()" class="ap-tool-cache">🔄 Cache</button>
                         <button onclick="showSyncDiag()" class="ap-tool-storage">🔧 Storage</button>
                         <div id="syncStatusIndicator" class="ap-sync-status">
@@ -7502,7 +7502,7 @@ Poderia me ajudar? 🙏"
                             <!-- Toggle: Roubar Preset IA -->
                             <div style="display:flex;align-items:center;justify-content:space-between;padding:11px 14px;background:rgba(167,139,250,0.07);border:1px solid rgba(167,139,250,0.18);border-radius:10px;" class="ft-row">
                                 <div class="ft-info">
-                                    <div style="font-size:12px;color:#fff;font-weight:800;">🔍 Roubar Preset IA</div>
+                                    <div style="font-size:12px;color:#fff;font-weight:800;">🔍 Foto Parecida</div>
                                     <div style="font-size:9px;color:#555;margin-top:1px;">Clone de estilo por visão computacional</div>
                                 </div>
                                 <label style="position:relative;display:inline-block;width:44px;height:24px;cursor:pointer;">
@@ -7812,11 +7812,11 @@ Poderia me ajudar? 🙏"
         </button>
         <button class="menu-btn" id="menuBtn_roubarIA" onclick="roubarIAOpenStandalone()" style="border-color:rgba(96,165,250,0.4);background:linear-gradient(160deg,#0e1828,#08111d);">
             <span class="menu-icon" style="color:#60a5fa;">🔍</span>
-            <span class="btn-label" style="color:#60a5fa;">Roubar Preset IA</span><br><span class="btn-sub" style="color:#5b8dc7;">Análise visual</span>
+            <span class="btn-label" style="color:#60a5fa;">Foto Parecida</span><br><span class="btn-sub" style="color:#5b8dc7;">Estilo parecido</span>
         </button>
         <button class="menu-btn" id="menuBtn_presetsOn" onclick="presetsOnOpen()" style="border-color:rgba(167,139,250,0.5);background:linear-gradient(160deg,#120e24,#0d0a1c);">
             <span class="menu-icon" style="color:#a78bfa;">🎨</span>
-            <span class="btn-label" style="color:#a78bfa;">PRESETS ON</span><br><span class="btn-sub" style="color:#8770c4;">Clone IA</span>
+            <span class="btn-label" style="color:#a78bfa;">Seus Presets</span><br><span class="btn-sub" style="color:#8770c4;">Parecido</span>
         </button>
         <button class="menu-btn" id="menuBtn_preview" onclick="switchTab('preview')" style="border-color:rgba(225,48,108,0.45);background:linear-gradient(160deg,#1a0e18,#0d0a14);">
             <span class="menu-icon" style="color:#E1306C;">📱</span>
@@ -8184,7 +8184,7 @@ Poderia me ajudar? 🙏"
                     <li><strong>Olhe pra frente e sorria</strong> ao ver o fotógrafo — postura ereta passa força.</li>
                     <li>Braços soltos e passada aberta no momento da foto: o "voo" (pés no ar) fica incrível.</li>
                     <li>Roupa de cor viva destaca você do fundo — e rende um visual melhor na edição.</li>
-                    <li>Achou sua foto? Use o <strong>Clonar Estilo</strong> pra deixá-la com o tom das fotos profissionais do Victor.</li>
+                    <li>Achou sua foto? Use o <strong>Estilo Parecido</strong> pra deixá-la com o tom das fotos profissionais do Victor.</li>
                 </ul>
             </div>
         </details>
@@ -8958,7 +8958,7 @@ Poderia me ajudar? 🙏"
                 <div style="display:inline-flex;gap:5px;margin-top:12px;flex-wrap:wrap;justify-content:center;">
                     <span style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);padding:3px 9px;border-radius:20px;font-size:9px;color:#fff;font-weight:700;">✨ 7 Presets</span>
                     <span style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);padding:3px 9px;border-radius:20px;font-size:9px;color:#fff;font-weight:700;">📸 Antes/Depois</span>
-                    <span style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);padding:3px 9px;border-radius:20px;font-size:9px;color:#fff;font-weight:700;">🎨 Clone IA</span>
+                    <span style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);padding:3px 9px;border-radius:20px;font-size:9px;color:#fff;font-weight:700;">🎨 Parecido</span>
                 </div>
                 <!-- Teste grátis callout -->
                 <div style="margin-top:14px;display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,rgba(0,200,150,0.25),rgba(0,160,112,0.15));border:1.5px solid rgba(0,200,150,0.5);border-radius:12px;padding:8px 16px;">
@@ -8982,7 +8982,7 @@ Poderia me ajudar? 🙏"
                 <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
                     <div style="width:36px;height:36px;background:linear-gradient(135deg,#a78bfa,#7c3aed);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;">🔍</div>
                     <div>
-                        <div style="font-size:13px;color:#a78bfa;font-weight:900;">Roubar Preset por Foto</div>
+                        <div style="font-size:13px;color:#a78bfa;font-weight:900;">Foto Parecida</div>
                         <div style="font-size:10px;color:#555;">A IA analisa qualquer foto e clona o estilo visual</div>
                     </div>
                 </div>
@@ -9733,9 +9733,9 @@ Poderia me ajudar? 🙏"
             if (cont) cont.style.display = 'block';
             // Update title to reflect this entry point
             const titleEl = document.querySelector('#presetsOnOverlay h2');
-            if (titleEl) titleEl.innerHTML = '🔍 Roubar Preset IA';
+            if (titleEl) titleEl.innerHTML = '📸 Foto Parecida';
             const subEl = document.querySelector('#presetsOnOverlay [data-pon-subtitle]');
-            if (subEl) subEl.textContent = 'Análise visual de qualquer foto';
+            if (subEl) subEl.textContent = 'Estilo parecido em qualquer foto';
             // Reset to clone tab
             setTimeout(() => {
                 if (typeof presetsOnSwitchTab === 'function') presetsOnSwitchTab('clone');
@@ -10551,10 +10551,20 @@ Poderia me ajudar? 🙏"
 // FORÇA AUTORITATIVA: as 3 contas do código (F1/F2/F3) são sempre a verdade.
         // Limpa qualquer conta/chave velha ou conflitante que tenha ficado salva no navegador.
         try {
+            // Prefere a última conta que comprovadamente FUNCIONOU (persistida).
+            // Evita começar sempre na F1 quando ela está com a cota esgotada do mês.
+            var _savedWorking = null;
+            try { _savedWorking = localStorage.getItem('_jbWorkingBin'); } catch(e) {}
+            var _startIdx = 0;
+            if (_savedWorking) {
+                var _wi = JSONBIN_ACCOUNTS.findIndex(function(a){ return a.binId === _savedWorking; });
+                if (_wi >= 0) _startIdx = _wi;
+            }
+            JSONBIN_ACCOUNTS.forEach(function(a, i){ a.active = (i === _startIdx); });
             localStorage.setItem('_jsonbinAccounts', JSON.stringify(JSONBIN_ACCOUNTS));
-            localStorage.setItem('_cfg_binId',  JSONBIN_ACCOUNTS[0].binId);
-            localStorage.setItem('_cfg_binKey', JSONBIN_ACCOUNTS[0].masterKey);
-            console.log('[JSONBin] Contas F1/F2/F3 forçadas como autoritativas.');
+            localStorage.setItem('_cfg_binId',  JSONBIN_ACCOUNTS[_startIdx].binId);
+            localStorage.setItem('_cfg_binKey', JSONBIN_ACCOUNTS[_startIdx].masterKey);
+            console.log('[JSONBin] Conta inicial:', JSONBIN_ACCOUNTS[_startIdx].name);
         } catch(e) {}
         // (bloco de "load saved accounts" desativado — as contas vêm sempre do código)
 
@@ -10570,32 +10580,29 @@ Poderia me ajudar? 🙏"
 
         // Switch to next account (called when current hits quota limit)
         function switchToNextJsonbinAccount() {
-            // Anti-burst: se acabamos de trocar (<3s), não troca de novo.
-            // Evita que vários reads simultâneos no carregamento queimem F1→F2→F3 de uma vez.
-            try {
-                var _swNow = Date.now();
-                if (window.__lastJbSwitch && (_swNow - window.__lastJbSwitch) < 3000) {
-                    return getActiveJsonbinAccount();
-                }
-                window.__lastJbSwitch = _swNow;
-            } catch(e) {}
-            const current = JSONBIN_ACCOUNTS.findIndex(a => a.active);
+            // Avança para a PRÓXIMA conta com credenciais (F1→F2→F3→F1...).
+            // (Removido o anti-burst de 3s: com o polling em 18s e a cascata
+            //  determinística do motor de sync, ele só atrapalhava — impedia
+            //  chegar na F3 quando F1 e F2 estavam esgotadas na mesma tentativa.)
+            const total = JSONBIN_ACCOUNTS.length;
+            let current = JSONBIN_ACCOUNTS.findIndex(a => a.active);
             if (current >= 0) JSONBIN_ACCOUNTS[current].active = false;
-            // Find next account with valid credentials
-            for (let i = current + 1; i < JSONBIN_ACCOUNTS.length; i++) {
-                if (JSONBIN_ACCOUNTS[i].masterKey && JSONBIN_ACCOUNTS[i].binId) {
+            // Procura a próxima válida, dando a volta (wrap-around) se preciso
+            for (let step = 1; step <= total; step++) {
+                const i = ((current < 0 ? -1 : current) + step + total) % total;
+                if (JSONBIN_ACCOUNTS[i] && JSONBIN_ACCOUNTS[i].masterKey && JSONBIN_ACCOUNTS[i].binId) {
                     JSONBIN_ACCOUNTS[i].active = true;
                     saveJsonbinAccounts();
                     console.log('[JSONBin] Switched to', JSONBIN_ACCOUNTS[i].name);
                     if (typeof showToast === 'function') {
-                        showToast('JSONBin: Trocou para ' + JSONBIN_ACCOUNTS[i].name + ' (quota anterior esgotada)', '🔄');
+                        showToast('JSONBin: usando ' + JSONBIN_ACCOUNTS[i].name + ' (cota anterior esgotada)', '🔄');
                     }
                     return JSONBIN_ACCOUNTS[i];
                 }
             }
             console.warn('[JSONBin] All accounts exhausted!');
             if (typeof showToast === 'function') {
-                showToast('⚠️ Todas as contas JSONBin esgotaram a quota! Usando Gist como fallback.', '🚨');
+                showToast('⚠️ Todas as contas JSONBin esgotaram a cota! Usando Gist como rede de segurança.', '🚨');
             }
             return null;
         }
@@ -10720,6 +10727,31 @@ Poderia me ajudar? 🙏"
             saveJsonbinAccounts();
             renderJsonbinAccounts();
             if (typeof showToast === 'function') showToast('Conta JSONBin ativada: ' + (JSONBIN_ACCOUNTS[i].name||('Conta '+(i+1))), '🔄');
+        };
+        // Promove a conta cujo binId funcionou para ATIVA e aplica as credenciais
+        // em memória — usado pelo motor de sync do visitante quando descobre, por
+        // cascata, qual conta ainda tem cota. Silencioso (sem toast).
+        window.switchActiveJsonbinTo = function(binId){
+            try {
+                var idx = JSONBIN_ACCOUNTS.findIndex(function(a){ return a.binId === binId; });
+                if (idx < 0) return;
+                try { localStorage.setItem('_jbWorkingBin', binId); } catch(e) {}
+                if (JSONBIN_ACCOUNTS[idx].active && JSONBIN_BIN_ID === binId) return; // já é a ativa
+                JSONBIN_ACCOUNTS.forEach(function(a,i){ a.active = (i===idx); });
+                saveJsonbinAccounts();
+                if (typeof _applyBinCredentials === 'function') {
+                    _applyBinCredentials(JSONBIN_ACCOUNTS[idx].binId, JSONBIN_ACCOUNTS[idx].masterKey);
+                }
+                if (typeof renderJsonbinAccounts === 'function') { try { renderJsonbinAccounts(); } catch(e) {} }
+            } catch(e) {}
+        };
+        // ⚠️ JSONBin free retorna 403 "Requests exhausted" quando a cota mensal
+        // acaba (NÃO 429). Esta função reconhece AMBOS como "cota esgotada"
+        // para disparar o failover para a próxima conta.
+        window._isJsonbinQuotaError = function(status, body){
+            if (status === 429) return true;
+            if (status === 403 && body && /exhaust|quota|limit|requests?\s*exhaust/i.test(body)) return true;
+            return false;
         };
         window.removeJsonbinAccount = function(i){
             const a = JSONBIN_ACCOUNTS[i]; if (!a) return;
@@ -10915,14 +10947,19 @@ Poderia me ajudar? 🙏"
                             return rec;
                         }
                         break; // conta respondeu OK mas vazia → tenta Gist
-                    } else if (r.status === 429) {
-                        // Quota DESTA conta esgotada → sobe pra próxima (F1→F2→F3)
-                        var _na = (typeof switchToNextJsonbinAccount === 'function') ? switchToNextJsonbinAccount() : null;
-                        if (_na && typeof _applyBinCredentials === 'function') { _applyBinCredentials(_na.binId, _na.masterKey); continue; }
-                        break; // não há próxima conta → Gist
                     } else {
-                        _syncState.consecutiveFails++;
-                        break; // outro erro (403/500/...) → Gist
+                        // Lê o corpo pra distinguir cota esgotada (403 "exhausted" ou 429) de outros erros
+                        var _body = '';
+                        try { _body = await r.clone().text(); } catch(e) {}
+                        if ((typeof window._isJsonbinQuotaError === 'function') ? window._isJsonbinQuotaError(r.status, _body) : (r.status === 429)) {
+                            // Cota DESTA conta esgotada (free retorna 403 "Requests exhausted") → próxima conta (F1→F2→F3)
+                            var _na = (typeof switchToNextJsonbinAccount === 'function') ? switchToNextJsonbinAccount() : null;
+                            if (_na && typeof _applyBinCredentials === 'function') { _applyBinCredentials(_na.binId, _na.masterKey); continue; }
+                            break; // não há próxima conta → Gist
+                        } else {
+                            _syncState.consecutiveFails++;
+                            break; // outro erro (403 allowlist/500/...) → Gist
+                        }
                     }
                 } catch(e) { clearTimeout(timeoutId); _syncState.consecutiveFails++; break; }
             }
@@ -10996,12 +11033,14 @@ Poderia me ajudar? 🙏"
             let firebaseOk = false;
             let gistOk = false;
 
-            // ══ JSONBin = PRIORIDADE (grava PRIMEIRO) ══
-            // Cascata F1→F2→F3: se a conta ativa esgotou a quota (429), troca e grava na próxima.
+            // ══ JSONBin = PRIORIDADE — grava em TODAS as contas (F1+F2+F3) ══
+            // Escreve o MESMO pacote nas 3 contas EM PARALELO e ESPERA o resultado.
+            // Assim as contas NUNCA divergem — qualquer visitante, lendo qualquer
+            // conta, recebe exatamente a mesma versão (fim da divergência entre abas).
             if (JSONBIN_BIN_ID && JSONBIN_API_KEY) {
+                let dataToSend = data;
                 const payload = JSON.stringify(data);
                 const sizeKB = Math.round(payload.length / 1024);
-                let dataToSend = data;
                 if (sizeKB > 95) {
                     console.warn('[Sync] Payload grande:', sizeKB + 'KB. Removendo foto base64...');
                     if (data.invictorAdminData) {
@@ -11014,59 +11053,37 @@ Poderia me ajudar? 🙏"
                         } catch(e) {}
                     }
                 }
-                var _wtries = 0;
-                while (_wtries < JSONBIN_ACCOUNTS.length && JSONBIN_BIN_ID && JSONBIN_API_KEY) {
-                    _wtries++;
-                    try {
-                        const r = await fetch(JSONBIN_BASE_URL, {
-                            method: 'PUT',
-                            headers: { 'Content-Type': 'application/json', 'X-Master-Key': JSONBIN_API_KEY },
-                            body: JSON.stringify(dataToSend)
-                        });
-                        _syncState.lastPutStatus = r.status;
-                        _syncState.lastPutTime = Date.now();
-                        if (r.ok) {
-                            jsonbinOk = true;
-                            _syncState.consecutiveFails = 0;
-                            _syncState.working = true;
-                            _syncState.backend = 'jsonbin';
-                            if (typeof _broadcastPublish === 'function') _broadcastPublish();
-                            break;
-                        } else if (r.status === 429) {
-                            // Quota DESTA conta esgotada → sobe pra próxima (F1→F2→F3) e grava nela
-                            var nextAcc = (typeof switchToNextJsonbinAccount === 'function') ? switchToNextJsonbinAccount() : null;
-                            if (nextAcc && typeof _applyBinCredentials === 'function') { _applyBinCredentials(nextAcc.binId, nextAcc.masterKey); continue; }
-                            break;
-                        } else {
-                            console.warn('[Sync] JSONBin PUT falhou:', r.status);
-                            _syncState.consecutiveFails++;
-                            if (r.status !== 403 || !(_gistId)) _syncState.working = false;
-                            break;
-                        }
-                    } catch(e) {
-                        console.warn('[Sync] Erro rede JSONBin:', e.message);
-                        _syncState.consecutiveFails++;
-                        break;
-                    }
+                const body = JSON.stringify(dataToSend);
+                const accts = JSONBIN_ACCOUNTS.filter(function(a){ return a && a.masterKey && a.binId; });
+                const results = await Promise.all(accts.map(function(acc){
+                    return fetch('https://api.jsonbin.io/v3/b/' + acc.binId, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json', 'X-Master-Key': acc.masterKey },
+                        body: body
+                    }).then(function(r){ return { acc: acc, status: r.status, ok: r.ok }; })
+                      .catch(function(e){ return { acc: acc, status: 0, ok: false, err: e }; });
+                }));
+                let firstWorking = null;
+                results.forEach(function(res){
+                    if (res.ok) { jsonbinOk = true; if (!firstWorking) firstWorking = res.acc; }
+                });
+                if (jsonbinOk) {
+                    _syncState.consecutiveFails = 0;
+                    _syncState.working = true;
+                    _syncState.backend = 'jsonbin';
+                    _syncState.lastPutStatus = 200;
+                    _syncState.lastPutTime = Date.now();
+                    // Memoriza/ativa a conta que funcionou para as leituras
+                    try { if (firstWorking && typeof window.switchActiveJsonbinTo === 'function') window.switchActiveJsonbinTo(firstWorking.binId); } catch(e) {}
+                    if (typeof _broadcastPublish === 'function') _broadcastPublish();
+                } else {
+                    _syncState.consecutiveFails++;
+                    _syncState.lastPutStatus = (results[0] && results[0].status) || 0;
+                    if (!_gistId) _syncState.working = false;
+                    console.warn('[Sync] JSONBin: nenhuma conta aceitou a escrita', results.map(function(r){return r.status;}));
                 }
+                window._lastJsonbinWriteResults = results.map(function(r){ return { name: r.acc.name, status: r.status, ok: r.ok }; });
                 _updateSyncIndicator();
-
-                // ── ESPELHO EM TODAS AS CONTAS (F1/F2/F3) ──────────────────
-                // Grava o MESMO pacote nas outras contas em segundo plano
-                // (fire-and-forget). Assim, quando o failover trocar de conta
-                // por quota (429), a nova conta JÁ tem a versão mais recente —
-                // o visitante nunca recebe dado velho depois da troca.
-                try {
-                    JSONBIN_ACCOUNTS.forEach(function(acc){
-                        if (!acc || !acc.masterKey || !acc.binId) return;
-                        if (jsonbinOk && acc.binId === JSONBIN_BIN_ID) return; // já gravada
-                        fetch('https://api.jsonbin.io/v3/b/' + acc.binId, {
-                            method: 'PUT',
-                            headers: { 'Content-Type': 'application/json', 'X-Master-Key': acc.masterKey },
-                            body: JSON.stringify(dataToSend)
-                        }).then(function(rr){ if (rr && rr.ok) jsonbinOk = true; }).catch(function(){});
-                    });
-                } catch(e) {}
             }
 
             // ── Gist = REDE DE SEGURANÇA (grava SEMPRE, mesmo timestamp) ──
@@ -11821,56 +11838,55 @@ Poderia me ajudar? 🙏"
 
         async function forcePublishAll() {
             const btn = document.getElementById('forcePublishBtn');
-            if (btn) { btn.disabled = true; btn.textContent = '⏳ Publicando...'; }
+            const oldTxt = btn ? btn.textContent : '';
+            if (btn) { btn.disabled = true; btn.textContent = '⏳ Forçando publicação...'; }
             setAdminSaveStatus('saving');
             _sharedCacheTs = 0;
+            _sharedCache = null;
 
             try {
-                // Use _buildFullPayload — single source of truth for all site data
                 const ts = Date.now().toString();
                 const payload = _buildFullPayload(ts);
 
+                // sharedSet agora grava nas 3 contas JSON (esperando) + Gist + Firebase
                 const ok = await sharedSet(payload);
 
-                if (ok) {
-                    if (_gistId) {
-                        // Gist active — trust the write, no verify needed
-                        setAdminSaveStatus('saved');
-                        showToast('✅ Publicado! Visitantes verão em segundos.', '🚀');
-                        AdminChangeLog.addChange('Publicação', 'Dados enviados via Gist.', 'success');
-                    } else {
-                        // Verify write for JSONBin/Firebase
-                        _sharedCacheTs = 0;
-                        const verify = await sharedGet();
-                        if (verify && verify._lastUpdate === payload._lastUpdate) {
-                            setAdminSaveStatus('saved');
-                            showToast('✅ Publicado! Visitantes já veem as mudanças.', '🌐');
-                        } else {
-                            setAdminSaveStatus('remote');
-                            showToast('✅ Enviado! Aguardando confirmação...', '🌐');
-                        }
-                    }
+                // Relatório por backend (JSON conta a conta + Gist)
+                let parts = [];
+                try {
+                    const wr = window._lastJsonbinWriteResults || [];
+                    wr.forEach(function(r){ parts.push((r.ok ? '✅' : '❌') + ' ' + (r.name || 'JSON')); });
+                } catch(e) {}
+                const jsonAnyOk = (window._lastJsonbinWriteResults || []).some(function(r){ return r.ok; });
+
+                // Verifica lendo de volta (bypassa cache) que o timestamp publicado está no ar
+                _sharedCacheTs = 0; _sharedCache = null;
+                let verified = false;
+                try {
+                    const verify = await sharedGet();
+                    verified = !!(verify && String(verify._lastUpdate) === String(payload._lastUpdate));
+                } catch(e) {}
+
+                if (jsonAnyOk || ok) {
+                    setAdminSaveStatus('saved');
+                    AdminChangeLog && AdminChangeLog.addChange && AdminChangeLog.addChange('Publicação forçada', parts.join(' · ') || 'enviado', 'success');
+                    showToast('🚀 FORÇADO no ar! ' + (parts.length ? parts.join('  ') : '') + (verified ? '  · confirmado ✔' : ''), '🌐', 6000);
+                    // Avisa todas as abas pra puxar agora
+                    try { if (_bc) _bc.postMessage({ type: 'sync', ts: Date.now(), force: true }); } catch(e) {}
+                    try { localStorage.setItem('_invictorPublished', Date.now().toString()); } catch(e) {}
                 } else {
                     setAdminSaveStatus('error');
-                    // Verificar se Firebase salvou
-                    if (_firebaseUrl) {
-                        showToast('⚠️ JSONBin falhou, mas dados salvos no Firebase! Visitantes verão as mudanças.', '🔥', 6000);
-                        setAdminSaveStatus('saved');
-                        AdminChangeLog.addChange('Publicação via Firebase', 'JSONBin indisponível — dados publicados no Firebase.', 'warning');
-                    } else {
-                        showToast('❌ Falha ao publicar! Configure Firebase como backup em 🔧 Storage.', '🚫', 6000);
-                        // Abrir diagnóstico automaticamente
-                        const diag = document.getElementById('syncDiagPanel');
-                        if (diag) diag.style.display = 'block';
-                        await runSyncDiagnostic();
-                    }
+                    showToast('❌ Nenhum backend aceitou. Verifique JSONBin (cota) e o Token do Gist. ' + parts.join(' '), '🚫', 7000);
+                    const diag = document.getElementById('syncDiagPanel');
+                    if (diag) diag.style.display = 'block';
+                    if (typeof runSyncDiagnostic === 'function') await runSyncDiagnostic();
                 }
             } catch(e) {
                 setAdminSaveStatus('error');
                 showToast('❌ Erro crítico: ' + e.message, '🚫', 6000);
             }
 
-            if (btn) { btn.disabled = false; btn.textContent = '🚀 Publicar Tudo Agora'; }
+            if (btn) { btn.disabled = false; btn.textContent = oldTxt || '🚀 PUBLICAR TUDO (FORÇADO)'; }
         }
         // SALVAR DADOS — grava localmente E sobe para JSONBin/Firebase
         // Coleta TODOS os dados relevantes em um único payload completo
@@ -19197,8 +19213,8 @@ Poderia me ajudar? 🙏"
             { id:'procure',    icon:'👟', label:'Procure',         sub:'seus tênis',       ativo:true  },
             { id:'strava',     icon:'🏃', label:'Minhas Corridas', sub:'Strava',           ativo:true  },
             { id:'edicao',     icon:'✨', label:'Edição IA',       sub:'P1 Victor',        ativo:true  },
-            { id:'roubarIA',   icon:'🔍', label:'Roubar Preset IA',sub:'Análise visual',   ativo:true  },
-            { id:'presetsOn',  icon:'🎨', label:'PRESETS ON',      sub:'Clone IA',         ativo:true  },
+            { id:'roubarIA',   icon:'🔍', label:'Foto Parecida',  sub:'Estilo parecido', ativo:true  },
+            { id:'presetsOn',  icon:'🎨', label:'Seus Presets',    sub:'Parecido',        ativo:true  },
         ];
         function getBotoes() {
             try {
@@ -19325,7 +19341,25 @@ Poderia me ajudar? 🙏"
             try { return arr.map(function(b){ return b.id + ':' + (b.ativo !== false ? 1 : 0) + ':' + (b.label || '') + ':' + (b.sub || ''); }).join('|'); }
             catch(e) { return ''; }
         }
+        // Renomeia rótulos antigos → novos, mesmo que o config salvo (local ou nuvem)
+        // ainda tenha os nomes velhos. Garante "Foto Parecida"/"Seus Presets" em todo lugar.
+        function _normalizeButtonLabels(arr){
+            if (!Array.isArray(arr)) return arr;
+            arr.forEach(function(b){
+                if (!b || !b.id) return;
+                if (b.id === 'roubarIA') {
+                    if (/roubar\s*preset/i.test(b.label || '')) b.label = 'Foto Parecida';
+                    if (/an[áa]lise\s*visual/i.test(b.sub || '')) b.sub = 'Estilo parecido';
+                }
+                if (b.id === 'presetsOn') {
+                    if (/presets?\s*on/i.test(b.label || '')) b.label = 'Seus Presets';
+                    if (/clone/i.test(b.sub || '')) b.sub = 'Parecido';
+                }
+            });
+            return arr;
+        }
         function aplicarBotoesNoSite(botoes, ts) {
+            botoes = _normalizeButtonLabels(botoes);
             if (!Array.isArray(botoes) || !botoes.length) return;
             var incoming = parseInt(ts, 10); if (isNaN(incoming)) incoming = 0;
             var sig = _btnSig(botoes);
@@ -19495,31 +19529,45 @@ Poderia me ajudar? 🙏"
             const log=(msg,ok)=>{if(!logEl) return;logEl.style.display='block';logEl.innerHTML+=`<div style="color:${ok?'#51CF66':'#FF6B6B'}">[${new Date().toLocaleTimeString()}] ${msg}</div>`;logEl.scrollTop=logEl.scrollHeight;};
             try{
                 if(tipo==='jsonbin'){
-                    if(!JSONBIN_BIN_ID||!JSONBIN_API_KEY){if(statusEl)statusEl.innerHTML='<span style="color:#FF6B6B;">❌ Sem credenciais</span>';log('JSONBin: sem credenciais — configure em Storage',false);return;}
-                    try {
-                        const r=await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`,{headers:{'X-Master-Key':JSONBIN_API_KEY},signal:AbortSignal.timeout(8000)});
-                        const remaining = r.headers.get('X-Ratelimit-Remaining');
-                        if(r.ok) {
-                            if(statusEl)statusEl.innerHTML=`<span style="color:#51CF66;">✅ Online ${remaining?`(${remaining} req)`:''} (${Date.now()-t0}ms)</span>`;
-                            log(`JSONBin: OK ${remaining?'• '+remaining+' req restantes':''} — ${Date.now()-t0}ms`,true);
-                        } else if(r.status === 403) {
-                            const errBody = await r.text();
-                            const isAllowlist = errBody.includes('allowlist') || errBody.includes('Host not');
-                            if(statusEl)statusEl.innerHTML=`<span style="color:#FF6B6B;">🚫 ${isAllowlist?'Host bloqueado':'Acesso negado'}</span>`;
-                            log(`JSONBin: 403 — ${isAllowlist?'configure allowlist em jsonbin.io → Profile → Security':'credenciais inválidas'}`,false);
-                        } else if(r.status === 404) {
-                            if(statusEl)statusEl.innerHTML=`<span style="color:#FF6B6B;">❌ Bin não existe</span>`;
-                            log(`JSONBin: 404 — Bin ID '${JSONBIN_BIN_ID}' não existe. Crie um bin em jsonbin.io ou use outro ID`,false);
-                        } else if(r.status === 429) {
-                            if(statusEl)statusEl.innerHTML=`<span style="color:#FFA500;">⚠️ Limite atingido</span>`;
-                            log(`JSONBin: 429 — quota do mês esgotada, troque de conta`,false);
+                    // Testa as 3 contas em cascata (F1→F2→F3) e reporta a primeira que funciona.
+                    var _accts = (typeof getAllJsonbinAccountsMain==='function') ? getAllJsonbinAccountsMain() : null;
+                    if (!_accts) {
+                        try { var _s=localStorage.getItem('_jsonbinAccounts'); if(_s){var _a=JSON.parse(_s); if(Array.isArray(_a)) _accts=_a.filter(function(x){return x&&x.masterKey&&x.binId;});} } catch(e){}
+                    }
+                    if (!_accts || !_accts.length) {
+                        if(!JSONBIN_BIN_ID||!JSONBIN_API_KEY){if(statusEl)statusEl.innerHTML='<span style="color:#FF6B6B;">❌ Sem credenciais</span>';log('JSONBin: sem credenciais — configure em Storage',false);return;}
+                        _accts = [{ name:'ATIVA', binId:JSONBIN_BIN_ID, masterKey:JSONBIN_API_KEY }];
+                    }
+                    var _worked=false, _exhausted=0, _details=[];
+                    for (var _i=0; _i<_accts.length; _i++) {
+                        var _ac=_accts[_i]; var _nm=_ac.name||('Conta '+(_i+1));
+                        try {
+                            const r=await fetch(`https://api.jsonbin.io/v3/b/${_ac.binId}/latest?_=${Date.now()}`,{headers:{'X-Master-Key':_ac.masterKey},signal:AbortSignal.timeout(8000)});
+                            const remaining = r.headers.get('X-Ratelimit-Remaining');
+                            if(r.ok){
+                                _worked=true;
+                                if(typeof window.switchActiveJsonbinTo==='function') window.switchActiveJsonbinTo(_ac.binId);
+                                if(statusEl)statusEl.innerHTML=`<span style="color:#51CF66;">✅ Online via ${_nm} ${remaining?`(${remaining} req)`:''}</span>`;
+                                log(`JSONBin: ✅ ${_nm} OK ${remaining?'• '+remaining+' req restantes':''} — agora é a conta ativa`,true);
+                                break;
+                            }
+                            var _eb=''; try{_eb=await r.text();}catch(e){}
+                            if (r.status===429 || (r.status===403 && /exhaust|quota|limit/i.test(_eb))) {
+                                _exhausted++; _details.push(_nm+': cota esgotada'); log(`JSONBin: ${_nm} cota esgotada (${r.status}) → tentando próxima`,false); continue;
+                            }
+                            if (r.status===403){ _details.push(_nm+': 403'); log(`JSONBin: ${_nm} 403 (allowlist?) → tentando próxima`,false); continue; }
+                            if (r.status===404){ _details.push(_nm+': bin 404'); log(`JSONBin: ${_nm} 404 — bin não existe`,false); continue; }
+                            _details.push(_nm+': HTTP '+r.status); log(`JSONBin: ${_nm} HTTP ${r.status} → tentando próxima`,false);
+                        } catch(fe){ _details.push(_nm+': rede'); log(`JSONBin: ${_nm} falha de rede → tentando próxima`,false); }
+                    }
+                    if(!_worked){
+                        if(_exhausted>=_accts.length){
+                            if(statusEl)statusEl.innerHTML=`<span style="color:#FFA500;">⚠️ Todas as contas com cota esgotada</span>`;
+                            log(`JSONBin: as ${_accts.length} contas estão com a cota mensal esgotada. O Gist assume até a cota renovar.`,false);
                         } else {
-                            if(statusEl)statusEl.innerHTML=`<span style="color:#FF6B6B;">❌ HTTP ${r.status}</span>`;
-                            log(`JSONBin: HTTP ${r.status}`,false);
+                            if(statusEl)statusEl.innerHTML=`<span style="color:#FF6B6B;">❌ Nenhuma conta respondeu</span>`;
+                            log(`JSONBin: nenhuma conta OK — ${_details.join(' | ')}`,false);
                         }
-                    } catch(fetchErr) {
-                        if(statusEl)statusEl.innerHTML=`<span style="color:#FF6B6B;">❌ Falha de rede</span>`;
-                        log(`JSONBin: ${fetchErr.message} (CORS, timeout, ou rede)`,false);
                     }
                 } else if(tipo==='firebase'){
                     if(!_firebaseUrl){if(statusEl)statusEl.innerHTML='<span style="color:#888;">⚠️ Não config</span>';log('Firebase: configure a URL em Storage',false);return;}
@@ -28374,7 +28422,7 @@ const _P1_VICTOR_BUILTIN_PRESETS = [{"id": "p1_01_cross_processing_yellow_light"
     <!-- SITE FOOTER v62 -->
     <footer class="site-footer">
         <div class="site-footer-brand">@invictorcliques</div>
-        <div class="site-footer-sub">Fotografia Esportiva Premium · Natal RN · 2026 · v190.0001</div>
+        <div class="site-footer-sub">Fotografia Esportiva Premium · Natal RN · 2026 · v194.0001</div>
         <div style="margin-top:12px;display:flex;justify-content:center;gap:16px;">
             <button onclick="openSocialLink('instagram')" style="background:none;border:none;color:#555;cursor:pointer;font-size:18px;transition:color .2s;" onmouseover="this.style.color='#E1306C'" onmouseout="this.style.color='#555'"><i class="fab fa-instagram"></i></button>
             <button onclick="openSocialLink('tiktok')" style="background:none;border:none;color:#555;cursor:pointer;font-size:18px;transition:color .2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#555'"><i class="fab fa-tiktok"></i></button>
@@ -28428,7 +28476,7 @@ const _P1_VICTOR_BUILTIN_PRESETS = [{"id": "p1_01_cross_processing_yellow_light"
             <div style="display:flex;gap:5px;margin-bottom:14px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:4px;">
                 <button onclick="presetsOnSetMode('clone')" id="presetsOnTabCloneBtn"
                     style="flex:1;padding:8px 4px;background:linear-gradient(135deg,#a78bfa,#7c3aed);color:#fff;border:none;border-radius:9px;font-size:10.5px;font-weight:800;cursor:pointer;">
-                    🔍 Clonar Estilo
+                    🔍 Estilo Parecido
                 </button>
                 <button onclick="presetsOnSetMode('studio')" id="presetsOnTabStudioBtn"
                     style="flex:1;padding:8px 4px;background:transparent;color:#555;border:none;border-radius:9px;font-size:10.5px;font-weight:800;cursor:pointer;">
@@ -28697,7 +28745,7 @@ const _P1_VICTOR_BUILTIN_PRESETS = [{"id": "p1_01_cross_processing_yellow_light"
                 <!-- CTA -->
                 <button onclick="document.getElementById('presetsOnMainContent').style.display='block';document.getElementById('presetsOnExplainTab').style.display='none';document.getElementById('presetsOnTabCloneBtn').style.background='linear-gradient(135deg,#a78bfa,#7c3aed)';document.getElementById('presetsOnTabCloneBtn').style.color='#fff';document.getElementById('presetsOnTabExplainBtn').style.background='transparent';document.getElementById('presetsOnTabExplainBtn').style.color='#555';"
                     style="width:100%;padding:13px;background:linear-gradient(135deg,#a78bfa,#7c3aed);color:#fff;border:none;border-radius:11px;font-weight:900;font-size:13px;cursor:pointer;box-shadow:0 6px 20px rgba(167,139,250,0.35);">
-                    🔍 Ir para Clonar Estilo →
+                    🔍 Ir para Estilo Parecido →
                 </button>
             </div><!-- /presetsOnExplainTab -->
 
@@ -28725,8 +28773,8 @@ const _P1_VICTOR_BUILTIN_PRESETS = [{"id": "p1_01_cross_processing_yellow_light"
     // estourava a quota gratuita do JSONBin (10k/mês) em minutos e fazia o 429
     // travar as atualizações. 18s + pausa quando a aba está oculta mantém a
     // quota saudável mesmo com várias contas. O Gist (grátis) cobre o resto.
-    var POLL_MS = 18000;
-    var BUILD = 'v190-FORCE-JSON-' + Date.now();
+    var POLL_MS = 10000;
+    var BUILD = 'v194-GISTAUTH-' + Date.now();
 
     window._invictorSync = {
         build: BUILD, log: [], lastFetch: 0, lastApplied: 0,
@@ -28801,6 +28849,18 @@ const _P1_VICTOR_BUILTIN_PRESETS = [{"id": "p1_01_cross_processing_yellow_light"
                 window.applySyncFromSharedStorage(data);
             }
         } catch(e) {}
+
+        // ⚠️ BOTÕES POR ÚLTIMO: garante que a config de botões (autoridade única)
+        // tenha SEMPRE a palavra final — nada que rodou acima (perfil, seções,
+        // socialMediaActive) consegue desfazer o estado ativo/oculto dos botões.
+        if (data.siteButtons) {
+            try {
+                var sb2 = typeof data.siteButtons === 'string' ? JSON.parse(data.siteButtons) : data.siteButtons;
+                if (Array.isArray(sb2) && typeof window.aplicarBotoesNoSite === 'function') {
+                    window.aplicarBotoesNoSite(sb2, dataTs);
+                }
+            } catch(e) {}
+        }
         // (removido: force-show de foco/banlek — ignorava o estado ATIVO/OCULTO
         //  e era uma das causas do menu piscar)
     }
@@ -28820,33 +28880,83 @@ const _P1_VICTOR_BUILTIN_PRESETS = [{"id": "p1_01_cross_processing_yellow_light"
         return null;
     }
 
-    // PRIORIDADE 1: JSONBin
-    function fetchJsonBin() {
-        var acct = getActiveJsonbinAccount();
-        if (!acct || !acct.masterKey || !acct.binId) return Promise.reject(new Error('No JSONBin configured'));
-        return fetch('https://api.jsonbin.io/v3/b/' + acct.binId + '/latest?_=' + Date.now(), {
-            method: 'GET',
-            headers: { 'X-Master-Key': acct.masterKey, 'X-Bin-Meta': 'false' }
-        }).then(function(r) {
-            if (r.status === 403) {
-                throw new Error('JSONBin 403 (configure allowlist em jsonbin.io)');
-            }
-            if (r.status === 429) {
-                if (typeof window.switchToNextJsonbinAccount === 'function') {
-                    window.switchToNextJsonbinAccount();
+    // Lê TODAS as contas JSONBin cadastradas (F1/F2/F3)
+    function getAllJsonbinAccounts() {
+        try {
+            var saved = localStorage.getItem('_jsonbinAccounts');
+            if (saved) {
+                var arr = JSON.parse(saved);
+                if (Array.isArray(arr)) {
+                    var ok = arr.filter(function(a){ return a && a.masterKey && a.binId; });
+                    if (ok.length) return ok;
                 }
-                throw new Error('JSONBin 429 (quota - trocando conta)');
             }
-            if (!r.ok) throw new Error('JSONBin HTTP ' + r.status);
-            return r.json();
-        }).then(function(d) { return d.record || d; });
+        } catch(e) {}
+        var a = getActiveJsonbinAccount();
+        return a ? [a] : [];
     }
 
-    // PRIORIDADE 2: Gist (silent fallback)
+    // Detecta erro de QUOTA do JSONBin. ⚠️ O plano free retorna 403 com
+    // "Requests exhausted" quando a cota mensal acaba (NÃO 429) — então
+    // 403-exhausted também precisa disparar o failover pra próxima conta.
+    function _isJbQuota(status, body) {
+        if (status === 429) return true;
+        if (status === 403 && body && /exhaust|quota|limit|requests?\s*exhaust/i.test(body)) return true;
+        return false;
+    }
+
+    // PRIORIDADE 1: JSONBin — cascata por TODAS as contas (F1→F2→F3).
+    // Se a conta atual esgotou a cota (403 "exhausted" ou 429), tenta a próxima.
+    // Quando uma funciona, fica memorizada e vira a conta ativa do app inteiro.
+    async function fetchJsonBin() {
+        var accts = getAllJsonbinAccounts();
+        if (!accts.length) throw new Error('No JSONBin configured');
+        // Tenta primeiro a última conta que funcionou (evita bater de novo na esgotada)
+        if (window._jbWorkingBinId) {
+            accts = accts.slice().sort(function(a, b){
+                return (b.binId === window._jbWorkingBinId ? 1 : 0) - (a.binId === window._jbWorkingBinId ? 1 : 0);
+            });
+        }
+        var lastErr = null;
+        for (var i = 0; i < accts.length; i++) {
+            var acc = accts[i];
+            try {
+                var r = await fetch('https://api.jsonbin.io/v3/b/' + acc.binId + '/latest?_=' + Date.now(), {
+                    method: 'GET',
+                    headers: { 'X-Master-Key': acc.masterKey, 'X-Bin-Meta': 'false' }
+                });
+                if (r.ok) {
+                    window._jbWorkingBinId = acc.binId;
+                    // Promove essa conta a ativa pro resto do app (admin write/read usam ela)
+                    try { if (typeof window.switchActiveJsonbinTo === 'function') window.switchActiveJsonbinTo(acc.binId); } catch(e) {}
+                    var d = await r.json();
+                    return d.record || d;
+                }
+                var body = '';
+                try { body = await r.text(); } catch(e) {}
+                if (_isJbQuota(r.status, body)) {
+                    // Cota desta conta acabou → tenta a próxima
+                    lastErr = new Error('JSONBin quota (' + r.status + ') — trocando conta');
+                    if (acc.binId === window._jbWorkingBinId) window._jbWorkingBinId = null;
+                    continue;
+                }
+                if (r.status === 403) { lastErr = new Error('JSONBin 403'); continue; }
+                lastErr = new Error('JSONBin HTTP ' + r.status);
+            } catch(e) { lastErr = e; }
+        }
+        throw lastErr || new Error('JSONBin: todas as contas falharam');
+    }
+
+    // PRIORIDADE 2: Gist (fallback). Lê com o token do admin se houver (5000 req/h);
+    // sem token, leitura pública SEM header Authorization (mandar 'token ' vazio = 401!).
     function fetchGist(gistId, fileKey, label) {
+        var tok = '';
+        try { tok = localStorage.getItem('_cfg_gistKey') || GIST_TOKEN || ''; } catch(e) {}
+        var headers = { 'Accept': 'application/vnd.github+json' };
+        if (tok) headers['Authorization'] = (/^github_pat_/.test(tok) ? 'Bearer ' : 'token ') + tok;
         return fetch('https://api.github.com/gists/' + gistId + '?_=' + Date.now(), {
             method: 'GET',
-            headers: { 'Authorization': 'token ' + GIST_TOKEN, 'Accept': 'application/vnd.github+json' }
+            headers: headers
         }).then(function(r) {
             if (!r.ok) throw new Error(label + ' HTTP ' + r.status);
             return r.json();
@@ -28892,67 +29002,71 @@ const _P1_VICTOR_BUILTIN_PRESETS = [{"id": "p1_01_cross_processing_yellow_light"
                 return Promise.resolve(); // Skip this poll
             }
         } catch(e) {}
-        // PAUSE if the tab is hidden — economiza quota do JSONBin (volta no focus)
+        // PAUSE if the tab is hidden — economiza quota (volta no focus)
         try { if (document.hidden) return Promise.resolve(); } catch(e) {}
 
         window._invictorSync.fetches++;
 
         var jbAcct = getActiveJsonbinAccount();
-        var nowTs = Date.now();
-        // 403 = cooldown temporário (3 min), NÃO bloqueio permanente — se você ajustar
-        // o allowlist no jsonbin.io ou deixar o bin público, volta sozinho sem recarregar.
-        var jbCooldown = window._jbCooldownUntil && nowTs < window._jbCooldownUntil;
-        var tryJsonBin = jbAcct && jbAcct.masterKey && jbAcct.binId && !jbCooldown;
+        var tryJsonBin = jbAcct && jbAcct.masterKey && jbAcct.binId;
 
-        // ── PEGA OS DOIS EM PARALELO: JSONBin (prioridade) + Gist (rede de segurança) ──
-        // O Gist é gratuito/ilimitado, então buscá-lo todo poll não custa quota.
-        // Depois aplicamos SEMPRE a versão MAIS NOVA (newest-wins) — assim,
-        // mesmo se a gravação em um backend falhar, o visitante vê o conteúdo mais recente.
+        // ⚠️ GitHub limita leitura de Gist NÃO autenticada a 60 req/h. Por isso NÃO
+        // buscamos o Gist todo poll. Estratégia:
+        //   1) JSON é a PRIORIDADE e tem cota (cascata F1→F2→F3) → lê todo poll.
+        //   2) Gist só entra como FALLBACK (quando o JSON falha em todas as contas).
+        //   3) Uma vez a cada ~60s, faz um cruzamento newest-wins com o Gist pra
+        //      corrigir divergência, sem estourar o limite do GitHub.
         var pJB = tryJsonBin
             ? fetchJsonBin().then(function(d){ window._invictorSync.jsonbinOK++; return d; })
-                .catch(function(err){
-                    window._invictorSync.jsonbinFailures++;
-                    if (err && err.message && err.message.indexOf('403') !== -1) {
-                        // Sem allowlist nas contas, 403 só pode ser blip — espera curto (45s) e volta.
-                        window._jbCooldownUntil = Date.now() + 45000;
-                    }
-                    return null;
-                })
+                .catch(function(err){ window._invictorSync.jsonbinFailures++; return null; })
             : Promise.resolve(null);
 
-        var pGist = fetchGist(GIST_PRIMARY, 'gistfile1.txt', 'GIST_P')
-            .then(function(d){ window._invictorSync.gistOK++; return d; })
-            .catch(function(){
-                return fetchGist(GIST_BACKUP, 'backup.txt', 'GIST_B')
-                    .then(function(d){ window._invictorSync.gistOK++; return d; })
-                    .catch(function(){ return null; });
-            });
+        return pJB.then(function(jb){
+            var nowMs = Date.now();
+            var doGistReconcile = !window.__lastGistReconcile || (nowMs - window.__lastGistReconcile) > 60000;
 
-        return Promise.all([pJB, pGist]).then(function(res){
-            var jb = res[0], gist = res[1];
-            if (jb === null && gist === null) {
-                window._invictorSync.errors++;
-                if (window._invictorSync.errors % 30 === 1) log('Sync temporariamente indisponivel');
+            if (jb !== null) {
+                // JSON funcionou. Aplica já (prioridade).
+                window._invictorSync.lastFetch = nowMs;
+                window.__syncFailStreak = 0;
+                // Reconciliação periódica leve com o Gist (no máx 1x/min → ~60 req/h)
+                if (doGistReconcile) {
+                    window.__lastGistReconcile = nowMs;
+                    return fetchGist(GIST_PRIMARY, 'gistfile1.txt', 'GIST_P').then(function(gist){
+                        var jbTs = parseInt(jb._lastUpdate, 10) || 0;
+                        var gTs  = gist ? (parseInt(gist._lastUpdate, 10) || 0) : -1;
+                        if (gTs > jbTs) {
+                            // Gist mais novo → a escrita no JSON tinha falhado: usa Gist e re-semeia o JSON
+                            applyData(gist, 'GIST_RECONCILE');
+                            if (jbAcct) _seedJsonbin(jbAcct, gist);
+                        } else {
+                            applyData(jb, 'JSONBIN');
+                        }
+                    }).catch(function(){ applyData(jb, 'JSONBIN'); });
+                }
+                applyData(jb, 'JSONBIN');
                 return;
             }
-            window._invictorSync.lastFetch = Date.now();
 
-            var jbTs = (jb && jb._lastUpdate) ? (parseInt(jb._lastUpdate, 10) || 0) : -1;
-            var gTs  = (gist && gist._lastUpdate) ? (parseInt(gist._lastUpdate, 10) || 0) : -1;
-
-            // NEWEST-WINS — JSON é prioridade no empate (>=)
-            var chosen, src;
-            if (jb !== null && jbTs >= gTs) { chosen = jb; src = 'JSONBIN'; }
-            else if (gist !== null)        { chosen = gist; src = 'GIST'; }
-            else                           { chosen = jb; src = 'JSONBIN'; }
-
-            applyData(chosen, src);
-
-            // SELF-HEAL: Gist está mais novo que o JSON → a escrita no JSON tinha falhado.
-            // Reescreve o JSON com a versão nova pra ele voltar a ser a fonte ativa.
-            if (src === 'GIST' && jb !== null && gTs > jbTs && jbAcct && !jbCooldown) {
-                _seedJsonbin(jbAcct, chosen);
-            }
+            // JSON falhou em TODAS as contas → Gist como rede de segurança
+            return fetchGist(GIST_PRIMARY, 'gistfile1.txt', 'GIST_P').then(function(gist){
+                window._invictorSync.gistOK++;
+                window._invictorSync.lastFetch = Date.now();
+                window.__syncFailStreak = 0;
+                applyData(gist, 'GIST_PRIMARY');
+                if (jbAcct) _seedJsonbin(jbAcct, gist);
+            }).catch(function(){
+                return fetchGist(GIST_BACKUP, 'backup.txt', 'GIST_B').then(function(gist){
+                    window._invictorSync.gistOK++;
+                    window._invictorSync.lastFetch = Date.now();
+                    window.__syncFailStreak = 0;
+                    applyData(gist, 'GIST_BACKUP');
+                }).catch(function(){
+                    window._invictorSync.errors++;
+                    window.__syncFailStreak = (window.__syncFailStreak || 0) + 1;
+                    if (window._invictorSync.errors % 20 === 1) log('Sync temporariamente indisponivel (JSON e Gist falharam)');
+                });
+            });
         });
     }
 
@@ -29008,12 +29122,15 @@ const _P1_VICTOR_BUILTIN_PRESETS = [{"id": "p1_01_cross_processing_yellow_light"
             syncOnce().then(function() {
                 if (window._invictorSync.errors > errBefore) failStreak++;
                 else failStreak = 0;
+                // BACKOFF: em falhas repetidas, ESPAÇA os polls (não martela as APIs,
+                // evitando rate-limit do GitHub e desperdício de cota do JSONBin).
                 var delay = POLL_MS;
-                if (failStreak >= 5) delay = 3000;  // Max 3s even on repeated failures
+                if (failStreak >= 3)  delay = 30000;  // 30s
+                if (failStreak >= 8)  delay = 60000;  // 1min
                 setTimeout(poll, delay);
             }).catch(function() {
                 failStreak++;
-                setTimeout(poll, failStreak >= 5 ? 3000 : POLL_MS);
+                setTimeout(poll, failStreak >= 3 ? 30000 : POLL_MS);
             });
         }
         setTimeout(poll, POLL_MS);
