@@ -1430,9 +1430,9 @@
 
         /* Discount badge no banner promo */
         .sneaker-promo-discount {
-            background: linear-gradient(135deg, #FF6A00, #FF8C00) !important;
-            color: #000 !important;
-            box-shadow: 0 8px 25px rgba(255,140,0,0.5) !important;
+            background: linear-gradient(135deg, #FFD700, #FFC107) !important;
+            color: #1a0d00 !important;
+            box-shadow: 0 8px 25px rgba(255,200,0,0.55) !important;
             animation: discountBounce 1.5s ease-in-out infinite;
         }
 
@@ -3002,9 +3002,10 @@
         }
         .menu-icon {
             display: block;
-            font-size: 1.45em;
-            margin-bottom: 3px;
+            font-size: 1.7em;
+            margin-bottom: 4px;
             line-height: 1;
+            filter: drop-shadow(0 2px 6px rgba(0,0,0,0.45));
         }
         .btn-sub {
             font-size: 0.8em;
@@ -3208,6 +3209,37 @@
         .sneaker-promo-icon {
             font-size: 1.8em;
             flex-shrink: 0;
+        }
+        #sneakerPromoImg {
+            width: 80px; height: 80px; object-fit: contain; display: block;
+            filter: drop-shadow(0 8px 16px rgba(255,90,0,0.6));
+        }
+        .sneaker-promo-icon { position: relative; }
+        .sneaker-promo-icon.spin::before {
+            content:''; position:absolute; inset:-10px; border-radius:50%; z-index:-1;
+            background: radial-gradient(circle, rgba(255,190,70,0.40), rgba(255,110,0,0.14) 55%, transparent 72%);
+            filter: blur(5px);
+            animation: promoGlow 3s ease-in-out infinite;
+        }
+        @keyframes promoShowcase {
+            0%   { transform: translateY(0)     rotateY(-16deg) rotateZ(-2deg); }
+            50%  { transform: translateY(-7px)  rotateY(16deg)  rotateZ(2deg); }
+            100% { transform: translateY(0)     rotateY(-16deg) rotateZ(-2deg); }
+        }
+        @keyframes promoGlow {
+            0%,100% { opacity:.55; transform:scale(.92); }
+            50%     { opacity:1;   transform:scale(1.1); }
+        }
+        .sneaker-promo-icon.spin #sneakerPromoImg,
+        .sneaker-promo-icon.spin #sneakerPromoEmoji {
+            display: inline-block;
+            animation: promoShowcase 3s ease-in-out infinite;
+            transform-style: preserve-3d;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .sneaker-promo-icon.spin #sneakerPromoImg,
+            .sneaker-promo-icon.spin #sneakerPromoEmoji,
+            .sneaker-promo-icon.spin::before { animation: none; }
         }
         .sneaker-promo-text { flex: 1; min-width: 180px; }
         .sneaker-promo-tag {
@@ -4393,25 +4425,28 @@
         .edicao-mode-btn {
             transition: all .18s ease;
         }
-        /* Inactive: hide icon when a mode is selected (list collapsed to chips) */
+        /* Inactive: hide other presets completely when one is chosen (só mostra o escolhido) */
         #edicaoModosList.has-selection .edicao-mode-btn:not(.mode-active) {
-            padding: 5px 10px !important;
+            display: none !important;
         }
-        #edicaoModosList.has-selection .edicao-mode-btn:not(.mode-active) > div:first-child {
-            display: none; /* hide icon box when collapsed */
-        }
-        /* "Change mode" hint shown when a mode is active */
+        #edicaoModosList.has-selection #edicaoXmpHeaderRow,
+        #edicaoModosList.has-selection #edicaoXmpListWrap { display: none !important; }
+        /* "Mudar preset escolhido" — botão claro quando há preset ativo */
         .edicao-change-hint {
             display: none;
-            font-size: 10px;
+            font-size: 12px;
             color: #5B8DEF;
             text-align: center;
-            padding: 6px;
+            padding: 11px;
             cursor: pointer;
-            font-weight: 700;
-            border-top: 1px solid rgba(255,255,255,0.05);
-            margin-top: 4px;
+            font-weight: 800;
+            background: rgba(91,141,239,0.1);
+            border: 1px solid rgba(91,141,239,0.3);
+            border-radius: 10px;
+            margin-top: 8px;
+            transition: background .2s, transform .15s;
         }
+        .edicao-change-hint:hover { background: rgba(91,141,239,0.18); transform: translateY(-1px); }
         #edicaoModosList.has-selection .edicao-change-hint {
             display: block;
         }
@@ -4439,7 +4474,7 @@
                 border-radius: 9px !important;
                 font-size: 0.68em !important;
             }
-            .menu-icon { font-size: 1.2em !important; margin-bottom: 2px !important; }
+            .menu-icon { font-size: 1.45em !important; margin-bottom: 3px !important; }
 
             /* ── Edição IA: mode buttons compact ─────────────────── */
             #edicaoModosList { gap: 4px !important; }
@@ -5487,7 +5522,7 @@ select option{background:#17131f;color:#fff;}
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v194.0001</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v211.0001</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -5497,7 +5532,7 @@ select option{background:#17131f;color:#fff;}
                 <!-- Ações do header -->
                 <div class="ap-header-actions">
                     <button onclick="toggleAdminIA()" id="adminIaBtn" class="ap-btn-ia">🤖 IA</button>
-                    <button onclick="presetsOnOpen()" class="ap-btn-presets" title="PRESETS ON">🔍 ON</button>
+                    <button onclick="presetsOnOpen()" class="ap-btn-presets" title="Seu Preset">✨ ON</button>
                     <button onclick="exportData()" class="ap-btn-icon" title="Exportar">📤</button>
                     <button onclick="document.getElementById('importInput').click()" class="ap-btn-icon" title="Importar">📥</button>
                     <input type="file" id="importInput" accept=".json" style="display:none" onchange="importData(this)">
@@ -5530,6 +5565,9 @@ select option{background:#17131f;color:#fff;}
                             <div class="ap-kpi-label">Cupons</div>
                         </div>
                     </div>
+
+                    <!-- LIMITADOR JSON — aparece sozinho quando alguma conta está acabando -->
+                    <div id="jbLimiterBanner" style="display:none;background:linear-gradient(90deg,rgba(255,165,0,0.16),rgba(255,90,0,0.1));border:1px solid rgba(255,165,0,0.4);border-radius:10px;padding:9px 13px;font-size:11.5px;color:#ffcf8a;margin-bottom:8px;"></div>
 
                     <!-- Alerta PIX -->
                     <div id="adminPixAlert" class="ap-pix-alert" style="display:none;" onclick="switchAdminTab(20)">
@@ -5636,6 +5674,14 @@ select option{background:#17131f;color:#fff;}
 
                 <!-- TAB 0: OFERTAS -->
                 <div class="admin-section active" id="adminTab0">
+                    <!-- ════ RESUMO DO SITE (visão geral ao vivo) ════ -->
+                    <div id="siteOverviewCard" style="background:linear-gradient(160deg,rgba(91,141,239,0.08),rgba(124,58,237,0.05));border:1px solid rgba(91,141,239,0.25);border-radius:14px;padding:14px 16px;margin-bottom:18px;">
+                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:11px;">
+                            <div style="font-size:12px;font-weight:900;color:#9db8ff;">📊 Resumo do site</div>
+                            <button onclick="renderSiteOverview()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#aaa;border-radius:7px;padding:4px 9px;font-size:10px;font-weight:700;cursor:pointer;">🔄 Atualizar</button>
+                        </div>
+                        <div id="siteOverviewGrid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:9px;"></div>
+                    </div>
                     <div style="display:grid;grid-template-columns:1fr 1fr;gap:30px;">
                         <div>
                             <h3 style="color:var(--primary);margin-bottom:20px;font-size:1.1em;">➕ Nova Oferta</h3>
@@ -5662,6 +5708,32 @@ select option{background:#17131f;color:#fff;}
                             <h3 style="color:var(--primary);margin-bottom:20px;font-size:1.1em;">📊 Ofertas (<span id="ofertasCount">0</span>)</h3>
                             <div class="ofertas-list" id="ofertasList" style="max-height:500px;"></div>
                         </div>
+                    </div>
+
+                    <!-- ════ BANNER PROMOÇÃO RELÂMPAGO (tênis girando) ════ -->
+                    <div class="admin-section-label">⚡ Banner Promoção Relâmpago</div>
+                    <div style="background:linear-gradient(160deg,rgba(255,69,0,0.07),rgba(255,140,0,0.04));border:1.5px solid rgba(255,90,0,0.3);border-radius:13px;padding:16px;margin-bottom:14px;">
+                        <div style="font-size:11px;color:#aaa;line-height:1.6;margin-bottom:12px;">Coloque um tênis pra ficar <strong>girando</strong> no banner e edite os textos. Aparece nas páginas de Início, Ofertas e Procure.</div>
+                        <div style="display:grid;grid-template-columns:80px 1fr;gap:12px;align-items:center;margin-bottom:12px;">
+                            <div id="promoCfgThumb" style="width:80px;height:80px;border-radius:12px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;font-size:30px;overflow:hidden;">👟</div>
+                            <div>
+                                <div class="form-group" style="margin-bottom:8px;"><label>🖼️ URL da imagem do tênis</label><input type="text" id="promoCfgImg" placeholder="https://.../tenis.png" oninput="promoCfgPreview()"></div>
+                                <label style="display:inline-flex;align-items:center;gap:8px;font-size:12px;color:#ccc;cursor:pointer;"><input type="file" id="promoCfgUpload" accept="image/*" style="display:none;" onchange="promoCfgUploadFile(this)"><span onclick="document.getElementById('promoCfgUpload').click()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);padding:7px 11px;border-radius:8px;font-weight:700;">📤 Upload do tênis</span></label>
+                                <button onclick="promoCfgRemoveBg()" style="margin-left:6px;background:rgba(167,139,250,0.12);border:1px solid rgba(167,139,250,0.35);color:#a78bfa;padding:7px 11px;border-radius:8px;font-weight:700;font-size:12px;cursor:pointer;">🪄 Remover fundo</button>
+                                <button onclick="promoCfgUndoBg()" style="margin-left:6px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.14);color:#bbb;padding:7px 11px;border-radius:8px;font-weight:700;font-size:12px;cursor:pointer;">↩️ Desfazer</button>
+                                <div style="font-size:9px;color:#777;margin-top:5px;">Ao subir, o fundo é removido sozinho. Se cortar demais, toque em Desfazer. Funciona melhor com foto de fundo liso/branco.</div>
+                            </div>
+                        </div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+                            <label style="display:flex;align-items:center;gap:8px;font-size:12px;color:#ccc;cursor:pointer;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:9px;padding:9px 11px;"><input type="checkbox" id="promoCfgSpin" checked style="width:17px;height:17px;accent-color:#FF6A00;"> 🔄 Tênis girando</label>
+                            <label style="display:flex;align-items:center;gap:8px;font-size:12px;color:#ccc;cursor:pointer;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:9px;padding:9px 11px;"><input type="checkbox" id="promoCfgVisible" checked style="width:17px;height:17px;accent-color:#FF6A00;"> 👁️ Mostrar banner</label>
+                        </div>
+                        <div class="form-group" style="margin-bottom:8px;"><label>🏷️ Título</label><input type="text" id="promoCfgTitle" placeholder="Tênis com até 60% OFF — só hoje!"></div>
+                        <div style="display:grid;grid-template-columns:1fr 90px;gap:10px;margin-bottom:8px;">
+                            <div class="form-group" style="margin:0;"><label>Subtítulo</label><input type="text" id="promoCfgSubtitle" placeholder="Nike, Adidas, Puma..."></div>
+                            <div class="form-group" style="margin:0;"><label>Desconto</label><input type="text" id="promoCfgDiscount" placeholder="60% OFF"></div>
+                        </div>
+                        <button class="btn-admin" onclick="promoCfgSave()" style="margin-top:6px;">💾 Salvar banner</button>
                     </div>
                 </div>
 
@@ -6318,8 +6390,67 @@ select option{background:#17131f;color:#fff;}
 
                 <!-- TAB 12: APIs & IAs -->
                 <div class="admin-section" id="adminTab12" style="display:none;">
-                    <h3 style="color:#00c896;margin-bottom:6px;font-size:1.1em;">🤖 APIs & IAs do Site</h3>
-                    <p style="color:#555;font-size:12px;margin-bottom:18px;">Status em tempo real de todas as integrações. Clique "Testar" para verificar cada serviço.</p>
+                    <h3 style="color:#00c896;margin-bottom:6px;font-size:1.1em;">🔌 APIs & Integrações</h3>
+                    <p style="color:#555;font-size:12px;margin-bottom:14px;">Conecte lojas e serviços. Embaixo, o status das IAs e integrações já ativas.</p>
+
+                    <!-- ════ NOVO: GUIA DE CONEXÃO DE LOJAS / MARKETPLACES ════ -->
+                    <div style="background:linear-gradient(160deg,rgba(255,106,0,0.06),rgba(124,58,237,0.04));border:1px solid rgba(255,170,40,0.2);border-radius:14px;padding:16px;margin-bottom:18px;">
+                        <div style="font-size:13px;font-weight:900;color:#ffb04d;margin-bottom:4px;">🛒 Conectar Lojas (Marketplaces)</div>
+                        <div style="font-size:11px;color:#888;line-height:1.6;margin-bottom:12px;">Passo a passo pra pegar as credenciais de cada plataforma. Toque pra abrir.</div>
+
+                        <!-- MERCADO LIVRE -->
+                        <details style="background:rgba(255,230,0,0.05);border:1px solid rgba(255,230,0,0.18);border-radius:11px;padding:0;margin-bottom:10px;overflow:hidden;">
+                            <summary style="cursor:pointer;padding:13px 14px;font-weight:800;font-size:13px;color:#ffe14d;list-style:none;display:flex;align-items:center;gap:8px;">🟡 Mercado Livre <span style="font-size:10px;color:#888;font-weight:600;margin-left:auto;">toque para abrir ▾</span></summary>
+                            <div style="padding:4px 16px 16px;font-size:12px;color:#ccc;line-height:1.7;">
+                                <ol style="margin:0;padding-left:18px;">
+                                    <li>Acesse o <strong>DevCenter</strong>: <a href="https://developers.mercadolivre.com.br/devcenter" target="_blank" style="color:#ffe14d;">developers.mercadolivre.com.br/devcenter</a> e entre com sua conta de <strong>vendedor</strong>.</li>
+                                    <li>Pode ser pedido o <strong>upload do documento</strong> do responsável (validação da conta). No Brasil, é permitida <strong>1 aplicação por conta</strong> após a validação.</li>
+                                    <li>Clique em <strong>"Criar nova aplicação"</strong> e preencha: Nome (único), Nome curto, Descrição (até 150 caracteres) e Logo.</li>
+                                    <li>Em <strong>"URIs de redirect"</strong> coloque uma URL <strong>https</strong> — pode ser <code style="color:#ffb04d;">https://invictorcliques.com.br</code>. Em escopos, pra só mostrar ofertas basta <strong>leitura (read)</strong>.</li>
+                                    <li>Salve. Você receberá o <strong>Client ID (App ID)</strong> e o <strong>Client Secret (Secret Key)</strong>. ⚠️ O Secret é uma senha — não compartilhe nem coloque no site público.</li>
+                                    <li>Dados <strong>públicos</strong> (itens, preços) podem ser lidos <strong>sem token</strong>. Dados privados pedem Access Token via OAuth. Teste: <code style="color:#ffb04d;font-size:11px;">curl -H 'Authorization: Bearer SEU_TOKEN' https://api.mercadolibre.com/users/me</code> → <strong>200 OK</strong>.</li>
+                                </ol>
+                                <div style="font-size:10.5px;color:#888;margin-top:8px;">ℹ️ O ML não tem sandbox — tudo roda em produção (dá pra criar um "usuário de teste" se quiser).</div>
+                            </div>
+                        </details>
+
+                        <!-- SHOPEE -->
+                        <details style="background:rgba(255,90,0,0.05);border:1px solid rgba(255,90,0,0.18);border-radius:11px;padding:0;margin-bottom:10px;overflow:hidden;">
+                            <summary style="cursor:pointer;padding:13px 14px;font-weight:800;font-size:13px;color:#ff7a3d;list-style:none;display:flex;align-items:center;gap:8px;">🟠 Shopee <span style="font-size:10px;color:#888;font-weight:600;margin-left:auto;">toque para abrir ▾</span></summary>
+                            <div style="padding:4px 16px 16px;font-size:12px;color:#ccc;line-height:1.7;">
+                                <ol style="margin:0;padding-left:18px;">
+                                    <li>Acesse a <strong>Shopee Open Platform</strong>: <a href="https://open.shopee.com" target="_blank" style="color:#ff7a3d;">open.shopee.com</a> e clique em <strong>"Get Access / Get Started"</strong>. É preciso ter conta de <strong>vendedor Shopee ativa</strong> (os requisitos variam por país — confira os do Brasil).</li>
+                                    <li>Registre a <strong>conta de desenvolvedor</strong> e aguarde a aprovação.</li>
+                                    <li>Vá em <strong>App Management → App List → criar App</strong> (tipo <em>ERP System / In-House</em>).</li>
+                                    <li>Defina o <strong>Redirect URL</strong> do app (ex.: <code style="color:#ffb04d;">https://invictorcliques.com.br</code>).</li>
+                                    <li>Você receberá o <strong>Partner ID</strong> e o <strong>Partner Key</strong> (chave secreta — trate como senha). Endpoint de produção do Brasil é separado do de teste.</li>
+                                    <li>Autorização: a Shopee exige <strong>assinatura HMAC-SHA256</strong> (com a Partner Key) em cada chamada. O lojista autoriza via link assinado → recebe um <em>code</em> → troca por <strong>access_token + refresh_token</strong>.</li>
+                                </ol>
+                                <div style="font-size:10.5px;color:#ff9b6b;margin-top:8px;">⚠️ A Shopee assina cada chamada com a chave secreta — isso <strong>precisa de um servidor</strong> (não dá pra fazer com segurança só no site). Veja o aviso embaixo.</div>
+                            </div>
+                        </details>
+
+                        <!-- OUTRAS / GENÉRICO -->
+                        <details style="background:rgba(124,58,237,0.05);border:1px solid rgba(124,58,237,0.18);border-radius:11px;padding:0;margin-bottom:4px;overflow:hidden;">
+                            <summary style="cursor:pointer;padding:13px 14px;font-weight:800;font-size:13px;color:#a78bfa;list-style:none;display:flex;align-items:center;gap:8px;">🟣 Como funciona qualquer API (entenda) <span style="font-size:10px;color:#888;font-weight:600;margin-left:auto;">toque para abrir ▾</span></summary>
+                            <div style="padding:4px 16px 16px;font-size:12px;color:#ccc;line-height:1.7;">
+                                <p style="margin:6px 0;"><strong>Client ID</strong> = identidade do seu app (pode aparecer). <strong>Client Secret / Partner Key</strong> = a senha do app (NUNCA exponha). <strong>Access Token</strong> = a chave temporária que autoriza as chamadas, gerada via <strong>OAuth</strong>.</p>
+                                <p style="margin:6px 0;color:#ff9b6b;"><strong>Importante pro seu caso:</strong> seu site é estático (sem servidor). APIs que exigem assinar com o segredo (Shopee, ML privado) precisam de um <strong>proxy/serverless</strong> (ex.: Cloudflare Workers). Pra só <strong>mostrar produtos/ofertas</strong>, o caminho mais simples e seguro é colar os <strong>links de afiliado/produto</strong> manualmente na aba <em>Ofertas</em>, ou usar a leitura pública do Mercado Livre.</p>
+                            </div>
+                        </details>
+
+                        <!-- Anotar IDs (referência, fica só no seu aparelho) -->
+                        <div style="margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.08);">
+                            <div style="font-size:11px;color:#888;margin-bottom:8px;">📝 Anote seus IDs (fica salvo só neste aparelho, pra referência):</div>
+                            <div style="display:grid;gap:7px;">
+                                <input id="apiNoteML" placeholder="Mercado Livre — App ID" style="padding:8px 10px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:#ddd;font-size:12px;" oninput="localStorage.setItem('_apiNoteML',this.value)">
+                                <input id="apiNoteShopee" placeholder="Shopee — Partner ID" style="padding:8px 10px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:#ddd;font-size:12px;" oninput="localStorage.setItem('_apiNoteShopee',this.value)">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="admin-section-label">🤖 IAs & Serviços ativos</div>
+                    <p style="color:#555;font-size:11px;margin:4px 0 12px;">Status em tempo real. Clique "Testar" para verificar cada serviço.</p>
                     <div style="display:grid;gap:10px;">
                         <div style="background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:14px;display:flex;align-items:center;gap:12px;">
                             <div style="width:36px;height:36px;border-radius:8px;background:rgba(66,165,245,0.15);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🗄️</div>
@@ -6378,8 +6509,12 @@ select option{background:#17131f;color:#fff;}
                                 <div style="font-size:13px;color:#5B8DEF;font-weight:900;margin-bottom:3px;">🔄 Contas JSONBin (auto-failover)</div>
                                 <div style="font-size:10px;color:#666;line-height:1.5;">Quando uma conta esgotar (10k req/mês), o sistema troca automaticamente para a próxima.</div>
                             </div>
-                            <button onclick="renderJsonbinAccounts()" style="background:rgba(91,141,239,0.15);border:1px solid rgba(91,141,239,0.35);color:#5B8DEF;padding:6px 10px;border-radius:7px;cursor:pointer;font-size:10px;font-weight:700;">🔄 Atualizar</button>
+                            <div style="display:flex;gap:6px;">
+                                <button onclick="checkAllJsonbinQuota()" style="background:rgba(255,165,0,0.15);border:1px solid rgba(255,165,0,0.4);color:#FFA500;padding:6px 10px;border-radius:7px;cursor:pointer;font-size:10px;font-weight:800;">📊 Verificar cota / prazo</button>
+                                <button onclick="renderJsonbinAccounts()" style="background:rgba(91,141,239,0.15);border:1px solid rgba(91,141,239,0.35);color:#5B8DEF;padding:6px 10px;border-radius:7px;cursor:pointer;font-size:10px;font-weight:700;">🔄 Atualizar</button>
+                            </div>
                         </div>
+                        <div id="jsonbinQuotaSummary" style="display:none;margin-bottom:10px;padding:10px 12px;background:rgba(255,165,0,0.06);border:1px solid rgba(255,165,0,0.2);border-radius:9px;font-size:11px;color:#cdd6e4;"></div>
                         <div id="jsonbinAccountsList" style="display:flex;flex-direction:column;gap:8px;"></div>
                         <button onclick="addJsonbinAccount()" style="margin-top:10px;width:100%;padding:9px;background:rgba(34,197,94,0.12);border:1.5px dashed rgba(34,197,94,0.35);color:#22c55e;border-radius:9px;cursor:pointer;font-size:11px;font-weight:800;">➕ Adicionar Conta JSONBin</button>
                     </div>
@@ -7310,6 +7445,17 @@ Poderia me ajudar? 🙏"
                             <button onclick="edicaoAdminResetTrial()" style="padding:9px 13px;background:rgba(255,193,7,0.2);border:1.5px solid rgba(255,193,7,0.4);color:#FFC107;border-radius:8px;font-weight:800;font-size:11px;cursor:pointer;white-space:nowrap;">🔄 Resetar Trial</button>
                         </div>
 
+                        <!-- ════ CÓDIGOS DE ATIVAÇÃO (gerar quando a pessoa pagar) ════ -->
+                        <div style="background:linear-gradient(160deg,rgba(0,229,176,0.07),rgba(91,141,239,0.05));border:1.5px solid rgba(0,229,176,0.3);border-radius:12px;padding:14px;margin-bottom:14px;">
+                            <div style="font-size:12px;color:#00E5B0;font-weight:900;margin-bottom:3px;">🔑 Códigos de Ativação</div>
+                            <div style="font-size:10px;color:#999;line-height:1.5;margin-bottom:11px;">Quando alguém pagar, gere um código pro email dela. A pessoa usa o código na página pra ativar o acesso.</div>
+                            <div style="display:grid;grid-template-columns:1fr auto;gap:7px;margin-bottom:10px;">
+                                <input id="codeGenEmail" type="email" placeholder="email da pessoa que pagou" style="padding:9px 11px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:#fff;font-size:12px;outline:none;">
+                                <button onclick="edicaoGerarCodigo()" style="padding:9px 14px;background:linear-gradient(135deg,#00E5B0,#00a070);color:#000;border:none;border-radius:8px;font-weight:900;font-size:12px;cursor:pointer;white-space:nowrap;">+ Gerar código</button>
+                            </div>
+                            <div id="edicaoCodigosList" style="display:flex;flex-direction:column;gap:7px;"></div>
+                        </div>
+
                         <!-- Preço + plano -->
                         <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:11px;padding:14px;margin-bottom:14px;">
                             <div style="font-size:11px;color:#5B8DEF;font-weight:800;text-transform:uppercase;letter-spacing:1px;margin-bottom:11px;">💰 Plano & Preço</div>
@@ -7502,7 +7648,7 @@ Poderia me ajudar? 🙏"
                             <!-- Toggle: Roubar Preset IA -->
                             <div style="display:flex;align-items:center;justify-content:space-between;padding:11px 14px;background:rgba(167,139,250,0.07);border:1px solid rgba(167,139,250,0.18);border-radius:10px;" class="ft-row">
                                 <div class="ft-info">
-                                    <div style="font-size:12px;color:#fff;font-weight:800;">🔍 Foto Parecida</div>
+                                    <div style="font-size:12px;color:#fff;font-weight:800;">🎨 Copiar Estilo</div>
                                     <div style="font-size:9px;color:#555;margin-top:1px;">Clone de estilo por visão computacional</div>
                                 </div>
                                 <label style="position:relative;display:inline-block;width:44px;height:24px;cursor:pointer;">
@@ -7791,11 +7937,11 @@ Poderia me ajudar? 🙏"
             <span class="btn-label">Suas Fotos</span><br><span class="btn-sub">Foco Radical</span>
         </button>
         <button class="menu-btn" id="menuBtn_banlek" style="" onclick="switchTab('banlek')">
-            <span class="menu-icon">🖼️</span>
+            <span class="menu-icon">🏞️</span>
             <span class="btn-label">Suas Fotos</span><br><span class="btn-sub">Banlek</span>
         </button>
         <button class="menu-btn" id="menuBtn_ofertas" style="" onclick="switchTab('ofertas')">
-            <span class="menu-icon">🏷️</span>
+            <span class="menu-icon">🔥</span>
             <span class="btn-label">Ofertas</span><br><span class="btn-sub">de Tênis</span>
         </button>
         <button class="menu-btn" id="menuBtn_procure" style="" onclick="switchTab('procure')">
@@ -7803,27 +7949,27 @@ Poderia me ajudar? 🙏"
             <span class="btn-label">Procure</span><br><span class="btn-sub">seus Tênis</span>
         </button>
         <button class="menu-btn" id="menuBtn_strava" style="" onclick="switchTab('strava')">
-            <span class="menu-icon" style="color:#FC4C02;">🏃</span>
+            <span class="menu-icon" style="color:#FC4C02;">🏃‍♂️</span>
             <span class="btn-label">Minhas Corridas</span>
         </button>
         <button class="menu-btn" id="menuBtn_edicao" style="" onclick="switchTab('edicao')">
-            <span class="menu-icon" style="color:#5B8DEF;">✨</span>
+            <span class="menu-icon" style="color:#5B8DEF;">🪄</span>
             <span class="btn-label">Edição IA</span><br><span class="btn-sub">P1 Victor</span>
         </button>
         <button class="menu-btn" id="menuBtn_roubarIA" onclick="roubarIAOpenStandalone()" style="border-color:rgba(96,165,250,0.4);background:linear-gradient(160deg,#0e1828,#08111d);">
-            <span class="menu-icon" style="color:#60a5fa;">🔍</span>
-            <span class="btn-label" style="color:#60a5fa;">Foto Parecida</span><br><span class="btn-sub" style="color:#5b8dc7;">Estilo parecido</span>
+            <span class="menu-icon" style="color:#60a5fa;">🎨</span>
+            <span class="btn-label" style="color:#60a5fa;">Copiar Estilo</span><br><span class="btn-sub" style="color:#5b8dc7;">Copie o estilo</span>
         </button>
         <button class="menu-btn" id="menuBtn_presetsOn" onclick="presetsOnOpen()" style="border-color:rgba(167,139,250,0.5);background:linear-gradient(160deg,#120e24,#0d0a1c);">
-            <span class="menu-icon" style="color:#a78bfa;">🎨</span>
-            <span class="btn-label" style="color:#a78bfa;">Seus Presets</span><br><span class="btn-sub" style="color:#8770c4;">Parecido</span>
+            <span class="menu-icon" style="color:#a78bfa;">✨</span>
+            <span class="btn-label" style="color:#a78bfa;">Seu Preset</span><br><span class="btn-sub" style="color:#8770c4;">Seu estilo</span>
         </button>
         <button class="menu-btn" id="menuBtn_preview" onclick="switchTab('preview')" style="border-color:rgba(225,48,108,0.45);background:linear-gradient(160deg,#1a0e18,#0d0a14);">
-            <span class="menu-icon" style="color:#E1306C;">📱</span>
+            <span class="menu-icon" style="color:#E1306C;">🤳</span>
             <span class="btn-label" style="color:#E1306C;">Preview Insta</span><br><span class="btn-sub" style="color:#b06a8e;">Veja sua foto no feed</span>
         </button>
         <button class="menu-btn" id="menuBtn_verificar" onclick="switchTab('verificar')" style="border-color:rgba(255,106,0,0.5);background:linear-gradient(160deg,#1a1006,#0d0a07);">
-            <span class="menu-icon" style="color:#FF6A00;">🔍</span>
+            <span class="menu-icon" style="color:#FF6A00;">✅</span>
             <span class="btn-label" style="color:#FF6A00;">Verificar minhas fotos</span><br><span class="btn-sub" style="color:#c98a4e;">Confira e gerencie suas fotos</span>
         </button>
     </div>
@@ -7843,7 +7989,7 @@ Poderia me ajudar? 🙏"
     <!-- BANNER DE PROMOÇÃO DE TÊNIS -->
     <div class="sneaker-promo-banner" onclick="openPromoContactDirect()" title="Ver oferta — clique para falar conosco">
         <div class="sneaker-promo-inner">
-            <div class="sneaker-promo-icon">👟</div>
+            <div class="sneaker-promo-icon" id="sneakerPromoIcon"><img id="sneakerPromoImg" src="" alt="" style="display:none;"><span id="sneakerPromoEmoji">👟</span></div>
             <div class="sneaker-promo-text">
                 <div class="sneaker-promo-tag">⚡ PROMOÇÃO RELÂMPAGO — EXPIRA EM <span id="sneakerPromoCountdown" style="font-variant-numeric:tabular-nums;">--:--:--</span></div>
                 <div class="sneaker-promo-title">Tênis com até 60% OFF — só hoje!</div>
@@ -8184,7 +8330,7 @@ Poderia me ajudar? 🙏"
                     <li><strong>Olhe pra frente e sorria</strong> ao ver o fotógrafo — postura ereta passa força.</li>
                     <li>Braços soltos e passada aberta no momento da foto: o "voo" (pés no ar) fica incrível.</li>
                     <li>Roupa de cor viva destaca você do fundo — e rende um visual melhor na edição.</li>
-                    <li>Achou sua foto? Use o <strong>Estilo Parecido</strong> pra deixá-la com o tom das fotos profissionais do Victor.</li>
+                    <li>Achou sua foto? Use o <strong>Copiar Estilo</strong> pra deixá-la com o tom das fotos profissionais do Victor.</li>
                 </ul>
             </div>
         </details>
@@ -8958,10 +9104,10 @@ Poderia me ajudar? 🙏"
                 <div style="display:inline-flex;gap:5px;margin-top:12px;flex-wrap:wrap;justify-content:center;">
                     <span style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);padding:3px 9px;border-radius:20px;font-size:9px;color:#fff;font-weight:700;">✨ 7 Presets</span>
                     <span style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);padding:3px 9px;border-radius:20px;font-size:9px;color:#fff;font-weight:700;">📸 Antes/Depois</span>
-                    <span style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);padding:3px 9px;border-radius:20px;font-size:9px;color:#fff;font-weight:700;">🎨 Parecido</span>
+                    <span style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);padding:3px 9px;border-radius:20px;font-size:9px;color:#fff;font-weight:700;">✨ Seu Preset</span>
                 </div>
-                <!-- Teste grátis callout -->
-                <div style="margin-top:14px;display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,rgba(0,200,150,0.25),rgba(0,160,112,0.15));border:1.5px solid rgba(0,200,150,0.5);border-radius:12px;padding:8px 16px;">
+                <!-- Teste grátis callout — REMOVIDO a pedido (agora é por código de ativação) -->
+                <div style="display:none;">
                     <span style="font-size:18px;">🎁</span>
                     <div style="text-align:left;">
                         <div style="font-size:11px;color:#00E5B0;font-weight:900;">Teste grátis disponível</div>
@@ -8974,6 +9120,27 @@ Poderia me ajudar? 🙏"
         <!-- 🎫 STATUS DO USUÁRIO -->
         <div id="edicaoStatusCard" style="margin-bottom:14px;"></div>
 
+        <!-- 🔓 ACESSO POR CÓDIGO (pedir ao Victor + ativar) -->
+        <div id="edicaoAcessoBox" style="margin-bottom:16px;">
+            <div style="background:linear-gradient(160deg,rgba(0,229,176,0.08),rgba(91,141,239,0.06));border:1.5px solid rgba(0,229,176,0.3);border-radius:14px;padding:16px;">
+                <div id="edicaoAcessoLocked">
+                    <div style="font-size:14px;font-weight:900;color:#fff;margin-bottom:4px;">🔓 Liberar a Edição IA</div>
+                    <div style="font-size:11px;color:#aaa;line-height:1.6;margin-bottom:13px;">Peça acesso ao Victor pelo WhatsApp. Após o pagamento, ele te envia um <strong style="color:#00E5B0;">código de ativação</strong>. Coloque o código abaixo e o acesso fica salvo no seu aparelho.</div>
+                    <input id="edicaoAcessoEmail" type="email" placeholder="Seu email" style="width:100%;box-sizing:border-box;padding:11px 13px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:10px;color:#fff;font-size:13px;outline:none;margin-bottom:8px;">
+                    <div style="display:grid;grid-template-columns:1fr auto;gap:8px;margin-bottom:10px;">
+                        <input id="edicaoAcessoCodigo" type="text" placeholder="Código de ativação" style="box-sizing:border-box;padding:11px 13px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:10px;color:#fff;font-size:13px;outline:none;text-transform:uppercase;" oninput="this.value=this.value.toUpperCase()">
+                        <button onclick="edicaoAtivarCodigo()" style="padding:11px 16px;background:linear-gradient(135deg,#00E5B0,#00a070);color:#000;border:none;border-radius:10px;font-weight:900;font-size:13px;cursor:pointer;white-space:nowrap;">Ativar</button>
+                    </div>
+                    <button onclick="edicaoPedirAcesso()" style="width:100%;padding:12px;background:linear-gradient(135deg,#25D366,#128C7E);color:#fff;border:none;border-radius:10px;font-weight:900;font-size:13px;cursor:pointer;">💬 Pedir acesso ao Victor (WhatsApp)</button>
+                </div>
+                <div id="edicaoAcessoUnlocked" style="display:none;text-align:center;">
+                    <div style="font-size:30px;margin-bottom:6px;">✅</div>
+                    <div style="font-size:14px;font-weight:900;color:#00E5B0;">Acesso ativado!</div>
+                    <div id="edicaoAcessoUnlockedSub" style="font-size:11px;color:#aaa;margin-top:3px;"></div>
+                </div>
+            </div>
+        </div>
+
         <!-- PRESETS ON tem lugar próprio (botão de menu / página secreta). Removido daqui p/ não duplicar. -->
 
         <!-- ── ROUBAR PRESET — Upload foto para clonar estilo ── -->
@@ -8982,7 +9149,7 @@ Poderia me ajudar? 🙏"
                 <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
                     <div style="width:36px;height:36px;background:linear-gradient(135deg,#a78bfa,#7c3aed);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;">🔍</div>
                     <div>
-                        <div style="font-size:13px;color:#a78bfa;font-weight:900;">Foto Parecida</div>
+                        <div style="font-size:13px;color:#a78bfa;font-weight:900;">Copiar Estilo</div>
                         <div style="font-size:10px;color:#555;">A IA analisa qualquer foto e clona o estilo visual</div>
                     </div>
                 </div>
@@ -9036,7 +9203,7 @@ Poderia me ajudar? 🙏"
 
         <!-- ESCOLHER UM MODO -->
         <div id="edicaoStepModo" style="background:rgba(255,255,255,0.03);border:1.5px solid rgba(91,141,239,0.2);border-radius:13px;padding:14px;margin-bottom:12px;">
-            <div style="font-size:11px;color:#5B8DEF;font-weight:800;text-transform:uppercase;letter-spacing:1px;margin-bottom:11px;">🎨 Escolha o Modo</div>
+            <div style="font-size:11px;color:#5B8DEF;font-weight:800;text-transform:uppercase;letter-spacing:1px;margin-bottom:11px;">🎨 Escolha seu preset</div>
 
             <!-- FILTER LIST — single select, collapses on pick -->
             <div id="edicaoModosList" style="display:flex;flex-direction:column;gap:5px;">
@@ -9099,16 +9266,16 @@ Poderia me ajudar? 🙏"
                 </button>
 
                 <!-- ── XMP PRESETS ──────────────────────────────── -->
-                <div id="edicaoXmpSection" style="margin-top:4px;border-top:1px solid rgba(255,255,255,0.05);padding-top:6px;">
-                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+                <div id="edicaoXmpSection" style="display:none;margin-top:4px;border-top:1px solid rgba(255,255,255,0.05);padding-top:6px;">
+                    <div id="edicaoXmpHeaderRow" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
                         <span style="font-size:9px;color:#555;font-weight:700;text-transform:uppercase;letter-spacing:1px;">🎨 Mais Presets P1 Victor</span>
                         <button onclick="edicaoToggleXmpList()" id="edicaoXmpToggleBtn" style="font-size:9px;color:#a78bfa;background:rgba(167,139,250,0.08);border:1px solid rgba(167,139,250,0.25);padding:3px 10px;border-radius:7px;cursor:pointer;font-weight:800;">▼ Ver presets importados <span id="edicaoXmpCount" style="background:rgba(167,139,250,0.2);padding:1px 5px;border-radius:6px;margin-left:2px;"></span></button>
                     </div>
                     <div id="edicaoXmpListWrap" style="display:none;"></div>
                 </div>
 
-                <!-- ── "ESCOLHER OUTRO" hint ──────────────────────── -->
-                <div class="edicao-change-hint" onclick="edicaoClearMode()">↩️ Escolher outro preset</div>
+                <!-- ── "MUDAR PRESET" botão ──────────────────────── -->
+                <div class="edicao-change-hint" onclick="edicaoClearMode()">🔄 Mudar preset escolhido</div>
             </div>
 
             <!-- ── INTENSIDADE — aparece abaixo do preset ativo ── -->
@@ -9144,6 +9311,14 @@ Poderia me ajudar? 🙏"
                     <input type="file" accept="image/*" onchange="edicaoExtractFromReference(this)" style="display:none;">
                 </label>
                 <div id="edicaoExtractStatus" style="display:none;margin-top:5px;font-size:9px;color:#a78bfa;text-align:center;padding:5px;background:rgba(167,139,250,0.06);border-radius:7px;"></div>
+                <div id="edicaoExtractPreview" style="display:none;margin-top:8px;align-items:center;gap:9px;padding:8px;background:rgba(167,139,250,0.08);border:1px solid rgba(167,139,250,0.3);border-radius:10px;">
+                    <img id="edicaoExtractThumb" src="" alt="referência" style="width:46px;height:46px;object-fit:cover;border-radius:8px;flex-shrink:0;">
+                    <div style="flex:1;min-width:0;">
+                        <div style="font-size:10px;color:#c4b5fd;font-weight:800;">✅ Foto de referência ativa</div>
+                        <div style="font-size:8.5px;color:#888;">O preset foi copiado dela.</div>
+                    </div>
+                    <button onclick="edicaoClearReference()" style="background:rgba(255,107,107,0.15);border:1px solid rgba(255,107,107,0.4);color:#ff6b6b;border-radius:8px;padding:6px 10px;font-size:11px;font-weight:800;cursor:pointer;flex-shrink:0;">✕ Fechar</button>
+                </div>
             </div>
         </div>
 
@@ -9725,6 +9900,7 @@ Poderia me ajudar? 🙏"
             if (!overlay) return;
             overlay.style.display = 'block';
             document.body.style.overflow = 'hidden';
+            try { var _vs=document.getElementById('vipGroupSection'); if(_vs) _vs.style.display='none'; } catch(e){}
             // Bypass password gate
             _ponUnlocked = true;
             const gate = document.getElementById('presetsOnGate');
@@ -9733,9 +9909,9 @@ Poderia me ajudar? 🙏"
             if (cont) cont.style.display = 'block';
             // Update title to reflect this entry point
             const titleEl = document.querySelector('#presetsOnOverlay h2');
-            if (titleEl) titleEl.innerHTML = '📸 Foto Parecida';
+            if (titleEl) titleEl.innerHTML = '🎨 Copiar Estilo';
             const subEl = document.querySelector('#presetsOnOverlay [data-pon-subtitle]');
-            if (subEl) subEl.textContent = 'Estilo parecido em qualquer foto';
+            if (subEl) subEl.textContent = 'Copie o estilo de qualquer foto';
             // Reset to clone tab
             setTimeout(() => {
                 if (typeof presetsOnSwitchTab === 'function') presetsOnSwitchTab('clone');
@@ -9762,6 +9938,7 @@ Poderia me ajudar? 🙏"
             // (if the button is visible the user clicked it, so the modal should open)
             const o=document.getElementById('presetsOnOverlay'); if(!o)return;
             o.style.display='block'; document.body.style.overflow='hidden';
+            try { var _vs2=document.getElementById('vipGroupSection'); if(_vs2) _vs2.style.display='none'; } catch(e){}
             const gate=document.getElementById('presetsOnGate'), cont=document.getElementById('presetsOnContent');
             if(_ponUnlocked){
                 if(gate)gate.style.display='none';
@@ -9839,16 +10016,19 @@ Poderia me ajudar? 🙏"
             const activeBtn = document.getElementById('menuBtn_' + tab);
             if (activeBtn) activeBtn.classList.add('active-tab');
             // Banner de tênis: aparece só no início, em Ofertas e em Tênis (procure)
-            try { var _promo=document.querySelector('.sneaker-promo-banner'); if(_promo){ _promo.style.display = (tab==='foco'||tab==='ofertas'||tab==='procure') ? '' : 'none'; } } catch(e){}
+            try { var _promo=document.querySelector('.sneaker-promo-banner'); if(_promo){ _promo.style.display = (window._promoCfgVisible!==false && (tab==='foco'||tab==='ofertas'||tab==='procure')) ? '' : 'none'; } } catch(e){}
             // Botão admin discreto fica sempre visível (some só quando o painel admin abre)
             const themeBtn = document.getElementById('themeToggleBtn');
             if (themeBtn) themeBtn.style.display = '';
             if (typeof adminStarUpdate === 'function') adminStarUpdate();
+            // Esconde o Grupo VIP nas páginas pedidas (ofertas, edição, presets, copiar estilo)
+            try { _vipApplyPageVisibility(tab); } catch(e){}
             // Render edicao status card on tab open
             if (tab === 'edicao' && typeof edicaoRenderStatusCard === 'function') {
                 setTimeout(edicaoRenderStatusCard, 60);
                 if (typeof edicaoXmpRenderUserPanel === 'function') setTimeout(edicaoXmpRenderUserPanel, 70);
             }
+            if (tab === 'edicao' && typeof edicaoRenderAcesso === 'function') { setTimeout(edicaoRenderAcesso, 65); }
             if (tab === 'preview' && typeof pvInit === 'function') { setTimeout(pvInit, 50); }
             if (tab === 'verificar' && typeof verifInit === 'function') { setTimeout(verifInit, 50); }
             try{
@@ -9858,7 +10038,7 @@ Poderia me ajudar? 🙏"
               if(tab==='foco' && typeof toolFocoInject==='function'){ setTimeout(toolSurveyInject,40); setTimeout(toolFocoInject,55); setTimeout(toolFocoExtraInject,70); }
               if(tab==='preview' && typeof toolCapInject==='function') setTimeout(toolCapInject,60);
               // 🤖 Assistente IA em todas as páginas principais
-              if(typeof invAIInject==='function' && ['foco','strava','edicao','procure','preview','verificar','ofertas'].indexOf(tab)>=0){ setTimeout(function(){ invAIInject(tab); }, 120); }
+              if(typeof invAIInject==='function' && ['foco','strava','procure','preview','verificar','ofertas'].indexOf(tab)>=0){ setTimeout(function(){ invAIInject(tab); }, 120); }
               if(typeof invTagCatalogs==='function'){ setTimeout(invTagCatalogs, 350); setTimeout(invTagCatalogs, 1200); }
             }catch(e){}
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -9914,6 +10094,28 @@ Poderia me ajudar? 🙏"
                 setTimeout(_updateFocoCountBadge, 110);
                 setTimeout(carregarListasPublicadas, 80);
                 setTimeout(loadCatalogVisibilityFromStorage, 120);
+                // LIMITADOR JSON: checa a cota das contas ao abrir e AVISA se alguma está acabando
+                setTimeout(async function(){
+                    try {
+                        if (typeof checkAllJsonbinQuota === 'function') {
+                            await checkAllJsonbinQuota();
+                            const q = window._jbQuotaCache || {};
+                            let low = [];
+                            Object.keys(q).forEach(function(bin){
+                                const v = q[bin];
+                                if (v && !v.error && typeof v.remaining === 'number' && v.remaining < 1500) {
+                                    const acc = (JSONBIN_ACCOUNTS.find(function(a){return a.binId===bin;})||{});
+                                    low.push((acc.name||'Conta') + ' (' + v.remaining + ' req)');
+                                }
+                            });
+                            const banner = document.getElementById('jbLimiterBanner');
+                            if (low.length && banner) {
+                                banner.style.display = 'block';
+                                banner.innerHTML = '⚠️ <strong>Cota JSON acabando:</strong> ' + low.join(' · ') + '. O site troca de conta sozinho, mas vale criar contas novas. <span style="text-decoration:underline;cursor:pointer;" onclick="switchAdminTab(13)">Ver detalhes →</span>';
+                            } else if (banner) { banner.style.display = 'none'; }
+                        }
+                    } catch(e){}
+                }, 400);
                 // Garantir drawer fechado no mobile ao abrir painel
                 if (window.innerWidth <= 680) {
                     const sidebar  = document.getElementById('adminSidebar');
@@ -10447,6 +10649,8 @@ Poderia me ajudar? 🙏"
                         'siteButtons',        // menu labels + visibility
                         'invictorAdminPwd',   // admin password synced
                         'invictorHiddenTenis_v1',
+                        'edicaoCodigos_v1',
+                        'promoBannerConfig_v1',
                         'invictorFeatures_v1' // feature flags (Feature Control toggles)
                     ];
                     keysToSync.forEach(key => {
@@ -10546,6 +10750,24 @@ Poderia me ajudar? 🙏"
                 masterKey: '$2a$10$EUIPHys2ksKU7qikY34wD.IVpz8xGeR1i7lmiDBaaEPGk8uhdkVti',
                 binId: '6a317ce6f5f4af5e29fc5eaf',
                 active: false
+            },
+            {
+                name: 'CONTA 4 (F4 Corrida)',
+                masterKey: '$2a$10$LM9fppXtalBbVsJcljc8Z.QFK5D5CEIjcVgvCvXHXy34n30co3jmO',
+                binId: '6a337b7af5f4af5e2906642d',
+                active: false
+            },
+            {
+                name: 'CONTA 5 (F5 Jota)',
+                masterKey: '$2a$10$Aw1r7jDcm/um1br12CW2hut9TIDC3RQeZI5rSIZTCG6NIyqvije0K',
+                binId: '6a337d85da38895dfed4e921',
+                active: false
+            },
+            {
+                name: 'CONTA 6 (F6 Victor)',
+                masterKey: '$2a$10$nqO28EIHGIuWtoJukjrtSe6u3jl7nVA4C.8zIDhVRYDc2EetDCd6q',
+                binId: '6a337e55f5f4af5e29066f4a',
+                active: false
             }
         ];
 // FORÇA AUTORITATIVA: as 3 contas do código (F1/F2/F3) são sempre a verdade.
@@ -10594,14 +10816,15 @@ Poderia me ajudar? 🙏"
                     JSONBIN_ACCOUNTS[i].active = true;
                     saveJsonbinAccounts();
                     console.log('[JSONBin] Switched to', JSONBIN_ACCOUNTS[i].name);
-                    if (typeof showToast === 'function') {
+                    // Só o admin vê o aviso de troca de conta — visitante nunca vê nada disso.
+                    if (typeof showToast === 'function' && typeof _adminLogged === 'function' && _adminLogged()) {
                         showToast('JSONBin: usando ' + JSONBIN_ACCOUNTS[i].name + ' (cota anterior esgotada)', '🔄');
                     }
                     return JSONBIN_ACCOUNTS[i];
                 }
             }
             console.warn('[JSONBin] All accounts exhausted!');
-            if (typeof showToast === 'function') {
+            if (typeof showToast === 'function' && typeof _adminLogged === 'function' && _adminLogged()) {
                 showToast('⚠️ Todas as contas JSONBin esgotaram a cota! Usando Gist como rede de segurança.', '🚨');
             }
             return null;
@@ -10710,17 +10933,76 @@ Poderia me ajudar? 🙏"
             const list = document.getElementById('jsonbinAccountsList');
             if (!list) return;
             if (!JSONBIN_ACCOUNTS.length) { list.innerHTML = '<div style="font-size:11px;color:#777;">Nenhuma conta cadastrada.</div>'; return; }
+            const q = window._jbQuotaCache || {};
             list.innerHTML = JSONBIN_ACCOUNTS.map(function(a, i){
                 const mask = a.binId ? (a.binId.slice(0,6)+'…'+a.binId.slice(-4)) : '—';
                 const on = !!a.active;
-                return '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px 11px;background:rgba(255,255,255,0.04);border:1px solid '+(on?'rgba(34,197,94,0.4)':'rgba(255,255,255,0.08)')+';border-radius:9px;">'
+                let quotaHtml = '';
+                const qi = q[a.binId];
+                if (qi) {
+                    if (qi.error) {
+                        quotaHtml = '<div style="font-size:9.5px;color:#ff6b6b;margin-top:4px;">⚠️ '+qi.error+'</div>';
+                    } else {
+                        const pct = Math.max(0, Math.min(100, Math.round(qi.remaining/qi.total*100)));
+                        const barColor = pct>40?'#22c55e':(pct>15?'#FFA500':'#ff6b6b');
+                        quotaHtml = '<div style="margin-top:6px;">'
+                            + '<div style="height:6px;background:rgba(255,255,255,0.08);border-radius:4px;overflow:hidden;"><div style="height:100%;width:'+pct+'%;background:'+barColor+';"></div></div>'
+                            + '<div style="font-size:9.5px;color:#9aa;margin-top:3px;">'+qi.remaining.toLocaleString('pt-BR')+' / '+qi.total.toLocaleString('pt-BR')+' req · <strong style="color:'+barColor+';">'+qi.prazo+'</strong></div>'
+                            + '</div>';
+                    }
+                }
+                return '<div style="display:flex;flex-direction:column;gap:2px;padding:9px 11px;background:rgba(255,255,255,0.04);border:1px solid '+(on?'rgba(34,197,94,0.4)':'rgba(255,255,255,0.08)')+';border-radius:9px;">'
+                    + '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">'
                     + '<div style="min-width:0;"><div style="font-size:11.5px;font-weight:800;color:'+(on?'#22c55e':'#cdd6e4')+';">'+(a.name||('Conta '+(i+1)))+(on?' · ATIVA':'')+'</div>'
                     + '<div style="font-size:9.5px;color:#778;font-family:monospace;">bin '+mask+'</div></div>'
                     + '<div style="display:flex;gap:6px;flex-shrink:0;">'
                     + (on?'':'<button onclick="setActiveJsonbinAccount('+i+')" style="background:rgba(34,197,94,0.15);border:1px solid rgba(34,197,94,0.4);color:#22c55e;border-radius:7px;padding:5px 9px;font-size:10px;font-weight:800;cursor:pointer;">Ativar</button>')
                     + '<button onclick="removeJsonbinAccount('+i+')" style="background:rgba(255,107,107,0.12);border:1px solid rgba(255,107,107,0.35);color:#ff6b6b;border-radius:7px;padding:5px 9px;font-size:10px;font-weight:800;cursor:pointer;">🗑️</button>'
-                    + '</div></div>';
+                    + '</div></div>' + quotaHtml + '</div>';
             }).join('');
+        };
+
+        // Consulta a cota restante de CADA conta (header X-Ratelimit-Remaining do JSONBin)
+        // e calcula um PRAZO estimado de esgotamento com base no ritmo de consumo do mês.
+        window._jbQuotaCache = window._jbQuotaCache || {};
+        window.checkAllJsonbinQuota = async function(){
+            const summary = document.getElementById('jsonbinQuotaSummary');
+            if (summary) { summary.style.display='block'; summary.innerHTML='⏳ Consultando as '+JSONBIN_ACCOUNTS.length+' contas...'; }
+            const MONTHLY = 10000; // plano grátis
+            const day = new Date().getDate(); // dia do mês (1..31) → ritmo médio
+            let totalRemaining = 0, okCount = 0;
+            for (let i=0;i<JSONBIN_ACCOUNTS.length;i++){
+                const a = JSONBIN_ACCOUNTS[i];
+                if (!a.masterKey || !a.binId) { window._jbQuotaCache[a.binId] = { error:'sem credenciais' }; continue; }
+                try {
+                    const r = await fetch('https://api.jsonbin.io/v3/b/'+a.binId+'/latest?_='+Date.now(), { headers:{'X-Master-Key':a.masterKey} });
+                    const remHeader = r.headers.get('X-Ratelimit-Remaining');
+                    if (r.ok || remHeader != null) {
+                        const remaining = remHeader != null ? parseInt(remHeader,10) : MONTHLY;
+                        const used = Math.max(0, MONTHLY - remaining);
+                        const rate = day>0 ? (used/day) : 0; // req/dia médio neste mês
+                        let prazo;
+                        if (remaining <= 0) prazo = 'cota esgotada (renova mês que vem)';
+                        else if (rate < 1) prazo = 'dura o mês todo (uso baixo)';
+                        else {
+                            const days = Math.floor(remaining/rate);
+                            prazo = days>45 ? 'dura o mês todo' : ('esgota em ~'+days+' dia'+(days===1?'':'s')+' no ritmo atual');
+                        }
+                        window._jbQuotaCache[a.binId] = { remaining, total:MONTHLY, prazo, rate:Math.round(rate) };
+                        totalRemaining += remaining; okCount++;
+                    } else if (r.status===429 || r.status===403) {
+                        window._jbQuotaCache[a.binId] = { remaining:0, total:MONTHLY, prazo:'cota esgotada (403/429)' };
+                    } else {
+                        window._jbQuotaCache[a.binId] = { error:'HTTP '+r.status };
+                    }
+                } catch(e){ window._jbQuotaCache[a.binId] = { error:'falha de rede' }; }
+            }
+            renderJsonbinAccounts();
+            if (summary) {
+                const totalCap = JSONBIN_ACCOUNTS.length * MONTHLY;
+                summary.innerHTML = '📊 <strong>'+totalRemaining.toLocaleString('pt-BR')+'</strong> requisições restantes somando as '+okCount+' contas que responderam (de '+totalCap.toLocaleString('pt-BR')+'/mês no total). '
+                    + 'O site usa a conta ativa e, quando ela esgota, passa pra próxima automaticamente. Os visitantes não veem nada disso.';
+            }
         };
         window.setActiveJsonbinAccount = function(i){
             JSONBIN_ACCOUNTS.forEach(function(a,idx){ a.active = (idx===i); });
@@ -12475,6 +12757,7 @@ Poderia me ajudar? 🙏"
             }
 
             // 3. Callbacks por aba
+            if(tabIndex===0)  { setTimeout(function(){ if(typeof promoCfgLoadToPanel==='function') promoCfgLoadToPanel(); if(typeof renderSiteOverview==='function') renderSiteOverview(); }, 80); }
             if(tabIndex===7) { _catVisPending={foco:null,banlek:null}; loadCatalogVisibilityFromStorage(); }
             if(tabIndex===9) { loadThemeColorsIntoPanel(); setTimeout(function(){ if(typeof invPaletteRender==='function') invPaletteRender(); }, 40); }
             if(tabIndex===10) { renderBotoesAdmin(); }
@@ -12493,6 +12776,8 @@ Poderia me ajudar? 🙏"
                     const si2 = document.getElementById('syncStatusIndicator2');
                     const si1 = document.getElementById('syncStatusIndicator');
                     if (si2 && si1) si2.innerHTML = si1.innerHTML;
+                    // Mostra automaticamente a cota/prazo das contas ao abrir o Storage
+                    try { if (typeof checkAllJsonbinQuota === 'function') checkAllJsonbinQuota(); } catch(e) {}
                 }, 80);
             }
             if(tabIndex===14) { setTimeout(cpRenderAll, 80); setTimeout(cpLoadBtnConfigToPanel, 120); }
@@ -12500,7 +12785,7 @@ Poderia me ajudar? 🙏"
             if(tabIndex===16) { setTimeout(waMessagesLoad, 80); }
             if(tabIndex===17) { setTimeout(waSocialLoad, 80); }
             if(tabIndex===18) { setTimeout(fotoBancoAdminLoad, 80); }
-            if(tabIndex===20) { setTimeout(edicaoAdminLoad, 80); }
+            if(tabIndex===20) { setTimeout(edicaoAdminLoad, 80); setTimeout(function(){ if(typeof edicaoRenderCodigos==='function') edicaoRenderCodigos(); }, 110); }
             if(tabIndex===21) { setTimeout(function(){ if(typeof _loadFeatureToggles==="function") _loadFeatureToggles(); }, 50); }
             if(tabIndex===1)  { setTimeout(focoAdminShowList, 80); setTimeout(_updateFocoCountBadge, 90); }
             if(tabIndex===22) { setTimeout(function(){ if(typeof verifAdminRender==='function') verifAdminRender(); }, 60); }
@@ -12769,9 +13054,12 @@ Poderia me ajudar? 🙏"
         function deleteOferta(index) {
             if (confirm('Tem certeza que deseja remover esta oferta?')) {
                 currentData.ofertas.splice(index, 1);
+                // Limpa o cache de leitura pra exclusão NÃO voltar de uma versão velha
+                try { _sharedCache = null; _sharedCacheTs = 0; } catch(e) {}
                 saveData();
                 renderOfertasList();
                 renderPromos();
+                if (typeof showToast === 'function') showToast('Oferta removida e publicada!', '🗑️');
             }
         }
         //  PARTE 1 — PAINEL ADMIN: VALIDAÇÃO E SALVAMENTO DE LINKS
@@ -12917,11 +13205,183 @@ Poderia me ajudar? 🙏"
             updateVipPreview();
         }
 
+        // Esconde o bloco do Grupo VIP em páginas específicas (a pedido)
+        window._vipHiddenPages = ['ofertas','edicao','presetsOn','roubarIA'];
+
+        // ════ RESUMO DO SITE (dashboard ao vivo no admin) ════
+        window.renderSiteOverview = function(){
+            var grid=document.getElementById('siteOverviewGrid'); if(!grid) return;
+            function cell(icon,val,lbl,color){
+                return '<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:11px;padding:10px 8px;text-align:center;">'
+                    +'<div style="font-size:18px;font-weight:900;color:'+(color||'#fff')+';line-height:1;">'+icon+' '+val+'</div>'
+                    +'<div style="font-size:9px;color:#888;margin-top:4px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;">'+lbl+'</div></div>';
+            }
+            var ofertas=0; try{ ofertas=(currentData.ofertas||[]).length; }catch(e){}
+            var ocultos=0; try{ ocultos=(JSON.parse(localStorage.getItem('invictorHiddenTenis_v1')||'[]')).length; }catch(e){}
+            var cods=[]; try{ cods=JSON.parse(localStorage.getItem('edicaoCodigos_v1')||'[]'); }catch(e){}
+            var codsAtivos=cods.filter(function(c){return c&&c.ativadoEm;}).length;
+            var promo={}; try{ promo=JSON.parse(localStorage.getItem('promoBannerConfig_v1')||'{}'); }catch(e){}
+            var promoOn=(promo.visible!==false);
+            var promoImg=!!promo.img;
+            var lastPub='—'; try{ var lu=localStorage.getItem('_lastUpdate'); if(lu){ lastPub=new Date(parseInt(lu,10)).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}); } }catch(e){}
+            grid.innerHTML =
+                cell('🏷️', ofertas, 'Ofertas', '#FFA500')
+              + cell('🙈', ocultos, 'Tênis ocultos', '#ff8a8a')
+              + cell('🔑', codsAtivos+'/'+cods.length, 'Códigos ativos', '#00E5B0')
+              + cell(promoOn?'🟢':'🔴', promoImg?'c/ tênis':(promoOn?'on':'off'), 'Banner promo', promoOn?'#22c55e':'#888')
+              + '<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:11px;padding:10px 8px;text-align:center;"><div style="font-size:12px;font-weight:900;color:#9db8ff;line-height:1.2;">📡 '+lastPub+'</div><div style="font-size:9px;color:#888;margin-top:4px;font-weight:700;text-transform:uppercase;">Última publicação</div></div>';
+        };
+
+        // ════ BANNER PROMOÇÃO RELÂMPAGO — tênis girando (configurável) ════
+        const PROMO_CFG_KEY = 'promoBannerConfig_v1';
+        function _getPromoCfg(){ try { return JSON.parse(localStorage.getItem(PROMO_CFG_KEY) || '{}'); } catch(e){ return {}; } }
+        function _setPromoCfg(cfg){
+            try { localStorage.setItem(PROMO_CFG_KEY, JSON.stringify(cfg)); } catch(e){}
+            try { if (typeof sharedSetKeys === 'function') sharedSetKeys({ [PROMO_CFG_KEY]: JSON.stringify(cfg), '_lastUpdate': Date.now().toString() }); } catch(e){}
+        }
+        window.applyPromoBanner = function(){
+            var cfg = _getPromoCfg();
+            var icon = document.getElementById('sneakerPromoIcon');
+            var img  = document.getElementById('sneakerPromoImg');
+            var emoji= document.getElementById('sneakerPromoEmoji');
+            if (img && emoji) {
+                if (cfg.img) { img.src = cfg.img; img.style.display = 'block'; emoji.style.display = 'none'; }
+                else { img.style.display = 'none'; emoji.style.display = 'inline-block'; }
+            }
+            if (icon) { if (cfg.spin !== false) icon.classList.add('spin'); else icon.classList.remove('spin'); }
+            var t = document.querySelector('.sneaker-promo-title'); if (t && cfg.title) t.textContent = cfg.title;
+            var s = document.querySelector('.sneaker-promo-subtitle'); if (s && cfg.subtitle) s.textContent = cfg.subtitle;
+            var d = document.querySelector('.sneaker-promo-discount'); if (d && cfg.discount) d.innerHTML = 'ATÉ<br>' + cfg.discount;
+            window._promoCfgVisible = (cfg.visible !== false);
+            var banner = document.querySelector('.sneaker-promo-banner');
+            if (banner && cfg.visible === false) banner.style.display = 'none';
+        };
+        window.promoCfgPreview = function(){
+            var url=(document.getElementById('promoCfgImg')||{}).value||'';
+            var th=document.getElementById('promoCfgThumb');
+            if(th){ th.innerHTML = url ? ('<img src="'+url+'" style="width:100%;height:100%;object-fit:contain;">') : '👟'; }
+        };
+        // Remove fundo liso/uniforme de uma imagem (flood-fill a partir das bordas) → PNG transparente
+        function _promoRemoveBg(srcDataUrl){
+            return new Promise(function(resolve,reject){
+                var img=new Image(); img.crossOrigin='anonymous';
+                img.onload=function(){
+                    try {
+                        var w=img.naturalWidth||img.width, h=img.naturalHeight||img.height;
+                        var maxDim=900, scale=Math.min(1, maxDim/Math.max(w,h));
+                        var cw=Math.max(1,Math.round(w*scale)), ch=Math.max(1,Math.round(h*scale));
+                        var cv=document.createElement('canvas'); cv.width=cw; cv.height=ch;
+                        var ctx=cv.getContext('2d'); ctx.drawImage(img,0,0,cw,ch);
+                        var imgd; try { imgd=ctx.getImageData(0,0,cw,ch); } catch(e){ resolve(srcDataUrl); return; }
+                        var d=imgd.data;
+                        function corner(x,y){ var i=(y*cw+x)*4; return [d[i],d[i+1],d[i+2],d[i+3]]; }
+                        var cs=[corner(0,0),corner(cw-1,0),corner(0,ch-1),corner(cw-1,ch-1)];
+                        var aA=(cs[0][3]+cs[1][3]+cs[2][3]+cs[3][3])/4;
+                        if(aA<30){ resolve(srcDataUrl); return; } // já transparente
+                        var br=(cs[0][0]+cs[1][0]+cs[2][0]+cs[3][0])/4;
+                        var bgc=(cs[0][1]+cs[1][1]+cs[2][1]+cs[3][1])/4;
+                        var bb=(cs[0][2]+cs[1][2]+cs[2][2]+cs[3][2])/4;
+                        // Cor de fundo = média de uma faixa fina nas 4 bordas (mais robusto que só os cantos)
+                        var sr=0,sg=0,sb=0,sn=0;
+                        function samp(x,y){ var i=(y*cw+x)*4; if(d[i+3]>20){ sr+=d[i]; sg+=d[i+1]; sb+=d[i+2]; sn++; } }
+                        for(var sx=0;sx<cw;sx+=2){ samp(sx,0); samp(sx,ch-1); }
+                        for(var sy=0;sy<ch;sy+=2){ samp(0,sy); samp(cw-1,sy); }
+                        if(sn>0){ br=sr/sn; bgc=sg/sn; bb=sb/sn; }
+                        // Tolerância conservadora: só apaga o que é MUITO parecido com o fundo (não come o tênis)
+                        var THRESH=1700;
+                        var visited=new Uint8Array(cw*ch);
+                        var stack=[]; var i2;
+                        for(var x=0;x<cw;x++){ stack.push(x); stack.push((ch-1)*cw+x); }
+                        for(var y=0;y<ch;y++){ stack.push(y*cw); stack.push(y*cw+(cw-1)); }
+                        function close(idx){ var o=idx*4; var dr=d[o]-br, dg=d[o+1]-bgc, db=d[o+2]-bb; return (dr*dr+dg*dg+db*db) < THRESH; }
+                        while(stack.length){
+                            var idx=stack.pop();
+                            if(visited[idx]) continue; visited[idx]=1;
+                            if(!close(idx)) continue;
+                            d[idx*4+3]=0;
+                            var cx=idx%cw, cy=(idx-cx)/cw;
+                            if(cx>0) stack.push(idx-1);
+                            if(cx<cw-1) stack.push(idx+1);
+                            if(cy>0) stack.push(idx-cw);
+                            if(cy<ch-1) stack.push(idx+cw);
+                        }
+                        ctx.putImageData(imgd,0,0);
+                        resolve(cv.toDataURL('image/png'));
+                    } catch(e){ resolve(srcDataUrl); }
+                };
+                img.onerror=function(){ reject(new Error('load')); };
+                img.src=srcDataUrl;
+            });
+        }
+        window.promoCfgRemoveBg = function(){
+            var el=document.getElementById('promoCfgImg'); var url=(el&&el.value||'').trim();
+            if(!url){ if(typeof showToast==='function') showToast('Coloque ou suba uma imagem primeiro','⚠️'); return; }
+            if(typeof showToast==='function') showToast('Removendo fundo...','🪄');
+            _promoRemoveBg(url).then(function(out){
+                if(el) el.value=out; promoCfgPreview();
+                if(typeof showToast==='function') showToast('Fundo removido! ✨','🪄');
+            }).catch(function(){
+                if(typeof showToast==='function') showToast('Não deu pra processar essa URL — faça upload da imagem','⚠️');
+            });
+        };
+        window.promoCfgUploadFile = function(input){
+            var f=input.files&&input.files[0]; if(!f) return;
+            var rd=new FileReader();
+            rd.onload=function(e){
+                var raw=e.target.result;
+                window._promoRawImg = raw; // guarda original pra desfazer
+                _promoRemoveBg(raw).then(function(out){
+                    var el=document.getElementById('promoCfgImg'); if(el) el.value=out; promoCfgPreview();
+                    if(typeof showToast==='function') showToast('Tênis recortado ✨ (se cortar demais, toque em Desfazer)','🪄');
+                }).catch(function(){
+                    var el=document.getElementById('promoCfgImg'); if(el) el.value=raw; promoCfgPreview();
+                });
+            };
+            rd.readAsDataURL(f); try{ input.value=''; }catch(e){}
+        };
+        window.promoCfgUndoBg = function(){
+            if(!window._promoRawImg){ if(typeof showToast==='function') showToast('Nada pra desfazer','ℹ️'); return; }
+            var el=document.getElementById('promoCfgImg'); if(el) el.value=window._promoRawImg;
+            promoCfgPreview();
+            if(typeof showToast==='function') showToast('Recorte desfeito — imagem original','↩️');
+        };
+        window.promoCfgSave = function(){
+            var cfg = {
+                img:      ((document.getElementById('promoCfgImg')||{}).value||'').trim(),
+                spin:     !!(document.getElementById('promoCfgSpin')||{}).checked,
+                visible:  !!(document.getElementById('promoCfgVisible')||{}).checked,
+                title:    ((document.getElementById('promoCfgTitle')||{}).value||'').trim(),
+                subtitle: ((document.getElementById('promoCfgSubtitle')||{}).value||'').trim(),
+                discount: ((document.getElementById('promoCfgDiscount')||{}).value||'').trim()
+            };
+            _setPromoCfg(cfg);
+            applyPromoBanner();
+            if (typeof showToast === 'function') showToast('Banner da promoção salvo!', '⚡');
+        };
+        window.promoCfgLoadToPanel = function(){
+            var cfg=_getPromoCfg();
+            var set=function(id,v){ var el=document.getElementById(id); if(el!=null && v!=null) el.value=v; };
+            var chk=function(id,v){ var el=document.getElementById(id); if(el) el.checked=(v!==false); };
+            set('promoCfgImg', cfg.img||'');
+            set('promoCfgTitle', cfg.title||'');
+            set('promoCfgSubtitle', cfg.subtitle||'');
+            set('promoCfgDiscount', cfg.discount||'');
+            chk('promoCfgSpin', cfg.spin);
+            chk('promoCfgVisible', cfg.visible);
+            promoCfgPreview();
+        };
+        function _vipApplyPageVisibility(tab){
+            var sect=document.getElementById('vipGroupSection');
+            if(!sect) return;
+            var adminOff=false;
+            try { adminOff=(currentData.vipConfig && currentData.vipConfig.visible===false); } catch(e){}
+            if(adminOff){ sect.style.display='none'; return; }
+            sect.style.display = (window._vipHiddenPages.indexOf(tab)>=0) ? 'none' : '';
+        }
         function applyVipConfig() {
             const c = currentData.vipConfig || {};
             const sect = document.getElementById('vipGroupSection');
             if (sect) sect.style.display = (c.visible === false) ? 'none' : '';
-
             const setText = (id, val) => { const el = document.getElementById(id); if (el && val) el.textContent = val; };
             setText('vipEmojiLeftDisplay',  c.emojiLeft  || '👟');
             setText('vipTitleDisplay',      c.title      || 'Participe do Grupo VIP de Ofertas');
@@ -13472,6 +13932,19 @@ Poderia me ajudar? 🙏"
         }
 
         function renderTodosEventos() {
+            // Preserva a rolagem: se um re-render (sync/atualização) acontecer enquanto
+            // o usuário está lendo o catálogo, ele NÃO é jogado pro topo.
+            var _sy = window.pageYOffset || document.documentElement.scrollTop || 0;
+            var _focoActive = false;
+            try { var _fs=document.getElementById('focoSection'); _focoActive = !!(_fs && !_fs.classList.contains('hidden') && _fs.offsetParent !== null); } catch(e){}
+            _renderTodosEventosInner();
+            if (_focoActive && _sy > 60) {
+                requestAnimationFrame(function(){
+                    try { if ((window.pageYOffset||0) < _sy - 4) window.scrollTo(0, _sy); } catch(e){}
+                });
+            }
+        }
+        function _renderTodosEventosInner() {
             const div = document.getElementById("focoRadicalResults");
             if (!div) return;
             const hidden = getHiddenCatalog('foco');
@@ -14745,6 +15218,7 @@ Poderia me ajudar? 🙏"
 
             renderPromos();
             if (typeof applyVipConfig === 'function') applyVipConfig();
+            if (typeof applyPromoBanner === 'function') applyPromoBanner();
 
             // === Apply siteButtons from localStorage (autoridade única decide) ===
             try {
@@ -15009,6 +15483,13 @@ Poderia me ajudar? 🙏"
 
         // ===== TOAST NOTIFICATION =====
         function showToast(msg, icon='✅', duration=2800) {
+            // Visitante NUNCA vê mensagens técnicas (JSON, cota, login, sync, backend...).
+            try {
+                var _isAdm = (typeof _adminLogged === 'function' && _adminLogged());
+                if (!_isAdm && typeof msg === 'string' && /json|jsonbin|\bbin\b|gist|cota|quota|esgot|backend|sync|token|logad|login|unauthor|autoriz.*back|firebase|pocketbase|railway/i.test(msg)) {
+                    return; // suprime para visitantes
+                }
+            } catch(e){}
             const toast = document.getElementById('toastNotification');
             document.getElementById('toastMsg').textContent = msg;
             document.getElementById('toastIcon').textContent = icon;
@@ -19208,13 +19689,13 @@ Poderia me ajudar? 🙏"
         //  TAB 10 — BOTÕES DO SITE
         const BOTOES_PADRAO = [
             { id:'foco',       icon:'📸', label:'Suas Fotos',      sub:'Foco Radical',     ativo:true  },
-            { id:'banlek',     icon:'🖼️', label:'Suas Fotos',      sub:'Banlek',           ativo:true  },
-            { id:'ofertas',    icon:'🏷️', label:'Ofertas',         sub:'de tênis',         ativo:true  },
+            { id:'banlek',     icon:'🏞️', label:'Suas Fotos',      sub:'Banlek',           ativo:true  },
+            { id:'ofertas',    icon:'🔥', label:'Ofertas',         sub:'de tênis',         ativo:true  },
             { id:'procure',    icon:'👟', label:'Procure',         sub:'seus tênis',       ativo:true  },
-            { id:'strava',     icon:'🏃', label:'Minhas Corridas', sub:'Strava',           ativo:true  },
-            { id:'edicao',     icon:'✨', label:'Edição IA',       sub:'P1 Victor',        ativo:true  },
-            { id:'roubarIA',   icon:'🔍', label:'Foto Parecida',  sub:'Estilo parecido', ativo:true  },
-            { id:'presetsOn',  icon:'🎨', label:'Seus Presets',    sub:'Parecido',        ativo:true  },
+            { id:'strava',     icon:'🏃‍♂️', label:'Minhas Corridas', sub:'Strava',           ativo:true  },
+            { id:'edicao',     icon:'🪄', label:'Edição IA',       sub:'P1 Victor',        ativo:true  },
+            { id:'roubarIA',   icon:'🎨', label:'Copiar Estilo',  sub:'Copie o estilo',  ativo:true  },
+            { id:'presetsOn',  icon:'✨', label:'Seu Preset',      sub:'Seu estilo',      ativo:true  },
         ];
         function getBotoes() {
             try {
@@ -19230,6 +19711,39 @@ Poderia me ajudar? 🙏"
             } catch(e) {}
             return BOTOES_PADRAO.map(b => ({ ...b }));
         }
+
+        // ══════════════════════════════════════════════════════════════════
+        // TRAVA DE PÁGINAS DESATIVADAS (fail-safe)
+        // Página que o admin desativa NUNCA aparece pro visitante — mesmo se o
+        // JSON/sync esgotar ou falhar. A lista fica no localStorage (persiste a
+        // qualquer falha) e é derivada da config oficial. BAKED_DISABLED é o
+        // fallback final embutido no código pra visitante novo sem cache.
+        var BAKED_DISABLED = []; // (preenchido conforme o que o Victor definir como público)
+        function _getBtnLock(){ try { var a=JSON.parse(localStorage.getItem('_btnLock')||'[]'); return Array.isArray(a)?a:[]; } catch(e){ return []; } }
+        function _setBtnLock(ids){ try { localStorage.setItem('_btnLock', JSON.stringify(ids||[])); } catch(e){} }
+        function _effectiveLock(){
+            var s={}; (BAKED_DISABLED||[]).forEach(function(i){s[i]=1;}); _getBtnLock().forEach(function(i){s[i]=1;});
+            return Object.keys(s);
+        }
+        // Deriva a trava de uma config oficial (ids com ativo:false). Só atualiza
+        // com uma config válida — uma config vazia/falha NUNCA limpa a trava.
+        function _updateBtnLockFromConfig(botoes){
+            if(!Array.isArray(botoes) || !botoes.length) return;
+            var off = botoes.filter(function(b){ return b && b.ativo===false; }).map(function(b){ return b.id; });
+            _setBtnLock(off);
+        }
+        // Força esconder no DOM todas as páginas travadas (com !important).
+        function _enforceBtnLock(){
+            try {
+                _effectiveLock().forEach(function(id){
+                    var btn = document.getElementById('menuBtn_' + id);
+                    if (btn && btn.style.display !== 'none') btn.style.setProperty('display','none','important');
+                    var secMap = { foco:'focoSection', banlek:'banlekSection', ofertas:'ofertasSection', procure:'procureSection', strava:'stravaSection', edicao:'edicaoSection' };
+                    var sec = secMap[id] ? document.getElementById(secMap[id]) : null;
+                    if (sec) { sec.classList.add('hidden'); sec.classList.remove('active'); }
+                });
+            } catch(e){}
+        }
         let _botoesTemp = null;
         function renderBotoesAdmin() {
             const container = document.getElementById('botoesListAdmin');
@@ -19238,7 +19752,7 @@ Poderia me ajudar? 🙏"
             // Always use _botoesTemp so toggle state is preserved during editing
             if (!_botoesTemp) _botoesTemp = getBotoes();
             const botoes = _botoesTemp;
-            const NAMES = { foco:'📸 Fotos (Foco Radical)', banlek:'🖼️ Fotos (Banlek)', ofertas:'🏷️ Ofertas de Tênis', procure:'👟 Procure Tênis', strava:'🏃 Minhas Corridas (Strava)' };
+            const NAMES = { foco:'📸 Fotos (Foco Radical)', banlek:'🖼️ Fotos (Banlek)', ofertas:'🏷️ Ofertas de Tênis', procure:'👟 Procure Tênis', strava:'🏃 Minhas Corridas (Strava)', roubarIA:'🎨 Copiar Estilo', presetsOn:'✨ Seu Preset', edicao:'✨ Edição IA' };
             const COLORS = { strava:'rgba(252,76,2,0.12)', foco:'rgba(255,215,0,0.06)', banlek:'rgba(0,136,204,0.06)', ofertas:'rgba(255,107,0,0.06)', procure:'rgba(0,200,150,0.06)' };
             container.innerHTML = botoes.map((b,i)=>`
                 <div style="background:${COLORS[b.id]||'rgba(255,255,255,0.03)'};border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:14px;">
@@ -19348,12 +19862,12 @@ Poderia me ajudar? 🙏"
             arr.forEach(function(b){
                 if (!b || !b.id) return;
                 if (b.id === 'roubarIA') {
-                    if (/roubar\s*preset/i.test(b.label || '')) b.label = 'Foto Parecida';
-                    if (/an[áa]lise\s*visual/i.test(b.sub || '')) b.sub = 'Estilo parecido';
+                    if (/roubar|foto\s*parecida/i.test(b.label || '')) b.label = 'Copiar Estilo';
+                    if (/an[áa]lise\s*visual|estilo\s*parecido/i.test(b.sub || '')) b.sub = 'Copie o estilo';
                 }
                 if (b.id === 'presetsOn') {
-                    if (/presets?\s*on/i.test(b.label || '')) b.label = 'Seus Presets';
-                    if (/clone/i.test(b.sub || '')) b.sub = 'Parecido';
+                    if (/presets?\s*on|seus?\s*presets?/i.test(b.label || '')) b.label = 'Seu Preset';
+                    if (/clone|parecido/i.test(b.sub || '')) b.sub = 'Seu estilo';
                 }
             });
             return arr;
@@ -19368,7 +19882,9 @@ Poderia me ajudar? 🙏"
             // (1) Config idêntica à atual → só garante o DOM, sem trocar nada.
             if (curSig !== null && sig === curSig) {
                 if (incoming > window.__btnCfgTs) window.__btnCfgTs = incoming;
+                _updateBtnLockFromConfig(botoes);
                 _btnApplyDOM(botoes);
+                _enforceBtnLock();
                 return;
             }
             // (2) Timestamp mais antigo que a config atual → ignorar (stale).
@@ -19380,7 +19896,9 @@ Poderia me ajudar? 🙏"
             if (incoming > 0) window.__btnCfgTs = incoming;
             else if (window.__btnCfgTs === 0) window.__btnCfgTs = 1; // marca como definida
             try { localStorage.setItem('siteButtons', JSON.stringify(botoes)); } catch(e) {}
+            _updateBtnLockFromConfig(botoes);
             _btnApplyDOM(botoes);
+            _enforceBtnLock();
         }
         function _btnApplyDOM(botoes) {
             botoes.forEach(b => {
@@ -19519,6 +20037,11 @@ Poderia me ajudar? 🙏"
             if(binEl) binEl.textContent=JSONBIN_BIN_ID?JSONBIN_BIN_ID.slice(-8)+'...':'não configurado';
             const fbEl=document.getElementById('apiFirebaseUrlDisplay');
             if(fbEl) fbEl.textContent=_firebaseUrl?_firebaseUrl.replace('https://',''):'Não configurado';
+            // Restaura as anotações de IDs de loja (ficam só neste aparelho)
+            try {
+                var _ml=document.getElementById('apiNoteML'); if(_ml) _ml.value=localStorage.getItem('_apiNoteML')||'';
+                var _sh=document.getElementById('apiNoteShopee'); if(_sh) _sh.value=localStorage.getItem('_apiNoteShopee')||'';
+            } catch(e){}
         }
         async function testarApi(tipo){
             const id='status'+tipo.charAt(0).toUpperCase()+tipo.slice(1);
@@ -20279,7 +20802,7 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
                     localStorage.setItem('focoEventosReais', j);
                     localStorage.setItem('focoEventosReais_v46', j);
                 } catch(e) {}
-                renderTodosEventos();
+                if (gotNew) renderTodosEventos();
                 if (typeof _updateFocoCountBadge === 'function') _updateFocoCountBadge();
                 const ts = new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
                 _setFocoLiveStatus(`✓ ${FOCO_EVENTOS_REAIS.length} evento(s) — ${ts}`, '#4CD964');
@@ -22001,7 +22524,7 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
       var p1=PV_P1.map(function(p,i){return '<button class="pv-p1" onclick="toolBASet('+i+')">'+p[0]+'</button>';}).join('');
       _toolMount('edicaoSection','toolBA',_toolCard(_toolH('🪄 Antes / Depois — veja o tratamento','Suba uma foto e arraste pra comparar o original com o look P1 Victor.')
         +'<label style="display:block;text-align:center;padding:13px;background:linear-gradient(135deg,#5B8DEF,#833AB4);color:#fff;border-radius:11px;font-weight:900;cursor:pointer;margin-bottom:12px;">📸 Subir foto<input type="file" accept="image/*" style="display:none" onchange="toolBALoad(this)"></label>'
-        +'<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;">'+p1+'</div>'
+        +'<details class="ba-presets" style="margin-bottom:12px;background:rgba(131,58,180,0.08);border:1px solid rgba(131,58,180,0.3);border-radius:11px;overflow:hidden;"><summary style="cursor:pointer;list-style:none;padding:12px 14px;font-weight:800;font-size:13px;color:#c4a3ff;display:flex;align-items:center;gap:8px;">🎨 Escolher estilo <span style="margin-left:auto;font-size:11px;color:#888;font-weight:600;">toque para ver ▾</span></summary><div style="display:flex;gap:6px;flex-wrap:wrap;padding:0 12px 12px;">'+p1+'</div></details>'
         +'<div id="toolBAStage"></div>'));
       pvInjectStyle();
     };
@@ -22012,14 +22535,14 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
     function toolBARender(){ var st=document.getElementById('toolBAStage'); if(!st)return;
       if(!_baSrc){ st.innerHTML='<div style="text-align:center;color:#777;font-size:12px;padding:14px 0;">Suba uma foto pra ver o antes/depois ✨</div>'; return; }
       st.innerHTML='<div style="position:relative;width:100%;max-width:360px;margin:0 auto;border-radius:12px;overflow:hidden;line-height:0;">'
-        +'<img src="'+_baSrc+'" style="width:100%;display:block;">'
-        +'<img id="toolBATopImg" src="'+_baSrc+'" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;filter:'+_baFilter+';clip-path:inset(0 50% 0 0);">'
+        +'<img src="'+_baSrc+'" style="width:100%;display:block;filter:'+_baFilter+';">'
+        +'<img id="toolBATopImg" src="'+_baSrc+'" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;clip-path:inset(0 50% 0 0);">'
         +'<div id="toolBALine" style="position:absolute;top:0;left:50%;width:2px;height:100%;background:#fff;box-shadow:0 0 6px rgba(0,0,0,.6);"></div>'
-        +'<div style="position:absolute;bottom:8px;left:8px;background:rgba(0,0,0,.6);color:#fff;font-size:10px;font-weight:800;padding:3px 9px;border-radius:7px;line-height:1;">DEPOIS ✨</div>'
-        +'<div style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.6);color:#fff;font-size:10px;font-weight:800;padding:3px 9px;border-radius:7px;line-height:1;">ANTES</div>'
+        +'<div style="position:absolute;bottom:8px;left:8px;background:rgba(0,0,0,.6);color:#fff;font-size:10px;font-weight:800;padding:3px 9px;border-radius:7px;line-height:1;">ANTES</div>'
+        +'<div style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.6);color:#fff;font-size:10px;font-weight:800;padding:3px 9px;border-radius:7px;line-height:1;">DEPOIS ✨</div>'
         +'</div>'
         +'<input type="range" min="0" max="100" value="50" oninput="toolBADrag(this.value)" style="width:100%;max-width:360px;display:block;margin:12px auto 0;accent-color:var(--primary);">'
-        +'<div style="text-align:center;color:#888;font-size:10px;margin-top:4px;">Arraste pra comparar — esquerda = com tratamento, direita = original.</div>';
+        +'<div style="text-align:center;color:#888;font-size:10px;margin-top:4px;">Arraste pra comparar — esquerda = original, direita = com tratamento ✨.</div>';
     }
 
     // 4) SUAS FOTOS (Foco) → Passo a passo de como comprar
@@ -22121,21 +22644,24 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
     // ── EDIÇÃO IA: Monte seu pacote (orçamento + pedido) ──
     window.toolPkgInject=function(){
       _toolMountAfter('toolBA','toolPkg',_toolCard(_toolH('🧮 Monte seu pacote de edição','Escolha quantas fotos e o nível — veja o valor e peça no WhatsApp.')
-        +'<div style="font-size:10px;color:#9aa;font-weight:800;margin-bottom:5px;">QUANTAS FOTOS: <span id="tpQtyL" style="color:#fff">5</span></div>'
-        +'<input id="tpQty" type="range" min="1" max="30" value="5" oninput="toolPkgCalc()" style="width:100%;accent-color:var(--primary);margin-bottom:10px;">'
-        +'<select id="tpLvl" onchange="toolPkgCalc()" style="'+_toolInStyle+'margin-bottom:10px;"><option value="1">Básico — cor e luz</option><option value="1.6">Pro — tratamento completo P1</option><option value="2.3">Premium — P1 + 4K + recortes</option></select>'
-        +'<div style="display:flex;gap:7px;margin-bottom:10px;align-items:center;"><span style="font-size:10px;color:#9aa;font-weight:800;">Preço por foto (R$)</span><input id="tpBase" type="number" value="8" oninput="toolPkgCalc()" style="'+_toolInStyle+'flex:1"></div>'
+        +'<div style="font-size:9px;color:#9aa;font-weight:800;margin-bottom:4px;">QUANTAS FOTOS: <span id="tpQtyL" style="color:#fff">5</span></div>'
+        +'<div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:6px;">'+[3,5,10,15,20,30].map(function(n){return '<button onclick="toolPkgSetQty('+n+')" id="tpChip'+n+'" style="flex:1;min-width:38px;padding:5px 3px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:7px;color:#cdd;font-weight:800;font-size:11px;cursor:pointer;">'+n+'</button>';}).join('')+'</div>'
+        +'<input id="tpQty" type="range" min="1" max="30" value="5" oninput="toolPkgCalc()" style="width:100%;accent-color:var(--primary);margin-bottom:7px;">'
+        +'<select id="tpLvl" onchange="toolPkgCalc()" style="'+_toolInStyle+'margin-bottom:7px;padding:7px 9px;font-size:12px;"><option value="1">Básico — cor e luz</option><option value="1.6">Pro — tratamento completo P1</option><option value="2.3">Premium — P1 + 4K + recortes</option></select>'
+        +'<div style="display:flex;gap:7px;margin-bottom:8px;align-items:center;"><span style="font-size:10px;color:#9aa;font-weight:800;">Preço/foto (R$)</span><input id="tpBase" type="number" value="8" oninput="toolPkgCalc()" style="'+_toolInStyle+'flex:1;padding:7px 9px;font-size:12px;"></div>'
         +'<div id="tpOut"></div>'));
       toolPkgCalc();
     };
+    window.toolPkgSetQty=function(n){ var el=document.getElementById('tpQty'); if(el){ el.value=n; } toolPkgCalc(); };
     window.toolPkgCalc=function(){
       var q=parseInt(document.getElementById('tpQty').value)||1, lvl=parseFloat(document.getElementById('tpLvl').value)||1, base=parseFloat(document.getElementById('tpBase').value)||0;
       document.getElementById('tpQtyL').textContent=q;
-      var total=q*base*lvl; var lvlTxt=document.getElementById('tpLvl').options[document.getElementById('tpLvl').selectedIndex].text;
+      [3,5,10,15,20,30].forEach(function(n){ var c=document.getElementById('tpChip'+n); if(c){ var on=(q===n); c.style.background=on?'linear-gradient(135deg,#FF6A00,#FF9A00)':'rgba(255,255,255,0.05)'; c.style.color=on?'#000':'#cdd'; c.style.borderColor=on?'transparent':'rgba(255,255,255,0.12)'; } });
+      var total=q*base*lvl, perFoto=q?total/q:0; var lvlTxt=document.getElementById('tpLvl').options[document.getElementById('tpLvl').selectedIndex].text;
       var msg=encodeURIComponent('Oi Victor! Quero um pacote de edição: '+q+' fotos, nível "'+lvlTxt+'". Valor estimado R$ '+total.toFixed(2).replace('.',',')+'. Pode confirmar?');
-      document.getElementById('tpOut').innerHTML='<div style="text-align:center;background:linear-gradient(135deg,rgba(91,141,239,0.12),rgba(131,58,180,0.12));border:1px solid rgba(131,58,180,0.3);border-radius:13px;padding:14px;margin-bottom:10px;"><div style="font-size:10px;color:#9aa;">valor estimado</div><div style="font-size:26px;font-weight:900;color:#fff;">R$ '+total.toFixed(2).replace('.',',')+'</div><div style="font-size:9px;color:#9aa;">'+q+' fotos · '+lvlTxt+'</div></div>'
-        +'<a href="https://wa.me/?text='+msg+'" target="_blank" rel="noopener" style="display:block;text-align:center;padding:13px;border-radius:11px;font-weight:900;font-size:13px;text-decoration:none;background:linear-gradient(135deg,#25D366,#128C7E);color:#fff;">💬 Pedir no WhatsApp</a>'
-        +'<div style="font-size:9px;color:#667;margin-top:7px;text-align:center;">Valor estimado — ajuste o preço por foto no seu padrão.</div>';
+      document.getElementById('tpOut').innerHTML='<div style="text-align:center;background:linear-gradient(135deg,rgba(91,141,239,0.12),rgba(131,58,180,0.12));border:1px solid rgba(131,58,180,0.3);border-radius:11px;padding:11px;margin-bottom:8px;"><div style="font-size:9px;color:#9aa;letter-spacing:1px;text-transform:uppercase;">valor estimado</div><div style="font-size:23px;font-weight:900;color:#fff;line-height:1.1;margin:2px 0;">R$ '+total.toFixed(2).replace('.',',')+'</div><div style="font-size:9px;color:#9aa;">'+q+' fotos · '+lvlTxt+'</div><div style="display:inline-block;margin-top:6px;font-size:9px;color:#00E5B0;background:rgba(0,229,176,0.1);border:1px solid rgba(0,229,176,0.25);border-radius:20px;padding:2px 10px;font-weight:800;">R$ '+perFoto.toFixed(2).replace('.',',')+' por foto</div></div>'
+        +'<a href="https://wa.me/?text='+msg+'" target="_blank" rel="noopener" style="display:block;text-align:center;padding:11px;border-radius:10px;font-weight:900;font-size:13px;text-decoration:none;background:linear-gradient(135deg,#25D366,#128C7E);color:#fff;">💬 Pedir no WhatsApp</a>'
+        +'<div style="font-size:8.5px;color:#667;margin-top:6px;text-align:center;">Valor estimado — ajuste o preço por foto no seu padrão.</div>';
     };
 
     // ── SUAS FOTOS: Checklist do dia da corrida (salva sozinho) ──
@@ -26256,6 +26782,103 @@ Responda APENAS com a legenda pronta, sem explicações.`
         fotosGeradas: 'invictorEdicaoFotosGeradas'
     };
 
+    // ════════════ CÓDIGOS DE ATIVAÇÃO (Edição IA) ════════════
+    const EDICAO_COD_KEY = 'edicaoCodigos_v1';
+    const EDICAO_ATIVADO_KEY = 'edicaoAtivado_v1';
+    function _edGetCodigos(){ try { return JSON.parse(localStorage.getItem(EDICAO_COD_KEY) || '[]'); } catch(e){ return []; } }
+    function _edSetCodigos(arr){
+        try { localStorage.setItem(EDICAO_COD_KEY, JSON.stringify(arr)); } catch(e){}
+        // Sincroniza pra todos os aparelhos — é contra essa lista que o código é verificado
+        try { if (typeof sharedSetKeys === 'function') sharedSetKeys({ [EDICAO_COD_KEY]: JSON.stringify(arr), '_lastUpdate': Date.now().toString() }); } catch(e){}
+    }
+    function _edGenCode(){
+        var chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789', s='';
+        for(var i=0;i<6;i++) s+=chars[Math.floor(Math.random()*chars.length)];
+        return 'VIC-'+s;
+    }
+    // ADMIN — gerar código pra um email
+    window.edicaoGerarCodigo = function(){
+        var el=document.getElementById('codeGenEmail'); var email=((el&&el.value)||'').trim().toLowerCase();
+        if(!email || email.indexOf('@')<0){ if(typeof showToast==='function') showToast('Coloque um email válido','⚠️'); return; }
+        var arr=_edGetCodigos();
+        var ex=arr.find(function(c){return c.email===email;});
+        if(ex){ if(typeof showToast==='function') showToast('Esse email já tem código: '+ex.code,'ℹ️'); edicaoRenderCodigos(); return; }
+        var code=_edGenCode();
+        arr.unshift({ email:email, code:code, criadoEm:Date.now(), ativadoEm:null });
+        _edSetCodigos(arr);
+        if(el) el.value='';
+        edicaoRenderCodigos();
+        if(typeof showToast==='function') showToast('Código gerado: '+code,'🔑');
+    };
+    window.edicaoRenderCodigos = function(){
+        var box=document.getElementById('edicaoCodigosList'); if(!box) return;
+        var arr=_edGetCodigos();
+        if(!arr.length){ box.innerHTML='<div style="font-size:11px;color:#777;text-align:center;padding:8px;">Nenhum código gerado ainda.</div>'; return; }
+        box.innerHTML=arr.map(function(c){
+            var on=!!c.ativadoEm;
+            return '<div style="display:flex;align-items:center;gap:8px;padding:9px 11px;background:rgba(255,255,255,0.04);border:1px solid '+(on?'rgba(0,229,176,0.4)':'rgba(255,255,255,0.08)')+';border-radius:9px;">'
+                +'<div style="flex:1;min-width:0;"><div style="font-size:11.5px;color:#ddd;font-weight:700;overflow:hidden;text-overflow:ellipsis;">'+c.email+'</div>'
+                +'<div style="font-size:12px;font-family:monospace;color:#00E5B0;font-weight:900;letter-spacing:1px;">'+c.code+' <span style="font-size:9.5px;color:#888;font-family:system-ui;letter-spacing:0;">'+(on?'· ✅ ativo':'· ⏳ pendente')+'</span></div></div>'
+                +'<button onclick="edicaoCopiarCodigo(\''+c.code+'\')" style="background:rgba(91,141,239,0.15);border:1px solid rgba(91,141,239,0.4);color:#5B8DEF;border-radius:7px;padding:5px 9px;font-size:11px;cursor:pointer;">📋</button>'
+                +'<button onclick="edicaoExcluirCodigo(\''+c.code+'\')" style="background:rgba(255,107,107,0.12);border:1px solid rgba(255,107,107,0.35);color:#ff6b6b;border-radius:7px;padding:5px 9px;font-size:11px;cursor:pointer;">🗑️</button>'
+                +'</div>';
+        }).join('');
+    };
+    window.edicaoCopiarCodigo = function(code){
+        try { navigator.clipboard.writeText(code); } catch(e){}
+        if(typeof showToast==='function') showToast('Código copiado: '+code,'📋');
+    };
+    window.edicaoExcluirCodigo = function(code){
+        if(!confirm('Excluir o código '+code+'? A pessoa perde o acesso.')) return;
+        var arr=_edGetCodigos().filter(function(c){return c.code!==code;});
+        _edSetCodigos(arr);
+        edicaoRenderCodigos();
+        if(typeof showToast==='function') showToast('Código excluído','🗑️');
+    };
+    // USUÁRIO — ativar com código
+    window.edicaoAtivarCodigo = function(){
+        var em=(((document.getElementById('edicaoAcessoEmail')||{}).value)||'').trim().toLowerCase();
+        var cd=(((document.getElementById('edicaoAcessoCodigo')||{}).value)||'').trim().toUpperCase();
+        if(!em || !cd){ if(typeof showToast==='function') showToast('Preencha email e código','⚠️'); return; }
+        var arr=_edGetCodigos();
+        var match=arr.find(function(c){ return c.code===cd && c.email===em; });
+        if(!match){
+            var byCode=arr.find(function(c){return c.code===cd;});
+            if(byCode){ if(typeof showToast==='function') showToast('Esse código é de outro email','⚠️'); }
+            else { if(typeof showToast==='function') showToast('Código inválido','❌'); }
+            return;
+        }
+        match.ativadoEm = match.ativadoEm || Date.now();
+        _edSetCodigos(arr);
+        try { localStorage.setItem(EDICAO_ATIVADO_KEY, JSON.stringify({ email:em, code:cd, em:Date.now() })); } catch(e){}
+        try { localStorage.setItem(EDICAO_KEYS.userEmail, em); } catch(e){}
+        edicaoRenderAcesso();
+        if(typeof showToast==='function') showToast('Acesso ativado! ✨','✅');
+    };
+    window.edicaoPedirAcesso = function(){
+        var em=(((document.getElementById('edicaoAcessoEmail')||{}).value)||'').trim();
+        var wa=''; try { wa = localStorage.getItem(EDICAO_KEYS.whatsApp) || ''; } catch(e){}
+        wa=(wa||'').replace(/\D/g,''); if(!wa) wa='5584999999999';
+        var msg='Olá Victor! Quero acesso à Edição IA. Meu email: '+(em||'(vou te passar)');
+        window.open('https://wa.me/'+wa+'?text='+encodeURIComponent(msg),'_blank');
+    };
+    window.edicaoRenderAcesso = function(){
+        var locked=document.getElementById('edicaoAcessoLocked');
+        var unlocked=document.getElementById('edicaoAcessoUnlocked');
+        var sub=document.getElementById('edicaoAcessoUnlockedSub');
+        if(!locked||!unlocked) return;
+        var at=null; try { at=JSON.parse(localStorage.getItem(EDICAO_ATIVADO_KEY)||'null'); } catch(e){}
+        var isAdmin=false; try { isAdmin=(typeof _adminLogged==='function'&&_adminLogged()); } catch(e){}
+        if(at && at.code){
+            var still=_edGetCodigos().some(function(c){return c.code===at.code;});
+            if(!still && !isAdmin){ at=null; try{ localStorage.removeItem(EDICAO_ATIVADO_KEY); }catch(e){} }
+        }
+        if(at || isAdmin){
+            locked.style.display='none'; unlocked.style.display='block';
+            if(sub) sub.textContent = isAdmin ? 'Você é o admin (acesso total).' : ('Vinculado a '+(at.email||'')+' · código '+(at.code||''));
+        } else { locked.style.display='block'; unlocked.style.display='none'; }
+    };
+
     // ─── State ───────────────────────────────────────────────────
     let _edicaoPhoto = null;
     let _edicaoMode = null; // single mode selection
@@ -26699,6 +27322,21 @@ Responda APENAS com a legenda pronta, sem explicações.`
 
         if (list) list.classList.add('has-selection');
 
+        // Unifica com o "Mais Presets" dinâmico: se escolheu um modo embutido,
+        // colapsa o Mais Presets (só o escolhido fica). Se escolheu importado, mantém.
+        try {
+            var _isImported = (mode && mode.indexOf('lr_') === 0);
+            var dynH = document.getElementById('edicaoModosLightroomHeader');
+            var dynL = document.getElementById('edicaoModosLightroomList');
+            if (!_isImported) {
+                window._edicaoChosenPresetName = '';
+                if (dynH) dynH.style.display = 'none';
+                if (dynL) dynL.style.display = 'none';
+            } else {
+                if (dynH) dynH.style.display = '';
+            }
+        } catch(e){}
+
         // Show inline intensity + extract section
         const ii = document.getElementById('edicaoIntensityInline');
         if (ii) ii.style.display = 'block';
@@ -26714,6 +27352,16 @@ Responda APENAS com a legenda pronta, sem explicações.`
         _edicaoMode = null;
         const list = document.getElementById('edicaoModosList');
         if (list) list.classList.remove('has-selection');
+        // Reabre tudo: volta o "Mais Presets" dinâmico e zera o escolhido
+        try {
+            window._edicaoChosenPresetName = '';
+            window._edicaoMaisPresetsExpanded = false;
+            var dynH = document.getElementById('edicaoModosLightroomHeader');
+            var dynL = document.getElementById('edicaoModosLightroomList');
+            if (dynH) dynH.style.display = '';
+            if (dynL) dynL.style.display = 'none';
+            if (typeof edicaoXmpRenderUserPanel === 'function') edicaoXmpRenderUserPanel();
+        } catch(e){}
         document.querySelectorAll('.edicao-mode-btn').forEach(btn => {
             btn.classList.remove('mode-active');
             btn.style.borderWidth = '1px';
@@ -26811,12 +27459,31 @@ Responda APENAS com a legenda pronta, sem explicações.`
                         status.textContent = '✅ Preset aplicado: ' + (names[best]||best);
                         status.style.color = '#51CF66';
                     }
+                    // Mostra a foto de referência carregada + botão de fechar
+                    try {
+                        const prev = document.getElementById('edicaoExtractPreview');
+                        const thumb = document.getElementById('edicaoExtractThumb');
+                        if (thumb) thumb.src = e.target.result;
+                        if (prev) prev.style.display = 'flex';
+                    } catch(err){}
                 }, 600);
             };
             img.src = e.target.result;
         };
         reader.readAsDataURL(input.files[0]);
+        try { input.value=''; } catch(e){}
     }
+
+    // Fecha/limpa a foto de referência (pra saber quando está ativa)
+    window.edicaoClearReference = function(){
+        var prev=document.getElementById('edicaoExtractPreview');
+        var thumb=document.getElementById('edicaoExtractThumb');
+        var status=document.getElementById('edicaoExtractStatus');
+        if(thumb) thumb.src='';
+        if(prev) prev.style.display='none';
+        if(status){ status.style.display='none'; status.textContent=''; }
+        if(typeof showToast==='function') showToast('Foto de referência removida','✕');
+    };
 
     // ── PRÉ-VISUALIZAÇÃO LADO A LADO ────────────────────────────
     // Cache da imagem carregada para evitar reload a cada update
@@ -27987,18 +28654,35 @@ const _P1_VICTOR_BUILTIN_PRESETS = [{"id": "p1_01_cross_processing_yellow_light"
     // ── Render ACTIVE presets in the public Edição IA panel ──
     // State for the collapsible "Mais Presets" section
     window._edicaoMaisPresetsExpanded = false;
+    window._edicaoChosenPresetName = '';
 
     function edicaoToggleMaisPresets() {
         window._edicaoMaisPresetsExpanded = !window._edicaoMaisPresetsExpanded;
-                const arrow = document.getElementById('edicaoMaisPresetsArrow');
-                if (container) container.style.display = window._edicaoMaisPresetsExpanded ? 'grid' : 'none';
+        var container = document.getElementById('edicaoModosLightroomList');
+        var header = document.getElementById('edicaoModosLightroomHeader');
+        var arrow = document.getElementById('edicaoMaisPresetsArrow');
+        if (container) container.style.display = window._edicaoMaisPresetsExpanded ? 'grid' : 'none';
         if (arrow) arrow.textContent = window._edicaoMaisPresetsExpanded ? '▼' : '▶';
+        var sub = document.getElementById('edicaoMaisPresetsSub');
+        if (sub) sub.textContent = window._edicaoChosenPresetName
+            ? ('✅ ' + window._edicaoChosenPresetName + ' · trocar preset')
+            : ('Toque para ' + (window._edicaoMaisPresetsExpanded ? 'fechar' : 'ver todos'));
         if (header) {
             header.style.background = window._edicaoMaisPresetsExpanded
                 ? 'linear-gradient(135deg,rgba(108,99,255,0.18),rgba(255,122,107,0.10))'
                 : 'linear-gradient(135deg,rgba(108,99,255,0.10),rgba(255,122,107,0.05))';
         }
     }
+
+    // Escolher um preset da lista → aplica, fecha e mostra o escolhido (com opção de trocar)
+    window.edicaoPickMaisPreset = function(mode){
+        try { if (typeof edicaoSelectMode === 'function') edicaoSelectMode(mode); } catch(e){}
+        var p = (typeof edicaoXmpGetByMode === 'function') ? edicaoXmpGetByMode(mode) : null;
+        window._edicaoChosenPresetName = p ? p.name : '';
+        window._edicaoMaisPresetsExpanded = false;
+        if (typeof edicaoXmpRenderUserPanel === 'function') edicaoXmpRenderUserPanel();
+        if (typeof showToast === 'function' && p) showToast('Preset aplicado: ' + p.name, '🎨');
+    };
 
     function edicaoXmpRenderUserPanel() {
         const list = _edicaoXmpLoad().filter(p => p.active);
@@ -28035,7 +28719,7 @@ const _P1_VICTOR_BUILTIN_PRESETS = [{"id": "p1_01_cross_processing_yellow_light"
                     <span style="font-size:18px;">🎨</span>
                     <div style="text-align:left;">
                         <div style="font-size:11px;color:#c4b5fd;font-weight:900;text-transform:uppercase;letter-spacing:1px;">Mais Presets P1 Victor</div>
-                        <div style="font-size:9px;color:#888;font-weight:600;margin-top:1px;">Toque para ${window._edicaoMaisPresetsExpanded ? 'fechar' : 'ver todos'}</div>
+                        <div id="edicaoMaisPresetsSub" style="font-size:9px;color:#888;font-weight:600;margin-top:1px;">${window._edicaoChosenPresetName ? ('✅ '+window._edicaoChosenPresetName+' · trocar preset') : ('Toque para '+(window._edicaoMaisPresetsExpanded ? 'fechar' : 'ver todos'))}</div>
                     </div>
                 </div>
                 <div style="display:flex;align-items:center;gap:7px;">
@@ -28048,7 +28732,7 @@ const _P1_VICTOR_BUILTIN_PRESETS = [{"id": "p1_01_cross_processing_yellow_light"
         if (container) {
             container.style.display = window._edicaoMaisPresetsExpanded ? 'grid' : 'none';
             container.innerHTML = list.map(p =>
-                `<button onclick="edicaoSelectMode('lr_${p.id}')" class="edicao-mode-btn" data-mode="lr_${p.id}" style="display:flex;align-items:center;gap:8px;padding:7px 10px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:10px;cursor:pointer;text-align:left;transition:all .25s;">
+                `<button onclick="edicaoPickMaisPreset('lr_${p.id}')" class="edicao-mode-btn" data-mode="lr_${p.id}" style="display:flex;align-items:center;gap:8px;padding:7px 10px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:10px;cursor:pointer;text-align:left;transition:all .25s;">
                     <div style="width:28px;height:28px;background:radial-gradient(circle,${p.badgeColor}66,${p.badgeColor}11);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;">${p.icon}</div>
                     <div style="flex:1;"><div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;"><span style="font-size:11px;color:#fff;font-weight:800;">${p.name}</span><span style="font-size:7px;color:#fff;background:${p.badgeColor};padding:1.5px 7px;border-radius:8px;font-weight:900;">${p.badgeText}</span></div><div class="mode-desc" style="font-size:9px;color:#666;margin-top:1px;">${p.description}</div></div>
                 </button>`
@@ -28422,7 +29106,7 @@ const _P1_VICTOR_BUILTIN_PRESETS = [{"id": "p1_01_cross_processing_yellow_light"
     <!-- SITE FOOTER v62 -->
     <footer class="site-footer">
         <div class="site-footer-brand">@invictorcliques</div>
-        <div class="site-footer-sub">Fotografia Esportiva Premium · Natal RN · 2026 · v194.0001</div>
+        <div class="site-footer-sub">Fotografia Esportiva Premium · Natal RN · 2026 · v211.0001</div>
         <div style="margin-top:12px;display:flex;justify-content:center;gap:16px;">
             <button onclick="openSocialLink('instagram')" style="background:none;border:none;color:#555;cursor:pointer;font-size:18px;transition:color .2s;" onmouseover="this.style.color='#E1306C'" onmouseout="this.style.color='#555'"><i class="fab fa-instagram"></i></button>
             <button onclick="openSocialLink('tiktok')" style="background:none;border:none;color:#555;cursor:pointer;font-size:18px;transition:color .2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#555'"><i class="fab fa-tiktok"></i></button>
@@ -28476,7 +29160,7 @@ const _P1_VICTOR_BUILTIN_PRESETS = [{"id": "p1_01_cross_processing_yellow_light"
             <div style="display:flex;gap:5px;margin-bottom:14px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:4px;">
                 <button onclick="presetsOnSetMode('clone')" id="presetsOnTabCloneBtn"
                     style="flex:1;padding:8px 4px;background:linear-gradient(135deg,#a78bfa,#7c3aed);color:#fff;border:none;border-radius:9px;font-size:10.5px;font-weight:800;cursor:pointer;">
-                    🔍 Estilo Parecido
+                    🎨 Copiar Estilo
                 </button>
                 <button onclick="presetsOnSetMode('studio')" id="presetsOnTabStudioBtn"
                     style="flex:1;padding:8px 4px;background:transparent;color:#555;border:none;border-radius:9px;font-size:10.5px;font-weight:800;cursor:pointer;">
@@ -28745,7 +29429,7 @@ const _P1_VICTOR_BUILTIN_PRESETS = [{"id": "p1_01_cross_processing_yellow_light"
                 <!-- CTA -->
                 <button onclick="document.getElementById('presetsOnMainContent').style.display='block';document.getElementById('presetsOnExplainTab').style.display='none';document.getElementById('presetsOnTabCloneBtn').style.background='linear-gradient(135deg,#a78bfa,#7c3aed)';document.getElementById('presetsOnTabCloneBtn').style.color='#fff';document.getElementById('presetsOnTabExplainBtn').style.background='transparent';document.getElementById('presetsOnTabExplainBtn').style.color='#555';"
                     style="width:100%;padding:13px;background:linear-gradient(135deg,#a78bfa,#7c3aed);color:#fff;border:none;border-radius:11px;font-weight:900;font-size:13px;cursor:pointer;box-shadow:0 6px 20px rgba(167,139,250,0.35);">
-                    🔍 Ir para Estilo Parecido →
+                    🎨 Ir para Copiar Estilo →
                 </button>
             </div><!-- /presetsOnExplainTab -->
 
@@ -28774,7 +29458,7 @@ const _P1_VICTOR_BUILTIN_PRESETS = [{"id": "p1_01_cross_processing_yellow_light"
     // travar as atualizações. 18s + pausa quando a aba está oculta mantém a
     // quota saudável mesmo com várias contas. O Gist (grátis) cobre o resto.
     var POLL_MS = 10000;
-    var BUILD = 'v194-GISTAUTH-' + Date.now();
+    var BUILD = 'v211-PAGE-LOCK' + Date.now();
 
     window._invictorSync = {
         build: BUILD, log: [], lastFetch: 0, lastApplied: 0,
@@ -28831,11 +29515,20 @@ const _P1_VICTOR_BUILTIN_PRESETS = [{"id": "p1_01_cross_processing_yellow_light"
             } catch(e) {}
         }
 
-        ['invictorAdminData','focoEvents','banlekProducts','_lastUpdate'].forEach(function(k) {
+        ['invictorAdminData','focoEvents','banlekProducts','invictorHiddenTenis_v1','FOTOS_TENIS_BANCO_v1','edicaoCodigos_v1','promoBannerConfig_v1','_lastUpdate'].forEach(function(k) {
             if (data[k]) {
                 try { localStorage.setItem(k, typeof data[k] === 'string' ? data[k] : JSON.stringify(data[k])); } catch(e) {}
             }
         });
+        try { if (typeof applyPromoBanner === 'function') applyPromoBanner(); } catch(e) {}
+        // Se a lista de tênis ocultos mudou, re-renderiza o catálogo pra sumir na hora
+        try {
+            if (data.invictorHiddenTenis_v1 && data.invictorHiddenTenis_v1 !== window.__lastHiddenTenis) {
+                window.__lastHiddenTenis = data.invictorHiddenTenis_v1;
+                if (typeof window._fotoBancoAdminRefresh === 'function') window._fotoBancoAdminRefresh();
+                ['renderShoeShop','renderTenisShop','renderProcureResults'].forEach(function(fn){ try { if (typeof window[fn]==='function') window[fn](); } catch(e){} });
+            }
+        } catch(e) {}
 
         try { if (typeof _adjustMenuGrid === 'function') _adjustMenuGrid(); } catch(e) {}
 
@@ -29094,6 +29787,11 @@ const _P1_VICTOR_BUILTIN_PRESETS = [{"id": "p1_01_cross_processing_yellow_light"
                 var adm = document.getElementById('adminPanelOverlay');
                 if (adm && (adm.classList.contains('active') || adm.style.display === 'block' || adm.style.display === 'flex')) return;
             } catch(e) {}
+            // FAIL-SAFE: páginas travadas (desativadas) ficam SEMPRE escondidas,
+            // mesmo sem config carregada (JSON esgotado/sync falhou).
+            var _lock = {};
+            try { (typeof _effectiveLock==='function' ? _effectiveLock() : []).forEach(function(id){ _lock[id]=1; }); } catch(e){}
+            try { if (typeof _enforceBtnLock === 'function') _enforceBtnLock(); } catch(e){}
             try {
                 var sb = (window.__btnCfg && window.__btnCfg.length) ? window.__btnCfg : null;
                 if (!sb) {
@@ -29107,9 +29805,9 @@ const _P1_VICTOR_BUILTIN_PRESETS = [{"id": "p1_01_cross_processing_yellow_light"
                     var btn = document.getElementById('menuBtn_' + b.id);
                     if (!btn) return;
                     var isHidden = btn.style.display === 'none';
-                    if (b.ativo === false && !isHidden) {
+                    if ((b.ativo === false || _lock[b.id]) && !isHidden) {
                         btn.style.setProperty('display', 'none', 'important');
-                    } else if (b.ativo !== false && isHidden) {
+                    } else if (b.ativo !== false && !_lock[b.id] && isHidden) {
                         btn.style.removeProperty('display');
                     }
                 });
@@ -29215,6 +29913,321 @@ const _P1_VICTOR_BUILTIN_PRESETS = [{"id": "p1_01_cross_processing_yellow_light"
         var p = document.getElementById('invictorDiagPanel');
         if (p) { p.style.display = 'block'; updateDiag(); }
     };
+})();
+</script>
+<!-- ════════════════════════════════════════════════════════════════
+     SKIN PREMIUM DO PAINEL ADMIN (v195+) — só visual, não muda nada
+     da lógica nem dos dados. Escopo 100% dentro de #adminPanelOverlay.
+     ════════════════════════════════════════════════════════════════ -->
+<style id="admin-premium-skin">
+  @keyframes apAurora {
+    0%   { transform: translate(-8%, -6%) scale(1.05); opacity:.55; }
+    50%  { transform: translate(6%, 8%) scale(1.15);  opacity:.8; }
+    100% { transform: translate(-8%, -6%) scale(1.05); opacity:.55; }
+  }
+  @keyframes apTitleShine {
+    0%,100% { background-position: 0% 50%; }
+    50%     { background-position: 100% 50%; }
+  }
+  @keyframes apPanelIn {
+    from { opacity:0; transform: translateY(14px) scale(.985); }
+    to   { opacity:1; transform: translateY(0) scale(1); }
+  }
+  @keyframes apGlowPulse {
+    0%,100% { box-shadow:0 0 0 1px rgba(255,170,40,.18), 0 14px 50px rgba(0,0,0,.6); }
+    50%     { box-shadow:0 0 0 1px rgba(255,170,40,.40), 0 18px 60px rgba(255,120,0,.10); }
+  }
+
+  /* ── Painel: vidro + aurora animada de fundo ── */
+  #adminPanelMain {
+    position: relative;
+    background: linear-gradient(165deg,#0c0a14 0%, #0a0813 55%, #0d0a16 100%) !important;
+    backdrop-filter: blur(10px);
+    animation: apPanelIn .42s cubic-bezier(.2,.9,.25,1), apGlowPulse 6s ease-in-out infinite 1s;
+    border: 1px solid rgba(255,170,40,.16) !important;
+    overflow: hidden;
+  }
+  #adminPanelMain::before {
+    content:''; position:absolute; inset:-30%; z-index:0; pointer-events:none;
+    background:
+      radial-gradient(38% 38% at 22% 18%, rgba(255,120,0,.16), transparent 70%),
+      radial-gradient(40% 40% at 82% 28%, rgba(124,58,237,.14), transparent 70%),
+      radial-gradient(45% 45% at 60% 92%, rgba(255,200,40,.10), transparent 72%);
+    filter: blur(18px);
+    animation: apAurora 16s ease-in-out infinite;
+  }
+  #adminPanelMain > * { position: relative; z-index: 1; }
+
+  /* ── Header em vidro ── */
+  #adminHeader {
+    background: linear-gradient(180deg, rgba(20,16,28,.92), rgba(14,11,22,.72)) !important;
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid rgba(255,170,40,.14) !important;
+  }
+  #adminHeader .ap-logo {
+    background: radial-gradient(circle at 35% 30%, #ff9a3d, #ff6a00 70%) !important;
+    box-shadow: 0 0 0 1px rgba(255,200,120,.5), 0 6px 18px rgba(255,106,0,.45), inset 0 0 10px rgba(255,255,255,.25) !important;
+    border: none !important;
+  }
+  #adminHeader .ap-brand-row h2 {
+    background: linear-gradient(90deg,#ffd27a,#ff8a3d,#ffcf6a,#ff7a2d);
+    background-size: 220% auto;
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: apTitleShine 5s ease-in-out infinite;
+    letter-spacing: .3px;
+  }
+
+  /* ── Cartões de KPI: vidro + brilho no topo + hover que levanta ── */
+  #adminPanelOverlay .admin-stat-card {
+    background: linear-gradient(160deg, rgba(255,255,255,.045), rgba(255,255,255,.012)) !important;
+    border: 1px solid rgba(255,255,255,.08) !important;
+    border-radius: 16px !important;
+    backdrop-filter: blur(6px);
+    transition: transform .25s cubic-bezier(.2,.9,.25,1), box-shadow .25s, border-color .25s !important;
+    overflow: hidden;
+  }
+  #adminPanelOverlay .admin-stat-card::after {
+    content:''; position:absolute; top:0; left:0; right:0; height:3px;
+    background: linear-gradient(90deg,#ff6a00,#ffd166,#7c3aed);
+    opacity:.0; transition:opacity .25s;
+  }
+  #adminPanelOverlay .admin-stat-card:hover {
+    transform: translateY(-4px) !important;
+    border-color: rgba(255,170,40,.4) !important;
+    box-shadow: 0 14px 34px rgba(0,0,0,.45), 0 0 26px rgba(255,120,0,.14) !important;
+  }
+  #adminPanelOverlay .admin-stat-card:hover::after { opacity:.9; }
+  #adminPanelOverlay .admin-stat-num {
+    text-shadow: 0 0 18px currentColor; filter: saturate(1.15);
+  }
+
+  /* ── Sidebar: aba ativa com gradiente + indicador lateral brilhante ── */
+  #adminSidebar .admin-tab-btn {
+    border-radius: 11px !important;
+    transition: background .2s, color .2s, transform .15s, box-shadow .2s !important;
+    position: relative;
+  }
+  #adminSidebar .admin-tab-btn:hover:not(.active) {
+    transform: translateX(3px);
+    background: rgba(255,170,40,.08) !important;
+  }
+  #adminSidebar .admin-tab-btn.active {
+    background: linear-gradient(135deg, rgba(255,106,0,.22), rgba(124,58,237,.16)) !important;
+    color:#ffd9a8 !important;
+    box-shadow: inset 0 0 0 1px rgba(255,170,40,.3), 0 6px 18px rgba(255,106,0,.12) !important;
+  }
+  #adminSidebar .admin-tab-btn.active::before {
+    content:''; position:absolute; left:-2px; top:18%; bottom:18%; width:3px; border-radius:3px;
+    background: linear-gradient(180deg,#ff8a3d,#ffd166);
+    box-shadow: 0 0 10px rgba(255,150,40,.9);
+  }
+
+  /* ── Botões de ação (toolbar) com brilho que passa ── */
+  #adminPanelOverlay .ap-tool-publish {
+    background: linear-gradient(135deg,#ff7a18,#ff5e00 55%,#ff8a00) !important;
+    box-shadow: 0 8px 22px rgba(255,106,0,.32) !important;
+    position: relative; overflow: hidden; border:none !important;
+  }
+  #adminPanelOverlay .ap-tool-publish::after {
+    content:''; position:absolute; top:0; left:-120%; width:60%; height:100%;
+    background: linear-gradient(100deg, transparent, rgba(255,255,255,.45), transparent);
+    transform: skewX(-18deg); transition:none;
+  }
+  #adminPanelOverlay .ap-tool-publish:hover::after { animation: apShine .8s ease; }
+  @keyframes apShine { from{left:-120%;} to{left:140%;} }
+  #adminPanelOverlay .ap-tool-cache,
+  #adminPanelOverlay .ap-tool-storage,
+  #adminPanelOverlay .ap-tool-menu {
+    transition: transform .15s, box-shadow .2s, background .2s !important;
+  }
+  #adminPanelOverlay .ap-tool-cache:hover,
+  #adminPanelOverlay .ap-tool-storage:hover,
+  #adminPanelOverlay .ap-tool-menu:hover { transform: translateY(-1px); }
+
+  /* ── Header buttons ── */
+  #adminPanelOverlay .ap-btn-ia,
+  #adminPanelOverlay .ap-btn-presets {
+    transition: transform .15s, box-shadow .2s, filter .2s !important;
+  }
+  #adminPanelOverlay .ap-btn-ia:hover,
+  #adminPanelOverlay .ap-btn-presets:hover { transform: translateY(-1px); filter: brightness(1.12); }
+  #adminPanelOverlay .ap-btn-close:hover { color:#ff6b6b !important; transform: rotate(90deg); transition: transform .25s, color .2s; }
+
+  /* ── Inputs/selects com foco que brilha (sem mudar layout) ── */
+  #adminPanelOverlay input:focus,
+  #adminPanelOverlay textarea:focus,
+  #adminPanelOverlay select:focus {
+    border-color: rgba(255,170,40,.55) !important;
+    box-shadow: 0 0 0 3px rgba(255,150,40,.12) !important;
+    outline: none !important;
+  }
+
+  /* ── Scrollbar fino e elegante dentro do painel ── */
+  #adminPanelOverlay *::-webkit-scrollbar { width:8px; height:8px; }
+  #adminPanelOverlay *::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg,#ff7a18,#7c3aed); border-radius:8px;
+  }
+  #adminPanelOverlay *::-webkit-scrollbar-track { background: rgba(255,255,255,.03); }
+
+  /* ════════ PÁGINAS INTERNAS DAS ABAS ════════ */
+  @keyframes apSectionIn {
+    from { opacity:0; transform: translateY(12px); filter: blur(2px); }
+    to   { opacity:1; transform: translateY(0);    filter: blur(0); }
+  }
+  #adminPanelOverlay .admin-section.active {
+    animation: apSectionIn .4s cubic-bezier(.2,.9,.25,1) !important;
+  }
+
+  /* Rótulos de seção: de quase invisíveis → divisores elegantes com brilho */
+  #adminPanelOverlay .admin-section-label {
+    color: #e0a945 !important;
+    font-size: 10px !important;
+    display: flex; align-items: center; gap: 8px;
+  }
+  #adminPanelOverlay .admin-section-label::before {
+    content:''; width:14px; height:2px; border-radius:2px; flex-shrink:0;
+    background: linear-gradient(90deg,#ff8a3d,#ffd166);
+    box-shadow:0 0 8px rgba(255,150,40,.7);
+  }
+  #adminPanelOverlay .admin-section-label::after {
+    content:''; flex:1; height:1px;
+    background: linear-gradient(90deg, rgba(255,170,40,.28), transparent);
+  }
+
+  /* Campos: label acende quando o campo está em foco; borda reage ao hover */
+  #adminPanelOverlay .admin-section .form-group:focus-within label { color:#ffb04d !important; }
+  #adminPanelOverlay .admin-section .form-group input:hover,
+  #adminPanelOverlay .admin-section .form-group textarea:hover,
+  #adminPanelOverlay .admin-section .form-group select:hover {
+    border-color: rgba(255,170,40,.3) !important;
+  }
+
+  /* Linhas de toggle viram cartões de vidro que reagem ao mouse */
+  #adminPanelOverlay .feature-toggle-list .ft-row {
+    background: linear-gradient(160deg, rgba(255,255,255,.045), rgba(255,255,255,.012));
+    border: 1px solid rgba(255,255,255,.07);
+    transition: transform .15s, border-color .2s, box-shadow .2s;
+  }
+  #adminPanelOverlay .feature-toggle-list .ft-row:hover {
+    transform: translateX(3px);
+    border-color: rgba(255,170,40,.32);
+    box-shadow: 0 6px 18px rgba(0,0,0,.3);
+  }
+
+  /* Botão primário: gradiente dourado + brilho que passa + leve elevação */
+  #adminPanelOverlay .btn-admin {
+    background: linear-gradient(135deg,#ffb43d,#ff8a00 60%,#ffc24d) !important;
+    position: relative; overflow: hidden;
+    transition: transform .15s, box-shadow .2s, filter .2s !important;
+  }
+  #adminPanelOverlay .btn-admin:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 26px rgba(255,138,0,.3);
+    filter: brightness(1.05);
+  }
+  #adminPanelOverlay .btn-admin::after {
+    content:''; position:absolute; top:0; left:-120%; width:55%; height:100%;
+    background: linear-gradient(100deg, transparent, rgba(255,255,255,.4), transparent);
+    transform: skewX(-18deg);
+  }
+  #adminPanelOverlay .btn-admin:hover::after { animation: apShine .8s ease; }
+
+  /* Respeita quem prefere menos animação */
+  @media (prefers-reduced-motion: reduce) {
+    #adminPanelMain, #adminPanelMain::before, #adminHeader .ap-brand-row h2,
+    #adminPanelOverlay .admin-section.active { animation: none !important; }
+  }
+</style>
+<!-- ════════════════════════════════════════════════════════════════
+     INOVAÇÕES DO SITE (visitante) — v200. Só efeitos/recursos novos,
+     aditivos. Regra de ouro: se qualquer JS falhar, NADA some — o
+     conteúdo fica sempre visível. Não toca em dados nem em lógica.
+     ════════════════════════════════════════════════════════════════ -->
+<style id="visitor-enhance-skin">
+  @keyframes vHeroIn { from{opacity:0;transform:translateY(16px) scale(.96);} to{opacity:1;transform:none;} }
+  @keyframes vFadeUp { from{opacity:0;transform:translateY(18px);} to{opacity:1;transform:none;} }
+  @keyframes vCouponPulse { 0%,100%{box-shadow:0 8px 24px rgba(255,106,0,.3);} 50%{box-shadow:0 10px 34px rgba(255,106,0,.55),0 0 0 4px rgba(255,140,0,.08);} }
+
+  /* Entrada do topo (auto-completa — nunca deixa nada invisível) */
+  .profile-photo { animation: vHeroIn .6s cubic-bezier(.2,.9,.25,1) both; }
+  .profile-section h1 { animation: vHeroIn .6s .08s cubic-bezier(.2,.9,.25,1) both; }
+  .coupon-btn { animation: vHeroIn .6s .16s cubic-bezier(.2,.9,.25,1) both, vCouponPulse 3.2s ease-in-out 1.4s infinite; }
+  .profile-section .subtitle { animation: vHeroIn .55s .24s both; }
+  .social-links { animation: vHeroIn .55s .32s both; }
+
+  /* Botões do menu: hover premium (levanta, brilha, ícone "pula") */
+  .menu-btn { transition: transform .18s cubic-bezier(.2,.9,.25,1), box-shadow .22s, border-color .22s, filter .2s; }
+  .menu-btn:hover { transform: translateY(-4px) scale(1.015); box-shadow: 0 14px 32px rgba(0,0,0,.4), 0 0 22px rgba(255,120,0,.14); filter: brightness(1.06); }
+  .menu-btn:active { transform: translateY(-1px) scale(.99); }
+  .menu-btn .menu-icon { transition: transform .2s cubic-bezier(.2,.9,.25,1); display:inline-block; }
+  .menu-btn:hover .menu-icon { transform: scale(1.18) rotate(-5deg); }
+
+  /* Redes sociais: pop no hover */
+  .social-btn { transition: transform .18s, box-shadow .2s, filter .2s; }
+  .social-btn:hover { transform: translateY(-3px) scale(1.1); filter: brightness(1.12); }
+
+  /* Barra de stats: leve realce */
+  .stats-bar-item { transition: transform .15s; }
+  .stats-bar-item:hover { transform: translateY(-2px); }
+
+  /* Scroll-reveal — só esconde se o JS marcar o body como pronto */
+  body.v-reveal-ready .v-reveal { opacity: 0; }
+  body.v-reveal-ready .v-reveal.v-in { animation: vFadeUp .55s cubic-bezier(.2,.9,.25,1) both; }
+
+  /* Barra de progresso de rolagem (topo) */
+  #vScrollProgress { position: fixed; top: 0; left: 0; height: 3px; width: 0%; z-index: 99991;
+    background: linear-gradient(90deg,#ff6a00,#ffd166); box-shadow: 0 0 8px rgba(255,150,40,.6);
+    pointer-events: none; transition: width .08s linear; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .profile-photo,.profile-section h1,.coupon-btn,.profile-section .subtitle,.social-links,
+    body.v-reveal-ready .v-reveal.v-in { animation: none !important; }
+    body.v-reveal-ready .v-reveal { opacity: 1 !important; }
+  }
+</style>
+<script>
+(function(){
+  function ready(fn){ if(document.readyState!=='loading') fn(); else document.addEventListener('DOMContentLoaded',fn); }
+  ready(function(){
+    try {
+      // Aplica o banner de promoção (tênis girando) ao carregar
+      try { if (typeof applyPromoBanner === 'function') applyPromoBanner(); } catch(e){}
+      // Não roda dentro do painel admin
+      // Barra de progresso de rolagem
+      var prog = document.createElement('div'); prog.id='vScrollProgress'; document.body.appendChild(prog);
+
+      window.addEventListener('scroll', function(){
+        var h = document.documentElement;
+        var max = (h.scrollHeight - h.clientHeight) || 1;
+        var p = Math.min(100, Math.max(0, (window.scrollY / max) * 100));
+        prog.style.width = p + '%';
+      }, {passive:true});
+
+      // Scroll-reveal seguro (só ativa com IntersectionObserver disponível)
+      if ('IntersectionObserver' in window) {
+        var targets = [];
+        document.querySelectorAll('.stats-bar-item').forEach(function(el){ el.classList.add('v-reveal'); targets.push(el); });
+        if (targets.length) {
+          document.body.classList.add('v-reveal-ready');
+          var io = new IntersectionObserver(function(entries){
+            entries.forEach(function(e){
+              if (e.isIntersecting){
+                var el = e.target;
+                setTimeout(function(){ el.classList.add('v-in'); }, el._vDelay || 0);
+                io.unobserve(el);
+              }
+            });
+          }, { threshold: 0.06 });
+          targets.forEach(function(el,i){ el._vDelay = (i % 6) * 55; io.observe(el); });
+          // Rede de segurança: revela qualquer item preso depois de 2.5s
+          setTimeout(function(){
+            document.querySelectorAll('.v-reveal:not(.v-in)').forEach(function(el){ el.classList.add('v-in'); });
+          }, 2500);
+        }
+      }
+    } catch(e) { /* qualquer erro: site segue normal, nada some */ }
+  });
 })();
 </script>
 </body>
