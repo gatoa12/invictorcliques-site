@@ -5522,7 +5522,7 @@ select option{background:#17131f;color:#fff;}
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v223.0001</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v233.0001</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -5695,6 +5695,7 @@ select option{background:#17131f;color:#fff;}
                                 <div class="form-group" style="display:flex;align-items:center;gap:10px;padding-top:28px;"><input type="checkbox" id="ofertaBestseller" style="width:18px;height:18px;cursor:pointer;accent-color:var(--primary);"><label style="margin:0;cursor:pointer;" for="ofertaBestseller">⭐ Bestseller</label></div>
                             </div>
                             <div class="form-group"><label>🖼️ URL da Imagem (opcional)</label><input type="text" id="ofertaImageUrl" placeholder="https://exemplo.com/imagem.jpg" oninput="previewImageFromUrl(this.value)"></div>
+                            <div class="form-group"><label>🔗 Link de afiliado (pra onde o botão "Comprar" leva)</label><input type="text" id="ofertaLink" placeholder="https://seu-link-de-afiliado.com/..."></div>
                             <div class="form-group">
                                 <div class="file-upload-wrapper" onclick="document.getElementById('imagemUpload').click();">
                                     <input type="file" id="imagemUpload" accept="image/*" onchange="handleImageUpload(this)">
@@ -8149,6 +8150,15 @@ Poderia me ajudar? 🙏"
         <h2 style="display:flex;align-items:center;justify-content:center;gap:10px;font-size:1.9em!important;">
             <span style="font-size:0.85em;">📸</span> Foco Radical <span style="font-size:0.55em;background:rgba(255,215,0,0.1);border:1px solid rgba(255,215,0,0.3);padding:3px 10px;border-radius:20px;letter-spacing:1px;vertical-align:middle;">SUAS FOTOS</span>
         </h2>
+        <div id="focoTopAI" style="padding:0 16px;max-width:600px;margin:0 auto;"></div>
+        <style>
+          #focoTopAI > div { max-width:600px; margin-left:auto; margin-right:auto; }
+          #toolSurvey #svTone, #toolSurvey #svAuth { flex-wrap:wrap !important; }
+          #toolSurvey #svTone button, #toolSurvey #svAuth button { flex:1 1 90px !important; min-width:90px; }
+          @media (max-width:480px){
+            #toolSurvey #svAuth button { font-size:9.5px !important; padding:9px 5px !important; }
+          }
+        </style>
         <div style="padding: 0 20px; max-width: 1100px; margin: 0 auto;">
 
             <!-- Info banner v107 — enhanced with social proof -->
@@ -10133,10 +10143,9 @@ Poderia me ajudar? 🙏"
               if(tab==='procure' && typeof toolShoeInject==='function'){ setTimeout(toolShoeInject,40); setTimeout(toolShoeQuizInject,60); }
               if(tab==='strava' && typeof toolPaceInject==='function'){ setTimeout(toolPaceInject,40); setTimeout(toolRaceStratInject,60); }
               if(tab==='edicao' && typeof toolBAInject==='function'){ setTimeout(toolBAInject,40); setTimeout(toolPkgInject,60); }
-              if(tab==='foco' && typeof toolFocoInject==='function'){ setTimeout(toolSurveyInject,40); setTimeout(toolFocoInject,55); setTimeout(toolFocoExtraInject,70); }
+              if(tab==='foco' && typeof toolSurveyInject==='function'){ setTimeout(toolSurveyInject,40); setTimeout(toolFocoInject,55); setTimeout(toolFocoExtraInject,70); }
               if(tab==='preview' && typeof toolCapInject==='function') setTimeout(toolCapInject,60);
-              // 🤖 Assistente IA em todas as páginas principais
-              if(typeof invAIInject==='function' && ['foco','strava','procure','preview','verificar','ofertas'].indexOf(tab)>=0){ setTimeout(function(){ invAIInject(tab); }, 120); }
+              // (Assistente IA removido da página de fotos a pedido)
               if(typeof invTagCatalogs==='function'){ setTimeout(invTagCatalogs, 350); setTimeout(invTagCatalogs, 1200); }
             }catch(e){}
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -12378,7 +12387,7 @@ Poderia me ajudar? 🙏"
             //    sincronizam pra TODOS os visitantes e entre aparelhos do admin
             ['notify_topic','chat_db_url','chat_sb_url','chat_sb_key','chat_sb_table','chat_pantry',
              'invPalette','siteThemeColors','invictorStravaDefaultColor','catalog_layout','invictorEdicaoCodes','invictorMarketplaces',
-             'foco_steps','foco_survey_cfg','foco_prices','ai_pages'].forEach(function(k){
+             'foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','ai_pages'].forEach(function(k){
                 try { var v = localStorage.getItem(k); if (v != null) payload[k] = v; } catch(e) {}
             });
 
@@ -12596,7 +12605,7 @@ Poderia me ajudar? 🙏"
                 'invictorEdicaoEmails', 'invictorEdicaoAtivos',
                 // === Configs novas: chat ao vivo / ntfy / paleta / conteúdo / IA ===
                 'notify_topic','chat_db_url','chat_sb_url','chat_sb_key','chat_sb_table','chat_pantry',
-                'invPalette','siteThemeColors','invictorStravaDefaultColor','catalog_layout','invictorEdicaoCodes','invictorMarketplaces','foco_steps','foco_survey_cfg','foco_prices','ai_pages',
+                'invPalette','siteThemeColors','invictorStravaDefaultColor','catalog_layout','invictorEdicaoCodes','invictorMarketplaces','foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','ai_pages',
                 // === Last update marker ===
                 '_lastUpdate'
             ];
@@ -13018,8 +13027,9 @@ Poderia me ajudar? 🙏"
 
             const urlInput = document.getElementById('ofertaImageUrl') ? document.getElementById('ofertaImageUrl').value.trim() : '';
             let imagem = imageInput.dataset.image || urlInput || generateAutoImage(nome);
+            const link = document.getElementById('ofertaLink') ? document.getElementById('ofertaLink').value.trim() : '';
 
-            currentData.ofertas.push({ nome, original, sale, imagem, stock, bestseller, id: Date.now() });
+            currentData.ofertas.push({ nome, original, sale, imagem, stock, bestseller, link, id: Date.now() });
             saveData();
             
             document.getElementById('ofertaNome').value = '';
@@ -13027,6 +13037,7 @@ Poderia me ajudar? 🙏"
             document.getElementById('ofertaSale').value = '';
             document.getElementById('ofertaStock').value = '10';
             document.getElementById('ofertaBestseller').checked = false;
+            if (document.getElementById('ofertaLink')) document.getElementById('ofertaLink').value = '';
             document.getElementById('imagemUpload').value = '';
             if (document.getElementById('ofertaImageUrl')) document.getElementById('ofertaImageUrl').value = '';
             document.getElementById('imagemUpload').dataset.image = '';
@@ -13649,6 +13660,10 @@ Poderia me ajudar? 🙏"
         function _ofertaOpenModal(idx) {
             const o = currentData.ofertas[parseInt(idx)];
             if (!o) return;
+            // Se a oferta tem link de afiliado, leva direto pra lá
+            if (o.link && /^https?:\/\//i.test(o.link)) {
+                try { window.open(o.link, '_blank', 'noopener'); return; } catch(e) {}
+            }
             openPromoModal(o.nome, currentData.telegram || '');
         }
 
@@ -22647,6 +22662,35 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
       return true;
     }
     function _toolH(t,sub){ return '<div style="font-size:13px;font-weight:900;color:var(--primary);margin-bottom:3px;">'+t+'</div><div style="font-size:10.5px;color:#888;margin-bottom:12px;">'+sub+'</div>'; }
+    // Monta os blocos do Foco (Assistente IA + Antes de ver suas fotos) JÁ na tela
+    // inicial — pois o Foco abre ativo sem passar pelo switchTab.
+    (function _focoInitialMount(){
+      function go(){
+        try{
+          var fs=document.getElementById('focoSection');
+          if(fs && !fs.classList.contains('hidden')){
+            if(typeof toolSurveyInject==='function') setTimeout(toolSurveyInject,250);
+            if(typeof toolFocoInject==='function') setTimeout(toolFocoInject,350);
+            if(typeof toolFocoExtraInject==='function') setTimeout(toolFocoExtraInject,400);
+          }
+        }catch(e){}
+      }
+      if(document.readyState!=='loading') setTimeout(go,400); else document.addEventListener('DOMContentLoaded',function(){ setTimeout(go,400); });
+    })();
+    // Monta um card no ponto fixo do topo da página de fotos (acima do catálogo)
+    function _toolMountTop(cardId, html){
+      if(document.getElementById(cardId)) return false;
+      var ft=document.getElementById('focoTopAI');
+      if(ft){ var w=document.createElement('div'); w.id=cardId; w.style.cssText='padding:0 16px;'; w.innerHTML=html; ft.appendChild(w); return true; }
+      return _toolMount('focoSection', cardId, html);
+    }
+    // Monta um card ABAIXO do catálogo (depois dos eventos) na página de fotos
+    function _toolMountBottom(cardId, html){
+      if(document.getElementById(cardId)) return false;
+      var res=document.getElementById('focoRadicalResults');
+      if(res && res.parentNode){ var w=document.createElement('div'); w.id=cardId; w.style.cssText='padding:0 16px;margin-top:18px;'; w.innerHTML=html; res.parentNode.appendChild(w); return true; }
+      return _toolMount('focoSection', cardId, html);
+    }
     var _toolInStyle='width:100%;padding:11px;background:rgba(255,255,255,0.05);border:1.5px solid rgba(255,255,255,0.12);border-radius:10px;color:#fff;font-size:14px;outline:none;box-sizing:border-box;';
 
     // 1) PROCURE → Conversor de numeração de tênis
@@ -22721,11 +22765,13 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
     ]};
     function _stepsCfg(){ try{ var v=JSON.parse(localStorage.getItem('foco_steps')); if(v&&v.steps&&v.steps.length) return v; }catch(e){} return JSON.parse(JSON.stringify(STEPS_DEFAULT)); }
     window.toolFocoInject=function(){
+      var vis=(function(){ try{ var v=localStorage.getItem('foco_steps_visible'); return v===null?true:v==='1'; }catch(e){ return true; } })();
+      if(!vis){ var ex=document.getElementById('toolFoco'); if(ex) ex.remove(); return; }
       var cfg=_stepsCfg();
       var esc=function(s){return (s||'').replace(/</g,'&lt;');};
       var step=function(n,t,d){return '<div style="display:flex;gap:11px;align-items:flex-start;padding:9px 0;"><div style="width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--primary),#FF9A00);color:#000;font-weight:900;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;">'+n+'</div><div><div style="font-size:12px;font-weight:800;color:#fff;">'+esc(t)+'</div><div style="font-size:10.5px;color:#999;">'+esc(d)+'</div></div></div>';};
       var html=_toolCard(_toolH(esc(cfg.header),esc(cfg.sub))+cfg.steps.map(function(s,i){return step(i+1,s.t,s.d);}).join(''));
-      if(!_toolMountAfter('toolSurvey','toolFoco',html)) _toolMount('focoSection','toolFoco',html);
+      _toolMountBottom('toolFoco',html);
     };
 
     // 5) PREVIEW INSTA → Gerador de legenda + hashtags
@@ -22858,7 +22904,7 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
       var saved=_surveyLoad(); var scfg=_surveyCfg();
       var _e=function(s){return (s||'').replace(/</g,'&lt;');};
       var tb='flex:1;padding:9px;border:1px solid rgba(255,255,255,0.12);border-radius:10px;font-weight:800;font-size:10.5px;cursor:pointer;background:rgba(255,255,255,0.05);color:#bbb;';
-      _toolMount('focoSection','toolSurvey',_toolCard(_toolH(_e(scfg.header),_e(scfg.sub))
+      _toolMountTop('toolSurvey',_toolCard(_toolH(_e(scfg.header),_e(scfg.sub))
         +'<div id="toolSurveyForm">'
         +'<input id="svInsta" placeholder="@ do seu Instagram" value="'+(saved.insta||'').replace(/"/g,'&quot;')+'" style="'+_toolInStyle+'margin-bottom:12px;">'
         +'<div style="font-size:10px;color:#9aa;font-weight:800;margin-bottom:6px;">COMO VOCÊ GOSTA DAS SUAS FOTOS?</div>'
@@ -22924,15 +22970,21 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
     ];
     function _priceLoad(){ try{var v=JSON.parse(localStorage.getItem('foco_prices')); if(v&&v.length)return v;}catch(e){} return PRICE_DEFAULT.slice(); }
     window.toolFocoExtraInject=function(){
+      var priceVis=(function(){ try{ var v=localStorage.getItem('foco_price_visible'); return v===null?true:v==='1'; }catch(e){ return true; } })();
+      var ctaVis=(function(){ try{ var v=localStorage.getItem('foco_cta_visible'); return v===null?true:v==='1'; }catch(e){ return true; } })();
+      if(!priceVis && !ctaVis){ var ex0=document.getElementById('toolFocoExtra'); if(ex0) ex0.remove(); return; }
       var url=(_focoUrl()||'https://invictorcliques.focoradical.com.br/');
-      var prices=_priceLoad();
-      var rows=prices.map(function(t,i){return '<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:11px;margin-bottom:8px;"><div><div style="font-size:12px;font-weight:800;color:#fff;">'+t.n+'</div><div style="font-size:10px;color:#9aa;">'+t.d+'</div></div><div style="font-size:16px;font-weight:900;color:var(--primary);white-space:nowrap;">R$ '+t.p+'</div></div>';}).join('');
-      var html=_toolCard(_toolH('💸 Tabela de valores','Da digital pra redes até a foto TOP editada — escolha o que combina com você.')
-        +rows
-        +'<a onclick="openExtLink(\''+url+'\',\'Foco Radical\');return false;" href="'+url+'" style="display:block;text-align:center;margin-top:6px;padding:14px;border-radius:12px;font-weight:900;font-size:14px;text-decoration:none;cursor:pointer;background:linear-gradient(135deg,#FC4C02,#FF9A00);color:#fff;box-shadow:0 6px 18px rgba(252,76,2,.3);">📸 Ver e comprar minhas fotos no Foco Radical</a>'
-        +'<div style="text-align:center;margin-top:8px;"><span onclick="focoPriceEditAuth()" style="font-size:9px;color:#667;cursor:pointer;text-decoration:underline;">✏️ editar valores (admin)</span></div>'
-        +'<div id="focoPriceEdit"></div>');
-      _toolMountAfter(document.getElementById('toolFoco')?'toolFoco':'toolSurvey','toolFocoExtra',html);
+      var inner='';
+      if(priceVis){
+        var prices=_priceLoad();
+        var rows=prices.map(function(t,i){return '<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:11px;margin-bottom:8px;"><div><div style="font-size:12px;font-weight:800;color:#fff;">'+t.n+'</div><div style="font-size:10px;color:#9aa;">'+t.d+'</div></div><div style="font-size:16px;font-weight:900;color:var(--primary);white-space:nowrap;">R$ '+t.p+'</div></div>';}).join('');
+        inner+=_toolH('💸 Tabela de valores','Da digital pra redes até a foto TOP editada — escolha o que combina com você.')+rows
+          +'<div style="text-align:center;margin:4px 0 8px;"><span onclick="focoPriceEditAuth()" style="font-size:9px;color:#667;cursor:pointer;text-decoration:underline;">✏️ editar valores (admin)</span></div><div id="focoPriceEdit"></div>';
+      }
+      if(ctaVis){
+        inner+='<a onclick="openExtLink(\''+url+'\',\'Foco Radical\');return false;" href="'+url+'" style="display:block;text-align:center;margin-top:6px;padding:14px;border-radius:12px;font-weight:900;font-size:14px;text-decoration:none;cursor:pointer;background:linear-gradient(135deg,#FC4C02,#FF9A00);color:#fff;box-shadow:0 6px 18px rgba(252,76,2,.3);">📸 Ver e comprar minhas fotos no Foco Radical</a>';
+      }
+      _toolMountBottom('toolFocoExtra',_toolCard(inner));
     };
     window.focoPriceEditAuth=function(){
       var p=prompt('Senha de admin para editar os valores:');
@@ -23311,18 +23363,24 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
       var prices; try{prices=JSON.parse(localStorage.getItem('foco_prices'));}catch(e){} if(!prices||!prices.length) prices=[{n:'📱 Digital (redes sociais)',d:'Perfeita pra postar no Insta/status',p:'15'},{n:'🖼️ Alta resolução',d:'Qualidade máxima, ótima pra imprimir',p:'25'},{n:'⭐ Foto TOP (editada P1 Victor)',d:'Tratamento profissional completo',p:'40'},{n:'📦 Pacote (todas as suas fotos)',d:'Melhor custo-benefício',p:'120'}];
       var inp='width:100%;padding:9px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.13);border-radius:9px;color:#fff;font-size:12px;box-sizing:border-box;margin-bottom:7px;';
       var sec=function(title,inner,fn){return '<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,106,0,0.16);border-radius:14px;padding:15px;margin-bottom:14px;"><div style="font-size:14px;font-weight:900;color:var(--primary);margin-bottom:11px;">'+title+'</div>'+inner+'<button onclick="'+fn+'" style="width:100%;padding:11px;border:none;border-radius:10px;background:#4CD964;color:#000;font-weight:900;font-size:12px;cursor:pointer;margin-top:4px;">💾 Salvar</button></div>';};
-      var stepsForm='<div style="font-size:10px;color:#9aa;margin-bottom:4px;">Título e subtítulo:</div><input id="cStepsH" value="'+eq(steps.header)+'" style="'+inp+'"><input id="cStepsS" value="'+eq(steps.sub)+'" style="'+inp+'"><div style="font-size:10px;color:#9aa;margin:6px 0 4px;">Passos (título / descrição):</div>'
+      var stepsVisible=(function(){ try{ var v=localStorage.getItem('foco_steps_visible'); return v===null?true:v==='1'; }catch(e){ return true; } })();
+      var stepsForm='<label style="display:flex;align-items:center;gap:8px;font-size:12px;color:#ddd;margin-bottom:11px;cursor:pointer;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:9px;padding:9px 11px;"><input type="checkbox" id="cStepsVisible" '+(stepsVisible?'checked':'')+' style="width:17px;height:17px;accent-color:var(--primary);"> 👁️ Mostrar "Como pegar suas fotos" no site</label>'
+        +'<div style="font-size:10px;color:#9aa;margin-bottom:4px;">Título e subtítulo:</div><input id="cStepsH" value="'+eq(steps.header)+'" style="'+inp+'"><input id="cStepsS" value="'+eq(steps.sub)+'" style="'+inp+'"><div style="font-size:10px;color:#9aa;margin:6px 0 4px;">Passos (título / descrição):</div>'
         +steps.steps.map(function(s,i){return '<div style="display:flex;gap:6px;"><input id="cStepT'+i+'" value="'+eq(s.t)+'" style="'+inp+'flex:1;"><input id="cStepD'+i+'" value="'+eq(s.d)+'" style="'+inp+'flex:2;"></div>';}).join('');
       var survForm='<div style="font-size:10px;color:#9aa;margin-bottom:4px;">Título / subtítulo:</div><input id="cSurvH" value="'+eq(surv.header)+'" style="'+inp+'"><input id="cSurvS" value="'+eq(surv.sub)+'" style="'+inp+'"><div style="font-size:10px;color:#9aa;margin:6px 0 4px;">Texto da autorização de divulgação:</div><textarea id="cSurvD" rows="4" style="'+inp+'resize:vertical;">'+eq(surv.divulg)+'</textarea>';
-      var priceForm='<div style="font-size:10px;color:#9aa;margin-bottom:4px;">Nome / descrição / preço (R$):</div>'+prices.map(function(t,i){return '<div style="display:flex;gap:6px;"><input id="cPriceN'+i+'" value="'+eq(t.n)+'" style="'+inp+'flex:2;"><input id="cPriceD'+i+'" value="'+eq(t.d)+'" style="'+inp+'flex:3;"><input id="cPriceP'+i+'" value="'+eq(t.p)+'" style="'+inp+'width:64px;"></div>';}).join('');
+      var priceVisible=(function(){ try{ var v=localStorage.getItem('foco_price_visible'); return v===null?true:v==='1'; }catch(e){ return true; } })();
+      var ctaVisible=(function(){ try{ var v=localStorage.getItem('foco_cta_visible'); return v===null?true:v==='1'; }catch(e){ return true; } })();
+      var priceForm='<label style="display:flex;align-items:center;gap:8px;font-size:12px;color:#ddd;margin-bottom:8px;cursor:pointer;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:9px;padding:9px 11px;"><input type="checkbox" id="cPriceVisible" '+(priceVisible?'checked':'')+' style="width:17px;height:17px;accent-color:var(--primary);"> 👁️ Mostrar a tabela de valores no site</label>'
+        +'<label style="display:flex;align-items:center;gap:8px;font-size:12px;color:#ddd;margin-bottom:11px;cursor:pointer;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:9px;padding:9px 11px;"><input type="checkbox" id="cCtaVisible" '+(ctaVisible?'checked':'')+' style="width:17px;height:17px;accent-color:var(--primary);"> 🔗 Mostrar botão "Ver e comprar no Foco Radical"</label>'
+        +'<div style="font-size:10px;color:#9aa;margin-bottom:4px;">Nome / descrição / preço (R$):</div>'+prices.map(function(t,i){return '<div style="display:flex;gap:6px;"><input id="cPriceN'+i+'" value="'+eq(t.n)+'" style="'+inp+'flex:2;"><input id="cPriceD'+i+'" value="'+eq(t.d)+'" style="'+inp+'flex:3;"><input id="cPriceP'+i+'" value="'+eq(t.p)+'" style="'+inp+'width:64px;"></div>';}).join('');
       panel.innerHTML='<div style="margin-bottom:16px;"><div style="font-size:21px;font-weight:900;color:#fff;">📝 Conteúdo das páginas</div><div style="font-size:12px;color:#9aa;margin-top:3px;">Edite os textos que os visitantes veem — sem mexer no código. Salvou, muda na hora.</div></div>'
         +sec('🛒 Passos "Como pegar suas fotos" (Foto 1)',stepsForm,'contentSaveSteps()')
         +sec('📋 Pesquisa "Antes de ver suas fotos" (Foto 3)',survForm,'contentSaveSurvey()')
         +sec('💸 Tabela de valores (Foto 2)',priceForm,'contentSavePrices()');
     };
-    window.contentSaveSteps=function(){ var g=function(id){var e=document.getElementById(id);return e?e.value:'';}; var arr=[],i=0; while(document.getElementById('cStepT'+i)){ arr.push({t:g('cStepT'+i),d:g('cStepD'+i)}); i++; } try{localStorage.setItem('foco_steps',JSON.stringify({header:g('cStepsH'),sub:g('cStepsS'),steps:arr}));}catch(e){} _contentRefresh('toolFoco','toolFocoInject'); if(typeof _invPublish==='function')_invPublish(); if(typeof showToast==='function')showToast('Passos salvos!','✅'); };
+    window.contentSaveSteps=function(){ var g=function(id){var e=document.getElementById(id);return e?e.value:'';}; var arr=[],i=0; while(document.getElementById('cStepT'+i)){ arr.push({t:g('cStepT'+i),d:g('cStepD'+i)}); i++; } try{localStorage.setItem('foco_steps',JSON.stringify({header:g('cStepsH'),sub:g('cStepsS'),steps:arr}));}catch(e){} var sv=document.getElementById('cStepsVisible'); try{localStorage.setItem('foco_steps_visible',(sv&&sv.checked)?'1':'0');}catch(e){} _contentRefresh('toolFoco','toolFocoInject'); if(typeof _invPublish==='function')_invPublish(); if(typeof showToast==='function')showToast(sv&&!sv.checked?'Passos salvos (ocultos)':'Passos salvos!','✅'); };
     window.contentSaveSurvey=function(){ var g=function(id){var e=document.getElementById(id);return e?e.value:'';}; try{localStorage.setItem('foco_survey_cfg',JSON.stringify({header:g('cSurvH'),sub:g('cSurvS'),divulg:g('cSurvD')}));}catch(e){} _contentRefresh('toolSurvey','toolSurveyInject'); if(typeof _invPublish==='function')_invPublish(); if(typeof showToast==='function')showToast('Pesquisa salva!','✅'); };
-    window.contentSavePrices=function(){ var g=function(id){var e=document.getElementById(id);return e?e.value:'';}; var arr=[],i=0; while(document.getElementById('cPriceN'+i)){ if(g('cPriceN'+i)) arr.push({n:g('cPriceN'+i),d:g('cPriceD'+i),p:(g('cPriceP'+i)||'').replace(/[^0-9.,]/g,'')}); i++; } try{localStorage.setItem('foco_prices',JSON.stringify(arr));}catch(e){} _contentRefresh('toolFocoExtra','toolFocoExtraInject'); if(typeof _invPublish==='function')_invPublish(); if(typeof showToast==='function')showToast('Valores salvos!','✅'); };
+    window.contentSavePrices=function(){ var g=function(id){var e=document.getElementById(id);return e?e.value:'';}; var arr=[],i=0; while(document.getElementById('cPriceN'+i)){ if(g('cPriceN'+i)) arr.push({n:g('cPriceN'+i),d:g('cPriceD'+i),p:(g('cPriceP'+i)||'').replace(/[^0-9.,]/g,'')}); i++; } try{localStorage.setItem('foco_prices',JSON.stringify(arr));}catch(e){} var pv=document.getElementById('cPriceVisible'); try{localStorage.setItem('foco_price_visible',(pv&&pv.checked)?'1':'0');}catch(e){} var cv=document.getElementById('cCtaVisible'); try{localStorage.setItem('foco_cta_visible',(cv&&cv.checked)?'1':'0');}catch(e){} _contentRefresh('toolFocoExtra','toolFocoExtraInject'); if(typeof _invPublish==='function')_invPublish(); if(typeof showToast==='function')showToast('Valores salvos!','✅'); };
     try{ if(document.readyState!=='loading') setTimeout(function(){if(window.verifUpdateBadge)verifUpdateBadge();},800); else document.addEventListener('DOMContentLoaded',function(){setTimeout(function(){if(window.verifUpdateBadge)verifUpdateBadge();},800);}); }catch(e){}
 
     // ════════ BOTÃO DE AÇÃO FLUTUANTE (ações rápidas: verificar, fotos, contato) ════════
@@ -23583,6 +23641,7 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
       var c=_invAICfg(k);
       var chips=c.sg.map(function(s){return '<button onclick="invAIAsk(\''+k+'\',this.textContent)" style="font-size:11px;background:rgba(255,106,0,0.1);border:1px solid rgba(255,106,0,0.32);color:var(--primary);border-radius:20px;padding:6px 11px;cursor:pointer;font-weight:700;">'+s+'</button>';}).join('');
       return _toolCard(_toolH(c.t,c.d)
+        +(k==='foco'?'<div style="display:inline-flex;align-items:center;gap:5px;background:rgba(255,106,0,0.12);border:1px solid rgba(255,106,0,0.35);color:var(--primary);font-size:9.5px;font-weight:900;letter-spacing:.5px;text-transform:uppercase;padding:4px 10px;border-radius:20px;margin-bottom:10px;">✨ Exclusivo das suas fotos</div>':'')
         +'<input id="invAIContact_'+k+'" value="'+_invContactVal()+'" placeholder="📱 Seu @ ou WhatsApp (pro Victor te responder)" style="width:100%;padding:9px;margin-bottom:9px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,106,0,0.22);border-radius:9px;color:#fff;font-size:12px;box-sizing:border-box;outline:none;">'
         +'<div id="invAIChips_'+k+'" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;">'+chips+'</div>'
         +'<div id="invAIThread_'+k+'" style="display:none;flex-direction:column;gap:9px;max-height:340px;overflow-y:auto;margin-bottom:11px;padding:4px;"></div>'
@@ -23630,6 +23689,7 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
       var secId=map[k]; if(!secId) return; var cardId='invAICard_'+k;
       if(document.getElementById(cardId)) return;
       if(k==='verificar'){ var vm=document.getElementById('verifMount'); if(vm){ var dv=document.createElement('div'); dv.id=cardId; dv.style.cssText='padding:0;'; dv.innerHTML=_invAICardHtml(k); vm.appendChild(dv); return; } }
+      if(k==='foco'){ var ft=document.getElementById('focoTopAI'); if(ft){ var df=document.createElement('div'); df.id=cardId; df.style.cssText='padding:0 16px;'; df.innerHTML=_invAICardHtml(k); ft.appendChild(df); return; } }
       if(typeof _toolMount==='function') _toolMount(secId, cardId, _invAICardHtml(k));
     };
     window.invAIAsk=async function(k, preset){
@@ -29274,7 +29334,7 @@ const _P1_VICTOR_BUILTIN_PRESETS = [{"id": "p1_01_cross_processing_yellow_light"
     <!-- SITE FOOTER v62 -->
     <footer class="site-footer">
         <div class="site-footer-brand">@invictorcliques</div>
-        <div class="site-footer-sub">Fotografia Esportiva Premium · Natal RN · 2026 · v223.0001</div>
+        <div class="site-footer-sub">Fotografia Esportiva Premium · Natal RN · 2026 · v233.0001</div>
         <div style="margin-top:12px;display:flex;justify-content:center;gap:16px;">
             <button onclick="openSocialLink('instagram')" style="background:none;border:none;color:#555;cursor:pointer;font-size:18px;transition:color .2s;" onmouseover="this.style.color='#E1306C'" onmouseout="this.style.color='#555'"><i class="fab fa-instagram"></i></button>
             <button onclick="openSocialLink('tiktok')" style="background:none;border:none;color:#555;cursor:pointer;font-size:18px;transition:color .2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#555'"><i class="fab fa-tiktok"></i></button>
@@ -29626,7 +29686,7 @@ const _P1_VICTOR_BUILTIN_PRESETS = [{"id": "p1_01_cross_processing_yellow_light"
     // travar as atualizações. 18s + pausa quando a aba está oculta mantém a
     // quota saudável mesmo com várias contas. O Gist (grátis) cobre o resto.
     var POLL_MS = 10000;
-    var BUILD = 'v223-CUTOUT-STATUS' + Date.now();
+    var BUILD = 'v233-RESTORE-FOCO-BLOCKS' + Date.now();
 
     window._invictorSync = {
         build: BUILD, log: [], lastFetch: 0, lastApplied: 0,
