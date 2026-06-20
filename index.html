@@ -5522,7 +5522,7 @@ select option{background:#17131f;color:#fff;}
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v211.0001</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v223.0001</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -7972,6 +7972,103 @@ Poderia me ajudar? 🙏"
             <span class="menu-icon" style="color:#FF6A00;">✅</span>
             <span class="btn-label" style="color:#FF6A00;">Verificar minhas fotos</span><br><span class="btn-sub" style="color:#c98a4e;">Confira e gerencie suas fotos</span>
         </button>
+        <button class="menu-btn" id="menuBtn_figurinhas" onclick="switchTab('figurinhas')" style="border-color:rgba(43,182,196,0.5);background:linear-gradient(160deg,#0a1a1c,#08120f);">
+            <span class="menu-icon" style="color:#2bb6c4;">🃏</span>
+            <span class="btn-label" style="color:#2bb6c4;">Figurinhas</span><br><span class="btn-sub" style="color:#6fb3bb;">Crie a sua e poste</span>
+        </button>
+    </div>
+
+    <!-- ════════ SEÇÃO FIGURINHAS ════════ -->
+    <style>
+      #figurinhasSection .fig-eyebrow{ font-size:10px; letter-spacing:2.5px; text-transform:uppercase; color:#6fdfe9; font-weight:800; margin-bottom:6px; text-align:center; }
+      #figurinhasSection .fig-layout{ display:grid; grid-template-columns:1fr; gap:18px; max-width:1040px; margin:0 auto; padding:0 4px; }
+      @media(min-width:860px){ #figurinhasSection .fig-layout{ grid-template-columns:370px 1fr; align-items:start; } }
+      #figurinhasSection .fig-panel{ background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.09); border-radius:16px; padding:16px; }
+      #figurinhasSection .fig-seg{ display:flex; gap:8px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.09); border-radius:12px; padding:5px; margin-bottom:14px; }
+      #figurinhasSection .fig-seg button{ flex:1; border:none; background:transparent; color:#bbb; font-weight:800; font-size:12.5px; padding:10px 6px; border-radius:9px; cursor:pointer; transition:.18s; }
+      #figurinhasSection .fig-seg button.on{ background:linear-gradient(135deg,#2bb6c4,#1f9e4b); color:#04201f; }
+      #figurinhasSection .fig-lbl{ display:block; font-size:11px; color:#b6b1bc; font-weight:700; margin:12px 0 5px; }
+      #figurinhasSection .fig-in{ width:100%; padding:11px 12px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.09); border-radius:10px; color:#fff; font-size:13px; outline:none; transition:border-color .2s; }
+      #figurinhasSection .fig-in:focus{ border-color:#2bb6c4; }
+      #figurinhasSection .fig-row{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; }
+      #figurinhasSection .fig-upload{ display:block; text-align:center; border:1.5px dashed rgba(43,182,196,0.45); border-radius:12px; padding:16px; cursor:pointer; color:#7fdce6; font-weight:800; font-size:13px; background:rgba(43,182,196,0.05); margin-top:6px; transition:.2s; }
+      #figurinhasSection .fig-upload:hover{ background:rgba(43,182,196,0.1); }
+      #figurinhasSection .fig-themes{ display:flex; gap:8px; flex-wrap:wrap; margin-top:6px; }
+      #figurinhasSection .fig-sw{ width:30px; height:30px; border-radius:50%; cursor:pointer; border:2px solid transparent; transition:.15s; }
+      #figurinhasSection .fig-sw.on{ border-color:#fff; transform:scale(1.12); }
+      #figurinhasSection .fig-slider{ width:100%; accent-color:#2bb6c4; }
+      #figurinhasSection .fig-canvas-box{ background:repeating-conic-gradient(#1c1c24 0% 25%, #191920 0% 50%) 50%/22px 22px; border:1px solid rgba(255,255,255,0.09); border-radius:16px; padding:14px; display:flex; justify-content:center; }
+      #figurinhasSection #figCv{ max-width:100%; height:auto; border-radius:10px; box-shadow:0 18px 50px rgba(0,0,0,.55); }
+      #figurinhasSection .fig-actions{ display:flex; gap:10px; margin-top:14px; flex-wrap:wrap; }
+      #figurinhasSection .fig-btn{ flex:1; min-width:130px; border:none; border-radius:12px; padding:13px; font-weight:900; font-size:14px; cursor:pointer; }
+      #figurinhasSection .fig-btn-main{ background:linear-gradient(135deg,#2bb6c4,#1f9e4b); color:#04201f; }
+      #figurinhasSection .fig-btn-ghost{ background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); color:#ddd; }
+      #figurinhasSection .fig-hint{ font-size:11px; color:#8f8a94; margin-top:8px; line-height:1.5; }
+      #figurinhasSection .fig-toggle{ display:flex; align-items:center; gap:9px; margin-top:12px; font-size:12.5px; color:#cfcad4; cursor:pointer; }
+      #figurinhasSection .fig-toggle input{ width:18px; height:18px; accent-color:#2bb6c4; }
+      #figurinhasSection .fig-field{ display:none; }
+      #figurinhasSection .fig-field.show{ display:block; }
+    </style>
+    <div class="section hidden" id="figurinhasSection">
+        <h2 style="display:flex;align-items:center;justify-content:center;gap:10px;font-size:1.9em!important;">
+            <span style="font-size:0.85em;">🃏</span> Figurinhas
+        </h2>
+        <div class="fig-eyebrow">Crie sua figurinha e poste</div>
+        <div class="fig-layout">
+            <div class="fig-panel">
+                <div class="fig-seg">
+                    <button id="figSegCard" class="on" onclick="figSetMode('card')">🃏 Card</button>
+                    <button id="figSegAcao" onclick="figSetMode('acao')">🏃 Ação / Corrida</button>
+                </div>
+                <span class="fig-lbl">📷 Foto da pessoa</span>
+                <label class="fig-upload" for="figPhoto">📤 Toque pra subir a foto</label>
+                <input type="file" id="figPhoto" accept="image/*" style="display:none" onchange="figOnPhoto(this)">
+                <div id="figPhotoCtrls" style="display:none;">
+                    <span class="fig-lbl">Zoom da foto</span>
+                    <input class="fig-slider" type="range" id="figZoom" min="1" max="2.4" step="0.01" value="1" oninput="figState.zoom=+this.value;figRender()">
+                    <span class="fig-lbl">Posição vertical</span>
+                    <input class="fig-slider" type="range" id="figOffY" min="-260" max="260" step="2" value="0" oninput="figState.offY=+this.value;figRender()">
+                    <label class="fig-toggle fig-field" id="figCutoutField"><input type="checkbox" id="figCutout" onchange="figToggleCutout(this.checked)"> Recortar fundo da foto (estilo figurinha)</label>
+                    <div id="figCutStatus" class="fig-field" style="font-size:11px;color:#8f8a94;margin-top:4px;"></div>
+                </div>
+                <span class="fig-lbl">👤 Nome</span>
+                <input type="text" class="fig-in" id="figName" placeholder="Ex: LUCCA" oninput="figState.name=this.value;figRender()" maxlength="22">
+                <div class="fig-field show" id="figCardFields">
+                    <span class="fig-lbl">Número/inicial grande do fundo</span>
+                    <input type="text" class="fig-in" id="figBignum" value="26" oninput="figState.bignum=this.value;figRender()" maxlength="3">
+                    <div class="fig-row">
+                        <div><span class="fig-lbl">Info 1</span><input type="text" class="fig-in" id="figI1" placeholder="16-10-2021" oninput="figState.i1=this.value;figRender()"></div>
+                        <div><span class="fig-lbl">Info 2</span><input type="text" class="fig-in" id="figI2" placeholder="5 KM" oninput="figState.i2=this.value;figRender()"></div>
+                        <div><span class="fig-lbl">Info 3</span><input type="text" class="fig-in" id="figI3" placeholder="28:30" oninput="figState.i3=this.value;figRender()"></div>
+                    </div>
+                    <span class="fig-lbl">Linha de baixo (equipe / prova)</span>
+                    <input type="text" class="fig-in" id="figSub" placeholder="CORRIDA DE NATAL (RN)" oninput="figState.sub=this.value;figRender()" maxlength="34">
+                    <span class="fig-lbl">Faixa lateral (cidade/UF)</span>
+                    <input type="text" class="fig-in" id="figCity" value="NATAL-RN" oninput="figState.city=this.value;figRender()" maxlength="10">
+                </div>
+                <div class="fig-field" id="figAcaoFields">
+                    <span class="fig-lbl">Etiqueta de topo (opcional)</span>
+                    <input type="text" class="fig-in" id="figTopLabel" value="CHEGADA" oninput="figState.topLabel=this.value;figRender()" maxlength="16">
+                    <span class="fig-lbl">Título — linha 1</span>
+                    <input type="text" class="fig-in" id="figTitleA" value="CORRIDA KIDS E INCLUSIVA" oninput="figState.titleA=this.value;figRender()" maxlength="30">
+                    <span class="fig-lbl">Título — linha 2</span>
+                    <input type="text" class="fig-in" id="figTitleB" value="INCENTIVO AO ESPORTE" oninput="figState.titleB=this.value;figRender()" maxlength="30">
+                    <span class="fig-lbl">Número de peito (opcional)</span>
+                    <input type="text" class="fig-in" id="figBib" placeholder="202" oninput="figState.bib=this.value;figRender()" maxlength="5">
+                </div>
+                <span class="fig-lbl">🎨 Cor</span>
+                <div class="fig-themes" id="figThemes"></div>
+                <div class="fig-actions">
+                    <button class="fig-btn fig-btn-main" onclick="figDownload()">⬇️ Baixar</button>
+                    <button class="fig-btn fig-btn-ghost" onclick="figShare()">📲 Compartilhar</button>
+                </div>
+                <div class="fig-hint">Pra ficar igual figurinha colecionável (pessoa recortada no fundo colorido), use foto de fundo liso e ligue o "Recortar fundo".</div>
+            </div>
+            <div>
+                <div class="fig-canvas-box"><canvas id="figCv" width="800" height="1150"></canvas></div>
+                <div class="fig-hint" style="text-align:center;">Pré-visualização ao vivo.</div>
+            </div>
+        </div>
     </div>
 
     <!-- SEÇÃO VERIFICAR MINHAS FOTOS -->
@@ -8059,13 +8156,13 @@ Poderia me ajudar? 🙏"
                 <div style="font-size:28px;flex-shrink:0;">🏃</div>
                 <div style="flex:1;min-width:200px;">
                     <div style="font-weight:900;color:var(--primary);font-size:13px;margin-bottom:3px;display:flex;align-items:center;gap:8px;">
-                        Treinos em Natal-RN — @invictorcliques
+                        Suas fotos das corridas de Natal/RN
                         <span style="display:inline-flex;align-items:center;gap:4px;background:rgba(76,205,100,0.15);border:1px solid rgba(76,205,100,0.4);color:#4CD964;padding:2px 8px;border-radius:20px;font-size:9px;font-weight:900;letter-spacing:1px;">
                             <span style="width:5px;height:5px;background:#4CD964;border-radius:50%;animation:blink 1.5s infinite;display:inline-block;"></span>
                             AO VIVO
                         </span>
                     </div>
-                    <div style="color:#666;font-size:11.5px;">Atualizado automaticamente • Clique em qualquer treino para ver e comprar suas fotos</div>
+                    <div style="color:#888;font-size:11.5px;">Toque na sua prova pra ver e comprar suas fotos — atualiza sozinho quando sai prova nova.</div>
                 </div>
                 <div style="display:flex;gap:8px;flex-shrink:0;flex-wrap:wrap;">
                     <button onclick="forceFocoUpdate()" 
@@ -8082,7 +8179,7 @@ Poderia me ajudar? 🙏"
             <!-- Search bar -->
             <div style="display:flex;gap:10px;margin-bottom:28px;position:relative;flex-wrap:wrap;">
                 <input type="text" id="focoRadicalSearch"
-                    placeholder="🔍  Buscar evento, treino, data..."
+                    placeholder="🔍  Ache pela prova, data ou número do peito..."
                     style="flex:1;padding:15px 20px;border:2px solid rgba(255,215,0,0.4);border-radius:12px;background:rgba(255,255,255,0.05);color:white;font-size:15px;outline:none;transition:border-color .2s;"
                     onfocus="this.style.borderColor='var(--primary)'"
                     onblur="this.style.borderColor='rgba(255,215,0,0.4)'"
@@ -10030,6 +10127,7 @@ Poderia me ajudar? 🙏"
             }
             if (tab === 'edicao' && typeof edicaoRenderAcesso === 'function') { setTimeout(edicaoRenderAcesso, 65); }
             if (tab === 'preview' && typeof pvInit === 'function') { setTimeout(pvInit, 50); }
+            if (tab === 'figurinhas' && typeof figInit === 'function') { setTimeout(figInit, 60); }
             if (tab === 'verificar' && typeof verifInit === 'function') { setTimeout(verifInit, 50); }
             try{
               if(tab==='procure' && typeof toolShoeInject==='function'){ setTimeout(toolShoeInject,40); setTimeout(toolShoeQuizInject,60); }
@@ -13974,6 +14072,25 @@ Poderia me ajudar? 🙏"
             // Ordena por DATA (mais recente/atual primeiro) — não pela ordem de adição
             visiveis.sort(function(a,b){ return _parseEvDate(b.date) - _parseEvDate(a.date); });
 
+            // ── Categorias estilo FotoMix (chips de filtro) ──────────────
+            function _evCat(ev){ return (((ev.type||ev.categoria||ev.cat||'')+'').toUpperCase().trim()) || 'EVENTO'; }
+            var _cats = [];
+            visiveis.forEach(function(ev){ var c=_evCat(ev); if(_cats.indexOf(c)<0) _cats.push(c); });
+            if(!window._focoCat) window._focoCat='TODOS';
+            if(window._focoCat!=='TODOS' && _cats.indexOf(window._focoCat)<0) window._focoCat='TODOS';
+            var mostrados = (window._focoCat==='TODOS') ? visiveis : visiveis.filter(function(ev){ return _evCat(ev)===window._focoCat; });
+            var chipsHtml = '';
+            if(_cats.length >= 2){
+                var chips = ['TODOS'].concat(_cats);
+                chipsHtml = '<div class="foco-cat-chips" style="display:flex;gap:8px;overflow-x:auto;padding:2px 2px 12px;margin-bottom:4px;-webkit-overflow-scrolling:touch;scrollbar-width:none;">'
+                  + chips.map(function(c){
+                      var active = (window._focoCat===c);
+                      var label = (c==='TODOS') ? 'Todos' : (c.charAt(0)+c.slice(1).toLowerCase());
+                      return '<button onclick="setFocoCat(\''+c+'\')" style="white-space:nowrap;border:1px solid '+(active?'var(--primary)':'rgba(255,255,255,0.12)')+';background:'+(active?'var(--primary)':'rgba(255,255,255,0.04)')+';color:'+(active?'#000':'#bbb')+';font-weight:800;font-size:12px;padding:7px 16px;border-radius:20px;cursor:pointer;transition:all .2s;">'+label+'</button>';
+                    }).join('')
+                  + '</div>';
+            }
+
             if (visiveis.length === 0) {
                 div.innerHTML = `<div style="text-align:center;padding:60px 20px;">
                     <div style="font-size:56px;margin-bottom:16px;opacity:0.4;">📸</div>
@@ -13990,8 +14107,9 @@ Poderia me ajudar? 🙏"
             }
 
             div.innerHTML = `
+              ${chipsHtml}
               <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding:0 2px;flex-wrap:wrap;gap:8px;">
-                <div style="font-size:12px;color:#555;font-weight:700;">${visiveis.length} evento(s) disponíveis</div>
+                <div style="font-size:12px;color:#555;font-weight:700;">${mostrados.length} evento(s)${window._focoCat!=='TODOS'?' em '+window._focoCat.toLowerCase():' disponíveis'}</div>
                 <div style="display:flex;align-items:center;gap:8px;">
                   <span id="focoLiveStatus" style="font-size:10px;color:#555;font-weight:600;transition:color 0.5s;">⟳ atualizando...</span>
                   <a href="https://invictorcliques.focoradical.com.br/" target="_blank"
@@ -14002,7 +14120,7 @@ Poderia me ajudar? 🙏"
                 </div>
               </div>
               <div class="inv-cat-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px;">
-                ${visiveis.map(renderFocoCard).join("")}
+                ${mostrados.map(renderFocoCard).join("")}
               </div>`;
 
             // Atualizar status após render
@@ -14019,11 +14137,24 @@ Poderia me ajudar? 🙏"
 
 
 
+        // Filtro de categoria (chips estilo FotoMix)
+        window.setFocoCat = function(c){
+            window._focoCat = c;
+            try { _renderTodosEventosInner(); } catch(e){ try{ renderTodosEventos(); }catch(_){} }
+        };
+
+        // Normaliza texto p/ busca precisa (sem acento, minúsculo)
+        function _normTxt(s){
+            return (s||'').toString().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+        }
+
         function searchFocoRadical() {
-            const query = document.getElementById('focoRadicalSearch').value.trim().toLowerCase();
-            
-            if (!query) {
-                alert('Digite o nome do evento, treino ou data para buscar!');
+            const raw = (document.getElementById('focoRadicalSearch').value || '').trim();
+
+            if (!raw) {
+                // Busca vazia → volta a mostrar todos os eventos
+                window._focoCat = 'TODOS';
+                renderTodosEventos();
                 return;
             }
 
@@ -14033,7 +14164,6 @@ Poderia me ajudar? 🙏"
             // Busca instantânea com dados locais (sem fetch)
             setTimeout(() => {
                 const hidden = getHiddenCatalog('foco');
-                // Incluir eventos fixos + álbuns publicados pelo admin
                 let todosParaBusca = [...FOCO_EVENTOS_REAIS];
                 try {
                     getFocoAlbuns().forEach(a => {
@@ -14049,17 +14179,21 @@ Poderia me ajudar? 🙏"
                     const slug = ev.url ? (ev.url.split('/prova/')[1] || String(ev.id)) : String(ev.id);
                     return !hidden.includes(String(slug)) && !hidden.includes(String(ev.id));
                 });
-                
-                const filtrados = eventos.filter(e =>
-                    e.title.toLowerCase().includes(query) ||
-                    (e.date||'').toLowerCase().includes(query) ||
-                    (e.subtitle||'').toLowerCase().includes(query) ||
-                    (e.periodo||'').toLowerCase().includes(query)
-                );
+
+                // Busca PRECISA: ignora acento e exige que TODAS as palavras
+                // apareçam em algum campo (título, data, tipo, local, período).
+                const termos = _normTxt(raw).split(/\s+/).filter(Boolean);
+                const filtrados = eventos.filter(e => {
+                    const hay = _normTxt([
+                        e.title, e.date, e.subtitle, e.periodo, e.type,
+                        e.location, e.dia, (e.url||'').split('/prova/')[1]
+                    ].join(' '));
+                    return termos.every(t => hay.includes(t));
+                });
                 filtrados.sort(function(a,b){ return _parseEvDate(b.date) - _parseEvDate(a.date); });
 
-                renderFocoGrid(filtrados, query);
-            }, 300);
+                renderFocoGrid(filtrados, raw);
+            }, 200);
         }
 
         // BUSCA INTELIGENTE - BANLEK
@@ -17871,27 +18005,54 @@ Poderia me ajudar? 🙏"
             if (typeof showToast === 'function') showToast('Escolha a nova foto para analisar', '🔄');
         };
 
-        // ── Touch swipe between tabs ─────────────────────────
+        // ── Deslizar entre abas (à prova de rolagem) ─────────────────
+        //  Regra de ouro: se houve QUALQUER rolagem vertical durante o gesto,
+        //  NÃO é swipe — então rolar o catálogo nunca troca de página.
             (function() {
-                let touchStartX = 0, touchStartY = 0;
+                let sx = 0, sy = 0, t0 = 0, maxDY = 0, tracking = false, multi = false;
                 const TAB_ORDER = ['foco','banlek','ofertas','procure','strava','edicao'];
                 document.addEventListener('touchstart', e => {
-                    touchStartX = e.touches[0].clientX;
-                    touchStartY = e.touches[0].clientY;
+                    if (e.touches.length > 1) { multi = true; tracking = false; return; }
+                    multi = false; tracking = true;
+                    sx = e.touches[0].clientX; sy = e.touches[0].clientY;
+                    t0 = Date.now(); maxDY = 0;
+                }, { passive: true });
+                document.addEventListener('touchmove', e => {
+                    if (!tracking || multi || !e.touches[0]) return;
+                    const dyNow = Math.abs(e.touches[0].clientY - sy);
+                    if (dyNow > maxDY) maxDY = dyNow;
                 }, { passive: true });
                 document.addEventListener('touchend', e => {
-                    const dx = e.changedTouches[0].clientX - touchStartX;
-                    const dy = e.changedTouches[0].clientY - touchStartY;
-                    // Only horizontal swipe (dx > 60px, dy < 40px) not inside a modal
-                    if (Math.abs(dx) < 60 || Math.abs(dy) > 40) return;
+                    if (!tracking || multi) { tracking = false; return; }
+                    tracking = false;
+                    const end = e.changedTouches[0]; if (!end) return;
+                    const dx = end.clientX - sx;
+                    const dy = end.clientY - sy;
+                    const dt = Date.now() - t0;
+                    // BLINDAGEM contra rolagem:
+                    if (maxDY > 24) return;                          // houve rolagem vertical → não é swipe
+                    if (Math.abs(dy) > 30) return;                   // terminou longe na vertical
+                    if (Math.abs(dx) < 90) return;                   // precisa de bastante distância horizontal
+                    if (Math.abs(dx) < Math.abs(dy) * 2.5) return;   // horizontal tem que DOMINAR
+                    if (dt > 700) return;                            // tem que ser um gesto rápido e deliberado
                     if (document.getElementById('adminPanelOverlay')?.classList.contains('active')) return;
                     const activeSection = document.querySelector('.section.active');
                     if (!activeSection) return;
                     const currentTab = activeSection.id.replace('Section','');
                     const idx = TAB_ORDER.indexOf(currentTab);
                     if (idx < 0) return;
-                    if (dx < 0 && idx < TAB_ORDER.length - 1) switchTab(TAB_ORDER[idx + 1]);
-                    if (dx > 0 && idx > 0) switchTab(TAB_ORDER[idx - 1]);
+                    // só vai pra abas cujo botão está VISÍVEL (não pula pra página desativada)
+                    function nextVisible(start, dir){
+                        for (var i = start + dir; i >= 0 && i < TAB_ORDER.length; i += dir) {
+                            var b = document.getElementById('menuBtn_' + TAB_ORDER[i]);
+                            if (b && b.style.display !== 'none' && b.offsetParent !== null) return TAB_ORDER[i];
+                        }
+                        return null;
+                    }
+                    let target = null;
+                    if (dx < 0) target = nextVisible(idx, +1);
+                    else if (dx > 0) target = nextVisible(idx, -1);
+                    if (target) switchTab(target);
                 }, { passive: true });
             })();
 
@@ -19696,6 +19857,7 @@ Poderia me ajudar? 🙏"
             { id:'edicao',     icon:'🪄', label:'Edição IA',       sub:'P1 Victor',        ativo:true  },
             { id:'roubarIA',   icon:'🎨', label:'Copiar Estilo',  sub:'Copie o estilo',  ativo:true  },
             { id:'presetsOn',  icon:'✨', label:'Seu Preset',      sub:'Seu estilo',      ativo:true  },
+            { id:'figurinhas', icon:'🃏', label:'Figurinhas',      sub:'Crie a sua e poste', ativo:true },
         ];
         function getBotoes() {
             try {
@@ -20236,6 +20398,12 @@ Poderia me ajudar? 🙏"
                 .ai-match-badge,.bestseller-badge{background:linear-gradient(135deg,${theme.primary},${theme.primary}cc)!important;}
                 .shoe-offer-badge{background:linear-gradient(135deg,${theme.accent},${theme.accent}cc)!important;}
                 .quick-filter-btn.active{background:linear-gradient(135deg,${theme.primary},${theme.primary}cc)!important;border-color:${theme.primary}!important;}
+                #focoRadicalSearch{border-color:${adjustAlpha(theme.primary,0.45)}!important;}
+                #focoRadicalSearch:focus{border-color:${theme.primary}!important;}
+                .foco-cat-chips button{transition:all .2s;}
+                .admin-stat-card{border-color:${adjustAlpha(theme.primary,0.18)}!important;}
+                .ft-search-btn,.btn-publicar,.ap-tool-publish{background:linear-gradient(135deg,${theme.primary},${theme.accent})!important;}
+                .menu-icon{filter:drop-shadow(0 2px 6px ${adjustAlpha(theme.primary,0.35)});}
             `;
         }
 
@@ -29106,7 +29274,7 @@ const _P1_VICTOR_BUILTIN_PRESETS = [{"id": "p1_01_cross_processing_yellow_light"
     <!-- SITE FOOTER v62 -->
     <footer class="site-footer">
         <div class="site-footer-brand">@invictorcliques</div>
-        <div class="site-footer-sub">Fotografia Esportiva Premium · Natal RN · 2026 · v211.0001</div>
+        <div class="site-footer-sub">Fotografia Esportiva Premium · Natal RN · 2026 · v223.0001</div>
         <div style="margin-top:12px;display:flex;justify-content:center;gap:16px;">
             <button onclick="openSocialLink('instagram')" style="background:none;border:none;color:#555;cursor:pointer;font-size:18px;transition:color .2s;" onmouseover="this.style.color='#E1306C'" onmouseout="this.style.color='#555'"><i class="fab fa-instagram"></i></button>
             <button onclick="openSocialLink('tiktok')" style="background:none;border:none;color:#555;cursor:pointer;font-size:18px;transition:color .2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#555'"><i class="fab fa-tiktok"></i></button>
@@ -29458,7 +29626,7 @@ const _P1_VICTOR_BUILTIN_PRESETS = [{"id": "p1_01_cross_processing_yellow_light"
     // travar as atualizações. 18s + pausa quando a aba está oculta mantém a
     // quota saudável mesmo com várias contas. O Gist (grátis) cobre o resto.
     var POLL_MS = 10000;
-    var BUILD = 'v211-PAGE-LOCK' + Date.now();
+    var BUILD = 'v223-CUTOUT-STATUS' + Date.now();
 
     window._invictorSync = {
         build: BUILD, log: [], lastFetch: 0, lastApplied: 0,
@@ -30191,8 +30359,69 @@ const _P1_VICTOR_BUILTIN_PRESETS = [{"id": "p1_01_cross_processing_yellow_light"
   function ready(fn){ if(document.readyState!=='loading') fn(); else document.addEventListener('DOMContentLoaded',fn); }
   ready(function(){
     try {
+      // ── Aviso de navegador interno (Instagram/TikTok) ──────────────
+      // É o que causa o "escolher app/navegador" ao abrir o catálogo.
+      // Sugere abrir no navegador real, onde os links abrem direto.
+      (function(){
+        try {
+          var ua = navigator.userAgent || '';
+          var inApp = /Instagram|FBAN|FBAV|FB_IAB|TikTok|musical_ly|Bytedance|Line\//i.test(ua);
+          if (!inApp) return;
+          if (sessionStorage.getItem('_iabDismiss') === '1') return;
+          var bar = document.createElement('div');
+          bar.id = 'iabBanner';
+          bar.style.cssText = 'position:sticky;top:0;left:0;right:0;z-index:100000;background:linear-gradient(135deg,#FF6A00,#FF8C00);color:#fff;padding:10px 12px;display:flex;align-items:center;gap:9px;font-size:12px;font-weight:700;box-shadow:0 4px 14px rgba(0,0,0,.3);';
+          bar.innerHTML =
+            '<span style="flex:1;line-height:1.35;">📱 Pra abrir suas fotos sem o aviso de "escolher app", abra no Chrome/Safari.</span>'
+            + '<button id="iabOpen" style="background:#fff;color:#FF6A00;border:none;border-radius:8px;padding:7px 11px;font-weight:900;font-size:12px;cursor:pointer;white-space:nowrap;">Abrir</button>'
+            + '<button id="iabClose" style="background:transparent;border:none;color:#fff;font-size:19px;cursor:pointer;line-height:1;padding:0 2px;">×</button>';
+          document.body.insertBefore(bar, document.body.firstChild);
+          document.getElementById('iabClose').onclick = function(){ try{ sessionStorage.setItem('_iabDismiss','1'); }catch(e){} bar.remove(); };
+          document.getElementById('iabOpen').onclick = function(){
+            var url = location.href;
+            if (/Android/i.test(ua)) {
+              try { window.location.href = 'intent://' + location.host + location.pathname + location.search + '#Intent;scheme=https;end'; return; } catch(e){}
+            }
+            try { navigator.clipboard.writeText(url); } catch(e){}
+            alert('Link copiado! Toque nos "•••" (canto da tela) e escolha "Abrir no navegador" — ou cole o link no Chrome/Safari.');
+          };
+        } catch(e){}
+      })();
       // Aplica o banner de promoção (tênis girando) ao carregar
       try { if (typeof applyPromoBanner === 'function') applyPromoBanner(); } catch(e){}
+
+      // ── POLIMENTO GLOBAL DAS FOTOS (todas as páginas) ──────────────
+      // Fotos surgem com um fade suave ao carregar (em vez de "pipocar").
+      // À prova de falha: se algo der errado, a foto aparece normal.
+      window._vpPolishImages = function(root){
+        try {
+          (root||document).querySelectorAll('img:not([data-vp])').forEach(function(img){
+            img.setAttribute('data-vp','1');
+            if (img.closest && img.closest('#adminPanelOverlay')) return; // não mexe no admin
+            if (img.complete && img.naturalWidth > 0) return;             // já carregada
+            img.style.transition = 'opacity .55s ease, transform .55s ease';
+            img.style.opacity = '0';
+            img.style.transform = 'scale(0.985)';
+            var show = function(){ img.style.opacity = '1'; img.style.transform = 'none'; };
+            img.addEventListener('load', show, { once:true });
+            img.addEventListener('error', show, { once:true });
+            setTimeout(show, 2500); // rede de segurança
+          });
+        } catch(e){}
+      };
+      try { window._vpPolishImages(); } catch(e){}
+      // Observa o catálogo (que renderiza dinamicamente) pra polir fotos novas
+      try {
+        if ('MutationObserver' in window) {
+          var _vpPending = false;
+          var _vpMo = new MutationObserver(function(){
+            if (_vpPending) return; _vpPending = true;
+            setTimeout(function(){ _vpPending = false; if (window._vpPolishImages) window._vpPolishImages(); }, 350);
+          });
+          _vpMo.observe(document.body, { childList:true, subtree:true });
+        }
+      } catch(e){}
+
       // Não roda dentro do painel admin
       // Barra de progresso de rolagem
       var prog = document.createElement('div'); prog.id='vScrollProgress'; document.body.appendChild(prog);
@@ -30228,6 +30457,353 @@ const _P1_VICTOR_BUILTIN_PRESETS = [{"id": "p1_01_cross_processing_yellow_light"
       }
     } catch(e) { /* qualquer erro: site segue normal, nada some */ }
   });
+})();
+</script>
+<!-- ════ ESTILO + VIDA DA FAIXA DE BOAS-VINDAS (corredor) ════ -->
+<style id="runner-welcome-skin">
+  .runner-welcome {
+    max-width: 660px; margin: 6px auto 20px; padding: 22px 20px 18px;
+    border-radius: 18px; text-align: center; position: relative; overflow: hidden;
+    background: linear-gradient(165deg, rgba(255,255,255,0.035), rgba(255,255,255,0.012));
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.28);
+  }
+  .runner-welcome::before {
+    content:''; position:absolute; top:0; left:50%; transform:translateX(-50%);
+    width: 60px; height: 3px; border-radius: 3px;
+    background: linear-gradient(90deg, #ff6a00, #ffb300);
+  }
+  .rw-eyebrow {
+    font-size: 10px; letter-spacing: 2.5px; text-transform: uppercase;
+    color: #d29a4f; font-weight: 800; margin-bottom: 11px;
+  }
+  .rw-title {
+    font-size: 23px; font-weight: 900; margin: 0 0 10px; line-height: 1.15;
+    color: #f6f1ea; letter-spacing: -0.3px;
+  }
+  .rw-text { font-size: 13.5px; line-height: 1.7; color: #c7c2cc; margin: 0 auto 16px; max-width: 520px; }
+  .rw-rotator-wrap {
+    position: relative; max-width: 460px; margin: 0 auto 18px; padding: 11px 16px;
+    border-left: 2px solid rgba(255,140,40,0.55);
+    background: rgba(255,255,255,0.025); border-radius: 0 10px 10px 0; text-align: left;
+    display: flex; align-items: baseline; gap: 4px; min-height: 22px;
+  }
+  .rw-quote { font-size: 26px; color: rgba(255,160,60,0.6); font-family: Georgia, serif; line-height: 0; position: relative; top: 6px; }
+  .rw-rotator {
+    font-size: 13.5px; font-style: italic; color: #e8e2dc; font-weight: 500;
+    transition: opacity .45s ease; line-height: 1.5;
+  }
+  .rw-ways { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; margin-bottom: 13px; }
+  .rw-way {
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.09);
+    border-radius: 13px; padding: 13px 8px; cursor: pointer; transition: transform .18s, border-color .2s, box-shadow .2s, background .2s;
+    display: flex; flex-direction: column; align-items: center; gap: 2px;
+  }
+  .rw-way:hover, .rw-way:active {
+    transform: translateY(-3px); border-color: rgba(255,150,40,0.4);
+    background: rgba(255,120,0,0.06); box-shadow: 0 8px 20px rgba(255,106,0,0.12);
+  }
+  .rw-way .rw-ico { font-size: 23px; line-height: 1; margin-bottom: 4px; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.4)); }
+  .rw-way b { font-size: 12px; color: #f0ebe4; font-weight: 800; }
+  .rw-way small { font-size: 9.5px; color: #9a95a0; }
+  .rw-firsttime { font-size: 11.5px; color: #8f8a94; margin: 4px 0 0; font-style: italic; }
+  @media (max-width: 420px) {
+    .rw-title { font-size: 20px; }
+    .rw-text { font-size: 12.5px; }
+    .rw-way b { font-size: 11px; }
+    .rw-way small { font-size: 9px; }
+  }
+</style>
+<script>
+(function(){
+  function ready(fn){ if(document.readyState!=='loading') fn(); else document.addEventListener('DOMContentLoaded',fn); }
+  ready(function(){
+    try {
+      // Esconde atalhos cujo destino está desativado (respeita a trava de páginas)
+      [['rwWayFoco','foco'],['rwWayOfertas','ofertas'],['rwWayStrava','strava']].forEach(function(pair){
+        var way=document.getElementById(pair[0]);
+        var btn=document.getElementById('menuBtn_'+pair[1]);
+        if(way && btn && (btn.style.display==='none')) way.style.display='none';
+      });
+      // Frase emocional que alterna (fala com iniciante e veterano)
+      var rot=document.getElementById('rwRotator');
+      if(rot){
+        var frases=[
+          '5h da manhã, frio, e mesmo assim você foi.',
+          'O km final, quando a cabeça quer parar e a perna continua.',
+          'A primeira corrida que você terminou sem caminhar.',
+          'O recorde pessoal que você ainda nem postou direito.',
+          'Aquele sorriso involuntário cruzando a chegada.',
+          'A medalha que pesa mais pela história do que pelo metal.'
+        ];
+        var i=0;
+        setInterval(function(){
+          if(document.hidden) return;
+          i=(i+1)%frases.length;
+          rot.style.opacity='0';
+          setTimeout(function(){ rot.textContent=frases[i]; rot.style.opacity='1'; }, 450);
+        }, 4600);
+      }
+    } catch(e){}
+  });
+})();
+</script>
+<!-- ════ GERADOR DE FIGURINHAS (isolado, prefixo fig) ════ -->
+<script>
+(function(){
+  var THEMES = {
+    brasil: { bg:'#2bb6c4', bg2:'#1f9fae', num:'#1f9e4b', plate:'#1b8a97', plate2:'#15727d', text:'#ffffff', accentA:'#1f9e4b', accentB:'#2bb6c4', badge:'#ffd23f' },
+    dourado:{ bg:'#14110d', bg2:'#0c0a07', num:'#3a2c12', plate:'#1c160d', plate2:'#120e08', text:'#ffffff', accentA:'#FF6A00', accentB:'#FFC107', badge:'#FFC107' },
+    azul:   { bg:'#1f6dd0', bg2:'#1858ad', num:'#0e3f86', plate:'#16529e', plate2:'#103f7d', text:'#ffffff', accentA:'#22a3ff', accentB:'#1f6dd0', badge:'#ffd23f' },
+    roxo:   { bg:'#6a3bd0', bg2:'#5630ac', num:'#3c1f86', plate:'#52309e', plate2:'#3f257d', text:'#ffffff', accentA:'#a78bfa', accentB:'#6a3bd0', badge:'#ffd23f' },
+    vermelho:{bg:'#d23b3b', bg2:'#ad302f', num:'#861f1f', plate:'#9e3030', plate2:'#7d2525', text:'#ffffff', accentA:'#ff6a4d', accentB:'#d23b3b', badge:'#ffd23f' }
+  };
+  var figState = window.figState = {
+    mode:'card', theme:'brasil', img:null, _cutImg:null,
+    name:'', bignum:'26', i1:'', i2:'', i3:'', sub:'', city:'NATAL-RN',
+    topLabel:'CHEGADA', titleA:'CORRIDA KIDS E INCLUSIVA', titleB:'INCENTIVO AO ESPORTE', bib:'',
+    zoom:1, offY:0, cutout:false
+  };
+  var cv, ctx;
+  function ready(){ if(!cv){ cv=document.getElementById('figCv'); if(cv) ctx=cv.getContext('2d'); } return !!ctx; }
+
+  function rr(x,y,w,h,r){ r=Math.min(r,w/2,h/2); ctx.beginPath();
+    ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r);
+    ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath(); }
+  function drawCover(img,x,y,w,h,zoom,offY,clipR){
+    zoom=zoom||1; var ir=img.width/img.height, tr=w/h, dw,dh;
+    if(ir>tr){ dh=h*zoom; dw=dh*ir; } else { dw=w*zoom; dh=dw/ir; }
+    var dx=x+(w-dw)/2, dy=y+(h-dh)/2+(offY||0);
+    ctx.save(); if(clipR){ rr(x,y,w,h,clipR); } else { ctx.beginPath(); ctx.rect(x,y,w,h); }
+    ctx.clip(); ctx.drawImage(img,dx,dy,dw,dh); ctx.restore();
+  }
+  function fitText(txt,maxW,startPx,weight){ var px=startPx, w=weight||'900';
+    do{ ctx.font=w+' '+px+'px Arial, sans-serif'; if(ctx.measureText(txt).width<=maxW) break; px-=2; }while(px>10); return px; }
+  function setCanvas(w,h){ if(cv.width!==w||cv.height!==h){ cv.width=w; cv.height=h; } }
+  function star(cx,cy,spikes,outer,inner){ var rot=Math.PI/2*3,x=cx,y=cy,step=Math.PI/spikes;
+    ctx.beginPath(); ctx.moveTo(cx,cy-outer);
+    for(var i=0;i<spikes;i++){ x=cx+Math.cos(rot)*outer;y=cy+Math.sin(rot)*outer;ctx.lineTo(x,y);rot+=step;
+      x=cx+Math.cos(rot)*inner;y=cy+Math.sin(rot)*inner;ctx.lineTo(x,y);rot+=step; }
+    ctx.lineTo(cx,cy-outer); ctx.closePath(); }
+
+  function removeBg(img){ return new Promise(function(res){
+    try{
+      var maxD=900, sc=Math.min(1,maxD/Math.max(img.width,img.height));
+      var w=Math.max(1,Math.round(img.width*sc)), h=Math.max(1,Math.round(img.height*sc));
+      var c=document.createElement('canvas'); c.width=w; c.height=h;
+      var cx=c.getContext('2d'); cx.drawImage(img,0,0,w,h);
+      var id; try{ id=cx.getImageData(0,0,w,h); }catch(e){ res(img); return; }
+      var d=id.data, sr=0,sg=0,sb=0,sn=0;
+      function samp(x,y){ var i=(y*w+x)*4; sr+=d[i]; sg+=d[i+1]; sb+=d[i+2]; sn++; }
+      for(var x=0;x<w;x+=2){ samp(x,0); samp(x,h-1); }
+      for(var y=0;y<h;y+=2){ samp(0,y); samp(w-1,y); }
+      var br=sr/sn, bg=sg/sn, bb=sb/sn, TH=2600, vis=new Uint8Array(w*h), st=[];
+      for(var i2=0;i2<w;i2++){ st.push(i2); st.push((h-1)*w+i2); }
+      for(var j=0;j<h;j++){ st.push(j*w); st.push(j*w+(w-1)); }
+      function near(idx){ var o=idx*4,dr=d[o]-br,dg=d[o+1]-bg,db=d[o+2]-bb; return (dr*dr+dg*dg+db*db)<TH; }
+      while(st.length){ var idx=st.pop(); if(vis[idx])continue; vis[idx]=1; if(!near(idx))continue;
+        d[idx*4+3]=0; var px=idx%w, py=(idx-px)/w;
+        if(px>0)st.push(idx-1); if(px<w-1)st.push(idx+1); if(py>0)st.push(idx-w); if(py<h-1)st.push(idx+w); }
+      cx.putImageData(id,0,0);
+      var out=new Image(); out.onload=function(){ res(out); }; out.onerror=function(){ res(img); }; out.src=c.toDataURL('image/png');
+    }catch(e){ res(img); }
+  }); }
+
+  function buildThemes(){
+    var box=document.getElementById('figThemes'); if(!box) return; box.innerHTML='';
+    Object.keys(THEMES).forEach(function(k){
+      var t=THEMES[k], el=document.createElement('div');
+      el.className='fig-sw'+(figState.theme===k?' on':'');
+      el.style.background='linear-gradient(135deg,'+t.accentA+','+t.bg+')';
+      el.onclick=function(){ figState.theme=k; buildThemes(); figRender(); };
+      box.appendChild(el);
+    });
+  }
+  window.figSetMode=function(m){
+    figState.mode=m;
+    var a=document.getElementById('figSegCard'), b=document.getElementById('figSegAcao');
+    if(a) a.classList.toggle('on',m==='card'); if(b) b.classList.toggle('on',m==='acao');
+    var cf=document.getElementById('figCardFields'), af=document.getElementById('figAcaoFields'), ct=document.getElementById('figCutoutField');
+    if(cf) cf.classList.toggle('show',m==='card'); if(af) af.classList.toggle('show',m==='acao'); if(ct) ct.classList.toggle('show',m==='card');
+    figRender();
+  };
+  window.figOnPhoto=function(inp){
+    var f=inp.files&&inp.files[0]; if(!f) return;
+    var rd=new FileReader();
+    rd.onload=function(e){ var im=new Image();
+      im.onload=function(){ figState.img=im; figState._cutImg=null; figState.cutout=false;
+        var cb=document.getElementById('figCutout'); if(cb) cb.checked=false;
+        var pc=document.getElementById('figPhotoCtrls'); if(pc) pc.style.display='block'; figRender(); };
+      im.src=e.target.result; };
+    rd.readAsDataURL(f); try{ inp.value=''; }catch(e){}
+  };
+  // ── Recorte de pessoa por IA (MediaPipe Selfie Segmentation) ──
+  function _loadScript(src){ return new Promise(function(res,rej){
+    if(document.querySelector('script[data-fig="'+src+'"]')){ res(); return; }
+    var sc=document.createElement('script'); sc.src=src; sc.setAttribute('data-fig',src);
+    sc.onload=function(){ res(); }; sc.onerror=function(){ rej(new Error('load')); }; document.head.appendChild(sc);
+  }); }
+  var _seg=null, _segReady=null;
+  function ensureSeg(){
+    if(_segReady) return _segReady;
+    _segReady=_loadScript('https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation@0.1.1675465747/selfie_segmentation.js').then(function(){
+      if(typeof SelfieSegmentation==='undefined') throw new Error('no-lib');
+      _seg=new SelfieSegmentation({ locateFile:function(f){ return 'https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation@0.1.1675465747/'+f; } });
+      _seg.setOptions({ modelSelection:1 });
+      return _seg;
+    });
+    return _segReady;
+  }
+  function segmentPerson(img){
+    return ensureSeg().then(function(seg){
+      return new Promise(function(res,rej){
+        var done=false;
+        seg.onResults(function(r){
+          if(done) return; done=true;
+          try{
+            var w=img.naturalWidth||img.width, h=img.naturalHeight||img.height;
+            var c=document.createElement('canvas'); c.width=w; c.height=h; var cx=c.getContext('2d');
+            cx.drawImage(img,0,0,w,h);
+            cx.globalCompositeOperation='destination-in';
+            cx.drawImage(r.segmentationMask,0,0,w,h);
+            cx.globalCompositeOperation='source-over';
+            var out=new Image(); out.onload=function(){ res(out); }; out.onerror=function(){ rej(new Error('img')); }; out.src=c.toDataURL('image/png');
+          }catch(e){ rej(e); }
+        });
+        try{ seg.send({image:img}).catch(rej); }catch(e){ rej(e); }
+        setTimeout(function(){ if(!done){ done=true; rej(new Error('timeout')); } }, 15000);
+      });
+    });
+  }
+
+  window.figToggleCutout=function(on){ figState.cutout=on;
+    var st=document.getElementById('figCutStatus');
+    function setSt(m){ if(st) st.textContent=m; }
+    if(on && figState.img && !figState._cutImg){
+      var cb=document.getElementById('figCutout'); if(cb) cb.disabled=true;
+      setSt('⏳ Removendo fundo com IA... (1ª vez baixa o modelo, aguarde)');
+      if(typeof showToast==='function') showToast('Removendo fundo com IA...','🪄');
+      segmentPerson(figState.img).then(function(o){
+        figState._cutImg=o; figRender();
+        if(cb) cb.disabled=false; setSt('✅ Fundo removido com IA.');
+        if(typeof showToast==='function') showToast('Fundo removido! ✨','🪄');
+      }).catch(function(){
+        setSt('⚠️ IA não carregou — usando recorte simples (funciona só com fundo liso).');
+        removeBg(figState.img).then(function(o){
+          figState._cutImg=o; figRender();
+          if(cb) cb.disabled=false;
+        });
+      });
+    } else { if(!on) setSt(''); figRender(); }
+  };
+
+  function renderCard(){
+    var W=800,H=1150; setCanvas(W,H); var t=THEMES[figState.theme], s=figState;
+    // ── fundo com leve profundidade ──
+    var g=ctx.createLinearGradient(0,0,W,H); g.addColorStop(0,t.bg); g.addColorStop(1,t.bg2);
+    ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+    // brilho diagonal (cara de impresso/plastificado)
+    var gl=ctx.createLinearGradient(0,0,W,H*0.6); gl.addColorStop(0,'rgba(255,255,255,0.10)'); gl.addColorStop(0.5,'rgba(255,255,255,0.0)');
+    ctx.fillStyle=gl; ctx.fillRect(0,0,W,H);
+    // ── número GIGANTE com sombra e contorno (destaque) ──
+    var bn=(s.bignum||'').slice(0,3);
+    ctx.save(); ctx.textAlign='center'; ctx.textBaseline='middle';
+    var numFont=bn.length>=3?330:bn.length===2?460:520;
+    ctx.font='900 '+numFont+'px Arial Black, Arial, sans-serif';
+    ctx.fillStyle='rgba(0,0,0,0.10)'; ctx.fillText(bn, W*0.46+8, H*0.30+10); // sombra
+    ctx.fillStyle=t.num; ctx.fillText(bn, W*0.46, H*0.30);                    // número
+    ctx.lineWidth=4; ctx.strokeStyle='rgba(255,255,255,0.18)'; ctx.strokeText(bn, W*0.46, H*0.30);
+    ctx.restore();
+    // ── faixa lateral direita com cidade (contornada) ──
+    var stripW=66, sx=W-stripW-20, sy=150, sh=600;
+    var sg=ctx.createLinearGradient(sx,0,sx+stripW,0); sg.addColorStop(0,'rgba(255,255,255,0.22)'); sg.addColorStop(1,'rgba(255,255,255,0.10)');
+    ctx.fillStyle=sg; rr(sx,sy,stripW,sh,30); ctx.fill();
+    ctx.save(); ctx.translate(sx+stripW/2, sy+sh/2); ctx.rotate(Math.PI/2);
+    ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.lineWidth=3.5; ctx.strokeStyle='rgba(255,255,255,0.95)';
+    var cpx=fitText(s.city||'',sh-50,46,'900'); ctx.font='900 '+cpx+'px Arial, sans-serif';
+    ctx.strokeText((s.city||'').toUpperCase(),0,0); ctx.restore();
+    // ── selo topo-direito (estrela original) ──
+    var bx=W-92, by=92;
+    ctx.save(); ctx.shadowColor='rgba(0,0,0,0.25)'; ctx.shadowBlur=10; ctx.shadowOffsetY=3;
+    ctx.beginPath(); ctx.arc(bx,by,46,0,Math.PI*2); ctx.fillStyle='rgba(255,255,255,0.97)'; ctx.fill(); ctx.restore();
+    ctx.fillStyle=t.badge; star(bx,by,5,26,12); ctx.fill();
+    // ── foto ──
+    var px=70, py=150, pw=W-140, ph=760;
+    if(s.img){
+      if(s.cutout && s._cutImg){
+        ctx.save(); ctx.fillStyle='rgba(0,0,0,0.22)'; ctx.beginPath();
+        ctx.ellipse(W/2, py+ph-12, pw*0.30, 26, 0, 0, Math.PI*2); ctx.fill(); ctx.restore();
+        drawCover(s._cutImg, px, py, pw, ph, s.zoom, s.offY);
+      } else {
+        drawCover(s.img, px, py, pw, ph, s.zoom, s.offY, 20);
+        // brilho sutil no topo da foto
+        ctx.save(); rr(px,py,pw,ph,20); ctx.clip();
+        var pgl=ctx.createLinearGradient(0,py,0,py+120); pgl.addColorStop(0,'rgba(255,255,255,0.12)'); pgl.addColorStop(1,'rgba(255,255,255,0)');
+        ctx.fillStyle=pgl; ctx.fillRect(px,py,pw,120); ctx.restore();
+      }
+    } else {
+      ctx.fillStyle='rgba(255,255,255,0.10)'; rr(px,py,pw,ph,20); ctx.fill();
+      ctx.fillStyle='rgba(255,255,255,0.5)'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.font='800 26px Arial'; ctx.fillText('📷  Suba a foto', W/2, py+ph/2);
+    }
+    // ── plaquinha com nome + infos (com sombra) ──
+    var npX=44, npY=905, npW=W-88, npH=172;
+    ctx.save(); ctx.shadowColor='rgba(0,0,0,0.30)'; ctx.shadowBlur=18; ctx.shadowOffsetY=6;
+    ctx.fillStyle=t.plate; rr(npX,npY,npW,npH,28); ctx.fill(); ctx.restore();
+    // brilho no topo da plaquinha
+    ctx.save(); rr(npX,npY,npW,npH,28); ctx.clip();
+    var npgl=ctx.createLinearGradient(0,npY,0,npY+40); npgl.addColorStop(0,'rgba(255,255,255,0.12)'); npgl.addColorStop(1,'rgba(255,255,255,0)');
+    ctx.fillStyle=npgl; ctx.fillRect(npX,npY,npW,40);
+    ctx.fillStyle=t.plate2; ctx.fillRect(npX,npY+npH-46,npW,46); ctx.restore();
+    ctx.fillStyle=t.text; ctx.textAlign='center'; ctx.textBaseline='middle';
+    var nm=(s.name||'SEU NOME').toUpperCase(); var npx=fitText(nm,npW-60,60,'900'); ctx.font='900 '+npx+'px Arial, sans-serif';
+    ctx.fillText(nm, W/2, npY+50);
+    var infos=[s.i1,s.i2,s.i3].filter(function(v){return v&&v.trim();}).join('   |   ');
+    if(infos){ ctx.font='700 26px Arial'; ctx.fillStyle='rgba(255,255,255,0.96)'; ctx.fillText(infos, W/2, npY+99); }
+    if(s.sub){ ctx.fillStyle='rgba(255,255,255,0.95)'; var spx=fitText(s.sub.toUpperCase(),npW-50,22,'800'); ctx.font='800 '+spx+'px Arial'; ctx.fillText(s.sub.toUpperCase(), W/2, npY+npH-23); }
+    // ── rodapé neutro (sem marca de terceiros) ──
+    ctx.fillStyle='rgba(255,255,255,0.85)'; ctx.font='900 16px Arial'; ctx.textAlign='right'; ctx.textBaseline='alphabetic';
+    ctx.fillText('COLEÇÃO '+ (s.bignum||'').slice(0,2), W-30, H-26);
+    ctx.textAlign='left'; ctx.fillStyle=t.badge; ctx.font='900 17px Arial'; ctx.fillText('★ FIGURINHA OFICIAL', 30, H-26);
+  }
+  function renderAcao(){
+    var W=720,H=1180; setCanvas(W,H); var t=THEMES[figState.theme], s=figState;
+    ctx.clearRect(0,0,W,H);
+    var fg=ctx.createLinearGradient(0,0,W,H); fg.addColorStop(0,t.accentA); fg.addColorStop(1,t.accentB);
+    ctx.fillStyle=fg; rr(0,0,W,H,40); ctx.fill();
+    var m=18, px=m, py=m, pw=W-m*2, ph=H-m*2;
+    if(s.img){ drawCover(s.img,px,py,pw,ph,s.zoom,s.offY,30); }
+    else { ctx.fillStyle='#222'; rr(px,py,pw,ph,30); ctx.fill(); ctx.fillStyle='rgba(255,255,255,0.5)'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.font='800 26px Arial'; ctx.fillText('📷  Suba a foto da corrida', W/2, H/2); }
+    ctx.save(); rr(px,py,pw,ph,30); ctx.clip();
+    if(s.topLabel && s.topLabel.trim()){
+      ctx.font='900 26px Arial'; var tw=Math.min(pw-80, ctx.measureText(s.topLabel.toUpperCase()).width+70); var tlx=W/2-tw/2;
+      var tg=ctx.createLinearGradient(tlx,0,tlx+tw,0); tg.addColorStop(0,t.accentA); tg.addColorStop(1,t.accentB);
+      rr(tlx,py+18,tw,52,16); ctx.fillStyle=tg; ctx.fill();
+      ctx.fillStyle='#fff'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(s.topLabel.toUpperCase(), W/2, py+18+26);
+    }
+    if(s.bib && s.bib.trim()){ ctx.fillStyle='rgba(255,255,255,0.95)'; var bw=120; rr(W/2-bw/2, ph*0.5, bw, 70, 12); ctx.fill();
+      ctx.fillStyle='#c0282b'; ctx.font='900 44px Arial'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(s.bib, W/2, ph*0.5+36); }
+    var bgGrad=ctx.createLinearGradient(0,ph-380,0,ph); bgGrad.addColorStop(0,'rgba(0,0,0,0)'); bgGrad.addColorStop(1,'rgba(0,0,0,0.55)');
+    ctx.fillStyle=bgGrad; ctx.fillRect(px,ph-380,pw,400);
+    var barH=58, gap=10, baseY=ph-barH*2-gap-26;
+    function bar(y,txt,strong){ var grad=ctx.createLinearGradient(px+30,0,px+pw-30,0); grad.addColorStop(0,t.accentB); grad.addColorStop(1,t.accentA);
+      ctx.fillStyle=grad; rr(px+30,y,pw-60,barH,12); ctx.fill(); ctx.fillStyle='#fff'; ctx.textAlign='center'; ctx.textBaseline='middle';
+      var fp=fitText((txt||'').toUpperCase(),pw-110,strong?28:24,strong?'900':'800'); ctx.font=(strong?'900 ':'800 ')+fp+'px Arial'; ctx.fillText((txt||'').toUpperCase(), W/2, y+barH/2); }
+    if(s.titleA) bar(baseY, s.titleA, true);
+    if(s.titleB) bar(baseY+barH+gap, s.titleB, false);
+    if(s.name){ ctx.fillStyle='#fff'; ctx.textAlign='left'; ctx.textBaseline='alphabetic'; ctx.font='900 24px Arial'; ctx.fillText(s.name.toUpperCase(), px+34, baseY-16); }
+    ctx.restore();
+    ctx.fillStyle='rgba(255,255,255,0.92)'; ctx.font='800 16px Arial'; ctx.textAlign='right'; ctx.textBaseline='alphabetic'; ctx.fillText('@invictorcliques', W-30, H-20);
+  }
+  window.figRender=function(){ if(!ready()) return; try{ if(figState.mode==='card') renderCard(); else renderAcao(); }catch(e){ console.error(e); } };
+  window.figDownload=function(){ if(!ready()) return;
+    try{ var a=document.createElement('a'); a.download='figurinha-'+(figState.name||'invictor').toLowerCase().replace(/[^a-z0-9]/g,'_')+'.png';
+      a.href=cv.toDataURL('image/png'); document.body.appendChild(a); a.click(); a.remove(); }catch(e){ if(typeof showToast==='function') showToast('Não consegui gerar o arquivo','⚠️'); } };
+  window.figShare=function(){ if(!ready()) return;
+    try{ cv.toBlob(function(blob){ if(!blob){ figDownload(); return; }
+      var file=new File([blob],'figurinha.png',{type:'image/png'});
+      if(navigator.canShare && navigator.canShare({files:[file]})){ navigator.share({files:[file], title:'Minha figurinha'}).catch(function(){}); }
+      else figDownload(); },'image/png'); }catch(e){ figDownload(); } };
+  window.figInit=function(){ if(!ready()) { setTimeout(window.figInit, 80); return; } buildThemes(); figRender(); };
 })();
 </script>
 </body>
