@@ -1,0 +1,12 @@
+# Cloudflare Pages — controle de cache
+# Faz o navegador/CDN SEMPRE revalidar o conteúdo.
+# Assim, quando você publica uma versão nova, ela chega aos visitantes
+# sem precisar de "Purge Everything" nem Ctrl+Shift+R.
+#
+# Coloque este arquivo na RAIZ do repositório, no mesmo lugar do index.html.
+
+/*
+  Cache-Control: public, max-age=0, must-revalidate
+
+/index.html
+  Cache-Control: public, max-age=0, must-revalidate

@@ -5522,7 +5522,7 @@ select option{background:#17131f;color:#fff;}
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v233.0001</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v235.0001</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -10310,7 +10310,20 @@ Poderia me ajudar? 🙏"
         }
 
         // CONSTANTES
-        const DEFAULT_ADMIN_PASSWORD = 'senha1234';
+        const DEFAULT_ADMIN_PASSWORD = 'senha1234'; // legado (não mais usado p/ login)
+        // 🔐 Senha admin agora por HASH (não aparece em texto no código-fonte).
+        // Padrão atual: "Foco-Inv7693-XZGG" — TROQUE no painel admin assim que entrar.
+        const ADMIN_PWD_HASH = '45c3f4d2b2d7d6172b971e5574c5704d02c49c67c0c1b51a70d383b95ae02b71';
+        async function _sha256Hex(str){
+            try{
+                const buf=await crypto.subtle.digest('SHA-256', new TextEncoder().encode(String(str)));
+                return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+            }catch(e){ return null; }
+        }
+        function _adminPwdHash(){ try{ return localStorage.getItem('invictorAdminPwdHash') || ADMIN_PWD_HASH; }catch(e){ return ADMIN_PWD_HASH; } }
+        async function _checkAdminPwd(input){ var h=await _sha256Hex(input); return !!h && h===_adminPwdHash(); }
+        // 🧹 Remove a senha antiga em texto (que antes vazava na sincronização) deste aparelho.
+        try{ localStorage.removeItem('invictorAdminPwd'); }catch(e){}
         let currentShoeCategory = 'todos';
         let currentProcureCategory = 'todos';
 
@@ -10754,7 +10767,6 @@ Poderia me ajudar? 🙏"
                         'hiddenCatalog_foco', 'hiddenCatalog_banlek',
                         'focoEventosReais',
                         'siteButtons',        // menu labels + visibility
-                        'invictorAdminPwd',   // admin password synced
                         'invictorHiddenTenis_v1',
                         'edicaoCodigos_v1',
                         'promoBannerConfig_v1',
@@ -12831,9 +12843,10 @@ Poderia me ajudar? 🙏"
 
         // ABRIR MODAL SENHA
         // VERIFICAR SENHA
-        function verifyPassword() {
+        async function verifyPassword() {
             const password = document.getElementById('adminPassword').value;
-            if (password === getAdminPassword()) {
+            const ok = await _checkAdminPwd(password);
+            if (ok) {
                 try{ localStorage.setItem('invictorAdminLogged','1'); }catch(e){}
                 if(typeof adminStarUpdate==='function') adminStarUpdate();
                 closePasswordModal();
@@ -15697,36 +15710,27 @@ Poderia me ajudar? 🙏"
 
             const _show = (txt, color) => { if (msgEl) { msgEl.textContent = txt; msgEl.style.color = color; msgEl.style.display = 'block'; setTimeout(()=>{ if(msgEl) msgEl.style.display='none'; }, 4000); } };
 
-            // Validate against stored password
-            const storedPwd = localStorage.getItem('invictorAdminPwd') || DEFAULT_ADMIN_PASSWORD;
+            // Valida a senha atual pelo HASH
             if (!atual) { _show('⚠️ Digite a senha atual', '#FF9500'); return; }
-            if (atual !== storedPwd) { _show('❌ Senha atual incorreta', '#FF6B6B'); showToast('Senha atual incorreta!', '❌'); return; }
+            const atualOk = await _checkAdminPwd(atual);
+            if (!atualOk) { _show('❌ Senha atual incorreta', '#FF6B6B'); showToast('Senha atual incorreta!', '❌'); return; }
             if (nova.length < 6) { _show('⚠️ Nova senha deve ter ao menos 6 caracteres', '#FF9500'); return; }
             if (nova !== confirmar) { _show('❌ As senhas não coincidem', '#FF6B6B'); return; }
-            if (nova === storedPwd) { _show('⚠️ A nova senha é igual à atual', '#FF9500'); return; }
+            const novaHash = await _sha256Hex(nova);
+            if (!novaHash) { _show('❌ Erro ao processar a senha', '#FF6B6B'); return; }
+            if (novaHash === _adminPwdHash()) { _show('⚠️ A nova senha é igual à atual', '#FF9500'); return; }
 
-            // Save locally
-            localStorage.setItem('invictorAdminPwd', nova);
+            // Salva só o HASH, localmente (NÃO sincroniza a senha para visitantes)
+            try{ localStorage.setItem('invictorAdminPwdHash', novaHash); }catch(e){}
+            try{ localStorage.removeItem('invictorAdminPwd'); }catch(e){}
 
             // Clear fields
             document.getElementById('senhaAtual').value   = '';
             document.getElementById('novaSenha').value    = '';
             document.getElementById('confirmarSenha').value = '';
 
-            // Sync to JSONBin so the password persists across devices
-            try {
-                if (typeof sharedSetKeys === 'function') {
-                    await sharedSetKeys({ 'invictorAdminPwd': nova, '_lastUpdate': Date.now().toString() });
-                    _show('✅ Senha alterada e sincronizada com sucesso!', '#51CF66');
-                    showToast('✅ Senha alterada!', '🔐');
-                } else {
-                    _show('✅ Senha alterada localmente!', '#51CF66');
-                    showToast('✅ Senha alterada!', '🔐');
-                }
-            } catch(e) {
-                _show('✅ Senha alterada localmente!', '#51CF66');
-                showToast('✅ Senha alterada!', '🔐');
-            }
+            _show('✅ Senha alterada! (guardada só neste aparelho, com segurança)', '#51CF66');
+            showToast('✅ Senha alterada!', '🔐');
         }
 
         // ===== PREVIEW IMAGEM URL =====
@@ -22662,6 +22666,32 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
       return true;
     }
     function _toolH(t,sub){ return '<div style="font-size:13px;font-weight:900;color:var(--primary);margin-bottom:3px;">'+t+'</div><div style="font-size:10.5px;color:#888;margin-bottom:12px;">'+sub+'</div>'; }
+    // 🔄 Detector de nova versão publicada — avisa quando um deploy novo entra no ar,
+    // sem precisar limpar cache na mão. Usa HEAD (sem baixar o site todo) e compara o ETag.
+    (function _updateChecker(){
+      var baseTag=null, shown=false;
+      function show(){
+        if(shown) return; shown=true;
+        var b=document.createElement('div');
+        b.id='__updBanner';
+        b.style.cssText='position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:99999;background:linear-gradient(135deg,#FC4C02,#FF9A00);color:#fff;font-weight:800;font-size:13px;padding:11px 18px;border-radius:30px;box-shadow:0 8px 24px rgba(0,0,0,.45);cursor:pointer;display:flex;align-items:center;gap:8px;max-width:92vw;text-align:center;';
+        b.innerHTML='🔄 Nova versão disponível — toque para atualizar';
+        b.onclick=function(){ try{ location.reload(true); }catch(e){ location.reload(); } };
+        document.body.appendChild(b);
+      }
+      function check(){
+        try{
+          fetch((location.pathname||'/')+'?_v='+Date.now(), {method:'HEAD', cache:'no-store'})
+            .then(function(r){
+              var t=r.headers.get('etag')||r.headers.get('last-modified'); if(!t) return;
+              if(baseTag===null){ baseTag=t; } else if(t!==baseTag){ show(); }
+            }).catch(function(){});
+        }catch(e){}
+      }
+      setTimeout(check, 3000);
+      setInterval(check, 120000);
+      document.addEventListener('visibilitychange', function(){ if(!document.hidden) check(); });
+    })();
     // Monta os blocos do Foco (Assistente IA + Antes de ver suas fotos) JÁ na tela
     // inicial — pois o Foco abre ativo sem passar pelo switchTab.
     (function _focoInitialMount(){
@@ -22986,10 +23016,11 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
       }
       _toolMountBottom('toolFocoExtra',_toolCard(inner));
     };
-    window.focoPriceEditAuth=function(){
+    window.focoPriceEditAuth=async function(){
       var p=prompt('Senha de admin para editar os valores:');
       if(p==null) return;
-      if(typeof getAdminPassword==='function' && p===getAdminPassword()){ focoPriceEdit(); }
+      var ok=(typeof _checkAdminPwd==='function') ? await _checkAdminPwd(p) : false;
+      if(ok){ focoPriceEdit(); }
       else if(typeof showToast==='function'){ showToast('Senha incorreta','❌'); }
     };
     // edição rápida de valores (admin) — mostra inputs e salva
@@ -29334,7 +29365,7 @@ const _P1_VICTOR_BUILTIN_PRESETS = [{"id": "p1_01_cross_processing_yellow_light"
     <!-- SITE FOOTER v62 -->
     <footer class="site-footer">
         <div class="site-footer-brand">@invictorcliques</div>
-        <div class="site-footer-sub">Fotografia Esportiva Premium · Natal RN · 2026 · v233.0001</div>
+        <div class="site-footer-sub">Fotografia Esportiva Premium · Natal RN · 2026 · v235.0001</div>
         <div style="margin-top:12px;display:flex;justify-content:center;gap:16px;">
             <button onclick="openSocialLink('instagram')" style="background:none;border:none;color:#555;cursor:pointer;font-size:18px;transition:color .2s;" onmouseover="this.style.color='#E1306C'" onmouseout="this.style.color='#555'"><i class="fab fa-instagram"></i></button>
             <button onclick="openSocialLink('tiktok')" style="background:none;border:none;color:#555;cursor:pointer;font-size:18px;transition:color .2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#555'"><i class="fab fa-tiktok"></i></button>
@@ -29686,7 +29717,7 @@ const _P1_VICTOR_BUILTIN_PRESETS = [{"id": "p1_01_cross_processing_yellow_light"
     // travar as atualizações. 18s + pausa quando a aba está oculta mantém a
     // quota saudável mesmo com várias contas. O Gist (grátis) cobre o resto.
     var POLL_MS = 10000;
-    var BUILD = 'v233-RESTORE-FOCO-BLOCKS' + Date.now();
+    var BUILD = 'v235-ADMIN-SECURITY-HASH' + Date.now();
 
     window._invictorSync = {
         build: BUILD, log: [], lastFetch: 0, lastApplied: 0,
