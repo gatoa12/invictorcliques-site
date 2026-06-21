@@ -5522,7 +5522,7 @@ select option{background:#17131f;color:#fff;}
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v235.0001</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v236.0001</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -12363,8 +12363,12 @@ Poderia me ajudar? 🙏"
                 const fer = JSON.stringify(FOCO_EVENTOS_REAIS.slice(0, 80));
                 payload['focoEventosReais']     = fer;
                 payload['focoEventosReais_v46'] = fer;
+                // 🛡️ carimbo de versão (anti-reversão): cada publicação é mais nova
+                const _ferRev = String(Date.now());
+                payload['focoEventosReais_rev'] = _ferRev;
                 localStorage.setItem('focoEventosReais',     fer);
                 localStorage.setItem('focoEventosReais_v46', fer);
+                localStorage.setItem('focoEventosReais_rev', _ferRev);
             } catch(e) {}
 
             // ── Botões do menu ────────────────────────────────────
@@ -12605,7 +12609,7 @@ Poderia me ajudar? 🙏"
             const keys = [
                 'invictorAdminData', 'v2_focoAlbuns', 'v2_banlekCats',
                 'hiddenCatalog_foco', 'hiddenCatalog_banlek',
-                'focoEvents', 'banlekProducts', 'focoEventosReais', 'focoEventosReais_v46',
+                'focoEvents', 'banlekProducts', 'focoEventosReais', 'focoEventosReais_v46', 'focoEventosReais_rev',
                 // === siteButtons — gerenciado pela AUTORIDADE ÚNICA abaixo
                 //     (removido daqui para não sobrescrever config mais nova) ===
                 // 'siteButtons',
@@ -12697,24 +12701,42 @@ Poderia me ajudar? 🙏"
                 }
             } catch(e) {}
 
-            // === Sincronizar eventos Foco Radical — REPLACE COMPLETO ===
-            // Se o JSONBin tem o array de eventos, ele SUBSTITUI o array local
-            // Isso garante que edições (título, foto, data) chegam aos visitantes
+            // === Sincronizar eventos Foco Radical — com TRAVA ANTI-REVERSÃO ===
+            // Aplica o remoto só se for MAIS NOVO (rev maior) OU se não estiver
+            // encolhendo. Se vier MENOS eventos sem ser mais novo = leitura velha
+            // → IGNORA (e guarda backup). Assim o catálogo não volta de 40 pra 21.
             try {
                 const remoteEvRaw = remote && remote['focoEventosReais'];
-                const localEvRaw  = localStorage.getItem('focoEventosReais');
-                const sourceRaw   = remoteEvRaw || localEvRaw;
+                const remoteRev = (remote && remote['focoEventosReais_rev']) ? parseInt(remote['focoEventosReais_rev'], 10) : 0;
+                const localRev  = parseInt(localStorage.getItem('focoEventosReais_rev') || '0', 10);
+                const localEvRaw = localStorage.getItem('focoEventosReais');
+                const sourceRaw  = remoteEvRaw || localEvRaw;
                 if (sourceRaw) {
                     const remArr = typeof sourceRaw === 'string' ? JSON.parse(sourceRaw) : sourceRaw;
                     if (Array.isArray(remArr) && remArr.length > 0) {
-                        // FULL REPLACE — the remote array IS the truth
-                        FOCO_EVENTOS_REAIS.length = 0;
-                        remArr.forEach(ev => FOCO_EVENTOS_REAIS.push(ev));
-                        // Always render after replace
-                        if (typeof renderTodosEventos === 'function') renderTodosEventos();
-                        if (typeof _updateFocoCountBadge === 'function') _updateFocoCountBadge();
-                        const ts = new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
-                        if (typeof _setFocoLiveStatus === 'function') _setFocoLiveStatus('✓ ' + FOCO_EVENTOS_REAIS.length + ' evento(s) — ' + ts, '#4CD964');
+                        const curLen = FOCO_EVENTOS_REAIS.length;
+                        const remoteIsNewer = remoteRev > localRev;
+                        const notShrinking  = remArr.length >= curLen;
+                        const shouldApply   = remoteEvRaw ? (remoteIsNewer || notShrinking) : true;
+                        if (!shouldApply && curLen > 0) {
+                            // 🛡️ Bloqueia a reversão e guarda backup do catálogo atual
+                            try {
+                                localStorage.setItem('focoEventosReais_backup', JSON.stringify(FOCO_EVENTOS_REAIS.slice()));
+                                localStorage.setItem('focoEventosReais_backup_meta', JSON.stringify({ count: curLen, at: Date.now() }));
+                            } catch(e) {}
+                            if (typeof _adminLogged === 'function' && _adminLogged() && typeof showToast === 'function') {
+                                showToast('🛡️ Reversão do catálogo bloqueada (' + curLen + '→' + remArr.length + '). Mantido o seu.', '🛡️');
+                            }
+                            console.warn('[FocoSync] 🛡️ reversão bloqueada: ' + curLen + ' -> ' + remArr.length);
+                        } else {
+                            FOCO_EVENTOS_REAIS.length = 0;
+                            remArr.forEach(ev => FOCO_EVENTOS_REAIS.push(ev));
+                            if (typeof renderTodosEventos === 'function') renderTodosEventos();
+                            if (typeof _updateFocoCountBadge === 'function') _updateFocoCountBadge();
+                            const ts = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+                            if (typeof _setFocoLiveStatus === 'function') _setFocoLiveStatus('✓ ' + FOCO_EVENTOS_REAIS.length + ' evento(s) — ' + ts, '#4CD964');
+                            if (remoteRev) { try { localStorage.setItem('focoEventosReais_rev', String(remoteRev)); } catch(e) {} }
+                        }
                     }
                 }
             } catch(e) { console.warn('[FocoSync] erro:', e.message); }
@@ -19507,7 +19529,7 @@ Poderia me ajudar? 🙏"
             let published = false;
             try {
                 if (typeof sharedSetKeys === 'function') {
-                    await sharedSetKeys({ 'focoEventosReais': json, 'focoEventosReais_v46': json, '_lastUpdate': Date.now().toString() });
+                    await sharedSetKeys({ 'focoEventosReais': json, 'focoEventosReais_v46': json, 'focoEventosReais_rev': Date.now().toString(), '_lastUpdate': Date.now().toString() });
                     published = true;
                 }
             } catch(e) {}
@@ -19705,6 +19727,7 @@ Poderia me ajudar? 🙏"
                         const ok = await sharedSetKeys({
                             'focoEventosReais':     json,
                             'focoEventosReais_v46': json,
+                            'focoEventosReais_rev': Date.now().toString(),
                             '_lastUpdate': Date.now().toString()
                         });
                         if (ok) published = true;
@@ -19741,7 +19764,7 @@ Poderia me ajudar? 🙏"
             localStorage.setItem('focoEventosReais', json);
             try {
                 if (typeof sharedSetKeys === 'function') {
-                    await sharedSetKeys({ 'focoEventosReais': json, 'focoEventosReais_v46': json, '_lastUpdate': Date.now().toString() });
+                    await sharedSetKeys({ 'focoEventosReais': json, 'focoEventosReais_v46': json, 'focoEventosReais_rev': Date.now().toString(), '_lastUpdate': Date.now().toString() });
                 }
             } catch(e) {}
             renderTodosEventos();
@@ -19783,12 +19806,14 @@ Poderia me ajudar? 🙏"
                     await sharedSetKeys({
                         'focoEventosReais':     focoJson,
                         'focoEventosReais_v46': focoJson,
+                        'focoEventosReais_rev': Date.now().toString(),
                         '_lastUpdate': Date.now().toString()
                     });
                 } else {
                     const current = (await sharedGet()) || {};
                     current['focoEventosReais']     = focoJson;
                     current['focoEventosReais_v46'] = focoJson;
+                    current['focoEventosReais_rev'] = Date.now().toString();
                     current['_lastUpdate'] = Date.now().toString();
                     await sharedSet(current);
                 }
@@ -22666,6 +22691,46 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
       return true;
     }
     function _toolH(t,sub){ return '<div style="font-size:13px;font-weight:900;color:var(--primary);margin-bottom:3px;">'+t+'</div><div style="font-size:10.5px;color:#888;margin-bottom:12px;">'+sub+'</div>'; }
+    // 🛡️ Restaurar catálogo a partir do backup automático (anti-reversão)
+    window.restaurarCatalogoFoco = async function(){
+      try {
+        var raw = localStorage.getItem('focoEventosReais_backup');
+        if(!raw){ if(typeof showToast==='function') showToast('Não há backup de catálogo.','ℹ️'); return; }
+        var arr = JSON.parse(raw);
+        if(!Array.isArray(arr) || !arr.length){ if(typeof showToast==='function') showToast('Backup vazio.','ℹ️'); return; }
+        if(!confirm('Restaurar o catálogo com '+arr.length+' eventos do backup? Isso vira a versão atual e será publicado pra todos.')) return;
+        FOCO_EVENTOS_REAIS.length = 0;
+        arr.forEach(function(ev){ FOCO_EVENTOS_REAIS.push(ev); });
+        var json = JSON.stringify(FOCO_EVENTOS_REAIS.slice(0,80));
+        var rev = String(Date.now());
+        try{ localStorage.setItem('focoEventosReais', json); localStorage.setItem('focoEventosReais_v46', json); localStorage.setItem('focoEventosReais_rev', rev); }catch(e){}
+        if(typeof renderTodosEventos==='function') renderTodosEventos();
+        if(typeof _updateFocoCountBadge==='function') _updateFocoCountBadge();
+        if(typeof sharedSetKeys==='function'){
+          await sharedSetKeys({ 'focoEventosReais': json, 'focoEventosReais_v46': json, 'focoEventosReais_rev': rev, '_lastUpdate': Date.now().toString() });
+        } else if(typeof _invPublish==='function'){ _invPublish(); }
+        if(typeof showToast==='function') showToast('✅ Catálogo restaurado: '+arr.length+' eventos.','🛡️');
+        var bb=document.getElementById('__restoreCatBtn'); if(bb) bb.remove();
+      } catch(e){ if(typeof showToast==='function') showToast('Erro ao restaurar: '+e.message,'❌'); }
+    };
+    // Botão flutuante de restauração — aparece só pro admin e só se houver backup
+    (function _restoreBtn(){
+      function check(){
+        try{
+          if(typeof _adminLogged!=='function' || !_adminLogged()) return;
+          if(!localStorage.getItem('focoEventosReais_backup')) return;
+          if(document.getElementById('__restoreCatBtn')) return;
+          var meta={}; try{ meta=JSON.parse(localStorage.getItem('focoEventosReais_backup_meta')||'{}'); }catch(e){}
+          var b=document.createElement('button');
+          b.id='__restoreCatBtn';
+          b.style.cssText='position:fixed;left:14px;bottom:14px;z-index:99998;background:#1a1a1a;border:1px solid #FF6A00;color:#FF6A00;font-weight:800;font-size:12px;padding:9px 13px;border-radius:24px;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.4);';
+          b.textContent='🛡️ Restaurar catálogo'+(meta.count?(' ('+meta.count+')'):'');
+          b.onclick=function(){ restaurarCatalogoFoco(); };
+          document.body.appendChild(b);
+        }catch(e){}
+      }
+      setInterval(check, 4000); setTimeout(check, 2500);
+    })();
     // 🔄 Detector de nova versão publicada — avisa quando um deploy novo entra no ar,
     // sem precisar limpar cache na mão. Usa HEAD (sem baixar o site todo) e compara o ETag.
     (function _updateChecker(){
@@ -29365,7 +29430,7 @@ const _P1_VICTOR_BUILTIN_PRESETS = [{"id": "p1_01_cross_processing_yellow_light"
     <!-- SITE FOOTER v62 -->
     <footer class="site-footer">
         <div class="site-footer-brand">@invictorcliques</div>
-        <div class="site-footer-sub">Fotografia Esportiva Premium · Natal RN · 2026 · v235.0001</div>
+        <div class="site-footer-sub">Fotografia Esportiva Premium · Natal RN · 2026 · v236.0001</div>
         <div style="margin-top:12px;display:flex;justify-content:center;gap:16px;">
             <button onclick="openSocialLink('instagram')" style="background:none;border:none;color:#555;cursor:pointer;font-size:18px;transition:color .2s;" onmouseover="this.style.color='#E1306C'" onmouseout="this.style.color='#555'"><i class="fab fa-instagram"></i></button>
             <button onclick="openSocialLink('tiktok')" style="background:none;border:none;color:#555;cursor:pointer;font-size:18px;transition:color .2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#555'"><i class="fab fa-tiktok"></i></button>
@@ -29717,7 +29782,7 @@ const _P1_VICTOR_BUILTIN_PRESETS = [{"id": "p1_01_cross_processing_yellow_light"
     // travar as atualizações. 18s + pausa quando a aba está oculta mantém a
     // quota saudável mesmo com várias contas. O Gist (grátis) cobre o resto.
     var POLL_MS = 10000;
-    var BUILD = 'v235-ADMIN-SECURITY-HASH' + Date.now();
+    var BUILD = 'v236-ANTI-REVERT-CATALOG' + Date.now();
 
     window._invictorSync = {
         build: BUILD, log: [], lastFetch: 0, lastApplied: 0,

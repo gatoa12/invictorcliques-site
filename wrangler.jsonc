@@ -2,13 +2,11 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "invictorcliques-site",
   "compatibility_date": "2026-06-21",
-  "observability": {
-    "enabled": true
-  },
-  "assets": {
-    "directory": "."
-  },
-  "compatibility_flags": [
-    "nodejs_compat"
+  "main": "_worker.js",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": { "enabled": true },
+  "assets": { "directory": ".", "binding": "ASSETS" },
+  "kv_namespaces": [
+    { "binding": "INV_KV", "id": "38799b52b2a24050b43b1cda8b2b6297" }
   ]
 }
