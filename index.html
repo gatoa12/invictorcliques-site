@@ -5522,7 +5522,7 @@ select option{background:#17131f;color:#fff;}
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v240.0001</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v242.0001</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -5762,6 +5762,15 @@ select option{background:#17131f;color:#fff;}
                                 <button onclick="focoQuickAdd()" style="padding:9px 16px;background:linear-gradient(135deg,#51CF66,#2f9e44);color:#fff;border:none;border-radius:8px;font-weight:900;font-size:11px;cursor:pointer;white-space:nowrap;box-shadow:0 3px 10px rgba(81,207,102,0.3);">➕ Buscar e Adicionar</button>
                             </div>
                             <div id="focoQuickPreviewBox" style="display:none;margin-top:8px;padding:8px 11px;background:rgba(81,207,102,0.08);border:1px solid rgba(81,207,102,0.25);border-radius:8px;font-size:10px;color:#51CF66;line-height:1.7;"></div>
+
+                            <!-- ⚡ IMPORTAR EM MASSA (v240) -->
+                            <div style="margin-top:12px;border-top:1px dashed rgba(255,215,0,0.2);padding-top:11px;">
+                                <div style="font-size:11px;color:#FFB300;font-weight:900;margin-bottom:4px;">📋 Importar TODOS de uma vez (colar)</div>
+                                <div style="font-size:9px;color:#666;margin-bottom:8px;line-height:1.6;">Abra <strong style="color:#888;">invictorcliques.focoradical.com.br</strong>, selecione a página toda (ou copie a lista de links dos eventos) e <strong style="color:#FFB300;">cole aqui embaixo</strong>. O sistema acha todos os eventos e adiciona de uma vez — com data, nome e capa.</div>
+                                <textarea id="focoBulkPaste" rows="4" placeholder="Cole aqui os links ou o conteúdo da página de eventos do Foco Radical…" style="width:100%;box-sizing:border-box;padding:10px;background:rgba(255,255,255,0.05);border:1.5px solid rgba(255,215,0,0.25);border-radius:8px;color:#fff;font-size:11px;outline:none;resize:vertical;margin-bottom:8px;"></textarea>
+                                <button onclick="focoBulkImport()" style="width:100%;padding:11px;background:linear-gradient(135deg,#FF6A00,#FFB300);color:#000;border:none;border-radius:8px;font-weight:900;font-size:12px;cursor:pointer;">⚡ Importar todos os eventos colados</button>
+                                <div id="focoBulkStatus" style="display:none;margin-top:8px;padding:9px 11px;border-radius:8px;font-size:11px;line-height:1.6;"></div>
+                            </div>
                         </div>
                         <div id="focoUpdateStatus" style="display:none;margin-top:10px;padding:10px 12px;border-radius:8px;font-size:12px;"></div>
                     </div>
@@ -14075,26 +14084,60 @@ Poderia me ajudar? 🙏"
         //  O sistema de live-update adiciona novos acima deste array.
         //  Última sincronização manual: 30/05/2026
         let FOCO_EVENTOS_REAIS = [
-            { "title": "TREINOS ALEXANDRINO NOITE DE SEXTA",               "subtitle": "Noite",          "date": "29/05/2026", "dia": "Sex", "periodo": "Noite",       "url": "https://invictorcliques.focoradical.com.br/prova/20260529-treinos-alexandrino-noite-de-sexta-16755",                        "banner": null },
-            { "title": "TREINÃO DA QUINTA NA ALEXANDRINO - TARDE/NOITE",   "subtitle": "Tarde/Noite",    "date": "28/05/2026", "dia": "Qui", "periodo": "Tarde/Noite", "url": "https://invictorcliques.focoradical.com.br/prova/20260528-treinao-da-quinta-na-alexandrino-23225",                           "banner": null },
-            { "title": "TREINO ALEXANDRINO NOITE DE TERÇA - TODOS FOTÓGRAFOS", "subtitle": "Todos Fotógrafos", "date": "26/05/2026", "dia": "Ter", "periodo": "Noite", "url": "https://invictorcliques.focoradical.com.br/prova/20260526-treino-alexandrino-noite-de-terca-todos-fotografos-18535",           "banner": "https://cdn.focoradical.com.br/newfoco/banners/20260526202454AZ27494.jpg" },
-            { "title": "TREINO DA SEGUNDA NA ALEXANDRINO - TARDE/NOITE",   "subtitle": "Tarde/Noite",    "date": "25/05/2026", "dia": "Seg", "periodo": "Tarde/Noite", "url": "https://invictorcliques.focoradical.com.br/prova/20260525-treino-da-segunda-na-alexandrino-tarde-noite-23225",               "banner": "https://cdn.focoradical.com.br/newfoco/banners/20260525201640IMG9148.jpg" },
-            { "title": "TREINO ALEXANDRINO PELA MANHÃ",                    "subtitle": "Manhã",          "date": "25/05/2026", "dia": "Seg", "periodo": "Manhã",       "url": "https://invictorcliques.focoradical.com.br/prova/20260525-treino-alexandrino-pela-manha-16755",                               "banner": "https://cdn.focoradical.com.br/newfoco/banners/20260525100840IMGM0278.jpg" },
-            { "title": "TREINO NA ALEXANDRINO - MANHÃ (25/05/2026)",       "subtitle": "Manhã",          "date": "25/05/2026", "dia": "Seg", "periodo": "Manhã",       "url": "https://invictorcliques.focoradical.com.br/prova/20260525-treino-na-alexandrino-manha-25-05-2026-natal-17767",               "banner": "https://cdn.focoradical.com.br/newfoco/banners/20260525114359DSC9526.jpg" },
-            { "title": "TREINO ALEXANDRINO - SEXTA À NOITE",               "subtitle": "Sexta Noite",    "date": "22/05/2026", "dia": "Sex", "periodo": "Noite",       "url": "https://invictorcliques.focoradical.com.br/prova/20260522-treino-alexandrino-sexta-a-noite-22778",                           "banner": null },
-            { "title": "TREINO ALEXANDRINO NOITE DE QUINTA - TODOS FOTÓGRAFOS", "subtitle": "Todos Fotógrafos", "date": "21/05/2026", "dia": "Qui", "periodo": "Noite", "url": "https://invictorcliques.focoradical.com.br/prova/20260521-treino-alexandrino-noite-de-quinta-todos-fotografos-18535",        "banner": "https://cdn.focoradical.com.br/newfoco/banners/20260521210347CAPAAZ28780.jpg" },
-            { "title": "TREINO ALEXANDRINO - MANHÃ - QUINTA 21/05/2026",   "subtitle": "Manhã",          "date": "21/05/2026", "dia": "Qui", "periodo": "Manhã",       "url": "https://invictorcliques.focoradical.com.br/prova/20260521-treino-alexandrino-manha-quinta-21-05-2026-16755",               "banner": "https://cdn.focoradical.com.br/newfoco/banners/20260521092220photo2026-05-2109-21-59.jpg" },
-            { "title": "TREINO DA QUARTA NA ALEXANDRINO - TARDE/NOITE",    "subtitle": "Tarde/Noite",    "date": "20/05/2026", "dia": "Qua", "periodo": "Tarde/Noite", "url": "https://invictorcliques.focoradical.com.br/prova/20260520-treino-da-quarta-na-alexandrino-tarde-noite-23225",               "banner": "https://cdn.focoradical.com.br/newfoco/banners/20260520204104IMG43881.jpg" },
-            { "title": "TREINÃO DA TERÇA NA ALEXANDRINO",                  "subtitle": "Treinão",        "date": "19/05/2026", "dia": "Ter", "periodo": "Treinão",     "url": "https://invictorcliques.focoradical.com.br/prova/20260519-treinao-da-terca-na-alexandrino-23225",                           "banner": "https://cdn.focoradical.com.br/newfoco/banners/20260519203851IMG2545.jpg" },
-            { "title": "TREINO DA SEGUNDA NA ALEXANDRINO - TARDE/NOITE",   "subtitle": "Tarde/Noite",    "date": "18/05/2026", "dia": "Seg", "periodo": "Tarde/Noite", "url": "https://invictorcliques.focoradical.com.br/prova/20260518-treino-da-segunda-na-alexandrino-tarde-noite-23225",               "banner": "https://cdn.focoradical.com.br/newfoco/banners/20260518203934IMG1757.jpg" },
-            { "title": "TREINO ALEXANDRINO MANHÃ DE SEXTA",                "subtitle": "Manhã",          "date": "15/05/2026", "dia": "Sex", "periodo": "Manhã",       "url": "https://invictorcliques.focoradical.com.br/prova/20260515-treino-alexandrino-manha-de-sexta-16755",                         "banner": null },
-            { "title": "TREINO ALEXANDRINO MANHÃ DE TERÇA - TODOS FOTÓGRAFOS", "subtitle": "Todos Fotógrafos", "date": "12/05/2026", "dia": "Ter", "periodo": "Manhã",  "url": "https://invictorcliques.focoradical.com.br/prova/20260512-treino-alexandrino-noite-de-terca-todos-fotografos-16755",      "banner": null },
-            { "title": "TREINO DA SEXTA NA ALEXANDRINO - TARDE/NOITE",     "subtitle": "Tarde/Noite",    "date": "08/05/2026", "dia": "Sex", "periodo": "Tarde/Noite", "url": "https://invictorcliques.focoradical.com.br/prova/20260508-treino-da-sexta-na-alexandrino-tarde-noite-23225",               "banner": "https://cdn.focoradical.com.br/newfoco/banners/20260508202511file000000005d1071f5b5c21cb0764604f8.png" },
-            { "title": "TREINÃO ALEXANDRINO NOITE DE QUINTA - TODOS FOTÓGRAFOS", "subtitle": "Todos Fotógrafos", "date": "07/05/2026", "dia": "Qui", "periodo": "Noite", "url": "https://invictorcliques.focoradical.com.br/prova/20260507-treino-alexandrino-noite-de-quinta-todos-fotografos-18535",   "banner": "https://cdn.focoradical.com.br/newfoco/banners/20260507205051AZ20506.jpg" },
-            { "title": "TREINO ALEXANDRINO - MANHÃ - QUINTA 07/05/2026",   "subtitle": "Manhã",          "date": "07/05/2026", "dia": "Qui", "periodo": "Manhã",       "url": "https://invictorcliques.focoradical.com.br/prova/20260507-treino-alexandrino-manha-quarta-07-05-2026-16755",             "banner": null },
-            { "title": "TREINO DA QUARTA NA ALEXANDRINO - TARDE/NOITE",    "subtitle": "Tarde/Noite",    "date": "06/05/2026", "dia": "Qua", "periodo": "Tarde/Noite", "url": "https://invictorcliques.focoradical.com.br/prova/20260506-treino-da-quarta-na-alexandrino-tarde-noite-23225",               "banner": "https://cdn.focoradical.com.br/newfoco/banners/20260506205132IMG2912.jpg" },
-            { "title": "TREINO ALEXANDRINO - MANHÃ - SEGUNDA",             "subtitle": "Manhã",          "date": "04/05/2026", "dia": "Seg", "periodo": "Manhã",       "url": "https://invictorcliques.focoradical.com.br/prova/20260504-treino-alexandrino-manha-segunda-3919",                         "banner": "https://cdn.focoradical.com.br/newfoco/banners/20260504081539IMG2159.jpg" }
+            {"title":"TREINÃO DA QUINTA NA ALEXANDRINO (TODOS OS FOTÓGRAFOS)","subtitle":"Treinão","date":"18/06/2026","dia":"Qui","periodo":"Treinão","url":"https://invictorcliques.focoradical.com.br/prova/20260618-treinao-da-quinta-na-alexandrino-todos-os-fotografos-17201","banner":"https://cdn.focoradical.com.br/newfoco/banners/20260618202928img-1203.jpg"},
+            {"title":"TREINO NA ALEXANDRINO QUINTA MANHÃ - TODOS OS FOTOGRÁFOS","subtitle":"Manhã","date":"18/06/2026","dia":"Qui","periodo":"Manhã","url":"https://invictorcliques.focoradical.com.br/prova/20260625-treino-na-alexandrino-quinta-manha-todos-os-fotografos-30339","banner":"https://cdn.focoradical.com.br/newfoco/banners/20260618064402IMG5196.jpeg"},
+            {"title":"TREINÃO ALEXANDRINO (QUARTA )TARDE E NOITE - TODOS OS FOTÓGRAFOS","subtitle":"Treinão","date":"17/06/2026","dia":"Qua","periodo":"Treinão","url":"https://invictorcliques.focoradical.com.br/prova/20260617-treinao-alexandrino-quarta-tarde-e-noite-todos-os-fotografos-28422","banner":"https://cdn.focoradical.com.br/newfoco/banners/20260617204328MDF6889.jpg"},
+            {"title":"TREINÃO DA TERÇA NA ALEXANDRINO (TODOS OS FOTÓGRAFOS)","subtitle":"Treinão","date":"16/06/2026","dia":"Ter","periodo":"Treinão","url":"https://invictorcliques.focoradical.com.br/prova/20260616-treinao-da-terca-na-alexandrino-todos-os-fotografos-17201","banner":"https://cdn.focoradical.com.br/newfoco/banners/20260616203529img-1579.jpg"},
+            {"title":"TREINO DA SEGUNDA NA ALEXANDRINO - TARDE/NOITE","subtitle":"Tarde/Noite","date":"15/06/2026","dia":"Seg","periodo":"Tarde/Noite","url":"https://invictorcliques.focoradical.com.br/prova/20260615-treino-da-segunda-na-alexandrino-tarde-noite-23225","banner":"https://cdn.focoradical.com.br/newfoco/banners/20260615202219IMG1688.jpg"},
+            {"title":"TREINO ALEXANDRINO SEXTA NOITE","subtitle":"Noite","date":"12/06/2026","dia":"Sex","periodo":"Noite","url":"https://invictorcliques.focoradical.com.br/prova/20260612-treino-alexandrino-sexta-noite-16755","banner":"https://cdn.focoradical.com.br/newfoco/banners/2026061314001612062026-IMGL7013.jpg"},
+            {"title":"TREINÃO DA QUINTA NA ALEXANDRINO (TODOS OS FOTÓGRAFOS)","subtitle":"Treinão","date":"11/06/2026","dia":"Qui","periodo":"Treinão","url":"https://invictorcliques.focoradical.com.br/prova/20260611-treinao-da-quinta-na-alexandrino-todos-os-fotografos-17201","banner":"https://cdn.focoradical.com.br/newfoco/banners/20260611204732img1-311.jpg"},
+            {"title":"TREINO NA ALEXANDRINO - MANHÃ (11/06/2025)","subtitle":"Manhã","date":"11/06/2026","dia":"Qui","periodo":"Manhã","url":"https://invictorcliques.focoradical.com.br/prova/20260611-treino-na-alexandrino-manha-11-06-2025-natal-17767","banner":"https://cdn.focoradical.com.br/newfoco/banners/2026061108294011.06-Treino-Alexandrino-manh-76.jpg"},
+            {"title":"TREINO DA QUARTA NA ALEXANDRINO - TARDE/NOITE","subtitle":"Tarde/Noite","date":"10/06/2026","dia":"Qua","periodo":"Tarde/Noite","url":"https://invictorcliques.focoradical.com.br/prova/20260610-treino-da-quarta-na-alexandrino-tarde-noite-23225","banner":"https://cdn.focoradical.com.br/newfoco/banners/20260610200937IMG6466.jpg"},
+            {"title":"TREINÃO DA TERÇA NA ALEXANDRINO (TODOS OS FOTÓGRAFOS)","subtitle":"Treinão","date":"09/06/2026","dia":"Ter","periodo":"Treinão","url":"https://invictorcliques.focoradical.com.br/prova/20260609-treinao-da-terca-na-alexandrino-todos-os-fotografos-17201","banner":"https://cdn.focoradical.com.br/newfoco/banners/20260609204042img1-888.jpg"},
+            {"title":"TREINO NA ALEXANDRINO - MANHÃ (09/06/2026)","subtitle":"Manhã","date":"09/06/2026","dia":"Ter","periodo":"Manhã","url":"https://invictorcliques.focoradical.com.br/prova/20260609-treino-na-alexandrino-manha-09-06-2026-natal-17767","banner":"https://cdn.focoradical.com.br/newfoco/banners/2026060908202909.06-Treino-Alexandrino-139.jpg"},
+            {"title":"TREINO DA SEGUNDA NA ALEXANDRINO - TARDE/NOITE","subtitle":"Tarde/Noite","date":"08/06/2026","dia":"Seg","periodo":"Tarde/Noite","url":"https://invictorcliques.focoradical.com.br/prova/20260608-treino-da-segunda-na-alexandrino-tarde-noite-23225","banner":"https://cdn.focoradical.com.br/newfoco/banners/20260608202601IMG3248.jpg"},
+            {"title":"TREINO DA SEXTA NA ALEXANDRINO - NOITE","subtitle":"Noite","date":"05/06/2026","dia":"Sex","periodo":"Noite","url":"https://invictorcliques.focoradical.com.br/prova/20260605-treino-da-sexta-na-alexandrino-noite-23225","banner":"https://cdn.focoradical.com.br/newfoco/banners/20260605200042IMG0925.jpg"},
+            {"title":"TREINO DA QUARTA NA ALEXANDRINO - TARDE/NOITE","subtitle":"Tarde/Noite","date":"03/06/2026","dia":"Qua","periodo":"Tarde/Noite","url":"https://invictorcliques.focoradical.com.br/prova/20260603-treino-da-quarta-na-alexandrino-tarde-noite-23225","banner":"https://cdn.focoradical.com.br/newfoco/banners/20260603202348IMG7835.jpg"},
+            {"title":"TREINÃO TERÇA NA ALEXANDRINO ( TODOS OS FOTÓGRAFOS ) - TARDE/NOITE","subtitle":"Treinão","date":"02/06/2026","dia":"Ter","periodo":"Treinão","url":"https://invictorcliques.focoradical.com.br/prova/20260602-treinao-terca-na-alexandrino-todos-os-fotografos-tarde-noite-28422","banner":"https://cdn.focoradical.com.br/newfoco/banners/20260602212159IMG5548.jpeg"},
+            {"title":"TREINO DA SEGUNDA NA ALEXANDRINO - TARDE/NOITE","subtitle":"Tarde/Noite","date":"01/06/2026","dia":"Seg","periodo":"Tarde/Noite","url":"https://invictorcliques.focoradical.com.br/prova/20260601-treino-da-segunda-na-alexandrino-tarde-noite-23225","banner":"https://cdn.focoradical.com.br/newfoco/banners/20260601205459IMG4780.jpg"},
+            {"title":"TREINO DA SEGUNDA NA ALEXANDRINO - MANHÃ","subtitle":"Manhã","date":"01/06/2026","dia":"Seg","periodo":"Manhã","url":"https://invictorcliques.focoradical.com.br/prova/20260601-treinos-treino-da-segunda-na-alexandrino-manha-30339","banner":"https://cdn.focoradical.com.br/newfoco/banners/20260601061311IMG4534.jpeg"},
+            {"title":"TREINOS ALEXANDRINO NOITE DE SEXTA","subtitle":"Noite","date":"29/05/2026","dia":"Sex","periodo":"Noite","url":"https://invictorcliques.focoradical.com.br/prova/20260529-treinos-alexandrino-noite-de-sexta-16755","banner":null},
+            {"title":"TREINÃO DA QUINTA NA ALEXANDRINO - TARDE/NOITE","subtitle":"Treinão","date":"28/05/2026","dia":"Qui","periodo":"Treinão","url":"https://invictorcliques.focoradical.com.br/prova/20260528-treinao-da-quinta-na-alexandrino-23225","banner":"https://cdn.focoradical.com.br/newfoco/banners/20260528203640IMG5852.jpg"},
+            {"title":"TREINO ALEXANDRINO NOITE DE TERÇA - TODOS FOTÓGRAFOS","subtitle":"Noite","date":"26/05/2026","dia":"Ter","periodo":"Noite","url":"https://invictorcliques.focoradical.com.br/prova/20260526-treino-alexandrino-noite-de-terca-todos-fotografos-18535","banner":"https://cdn.focoradical.com.br/newfoco/banners/20260526202454AZ27494.jpg"}
         ];
+        // Cópia fixa dos eventos atuais (v241) — usada pelo seed único pra publicar na nuvem
+        window.__FOCO_SEED_V241 = FOCO_EVENTOS_REAIS.map(function(e){ return Object.assign({}, e); });
+        // ── SEED ÚNICO v241: publica os eventos atuais na nuvem 1x (só no aparelho admin) ──
+        (function _focoSeedV241(){
+            try{
+                if(localStorage.getItem('focoSeed_v241')) return;                       // já rodou
+                if(!(typeof _kvAdminKey==='function' && _kvAdminKey())) return;          // só admin (tem a chave)
+                setTimeout(async function(){
+                    try{
+                        var seed = window.__FOCO_SEED_V241;
+                        if(!seed || !seed.length) return;
+                        // Restaura a lista pros eventos novos (caso o sync da nuvem tenha trazido os antigos)
+                        FOCO_EVENTOS_REAIS.length = 0;
+                        seed.forEach(function(e){ FOCO_EVENTOS_REAIS.push(Object.assign({}, e)); });
+                        var json = JSON.stringify(FOCO_EVENTOS_REAIS.slice(0, 80));
+                        localStorage.setItem('focoEventosReais', json);
+                        localStorage.setItem('focoEventosReais_v46', json);
+                        localStorage.setItem('focoEventosReais_ts', Date.now().toString());
+                        if(typeof sharedSetKeys === 'function'){
+                            var ok = await sharedSetKeys({'focoEventosReais':json,'focoEventosReais_v46':json,'focoEventosReais_rev':Date.now().toString(),'_lastUpdate':Date.now().toString()});
+                            if(ok){
+                                localStorage.setItem('focoSeed_v241','1');
+                                if(typeof renderTodosEventos === 'function') renderTodosEventos();
+                                if(typeof focoAdminShowList === 'function') focoAdminShowList();
+                                if(typeof _updateFocoCountBadge === 'function') _updateFocoCountBadge();
+                                if(typeof updateStatsBar === 'function') updateStatsBar();
+                                if(typeof showToast === 'function') showToast('Eventos atualizados e publicados pros visitantes! 🎉','📡');
+                            }
+                        }
+                    }catch(e){}
+                }, 4500); // depois do primeiro sync da nuvem
+            }catch(e){}
+        })();
         const PERIODO_CONFIG = {
             "Manhã":       { color:"#FF9500", icon:"🌅",
                              bg:"linear-gradient(135deg,#2a1200 0%,#7a3500 50%,#FF9500 100%)" },
@@ -21039,17 +21082,58 @@ Responda sempre em português brasileiro.`;
                 }
             }
 
+            // Estratégia D (v240): varredura GLOBAL — pega slugs dentro do JSON
+            // do Next.js (__NEXT_DATA__) e de qualquer texto, não só em href=.
+            try {
+                const extra = _extractProvaEventos(html);
+                extra.forEach(ev => { if (!results.some(r => r.url === ev.url)) results.push(ev); });
+            } catch(e) {}
+
             // Estratégia C: extrair banners CDN próximos a cada URL
             results.forEach(ev => {
+                if (ev.banner) return;
                 const idx = html.indexOf(ev.url);
                 if (idx < 0) return;
                 const ctx = html.substring(Math.max(0, idx - 500), idx + 1200);
-                // Banner CDN Foco Radical
                 const bm = ctx.match(/https:\/\/cdn\.focoradical\.com\.br\/newfoco\/banners\/([^\s"'<>?#]+\.(?:jpg|jpeg|png|webp))/i);
                 if (bm) ev.banner = bm[0];
             });
 
             return results;
+        }
+
+        // ── Extrator universal de eventos a partir de QUALQUER texto ──
+        // Usado pelo parser do portal E pela importação em massa (colar).
+        // Pega o slug do evento (/prova/AAAAMMDD-...-id) onde quer que ele apareça:
+        // dentro do JSON do Next.js, em links, ou numa lista colada pelo Victor.
+        function _extractProvaEventos(text){
+            var out=[], seen={};
+            if(!text || typeof text!=='string') return out;
+            // 1) slug completo com id final (mais confiável)
+            var re=/(?:prova|evento)\/(\d{8}-[a-z0-9][a-z0-9\-]*?-\d{3,6})/gi, m;
+            while((m=re.exec(text))!==null){
+                var slug=m[1].toLowerCase();
+                var url='https://invictorcliques.focoradical.com.br/prova/'+slug;
+                if(seen[url]) continue; seen[url]=1;
+                out.push({url:url, slug:slug, title:null, banner:null});
+            }
+            // 2) slugs sem id final (alguns eventos)
+            var re2=/(?:prova|evento)\/(\d{8}-[a-z0-9][a-z0-9\-]{3,})/gi;
+            while((m=re2.exec(text))!==null){
+                var slug2=m[1].toLowerCase().replace(/[^a-z0-9\-]+$/,'');
+                var url2='https://invictorcliques.focoradical.com.br/prova/'+slug2;
+                if(seen[url2]) continue; seen[url2]=1;
+                out.push({url:url2, slug:slug2, title:null, banner:null});
+            }
+            // associa banner CDN próximo de cada slug, se houver
+            out.forEach(function(ev){
+                var idx=text.indexOf(ev.slug);
+                if(idx<0) return;
+                var ctx=text.substring(Math.max(0,idx-700), idx+1600);
+                var bm=ctx.match(/https:\/\/cdn\.focoradical\.com\.br\/newfoco\/banners\/[^\s"'<>?#\\]+\.(?:jpg|jpeg|png|webp)/i);
+                if(bm) ev.banner=bm[0];
+            });
+            return out;
         }
 
         // ── CONVERTE slug em objeto de evento completo ────────────
@@ -21122,6 +21206,44 @@ Responda sempre em português brasileiro.`;
             el.textContent = text;
             el.style.color = color || '#4CD964';
         }
+
+        // ── IMPORTAÇÃO EM MASSA (colar links/conteúdo) — v240 ───────
+        window.focoBulkImport = async function(){
+            var ta = document.getElementById('focoBulkPaste');
+            var st = document.getElementById('focoBulkStatus');
+            var text = ta ? (ta.value || '') : '';
+            function setSt(msg, color, bg){ if(!st) return; st.style.cssText='display:block;margin-top:8px;padding:9px 11px;border-radius:8px;font-size:11px;line-height:1.6;color:'+color+';background:'+bg+';'; st.innerHTML=msg; }
+            if(!text.trim()){ setSt('Cole os links ou o conteúdo da página de eventos primeiro.', '#FFB300', 'rgba(255,179,0,0.08)'); return; }
+            var parsed = [];
+            try { parsed = _extractProvaEventos(text); } catch(e){}
+            if(!parsed.length){
+                setSt('❌ Não achei nenhum link de evento (/prova/...) no texto colado.<br>Dica: no Foco Radical, toque e segure em cada evento → <b>Copiar link</b>, ou copie o endereço dos eventos, e cole tudo aqui (pode ser vários de uma vez).', '#FF6B6B', 'rgba(255,107,107,0.08)');
+                return;
+            }
+            var novos = _mergeNovosEventos(parsed);
+            // ordena do mais novo pro mais antigo pela data no slug
+            try { FOCO_EVENTOS_REAIS.sort(function(a,b){ return (b.url||'').localeCompare(a.url||''); }); } catch(e){}
+            var json = JSON.stringify(FOCO_EVENTOS_REAIS.slice(0, 80));
+            try { localStorage.setItem('focoEventosReais', json); localStorage.setItem('focoEventosReais_v46', json); localStorage.setItem('focoEventosReais_ts', Date.now().toString()); } catch(e){}
+            setSt('⏳ Publicando ' + FOCO_EVENTOS_REAIS.length + ' eventos pros visitantes...', '#FFB300', 'rgba(255,179,0,0.08)');
+            try {
+                if (typeof sharedSetKeys === 'function') {
+                    await sharedSetKeys({ 'focoEventosReais': json, 'focoEventosReais_v46': json, 'focoEventosReais_rev': Date.now().toString(), '_lastUpdate': Date.now().toString() });
+                }
+            } catch(e){}
+            if (typeof renderTodosEventos === 'function') renderTodosEventos();
+            if (typeof focoAdminShowList === 'function') focoAdminShowList();
+            if (typeof _updateFocoCountBadge === 'function') _updateFocoCountBadge();
+            if (typeof updateStatsBar === 'function') updateStatsBar();
+            if (novos > 0) {
+                setSt('✅ <b>' + novos + ' evento(s) novo(s)</b> importado(s)! Agora são <b>' + FOCO_EVENTOS_REAIS.length + '</b> no site, já publicados pros visitantes. 🎉<br><span style="color:#9aa;font-size:10px;">Confira a lista abaixo — pode editar nome/data e subir a capa JPG de cada um.</span>', '#51CF66', 'rgba(81,207,102,0.1)');
+                if(ta) ta.value='';
+                if (typeof showToast === 'function') showToast('+' + novos + ' eventos importados!', '🎉');
+                try { AdminChangeLog.addChange('Eventos importados em massa', '+' + novos + ' eventos colados.', 'success'); } catch(e){}
+            } else {
+                setSt('✅ Encontrei ' + parsed.length + ' evento(s), mas todos já estavam no site. Total: <b>' + FOCO_EVENTOS_REAIS.length + '</b>.', '#888', 'rgba(255,215,0,0.06)');
+            }
+        };
 
         // ── ESTRATÉGIA 1: Claude API com web_search ──────────────────
         // Usa a IA para buscar a página e extrair os eventos de forma inteligente
@@ -29747,7 +29869,7 @@ const _P1_VICTOR_BUILTIN_PRESETS = [{"id": "p1_01_cross_processing_yellow_light"
     <!-- SITE FOOTER v62 -->
     <footer class="site-footer">
         <div class="site-footer-brand">@invictorcliques</div>
-        <div class="site-footer-sub">Fotografia Esportiva Premium · Natal RN · 2026 · v240.0001</div>
+        <div class="site-footer-sub">Fotografia Esportiva Premium · Natal RN · 2026 · v242.0001</div>
         <div style="margin-top:12px;display:flex;justify-content:center;gap:16px;">
             <button onclick="openSocialLink('instagram')" style="background:none;border:none;color:#555;cursor:pointer;font-size:18px;transition:color .2s;" onmouseover="this.style.color='#E1306C'" onmouseout="this.style.color='#555'"><i class="fab fa-instagram"></i></button>
             <button onclick="openSocialLink('tiktok')" style="background:none;border:none;color:#555;cursor:pointer;font-size:18px;transition:color .2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#555'"><i class="fab fa-tiktok"></i></button>
