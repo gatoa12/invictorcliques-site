@@ -5522,7 +5522,7 @@ select option{background:#17131f;color:#fff;}
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v236.0001</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v237.0001</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -6557,8 +6557,32 @@ select option{background:#17131f;color:#fff;}
                         </div>
                     </div>
 
-                    <!-- OPÇÃO RECOMENDADA: GitHub Gist -->
+                    <!-- COFRE PRÓPRIO: Cloudflare KV (PRINCIPAL) -->
                     <details open style="margin-bottom:12px;">
+                        <summary style="cursor:pointer;padding:12px 14px;background:rgba(243,128,32,0.08);border:1px solid rgba(243,128,32,0.25);border-radius:10px;font-size:12px;color:#F38020;font-weight:800;list-style:none;display:flex;align-items:center;gap:8px;">
+                            ⛅ Cofre Próprio (Cloudflare KV)
+                            <span id="kvStatusBadge" style="background:rgba(243,128,32,0.2);border:1px solid rgba(243,128,32,0.4);color:#F38020;padding:1px 8px;border-radius:8px;font-size:9px;font-weight:900;margin-left:auto;">PRINCIPAL</span>
+                        </summary>
+                        <div style="background:rgba(0,0,0,0.25);border:1px solid rgba(243,128,32,0.1);border-radius:0 0 10px 10px;padding:14px;border-top:none;">
+                            <div style="background:rgba(243,128,32,0.05);border-radius:8px;padding:10px;margin-bottom:12px;font-size:10px;color:#999;line-height:1.7;">
+                                Seu armazenamento próprio, <strong style="color:#F38020;">sem limites de cota</strong>. Cole aqui a chave de admin (a mesma que você guardou na Cloudflare como <code style="background:rgba(255,255,255,0.08);padding:1px 4px;border-radius:3px;">ADMIN_WRITE_KEY</code>). Ela fica salva <strong style="color:#ddd;">só neste aparelho</strong> e nunca aparece pra visitantes.
+                            </div>
+                            <div style="display:flex;flex-direction:column;gap:8px;">
+                                <div>
+                                    <label style="font-size:9px;color:#555;font-weight:700;text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px;">Chave de Admin (ADMIN_WRITE_KEY)</label>
+                                    <input id="inputKvKey" type="password" value="" placeholder="cole aqui sua chave secreta" style="width:100%;padding:9px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:#fff;font-size:12px;font-family:monospace;outline:none;box-sizing:border-box;">
+                                </div>
+                                <div style="display:flex;gap:8px;">
+                                    <button onclick="testKvConnection()" style="flex:1;padding:9px;background:rgba(243,128,32,0.12);border:1.5px solid rgba(243,128,32,0.35);color:#F38020;border-radius:8px;font-weight:800;font-size:11px;cursor:pointer;">🧪 Testar</button>
+                                    <button onclick="saveKvKey()" style="flex:1;padding:9px;background:linear-gradient(135deg,#F38020,#d96d12);color:#fff;border:none;border-radius:8px;font-weight:800;font-size:11px;cursor:pointer;">💾 Salvar</button>
+                                </div>
+                                <div id="kvDiagOutput" style="font-size:10px;min-height:18px;color:#555;"></div>
+                            </div>
+                        </div>
+                    </details>
+
+                    <!-- OPÇÃO RECOMENDADA: GitHub Gist -->
+                    <details style="margin-bottom:12px;">
                         <summary style="cursor:pointer;padding:12px 14px;background:rgba(34,197,94,0.07);border:1px solid rgba(34,197,94,0.2);border-radius:10px;font-size:12px;color:#22c55e;font-weight:800;list-style:none;display:flex;align-items:center;gap:8px;">
                             🐙 GitHub Gist — Gratuito &amp; Recomendado
                             <span style="background:rgba(34,197,94,0.2);border:1px solid rgba(34,197,94,0.4);color:#22c55e;padding:1px 8px;border-radius:8px;font-size:9px;font-weight:900;margin-left:auto;">RECOMENDADO</span>
@@ -11312,12 +11336,100 @@ Poderia me ajudar? 🙏"
             working: null         // true/false/null
         };
 
+        // ══════════════════════════════════════════════════════════════
+        //  COFRE PRÓPRIO — Cloudflare KV via Worker (/api/data)
+        //  Leitura pública; escrita protegida pela chave de admin (header).
+        //  A chave de escrita fica SÓ no navegador do admin (nunca publicada).
+        // ══════════════════════════════════════════════════════════════
+        const _KV_API = '/api/data';
+        function _kvAdminKey() { try { return localStorage.getItem('_cfg_kvAdminKey') || ''; } catch(e) { return ''; } }
+        function _kvEnabled() { try { return localStorage.getItem('_cfg_kvDisabled') !== '1'; } catch(e) { return true; } }
+        async function _kvGet() {
+            if (!_kvEnabled()) return null;
+            const controller = new AbortController();
+            const t = setTimeout(() => controller.abort(), 5000);
+            try {
+                const r = await fetch(_KV_API + '?_=' + Date.now(), { signal: controller.signal, headers: { 'Accept': 'application/json' } });
+                clearTimeout(t);
+                if (!r.ok) return null;
+                const d = await r.json();
+                return (d && typeof d === 'object') ? d : null;
+            } catch(e) { clearTimeout(t); return null; }
+        }
+        async function _kvSet(data) {
+            if (!_kvEnabled()) return false;
+            const key = _kvAdminKey();
+            if (!key) return false; // sem chave de admin (visitante) → não grava
+            const controller = new AbortController();
+            const t = setTimeout(() => controller.abort(), 8000);
+            try {
+                const r = await fetch(_KV_API, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'x-admin-key': key },
+                    body: JSON.stringify(data),
+                    signal: controller.signal
+                });
+                clearTimeout(t);
+                return r.ok;
+            } catch(e) { clearTimeout(t); return false; }
+        }
+        // ── Configuração do cofre no admin (Testar / Salvar chave) ──
+        async function testKvConnection() {
+            const out = document.getElementById('kvDiagOutput');
+            const key = (document.getElementById('inputKvKey') && document.getElementById('inputKvKey').value || '').trim();
+            if (out) out.innerHTML = '<span style="color:#F38020;">⏳ Testando cofre...</span>';
+            try {
+                const rg = await fetch(_KV_API + '?_=' + Date.now(), { headers: { 'Accept': 'application/json' } });
+                if (!rg.ok) { if (out) out.innerHTML = '<span style="color:#FF6B6B;">❌ O cofre (/api/data) não respondeu (HTTP ' + rg.status + ').</span>'; return; }
+                const cur = await rg.json().catch(function(){ return {}; });
+                if (!key) { if (out) out.innerHTML = '<span style="color:#FFA726;">✅ Cofre online (leitura OK). Cole a chave de admin e teste de novo para validar a escrita.</span>'; return; }
+                const rp = await fetch(_KV_API, { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-admin-key': key }, body: JSON.stringify(cur || {}) });
+                if (rp.ok) { if (out) out.innerHTML = '<span style="color:#51CF66;">✅ Chave válida! Escrita no cofre liberada. Clique em 💾 Salvar.</span>'; }
+                else if (rp.status === 403) { if (out) out.innerHTML = '<span style="color:#FF6B6B;">❌ Chave incorreta (HTTP 403). Confira o valor do ADMIN_WRITE_KEY na Cloudflare.</span>'; }
+                else { if (out) out.innerHTML = '<span style="color:#FF6B6B;">❌ Erro HTTP ' + rp.status + '.</span>'; }
+            } catch(e) { if (out) out.innerHTML = '<span style="color:#FF6B6B;">❌ Erro de rede: ' + (e && e.message || e) + '</span>'; }
+        }
+        function saveKvKey() {
+            const out = document.getElementById('kvDiagOutput');
+            const key = (document.getElementById('inputKvKey') && document.getElementById('inputKvKey').value || '').trim();
+            try {
+                if (key) localStorage.setItem('_cfg_kvAdminKey', key);
+                else localStorage.removeItem('_cfg_kvAdminKey');
+                _sharedCacheTs = 0; // força releitura do cofre
+                if (out) out.innerHTML = '<span style="color:#51CF66;">✅ Chave salva neste aparelho! Agora clique em "Publicar Tudo Agora" para gravar seus dados no cofre.</span>';
+                if (typeof showToast === 'function') showToast('⛅ Cofre configurado! Clique em Publicar.', '✅');
+            } catch(e) { if (out) out.innerHTML = '<span style="color:#FF6B6B;">❌ Não consegui salvar: ' + (e && e.message || e) + '</span>'; }
+        }
+        // Pré-preenche o campo da chave se já estiver salva neste aparelho
+        try {
+            document.addEventListener('DOMContentLoaded', function() {
+                try { var el = document.getElementById('inputKvKey'); var k = _kvAdminKey(); if (el && k) el.value = k; } catch(e) {}
+            });
+        } catch(e) {}
+
         async function sharedGet() {
             const now = Date.now();
             const _ttl = (typeof _getCacheTTL === 'function') ? _getCacheTTL() : CACHE_TTL;
             // If Gist cache was invalidated by a write, bypass sharedCache too
             if (_gistCacheTs === 0) _sharedCache = null;
             if (_sharedCache && (now - _sharedCacheTs) < _ttl) return _sharedCache;
+
+            // ══ COFRE PRÓPRIO (Cloudflare KV via /api/data) — PRIORIDADE MÁXIMA ══
+            // Lê do seu cofre primeiro. Se estiver vazio, cai pro JSONBin/Gist (transição segura).
+            try {
+                const kv = await _kvGet();
+                if (kv && (kv._lastUpdate || kv.siteButtons || kv.invictorAdminData || kv.focoEventosReais || kv.ofertas || kv.banlekProducts)) {
+                    _sharedCache = kv;
+                    _sharedCacheTs = now;
+                    _syncState.working = true;
+                    _syncState.consecutiveFails = 0;
+                    _syncState.backend = 'kv';
+                    _syncState.lastGetStatus = 200;
+                    _syncState.lastGetTime = now;
+                    if (typeof _updateSyncIndicator === 'function') _updateSyncIndicator();
+                    return kv;
+                }
+            } catch(e) {}
 
             // ══ JSON ESTRITO, EM CASCATA (F1 → F2 → F3) — PRIORIDADE TOTAL ══
             // Tenta a conta ativa. Se a quota esgotou (429), pula pra próxima conta e tenta de novo.
@@ -11433,6 +11545,22 @@ Poderia me ajudar? 🙏"
             let jsonbinOk = false;
             let firebaseOk = false;
             let gistOk = false;
+            let kvOk = false;
+
+            // ══ COFRE PRÓPRIO (Cloudflare KV) = PRIORIDADE DE ESCRITA ══
+            // Grava no seu cofre primeiro (com a chave de admin). Os backends
+            // antigos abaixo continuam como rede de segurança durante a transição.
+            try {
+                kvOk = await _kvSet(data);
+                if (kvOk) {
+                    _syncState.working = true;
+                    _syncState.backend = 'kv';
+                    _syncState.lastPutStatus = 200;
+                    _syncState.lastPutTime = Date.now();
+                    _syncState.consecutiveFails = 0;
+                    if (typeof _updateSyncIndicator === 'function') _updateSyncIndicator();
+                }
+            } catch(e) {}
 
             // ══ JSONBin = PRIORIDADE — grava em TODAS as contas (F1+F2+F3) ══
             // Escreve o MESMO pacote nas 3 contas EM PARALELO e ESPERA o resultado.
@@ -11521,7 +11649,7 @@ Poderia me ajudar? 🙏"
             try { if (_bc) _bc.postMessage({ type: 'sync', ts: Date.now(), force: true }); } catch(e) {}
             try { localStorage.setItem('_invictorPublished', Date.now().toString()); } catch(e) {}
 
-            return jsonbinOk || firebaseOk || gistOk || true; // localStorage always succeeds
+            return kvOk || jsonbinOk || firebaseOk || gistOk || true; // localStorage always succeeds
         }
 
         // ── Firebase URL management ──────────────────────────────
@@ -29430,7 +29558,7 @@ const _P1_VICTOR_BUILTIN_PRESETS = [{"id": "p1_01_cross_processing_yellow_light"
     <!-- SITE FOOTER v62 -->
     <footer class="site-footer">
         <div class="site-footer-brand">@invictorcliques</div>
-        <div class="site-footer-sub">Fotografia Esportiva Premium · Natal RN · 2026 · v236.0001</div>
+        <div class="site-footer-sub">Fotografia Esportiva Premium · Natal RN · 2026 · v237.0001</div>
         <div style="margin-top:12px;display:flex;justify-content:center;gap:16px;">
             <button onclick="openSocialLink('instagram')" style="background:none;border:none;color:#555;cursor:pointer;font-size:18px;transition:color .2s;" onmouseover="this.style.color='#E1306C'" onmouseout="this.style.color='#555'"><i class="fab fa-instagram"></i></button>
             <button onclick="openSocialLink('tiktok')" style="background:none;border:none;color:#555;cursor:pointer;font-size:18px;transition:color .2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#555'"><i class="fab fa-tiktok"></i></button>
@@ -29782,7 +29910,7 @@ const _P1_VICTOR_BUILTIN_PRESETS = [{"id": "p1_01_cross_processing_yellow_light"
     // travar as atualizações. 18s + pausa quando a aba está oculta mantém a
     // quota saudável mesmo com várias contas. O Gist (grátis) cobre o resto.
     var POLL_MS = 10000;
-    var BUILD = 'v236-ANTI-REVERT-CATALOG' + Date.now();
+    var BUILD = 'v237-KV-COFRE-LIGADO' + Date.now();
 
     window._invictorSync = {
         build: BUILD, log: [], lastFetch: 0, lastApplied: 0,
