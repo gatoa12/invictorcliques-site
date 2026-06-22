@@ -5522,7 +5522,7 @@ select option{background:#17131f;color:#fff;}
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v237.0001</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v240.0001</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -6359,10 +6359,20 @@ select option{background:#17131f;color:#fff;}
 
                 <!-- TAB 10: BOTÕES DO SITE -->
                 <div class="admin-section" id="adminTab10" style="display:none;">
-                    <h3 style="color:var(--primary);margin-bottom:6px;font-size:1.1em;">🔲 Botões do Site</h3>
-                    <p style="color:#555;font-size:12px;margin-bottom:20px;">Ative/desative botões do menu e personalize textos e ícones.</p>
+                    <h3 style="color:var(--primary);margin-bottom:6px;font-size:1.1em;">🔲 Botões & Seções do Site</h3>
+                    <p style="color:#555;font-size:12px;margin-bottom:18px;">Tudo que aparece (ou não) pro visitante fica aqui. Ligou = aparece na hora. Desligou = some na hora.</p>
+
+                    <!-- ░░ GRUPO 1: BOTÕES DO MENU ░░ -->
+                    <div style="font-size:11px;font-weight:900;color:#888;text-transform:uppercase;letter-spacing:1.2px;margin:0 0 10px;display:flex;align-items:center;gap:7px;">🔲 Botões do menu <span style="flex:1;height:1px;background:rgba(255,255,255,0.08);"></span></div>
+                    <div style="font-size:11px;color:#667;margin-bottom:12px;">Cada botão liga uma página do site. Pode trocar o texto e o ícone também.</div>
                     <div style="display:grid;gap:10px;" id="botoesListAdmin"></div>
-                    <button onclick="salvarBotoes()" style="margin-top:18px;width:100%;padding:13px;background:linear-gradient(135deg,var(--primary),#FF7A1A);color:#000;border:none;border-radius:12px;font-weight:900;cursor:pointer;font-size:14px;">💾 Salvar Botões</button>
+                    <button onclick="salvarBotoes()" style="margin-top:14px;width:100%;padding:13px;background:linear-gradient(135deg,var(--primary),#FF7A1A);color:#000;border:none;border-radius:12px;font-weight:900;cursor:pointer;font-size:14px;">💾 Salvar textos & ícones dos botões</button>
+
+                    <!-- ░░ GRUPO 2: SEÇÕES DA PÁGINA DE FOTOS ░░ -->
+                    <div style="font-size:11px;font-weight:900;color:#888;text-transform:uppercase;letter-spacing:1.2px;margin:26px 0 10px;display:flex;align-items:center;gap:7px;">📄 Seções da página <span style="flex:1;height:1px;background:rgba(255,255,255,0.08);"></span></div>
+                    <div style="font-size:11px;color:#667;margin-bottom:12px;">Os blocos que aparecem dentro da página de fotos (passos, pesquisa, tabela de valores, banner e barra de números). Ligue ou oculte cada um sem mexer no código. <span style="color:#7a7;">Salva e publica sozinho ao tocar.</span></div>
+                    <div style="display:grid;gap:9px;" id="seccoesListAdmin"></div>
+                    <div style="font-size:10.5px;color:#556;margin-top:10px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:9px;padding:9px 11px;">💡 Pra <b>editar os textos</b> dessas seções (títulos, passos, preços) use a aba <b style="color:var(--primary);">📝 Conteúdo</b>. Aqui você só liga/desliga.</div>
                 </div>
 
                 <!-- TAB 11: GALERIA DE IMAGENS -->
@@ -8102,7 +8112,7 @@ Poderia me ajudar? 🙏"
             <span style="font-size:0.85em;">🔍</span> Verificar minhas fotos
         </h2>
         <div style="padding:0 16px;max-width:540px;margin:0 auto;">
-            <p style="text-align:center;color:#999;font-size:13px;margin:0 0 18px;line-height:1.55;">Confira se suas fotos do treino estão no <b style="color:var(--primary);">Foco Radical</b>, identifique elas e, se quiser, peça pra <b>comprar</b> ou <b>remover</b>. É rápido e seguro. 🔒</p>
+            <p style="text-align:center;color:#999;font-size:13px;margin:0 0 18px;line-height:1.55;">Confira se suas fotos do treino estão no <b style="color:var(--primary);">Foco Radical</b>, identifique elas e <b>garanta as suas</b> — e ainda ganhe um <b style="color:var(--primary);">cupom exclusivo</b> pras próximas compras. É rápido e seguro. 🔒</p>
             <div id="verifMount"></div>
         </div>
     </div>
@@ -9251,6 +9261,25 @@ Poderia me ajudar? 🙏"
         <!-- 🎫 STATUS DO USUÁRIO -->
         <div id="edicaoStatusCard" style="margin-bottom:14px;"></div>
 
+        <!-- ✨ COMO FUNCIONA + DICAS (v240) -->
+        <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(91,141,239,0.18);border-radius:14px;padding:15px;margin-bottom:14px;">
+            <div style="font-size:12px;font-weight:900;color:#5B8DEF;margin-bottom:11px;">⚡ Como funciona em 3 passos</div>
+            <div style="display:flex;gap:8px;text-align:center;">
+                <div style="flex:1;"><div style="width:34px;height:34px;margin:0 auto 6px;border-radius:50%;background:linear-gradient(135deg,#5B8DEF,#7c3aed);color:#fff;font-weight:900;display:flex;align-items:center;justify-content:center;font-size:14px;">1</div><div style="font-size:10px;color:#cdd6e4;font-weight:700;line-height:1.3;">Suba sua foto do treino</div></div>
+                <div style="flex:1;"><div style="width:34px;height:34px;margin:0 auto 6px;border-radius:50%;background:linear-gradient(135deg,#5B8DEF,#7c3aed);color:#fff;font-weight:900;display:flex;align-items:center;justify-content:center;font-size:14px;">2</div><div style="font-size:10px;color:#cdd6e4;font-weight:700;line-height:1.3;">Escolha um preset P1 Victor</div></div>
+                <div style="flex:1;"><div style="width:34px;height:34px;margin:0 auto 6px;border-radius:50%;background:linear-gradient(135deg,#5B8DEF,#7c3aed);color:#fff;font-weight:900;display:flex;align-items:center;justify-content:center;font-size:14px;">3</div><div style="font-size:10px;color:#cdd6e4;font-weight:700;line-height:1.3;">Baixe pronta pro Insta</div></div>
+            </div>
+            <details style="margin-top:13px;background:rgba(0,0,0,0.2);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:0;overflow:hidden;">
+                <summary style="cursor:pointer;padding:11px 13px;font-size:11.5px;font-weight:800;color:#FFB300;list-style:none;">💡 Dicas pra sua foto ficar TOP <span style="float:right;color:#667;font-weight:600;">abrir ▾</span></summary>
+                <div style="padding:2px 14px 14px;font-size:11px;color:#aab;line-height:1.7;">
+                    • Use a foto <b style="color:#ddd;">original e nítida</b> (sem print de tela e sem marca d'água).<br>
+                    • Luz boa ajuda muito — fotos de <b style="color:#ddd;">manhã ou fim de tarde</b> ganham mais.<br>
+                    • Mande na <b style="color:#ddd;">maior resolução</b> que tiver pra impressão ficar perfeita.<br>
+                    • Quer o mesmo tom em todas? Escolha <b style="color:#a78bfa;">Seu Preset</b> e aplique no álbum inteiro.
+                </div>
+            </details>
+        </div>
+
         <!-- 🔓 ACESSO POR CÓDIGO (pedir ao Victor + ativar) -->
         <div id="edicaoAcessoBox" style="margin-bottom:16px;">
             <div style="background:linear-gradient(160deg,rgba(0,229,176,0.08),rgba(91,141,239,0.06));border:1.5px solid rgba(0,229,176,0.3);border-radius:14px;padding:16px;">
@@ -9285,6 +9314,12 @@ Poderia me ajudar? 🙏"
                     </div>
                 </div>
                 <div style="font-size:11px;color:#666;line-height:1.6;margin-bottom:12px;">Coloque uma foto com um estilo que você admira. A IA detecta automaticamente cores, contraste, temperatura e tom — gerando um preset pronto para usar.</div>
+                <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;">
+                    <span style="font-size:9.5px;font-weight:700;color:#c4b5fd;background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.25);border-radius:20px;padding:4px 10px;">🌅 Tom quente de fim de tarde</span>
+                    <span style="font-size:9.5px;font-weight:700;color:#c4b5fd;background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.25);border-radius:20px;padding:4px 10px;">🎬 Look cinematográfico</span>
+                    <span style="font-size:9.5px;font-weight:700;color:#c4b5fd;background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.25);border-radius:20px;padding:4px 10px;">❄️ Frio e clean</span>
+                    <span style="font-size:9.5px;font-weight:700;color:#c4b5fd;background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.25);border-radius:20px;padding:4px 10px;">🔥 Vibrante pro feed</span>
+                </div>
                 <!-- Photo upload for roubar -->
                 <label id="edicaoRoubarPickerBtn" style="display:flex;align-items:center;justify-content:center;gap:8px;padding:13px;background:rgba(167,139,250,0.08);border:1.5px dashed rgba(167,139,250,0.4);border-radius:10px;cursor:pointer;font-size:12px;font-weight:800;color:#a78bfa;">
                     📸 Adicionar foto referência
@@ -12531,7 +12566,7 @@ Poderia me ajudar? 🙏"
             //    sincronizam pra TODOS os visitantes e entre aparelhos do admin
             ['notify_topic','chat_db_url','chat_sb_url','chat_sb_key','chat_sb_table','chat_pantry',
              'invPalette','siteThemeColors','invictorStravaDefaultColor','catalog_layout','invictorEdicaoCodes','invictorMarketplaces',
-             'foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','ai_pages'].forEach(function(k){
+             'foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','foco_survey_visible','statsBar_visible','foco_steps_pos','foco_survey_pos','foco_price_pos','ai_pages'].forEach(function(k){
                 try { var v = localStorage.getItem(k); if (v != null) payload[k] = v; } catch(e) {}
             });
 
@@ -12749,7 +12784,7 @@ Poderia me ajudar? 🙏"
                 'invictorEdicaoEmails', 'invictorEdicaoAtivos',
                 // === Configs novas: chat ao vivo / ntfy / paleta / conteúdo / IA ===
                 'notify_topic','chat_db_url','chat_sb_url','chat_sb_key','chat_sb_table','chat_pantry',
-                'invPalette','siteThemeColors','invictorStravaDefaultColor','catalog_layout','invictorEdicaoCodes','invictorMarketplaces','foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','ai_pages',
+                'invPalette','siteThemeColors','invictorStravaDefaultColor','catalog_layout','invictorEdicaoCodes','invictorMarketplaces','foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','foco_survey_visible','statsBar_visible','foco_steps_pos','foco_survey_pos','foco_price_pos','ai_pages',
                 // === Last update marker ===
                 '_lastUpdate'
             ];
@@ -12765,7 +12800,8 @@ Poderia me ajudar? 🙏"
                 if (_pj) { var _p = JSON.parse(_pj); if (_p && _p.hex) { var _r = document.documentElement;
                     _r.style.setProperty('--primary', _p.hex); _r.style.setProperty('--theme-primary', _p.hex);
                     _r.style.setProperty('--primary-dark', _p.dark); _r.style.setProperty('--theme-primary-dark', _p.dark);
-                    _r.style.setProperty('--primary-light', _p.light); } }
+                    _r.style.setProperty('--primary-light', _p.light);
+                    if(_p.accent){ _r.style.setProperty('--accent', _p.accent); _r.style.setProperty('--accent-strong', _p.dark); } } }
             } catch(e) {}
             // Aplicar tema de cores completo (aba Cores & Tema) pros visitantes
             try {
@@ -13030,7 +13066,7 @@ Poderia me ajudar? 🙏"
             if(tabIndex===0)  { setTimeout(function(){ if(typeof promoCfgLoadToPanel==='function') promoCfgLoadToPanel(); if(typeof renderSiteOverview==='function') renderSiteOverview(); }, 80); }
             if(tabIndex===7) { _catVisPending={foco:null,banlek:null}; loadCatalogVisibilityFromStorage(); }
             if(tabIndex===9) { loadThemeColorsIntoPanel(); setTimeout(function(){ if(typeof invPaletteRender==='function') invPaletteRender(); }, 40); }
-            if(tabIndex===10) { renderBotoesAdmin(); }
+            if(tabIndex===10) { renderBotoesAdmin(); if(typeof renderSeccoesAdmin==='function') renderSeccoesAdmin(); }
             if(tabIndex===11) { renderGaleria(); }
             if(tabIndex===12) { initApisTab(); }
             if(tabIndex===3)  { setTimeout(_refreshAdminCouponStock, 80); }
@@ -15531,6 +15567,7 @@ Poderia me ajudar? 🙏"
             renderPromos();
             if (typeof applyVipConfig === 'function') applyVipConfig();
             if (typeof applyPromoBanner === 'function') applyPromoBanner();
+            if (typeof window.applyStatsBarVisibility === 'function') window.applyStatsBarVisibility();
 
             // === Apply siteButtons from localStorage (autoridade única decide) ===
             try {
@@ -19694,7 +19731,7 @@ Poderia me ajudar? 🙏"
             div.innerHTML = FOCO_EVENTOS_REAIS.map((ev, i) => {
                 const safeUrl   = encodeURIComponent(ev.url || '');
                 const thumbSrc  = ev.banner
-                    ? 'https://wsrv.nl/?url=' + encodeURIComponent(ev.banner) + '&w=56&h=56&fit=cover&output=webp'
+                    ? (ev.banner.indexOf('data:') === 0 ? ev.banner : 'https://wsrv.nl/?url=' + encodeURIComponent(ev.banner) + '&w=56&h=56&fit=cover&output=webp')
                     : '';
                 const thumb = thumbSrc
                     ? `<img loading="lazy" decoding="async" src="${thumbSrc}" style="width:100%;height:100%;object-fit:cover;border-radius:5px;" onerror="this.style.display='none';this.nextSibling.style.display='flex'">`
@@ -19736,19 +19773,21 @@ Poderia me ajudar? 🙏"
                             </div>
                         </div>
                         <div style="margin-bottom:8px;">
-                            <div style="font-size:9px;color:#888;font-weight:700;margin-bottom:3px;">🖼️ URL DA FOTO/BANNER (opcional)</div>
+                            <div style="font-size:9px;color:#888;font-weight:700;margin-bottom:3px;">🖼️ CAPA DO EVENTO (URL ou suba um JPG)</div>
                             <div style="display:flex;gap:6px;">
                                 <input id="focoEditBanner_${i}" type="url" value="${ev.banner||''}"
-                                    placeholder="https://cdn.focoradical.com.br/..."
+                                    placeholder="https://... ou suba um JPG →"
                                     style="flex:1;padding:7px 9px;background:rgba(255,255,255,0.06);border:1.5px solid rgba(0,200,150,0.25);border-radius:7px;color:#fff;font-size:10px;outline:none;"
                                     oninput="focoEditPreviewBanner(${i},this.value)"
                                     onfocus="this.style.borderColor='rgba(0,200,150,0.6)'" onblur="this.style.borderColor='rgba(0,200,150,0.25)'">
+                                <label title="Subir uma foto JPG do seu aparelho como capa"
+                                    style="padding:7px 10px;background:rgba(255,106,0,0.14);border:1.5px solid rgba(255,106,0,0.35);color:#FF6A00;border-radius:7px;font-size:10px;font-weight:800;cursor:pointer;white-space:nowrap;display:flex;align-items:center;">📤 JPG<input type="file" accept="image/*" onchange="focoEditUploadCapa(${i},this)" style="display:none;"></label>
                                 <button onclick="focoEditFetchBanner(${i})" title="Buscar foto automaticamente da URL do evento"
                                     style="padding:7px 10px;background:rgba(0,200,150,0.12);border:1.5px solid rgba(0,200,150,0.3);color:#00C896;border-radius:7px;font-size:10px;font-weight:800;cursor:pointer;white-space:nowrap;">🔍 Auto</button>
                             </div>
                             <!-- Banner preview -->
                             <div id="focoEditBannerPreview_${i}" style="margin-top:6px;display:${ev.banner ? 'block' : 'none'};">
-                                <img loading="lazy" decoding="async" src="${ev.banner ? 'https://wsrv.nl/?url=' + encodeURIComponent(ev.banner) + '&w=200&h=80&fit=cover&output=webp' : ''}"
+                                <img loading="lazy" decoding="async" src="${ev.banner ? (ev.banner.indexOf('data:')===0 ? ev.banner : 'https://wsrv.nl/?url=' + encodeURIComponent(ev.banner) + '&w=200&h=80&fit=cover&output=webp') : ''}"
                                     style="width:100%;max-height:80px;object-fit:cover;border-radius:7px;border:1px solid rgba(0,200,150,0.2);"
                                     onerror="this.parentElement.style.display='none'">
                             </div>
@@ -19775,10 +19814,40 @@ Poderia me ajudar? 🙏"
             prev.style.display = 'block';
             const img = prev.querySelector('img');
             if (img) {
-                img.src = 'https://wsrv.nl/?url=' + encodeURIComponent(url) + '&w=200&h=80&fit=cover&output=webp';
+                img.src = url.indexOf('data:') === 0 ? url : ('https://wsrv.nl/?url=' + encodeURIComponent(url) + '&w=200&h=80&fit=cover&output=webp');
                 img.style.display = 'block';
             }
         }
+
+        // 📤 Subir uma capa JPG do aparelho — comprime pra não pesar no banco
+        window.focoEditUploadCapa = function(i, input){
+            var f = input && input.files && input.files[0];
+            if(!f) return;
+            if(!/^image\//.test(f.type)){ if(typeof showToast==='function') showToast('Escolha uma imagem (JPG/PNG)','⚠️'); return; }
+            if(typeof showToast==='function') showToast('Processando a capa...','⏳');
+            var rd = new FileReader();
+            rd.onload = function(e){
+                var img = new Image();
+                img.onload = function(){
+                    try{
+                        var maxW = 640;
+                        var scale = Math.min(1, maxW / (img.naturalWidth || img.width || maxW));
+                        var w = Math.max(1, Math.round((img.naturalWidth||img.width) * scale));
+                        var h = Math.max(1, Math.round((img.naturalHeight||img.height) * scale));
+                        var cv = document.createElement('canvas'); cv.width = w; cv.height = h;
+                        cv.getContext('2d').drawImage(img, 0, 0, w, h);
+                        var dataUrl = cv.toDataURL('image/jpeg', 0.72);
+                        var field = document.getElementById('focoEditBanner_' + i);
+                        if(field){ field.value = dataUrl; }
+                        focoEditPreviewBanner(i, dataUrl);
+                        if(typeof showToast==='function') showToast('Capa pronta! Toque em 💾 Salvar e Publicar','📤');
+                    }catch(err){ if(typeof showToast==='function') showToast('Erro ao processar a foto','❌'); }
+                };
+                img.onerror = function(){ if(typeof showToast==='function') showToast('Não consegui ler a imagem','❌'); };
+                img.src = e.target.result;
+            };
+            rd.readAsDataURL(f);
+        };
 
         async function focoEditFetchBanner(i) {
             const ev = FOCO_EVENTOS_REAIS[i];
@@ -20023,6 +20092,8 @@ Poderia me ajudar? 🙏"
         const BOTOES_PADRAO = [
             { id:'foco',       icon:'📸', label:'Suas Fotos',      sub:'Foco Radical',     ativo:true  },
             { id:'banlek',     icon:'🏞️', label:'Suas Fotos',      sub:'Banlek',           ativo:true  },
+            { id:'verificar',  icon:'✅', label:'Verificar minhas fotos', sub:'Confira e gerencie suas fotos', ativo:true },
+            { id:'preview',    icon:'🤳', label:'Preview Insta',   sub:'Veja sua foto no feed', ativo:true },
             { id:'ofertas',    icon:'🔥', label:'Ofertas',         sub:'de tênis',         ativo:true  },
             { id:'procure',    icon:'👟', label:'Procure',         sub:'seus tênis',       ativo:true  },
             { id:'strava',     icon:'🏃‍♂️', label:'Minhas Corridas', sub:'Strava',           ativo:true  },
@@ -20072,7 +20143,7 @@ Poderia me ajudar? 🙏"
                 _effectiveLock().forEach(function(id){
                     var btn = document.getElementById('menuBtn_' + id);
                     if (btn && btn.style.display !== 'none') btn.style.setProperty('display','none','important');
-                    var secMap = { foco:'focoSection', banlek:'banlekSection', ofertas:'ofertasSection', procure:'procureSection', strava:'stravaSection', edicao:'edicaoSection' };
+                    var secMap = { foco:'focoSection', banlek:'banlekSection', ofertas:'ofertasSection', procure:'procureSection', strava:'stravaSection', edicao:'edicaoSection', verificar:'verificarSection', preview:'previewSection', figurinhas:'figurinhasSection' };
                     var sec = secMap[id] ? document.getElementById(secMap[id]) : null;
                     if (sec) { sec.classList.add('hidden'); sec.classList.remove('active'); }
                 });
@@ -20086,7 +20157,7 @@ Poderia me ajudar? 🙏"
             // Always use _botoesTemp so toggle state is preserved during editing
             if (!_botoesTemp) _botoesTemp = getBotoes();
             const botoes = _botoesTemp;
-            const NAMES = { foco:'📸 Fotos (Foco Radical)', banlek:'🖼️ Fotos (Banlek)', ofertas:'🏷️ Ofertas de Tênis', procure:'👟 Procure Tênis', strava:'🏃 Minhas Corridas (Strava)', roubarIA:'🎨 Copiar Estilo', presetsOn:'✨ Seu Preset', edicao:'✨ Edição IA' };
+            const NAMES = { foco:'📸 Fotos (Foco Radical)', banlek:'🖼️ Fotos (Banlek)', verificar:'✅ Verificar Minhas Fotos', preview:'🤳 Preview Insta', ofertas:'🏷️ Ofertas de Tênis', procure:'👟 Procure Tênis', strava:'🏃 Minhas Corridas (Strava)', roubarIA:'🎨 Copiar Estilo', presetsOn:'✨ Seu Preset', edicao:'✨ Edição IA', figurinhas:'🃏 Figurinhas' };
             const COLORS = { strava:'rgba(252,76,2,0.12)', foco:'rgba(255,215,0,0.06)', banlek:'rgba(0,136,204,0.06)', ofertas:'rgba(255,107,0,0.06)', procure:'rgba(0,200,150,0.06)' };
             container.innerHTML = botoes.map((b,i)=>`
                 <div style="background:${COLORS[b.id]||'rgba(255,255,255,0.03)'};border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:14px;">
@@ -20174,6 +20245,90 @@ Poderia me ajudar? 🙏"
             // Also save currentData
             if (typeof saveData === 'function') saveData(false);
         }
+
+        // ═══════════════════════════════════════════════════════════════
+        //  SEÇÕES DA PÁGINA (visibilidade) — central única no tab Botões
+        //  Liga/desliga os blocos da página de fotos. Mesmos flags usados
+        //  pela aba Conteúdo, então os dois ficam sempre em sincronia.
+        // ═══════════════════════════════════════════════════════════════
+        const SECOES_PAGINA = [
+            { key:'foco_steps_visible',  icon:'🛒', label:'Como pegar suas fotos', sub:'Os 3 passos da página de fotos', posKey:'foco_steps_pos', posDefault:'bottom', refresh:function(){ if(typeof _contentRefresh==='function') _contentRefresh('toolFoco','toolFocoInject'); } },
+            { key:'foco_survey_visible', icon:'📋', label:'Antes de ver suas fotos', sub:'A pesquisa (Instagram, tom, divulgação)', posKey:'foco_survey_pos', posDefault:'top', refresh:function(){ if(typeof _contentRefresh==='function') _contentRefresh('toolSurvey','toolSurveyInject'); } },
+            { key:'foco_price_visible',  icon:'💸', label:'Tabela de valores', sub:'A lista de preços (Digital, Alta, TOP, Pacote)', posKey:'foco_price_pos', posDefault:'bottom', refresh:function(){ if(typeof _contentRefresh==='function') _contentRefresh('toolFocoExtra','toolFocoExtraInject'); } },
+            { key:'foco_cta_visible',    icon:'🔗', label:'Botão "Comprar no Foco Radical"', sub:'Acompanha a tabela de valores', refresh:function(){ if(typeof _contentRefresh==='function') _contentRefresh('toolFocoExtra','toolFocoExtraInject'); } },
+            { key:'statsBar_visible',    icon:'📊', label:'Barra de números', sub:'Eventos · Ofertas · Natal RN · Online', refresh:function(){ if(typeof window.applyStatsBarVisibility==='function') window.applyStatsBarVisibility(); } },
+            { key:'promo_visible',       icon:'⚡', label:'Banner de promoção', sub:'O banner do tênis girando no topo', refresh:function(){ if(typeof window.applyPromoBanner==='function') window.applyPromoBanner(); } },
+        ];
+        function _secVisGet(key){
+            if(key==='promo_visible'){ try{ return (JSON.parse(localStorage.getItem('promoBannerConfig_v1')||'{}').visible)!==false; }catch(e){ return true; } }
+            try{ var v=localStorage.getItem(key); return v===null?true:v==='1'; }catch(e){ return true; }
+        }
+        function _secVisSet(key,on){
+            if(key==='promo_visible'){
+                try{
+                    var cfg=JSON.parse(localStorage.getItem('promoBannerConfig_v1')||'{}'); cfg.visible=!!on;
+                    localStorage.setItem('promoBannerConfig_v1',JSON.stringify(cfg));
+                    if(typeof sharedSetKeys==='function') sharedSetKeys({'promoBannerConfig_v1':JSON.stringify(cfg),'_lastUpdate':Date.now().toString()}).catch(function(){});
+                }catch(e){}
+                return;
+            }
+            try{ localStorage.setItem(key, on?'1':'0'); }catch(e){}
+        }
+        function _secPosGet(s){ try{ return localStorage.getItem(s.posKey)||s.posDefault; }catch(e){ return s.posDefault; } }
+        function renderSeccoesAdmin(){
+            var c=document.getElementById('seccoesListAdmin'); if(!c) return;
+            c.innerHTML=SECOES_PAGINA.map(function(s){
+                var on=_secVisGet(s.key);
+                var posHtml='';
+                if(s.posKey && on){
+                    var pos=_secPosGet(s);
+                    var bTop=(pos==='top'); 
+                    var bBase='flex:1;padding:7px 4px;border:none;border-radius:8px;font-weight:800;font-size:10.5px;cursor:pointer;transition:all .15s;';
+                    posHtml='<div style="display:flex;gap:6px;margin-top:11px;background:rgba(0,0,0,0.25);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:5px;">'
+                        +'<button onclick="setSecaoPos(\''+s.posKey+'\',\'top\')" style="'+bBase+(bTop?'background:linear-gradient(135deg,var(--primary),#FF7A1A);color:#000;':'background:transparent;color:#888;')+'">⬆️ Acima dos catálogos</button>'
+                        +'<button onclick="setSecaoPos(\''+s.posKey+'\',\'bottom\')" style="'+bBase+(!bTop?'background:linear-gradient(135deg,var(--primary),#FF7A1A);color:#000;':'background:transparent;color:#888;')+'">⬇️ Abaixo dos catálogos</button>'
+                        +'</div>';
+                }
+                return '<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:13px 14px;">'
+                    +'<div style="display:flex;align-items:center;gap:12px;">'
+                    +'<div style="font-size:21px;flex-shrink:0;">'+s.icon+'</div>'
+                    +'<div style="flex:1;min-width:0;"><div style="font-size:12.5px;font-weight:800;color:#fff;">'+s.label+'</div><div style="font-size:10.5px;color:#8a8a8a;margin-top:1px;">'+s.sub+'</div></div>'
+                    +'<div style="display:flex;align-items:center;gap:8px;flex-shrink:0;cursor:pointer;" onclick="toggleSecaoPagina(\''+s.key+'\')">'
+                    +'<div style="width:42px;height:23px;background:'+(on?'#51CF66':'#333')+';border-radius:12px;position:relative;transition:all .2s;"><div style="width:19px;height:19px;background:#fff;border-radius:50%;position:absolute;top:2px;'+(on?'right:2px':'left:2px')+';transition:all .2s;box-shadow:0 2px 4px rgba(0,0,0,.4);pointer-events:none;"></div></div>'
+                    +'<span style="font-size:11px;font-weight:800;width:42px;color:'+(on?'#51CF66':'#555')+';">'+(on?'ATIVO':'OCULTO')+'</span>'
+                    +'</div></div>'
+                    +posHtml
+                    +'</div>';
+            }).join('');
+        }
+        window.toggleSecaoPagina=function(key){
+            var on=!_secVisGet(key);
+            _secVisSet(key,on);
+            var def=SECOES_PAGINA.find(function(s){return s.key===key;});
+            if(def && typeof def.refresh==='function'){ try{ def.refresh(); }catch(e){} }
+            renderSeccoesAdmin();
+            // mantém os checkboxes da aba Conteúdo em sincronia, se estiver aberta
+            try{
+                var map={foco_steps_visible:'cStepsVisible',foco_price_visible:'cPriceVisible',foco_cta_visible:'cCtaVisible',foco_survey_visible:'cSurvVisible'};
+                var cb=map[key]?document.getElementById(map[key]):null; if(cb) cb.checked=on;
+            }catch(e){}
+            // publica pros visitantes (promo já publica sozinho no _secVisSet)
+            if(key!=='promo_visible' && typeof _invPublish==='function') _invPublish();
+            if(typeof showToast==='function') showToast(on?'Aparece no site ✅':'Oculto pro visitante 🙈',(def?def.icon:'👁️'));
+        };
+        window.setSecaoPos=function(posKey,val){
+            try{ localStorage.setItem(posKey, val); }catch(e){}
+            var def=SECOES_PAGINA.find(function(s){return s.posKey===posKey;});
+            if(def && typeof def.refresh==='function'){ try{ def.refresh(); }catch(e){} }
+            renderSeccoesAdmin();
+            if(typeof _invPublish==='function') _invPublish();
+            if(typeof showToast==='function') showToast(val==='top'?'Movido pra ACIMA dos catálogos ⬆️':'Movido pra ABAIXO dos catálogos ⬇️','📍');
+        };
+        // visibilidade da barra de números (Eventos/Ofertas/Natal/Online)
+        window.applyStatsBarVisibility=function(){
+            try{ var v=localStorage.getItem('statsBar_visible'); var vis=(v===null?true:v==='1'); var sb=document.getElementById('statsBar'); if(sb) sb.style.display=vis?'':'none'; }catch(e){}
+        };
+
         // ═══════════════════════════════════════════════════════════════
         //  AUTORIDADE ÚNICA DE BOTÕES — anti-oscilação / anti-flicker
         //  Existe UMA configuração autoritativa em memória (window.__btnCfg).
@@ -20257,7 +20412,7 @@ Poderia me ajudar? 🙏"
                 if (subEl) subEl.textContent = b.sub;
 
                 // ── Also hide/show the section ────────────────────
-                const sectionMap = { foco:'focoSection', banlek:'banlekSection', ofertas:'ofertasSection', procure:'procureSection', strava:'stravaSection', edicao:'edicaoSection' };
+                const sectionMap = { foco:'focoSection', banlek:'banlekSection', ofertas:'ofertasSection', procure:'procureSection', strava:'stravaSection', edicao:'edicaoSection', verificar:'verificarSection', preview:'previewSection', figurinhas:'figurinhasSection' };
                 // roubarIA and presetsOn are modal openers — no section to hide, but still toggle the button
                 const sectionId = sectionMap[b.id];
                 if (sectionId) {
@@ -21289,6 +21444,8 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
                         statsBar.style.transform = 'translateY(0)';
                     }, 800);
                 }
+                // respeita o toggle de visibilidade (tab Botões → Seções da página)
+                try{ if(typeof window.applyStatsBarVisibility==='function') window.applyStatsBarVisibility(); }catch(e){}
             }, 500);
         })();
 
@@ -22994,7 +23151,8 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
       var esc=function(s){return (s||'').replace(/</g,'&lt;');};
       var step=function(n,t,d){return '<div style="display:flex;gap:11px;align-items:flex-start;padding:9px 0;"><div style="width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--primary),#FF9A00);color:#000;font-weight:900;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;">'+n+'</div><div><div style="font-size:12px;font-weight:800;color:#fff;">'+esc(t)+'</div><div style="font-size:10.5px;color:#999;">'+esc(d)+'</div></div></div>';};
       var html=_toolCard(_toolH(esc(cfg.header),esc(cfg.sub))+cfg.steps.map(function(s,i){return step(i+1,s.t,s.d);}).join(''));
-      _toolMountBottom('toolFoco',html);
+      var _stepsPos=(function(){ try{ return localStorage.getItem('foco_steps_pos')||'bottom'; }catch(e){ return 'bottom'; } })();
+      (_stepsPos==='top'?_toolMountTop:_toolMountBottom)('toolFoco',html);
     };
 
     // 5) PREVIEW INSTA → Gerador de legenda + hashtags
@@ -23124,10 +23282,13 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
     var SURVEY_DEFAULT={header:'📋 Antes de ver suas fotos',sub:'Responda rapidinho — ajuda o Victor a te entregar a foto do seu jeito.',divulg:'Se você autorizar, posso postar suas fotos no meu Instagram <b style="color:#fff;">@invictorcliques</b> (com ou sem <b>colaboração</b> no seu perfil). Isso fortalece meu trabalho de divulgação — e, em troca, <b style="color:#00E676;">você ganha desconto nas suas compras</b>. 🙌'};
     function _surveyCfg(){ try{ var v=JSON.parse(localStorage.getItem('foco_survey_cfg')); if(v&&v.header) return v; }catch(e){} return JSON.parse(JSON.stringify(SURVEY_DEFAULT)); }
     window.toolSurveyInject=function(){
+      var vis=(function(){ try{ var v=localStorage.getItem('foco_survey_visible'); return v===null?true:v==='1'; }catch(e){ return true; } })();
+      if(!vis){ var exSv=document.getElementById('toolSurvey'); if(exSv) exSv.remove(); return; }
       var saved=_surveyLoad(); var scfg=_surveyCfg();
       var _e=function(s){return (s||'').replace(/</g,'&lt;');};
       var tb='flex:1;padding:9px;border:1px solid rgba(255,255,255,0.12);border-radius:10px;font-weight:800;font-size:10.5px;cursor:pointer;background:rgba(255,255,255,0.05);color:#bbb;';
-      _toolMountTop('toolSurvey',_toolCard(_toolH(_e(scfg.header),_e(scfg.sub))
+      var _survPos=(function(){ try{ return localStorage.getItem('foco_survey_pos')||'top'; }catch(e){ return 'top'; } })();
+      (_survPos==='bottom'?_toolMountBottom:_toolMountTop)('toolSurvey',_toolCard(_toolH(_e(scfg.header),_e(scfg.sub))
         +'<div id="toolSurveyForm">'
         +'<input id="svInsta" placeholder="@ do seu Instagram" value="'+(saved.insta||'').replace(/"/g,'&quot;')+'" style="'+_toolInStyle+'margin-bottom:12px;">'
         +'<div style="font-size:10px;color:#9aa;font-weight:800;margin-bottom:6px;">COMO VOCÊ GOSTA DAS SUAS FOTOS?</div>'
@@ -23207,7 +23368,8 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
       if(ctaVis){
         inner+='<a onclick="openExtLink(\''+url+'\',\'Foco Radical\');return false;" href="'+url+'" style="display:block;text-align:center;margin-top:6px;padding:14px;border-radius:12px;font-weight:900;font-size:14px;text-decoration:none;cursor:pointer;background:linear-gradient(135deg,#FC4C02,#FF9A00);color:#fff;box-shadow:0 6px 18px rgba(252,76,2,.3);">📸 Ver e comprar minhas fotos no Foco Radical</a>';
       }
-      _toolMountBottom('toolFocoExtra',_toolCard(inner));
+      var _pricePos=(function(){ try{ return localStorage.getItem('foco_price_pos')||'bottom'; }catch(e){ return 'bottom'; } })();
+      (_pricePos==='top'?_toolMountTop:_toolMountBottom)('toolFocoExtra',_toolCard(inner));
     };
     window.focoPriceEditAuth=async function(){
       var p=prompt('Senha de admin para editar os valores:');
@@ -23252,11 +23414,12 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
           +'<a onclick="openExtLink(\''+focoUrl+'\',\'Foco Radical\');return false;" href="'+focoUrl+'" style="display:block;text-align:center;padding:11px;border-radius:10px;background:rgba(255,179,0,0.12);border:1px solid rgba(255,179,0,0.4);color:#FFB300;font-weight:800;font-size:12px;text-decoration:none;cursor:pointer;margin-bottom:9px;">🔗 Abrir Foco Radical pra achar os números</a>'
           +'<textarea id="vfPhotos" rows="2" placeholder="Ex: 245, 312, 410…" style="'+inp+'resize:vertical;"></textarea>')
         +card('5','O que você quer fazer',
-          '<div style="display:flex;gap:8px;">'
-          +'<button id="vfActBuy" onclick="verifSetAction(\'comprar\')" style="flex:1;padding:13px 8px;border-radius:11px;border:2px solid #FF6A00;background:rgba(255,106,0,0.15);color:#fff;font-weight:900;font-size:12px;cursor:pointer;">🛒 Comprar / baixar</button>'
-          +'<button id="vfActDel" onclick="verifSetAction(\'remover\')" style="flex:1;padding:13px 8px;border-radius:11px;border:2px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.04);color:#fff;font-weight:900;font-size:12px;cursor:pointer;">🗑️ Remover minhas fotos</button>'
-          +'</div>'
-          +'<div id="vfReasonWrap" style="display:none;margin-top:10px;"><div style="font-size:11px;color:#9aa;margin-bottom:7px;">Por que você quer remover? (ajuda o Victor a entender)</div><textarea id="vfReason" rows="2" placeholder="Ex: não gostei da foto / privacidade / saí de olhos fechados…" style="'+inp+'resize:vertical;"></textarea></div>')
+          '<button id="vfActBuy" onclick="verifSetAction(\'comprar\')" style="width:100%;padding:14px 8px;border-radius:11px;border:2px solid #FF6A00;background:rgba(255,106,0,0.15);color:#fff;font-weight:900;font-size:13px;cursor:pointer;">🛒 Comprar / baixar minhas fotos</button>'
+          +'<div style="margin-top:12px;background:linear-gradient(135deg,rgba(255,179,0,0.12),rgba(255,106,0,0.08));border:1px solid rgba(255,179,0,0.4);border-radius:13px;padding:14px;text-align:center;">'
+          +'<div style="font-size:26px;line-height:1;margin-bottom:5px;">🎟️</div>'
+          +'<div style="font-size:13px;font-weight:900;color:#FFB300;margin-bottom:3px;">Você ganha um cupom exclusivo!</div>'
+          +'<div style="font-size:11.5px;color:#e7d3b0;line-height:1.55;">Ao verificar suas fotos aqui, você libera um <b style="color:#fff;">cupom de desconto exclusivo</b> pra usar nas suas <b style="color:#fff;">próximas compras</b> com o Victor. 🙌</div>'
+          +'</div>')
         +card('6','📢 Posso divulgar suas fotos?',
           '<div style="font-size:11px;color:#9aa;margin-bottom:9px;">Você autoriza o Victor a <b>postar/usar suas fotos</b> no Instagram <b style="color:var(--primary);">@invictorcliques</b> para divulgação e atualização do trabalho?</div>'
           +'<div style="display:flex;gap:8px;">'
@@ -23283,18 +23446,13 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
       r.readAsDataURL(f);
     };
     window.verifSetAction=function(a){
-      verifState.action=a;
-      var buy=document.getElementById('vfActBuy'), del=document.getElementById('vfActDel'), rw=document.getElementById('vfReasonWrap');
-      if(buy&&del){
-        var on='2px solid #FF6A00;background:rgba(255,106,0,0.15);', off='2px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.04);';
-        buy.style.cssText='flex:1;padding:13px 8px;border-radius:11px;color:#fff;font-weight:900;font-size:12px;cursor:pointer;border:'+(a==='comprar'?on:off);
-        del.style.cssText='flex:1;padding:13px 8px;border-radius:11px;color:#fff;font-weight:900;font-size:12px;cursor:pointer;border:'+(a==='remover'?on:off);
-      }
-      if(rw) rw.style.display=(a==='remover')?'block':'none';
+      verifState.action='comprar';
+      var buy=document.getElementById('vfActBuy');
+      if(buy){ buy.style.cssText='width:100%;padding:14px 8px;border-radius:11px;color:#fff;font-weight:900;font-size:13px;cursor:pointer;border:2px solid #FF6A00;background:rgba(255,106,0,0.15);'; }
     };
     window.verifSubmit=function(){
       var g=function(id){var el=document.getElementById(id);return el?(el.value||'').trim():'';};
-      var nome=g('vfNome'), insta=g('vfInsta'), zap=g('vfZap'), local=g('vfLocal'), photos=g('vfPhotos'), reason=g('vfReason');
+      var nome=g('vfNome'), insta=g('vfInsta'), zap=g('vfZap'), local=g('vfLocal'), photos=g('vfPhotos'), reason='';
       var evSel=document.getElementById('vfEvent');
       var evUrl=evSel?evSel.value:'';
       var evText=(evSel&&evSel.selectedIndex>0)?evSel.options[evSel.selectedIndex].text:'';
@@ -23302,8 +23460,7 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
       if(!insta){ if(typeof showToast==='function')showToast('Coloque seu @ do Instagram','⚠️'); var e1=document.getElementById('vfInsta'); if(e1)e1.focus(); return; }
       if(!verifState.selfie){ if(typeof showToast==='function')showToast('Envie sua selfie pra verificação','📷'); return; }
       if(!photos && (!evText || evUrl==='__outro__')){ if(typeof showToast==='function')showToast('Escolha o evento ou anote os números das fotos','⚠️'); return; }
-      if(verifState.action==='remover' && !reason){ if(typeof showToast==='function')showToast('Diga o motivo da remoção','✍️'); var er=document.getElementById('vfReason'); if(er)er.focus(); return; }
-      var acao=verifState.action==='remover'?'🗑️ REMOVER fotos':'🛒 Comprar/baixar fotos';
+      var acao='🛒 Comprar/baixar fotos';
       var evLine=evText?evText:(evUrl==='__outro__'?'Não sei / outro':'Não informado');
       var hasLink=(evUrl && evUrl!=='__outro__' && /^https?:/i.test(evUrl));
       var authTxt=verifState.authorize==='sim'?'✅ SIM, autoriza divulgação no Instagram':(verifState.authorize==='nao'?'🚫 NÃO autoriza divulgação':'(não respondeu)');
@@ -23316,12 +23473,11 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
         +(hasLink?('Link do evento: '+evUrl+'\n'):'')
         +(local?('Local: '+local+'\n'):'')
         +'Fotos (nº): '+(photos||'(vou mostrar pela selfie)')+'\n'
-        +(verifState.action==='remover'?('Motivo da remoção: '+reason+'\n'):'')
         +'Divulgação no Instagram: '+authTxt+'\n'
         +'✅ Confirmo que sou eu nas fotos e que esta selfie é minha.\n'
         +'(vou anexar minha selfie aqui no chat 📷)';
       try{ var arr=JSON.parse(localStorage.getItem('verif_requests')||'[]'); arr.unshift({t:Date.now(),nome:nome,insta:insta,zap:zap,action:verifState.action,event:evLine,eventUrl:hasLink?evUrl:'',local:local,photos:photos,reason:reason,authorize:verifState.authorize||'',selfie:verifState.selfie}); localStorage.setItem('verif_requests',JSON.stringify(arr.slice(0,80))); }catch(e){}
-      try{ if(typeof invNotify==='function') invNotify('🔍 '+acao+' — '+nome, insta+(zap?(' · '+zap):'')+'\n'+evLine+'\nFotos: '+(photos||'-')+(verifState.action==='remover'?('\nMotivo: '+reason):'')); }catch(e){}
+      try{ if(typeof invNotify==='function') invNotify('🔍 '+acao+' — '+nome, insta+(zap?(' · '+zap):'')+'\n'+evLine+'\nFotos: '+(photos||'-')+''); }catch(e){}
       try{ navigator.clipboard && navigator.clipboard.writeText(msg); }catch(e){}
       var igUrl='https://ig.me/m/'+_verifIG();
       var zapUrl=zap?('https://wa.me/55'+zap.replace(/\D/g,'')+'?text='+encodeURIComponent(msg)):'';
@@ -23329,7 +23485,7 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
       if(done){ done.innerHTML='<div style="background:rgba(76,205,100,0.1);border:1px solid rgba(76,205,100,0.35);border-radius:14px;padding:16px;text-align:center;">'
         +'<div style="font-size:30px;">🙌</div>'
         +'<div style="font-size:14px;font-weight:900;color:#4CD964;margin:4px 0;">Tudo certo, '+nome.replace(/</g,'&lt;').split(' ')[0]+'!</div>'
-        +'<div style="font-size:12px;color:#cdd6e4;line-height:1.55;margin-bottom:12px;">Sua mensagem já foi <b>copiada</b>. Toque num botão abaixo, <b>cole</b> e <b>anexe sua selfie</b> 📷 — o Victor confirma sua identidade e resolve '+(verifState.action==='remover'?'a remoção':'o envio')+' das suas fotos.</div>'
+        +'<div style="font-size:12px;color:#cdd6e4;line-height:1.55;margin-bottom:12px;">Sua mensagem já foi <b>copiada</b>. Toque num botão abaixo, <b>cole</b> e <b>anexe sua selfie</b> 📷 — o Victor confirma sua identidade e libera o envio das suas fotos + seu cupom exclusivo.</div>'
         +'<a href="'+igUrl+'" target="_blank" rel="noopener" style="display:block;padding:12px;border-radius:11px;background:linear-gradient(135deg,#F58529,#DD2A7B,#8134AF);color:#fff;font-weight:900;font-size:13px;text-decoration:none;margin-bottom:8px;">📩 Enviar no Instagram (Direct)</a>'
         +(zapUrl?('<a href="'+zapUrl+'" target="_blank" rel="noopener" style="display:block;padding:12px;border-radius:11px;background:linear-gradient(135deg,#25D366,#128C7E);color:#fff;font-weight:900;font-size:13px;text-decoration:none;">💬 Ou enviar no WhatsApp</a>'):'')
         +'</div>';
@@ -23591,7 +23747,8 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
       var stepsForm='<label style="display:flex;align-items:center;gap:8px;font-size:12px;color:#ddd;margin-bottom:11px;cursor:pointer;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:9px;padding:9px 11px;"><input type="checkbox" id="cStepsVisible" '+(stepsVisible?'checked':'')+' style="width:17px;height:17px;accent-color:var(--primary);"> 👁️ Mostrar "Como pegar suas fotos" no site</label>'
         +'<div style="font-size:10px;color:#9aa;margin-bottom:4px;">Título e subtítulo:</div><input id="cStepsH" value="'+eq(steps.header)+'" style="'+inp+'"><input id="cStepsS" value="'+eq(steps.sub)+'" style="'+inp+'"><div style="font-size:10px;color:#9aa;margin:6px 0 4px;">Passos (título / descrição):</div>'
         +steps.steps.map(function(s,i){return '<div style="display:flex;gap:6px;"><input id="cStepT'+i+'" value="'+eq(s.t)+'" style="'+inp+'flex:1;"><input id="cStepD'+i+'" value="'+eq(s.d)+'" style="'+inp+'flex:2;"></div>';}).join('');
-      var survForm='<div style="font-size:10px;color:#9aa;margin-bottom:4px;">Título / subtítulo:</div><input id="cSurvH" value="'+eq(surv.header)+'" style="'+inp+'"><input id="cSurvS" value="'+eq(surv.sub)+'" style="'+inp+'"><div style="font-size:10px;color:#9aa;margin:6px 0 4px;">Texto da autorização de divulgação:</div><textarea id="cSurvD" rows="4" style="'+inp+'resize:vertical;">'+eq(surv.divulg)+'</textarea>';
+      var survVisible=(function(){ try{ var v=localStorage.getItem('foco_survey_visible'); return v===null?true:v==='1'; }catch(e){ return true; } })();
+      var survForm='<label style="display:flex;align-items:center;gap:8px;font-size:12px;color:#ddd;margin-bottom:11px;cursor:pointer;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:9px;padding:9px 11px;"><input type="checkbox" id="cSurvVisible" '+(survVisible?'checked':'')+' style="width:17px;height:17px;accent-color:var(--primary);"> 👁️ Mostrar a pesquisa "Antes de ver suas fotos" no site</label><div style="font-size:10px;color:#9aa;margin-bottom:4px;">Título / subtítulo:</div><input id="cSurvH" value="'+eq(surv.header)+'" style="'+inp+'"><input id="cSurvS" value="'+eq(surv.sub)+'" style="'+inp+'"><div style="font-size:10px;color:#9aa;margin:6px 0 4px;">Texto da autorização de divulgação:</div><textarea id="cSurvD" rows="4" style="'+inp+'resize:vertical;">'+eq(surv.divulg)+'</textarea>';
       var priceVisible=(function(){ try{ var v=localStorage.getItem('foco_price_visible'); return v===null?true:v==='1'; }catch(e){ return true; } })();
       var ctaVisible=(function(){ try{ var v=localStorage.getItem('foco_cta_visible'); return v===null?true:v==='1'; }catch(e){ return true; } })();
       var priceForm='<label style="display:flex;align-items:center;gap:8px;font-size:12px;color:#ddd;margin-bottom:8px;cursor:pointer;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:9px;padding:9px 11px;"><input type="checkbox" id="cPriceVisible" '+(priceVisible?'checked':'')+' style="width:17px;height:17px;accent-color:var(--primary);"> 👁️ Mostrar a tabela de valores no site</label>'
@@ -23602,9 +23759,9 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
         +sec('📋 Pesquisa "Antes de ver suas fotos" (Foto 3)',survForm,'contentSaveSurvey()')
         +sec('💸 Tabela de valores (Foto 2)',priceForm,'contentSavePrices()');
     };
-    window.contentSaveSteps=function(){ var g=function(id){var e=document.getElementById(id);return e?e.value:'';}; var arr=[],i=0; while(document.getElementById('cStepT'+i)){ arr.push({t:g('cStepT'+i),d:g('cStepD'+i)}); i++; } try{localStorage.setItem('foco_steps',JSON.stringify({header:g('cStepsH'),sub:g('cStepsS'),steps:arr}));}catch(e){} var sv=document.getElementById('cStepsVisible'); try{localStorage.setItem('foco_steps_visible',(sv&&sv.checked)?'1':'0');}catch(e){} _contentRefresh('toolFoco','toolFocoInject'); if(typeof _invPublish==='function')_invPublish(); if(typeof showToast==='function')showToast(sv&&!sv.checked?'Passos salvos (ocultos)':'Passos salvos!','✅'); };
-    window.contentSaveSurvey=function(){ var g=function(id){var e=document.getElementById(id);return e?e.value:'';}; try{localStorage.setItem('foco_survey_cfg',JSON.stringify({header:g('cSurvH'),sub:g('cSurvS'),divulg:g('cSurvD')}));}catch(e){} _contentRefresh('toolSurvey','toolSurveyInject'); if(typeof _invPublish==='function')_invPublish(); if(typeof showToast==='function')showToast('Pesquisa salva!','✅'); };
-    window.contentSavePrices=function(){ var g=function(id){var e=document.getElementById(id);return e?e.value:'';}; var arr=[],i=0; while(document.getElementById('cPriceN'+i)){ if(g('cPriceN'+i)) arr.push({n:g('cPriceN'+i),d:g('cPriceD'+i),p:(g('cPriceP'+i)||'').replace(/[^0-9.,]/g,'')}); i++; } try{localStorage.setItem('foco_prices',JSON.stringify(arr));}catch(e){} var pv=document.getElementById('cPriceVisible'); try{localStorage.setItem('foco_price_visible',(pv&&pv.checked)?'1':'0');}catch(e){} var cv=document.getElementById('cCtaVisible'); try{localStorage.setItem('foco_cta_visible',(cv&&cv.checked)?'1':'0');}catch(e){} _contentRefresh('toolFocoExtra','toolFocoExtraInject'); if(typeof _invPublish==='function')_invPublish(); if(typeof showToast==='function')showToast('Valores salvos!','✅'); };
+    window.contentSaveSteps=function(){ var g=function(id){var e=document.getElementById(id);return e?e.value:'';}; var arr=[],i=0; while(document.getElementById('cStepT'+i)){ arr.push({t:g('cStepT'+i),d:g('cStepD'+i)}); i++; } try{localStorage.setItem('foco_steps',JSON.stringify({header:g('cStepsH'),sub:g('cStepsS'),steps:arr}));}catch(e){} var sv=document.getElementById('cStepsVisible'); try{localStorage.setItem('foco_steps_visible',(sv&&sv.checked)?'1':'0');}catch(e){} _contentRefresh('toolFoco','toolFocoInject'); if(typeof renderSeccoesAdmin==='function')renderSeccoesAdmin(); if(typeof _invPublish==='function')_invPublish(); if(typeof showToast==='function')showToast(sv&&!sv.checked?'Passos salvos (ocultos)':'Passos salvos!','✅'); };
+    window.contentSaveSurvey=function(){ var g=function(id){var e=document.getElementById(id);return e?e.value:'';}; try{localStorage.setItem('foco_survey_cfg',JSON.stringify({header:g('cSurvH'),sub:g('cSurvS'),divulg:g('cSurvD')}));}catch(e){} var sv=document.getElementById('cSurvVisible'); try{localStorage.setItem('foco_survey_visible',(sv&&sv.checked)?'1':'0');}catch(e){} _contentRefresh('toolSurvey','toolSurveyInject'); if(typeof renderSeccoesAdmin==='function')renderSeccoesAdmin(); if(typeof _invPublish==='function')_invPublish(); if(typeof showToast==='function')showToast(sv&&!sv.checked?'Pesquisa salva (oculta)':'Pesquisa salva!','✅'); };
+    window.contentSavePrices=function(){ var g=function(id){var e=document.getElementById(id);return e?e.value:'';}; var arr=[],i=0; while(document.getElementById('cPriceN'+i)){ if(g('cPriceN'+i)) arr.push({n:g('cPriceN'+i),d:g('cPriceD'+i),p:(g('cPriceP'+i)||'').replace(/[^0-9.,]/g,'')}); i++; } try{localStorage.setItem('foco_prices',JSON.stringify(arr));}catch(e){} var pv=document.getElementById('cPriceVisible'); try{localStorage.setItem('foco_price_visible',(pv&&pv.checked)?'1':'0');}catch(e){} var cv=document.getElementById('cCtaVisible'); try{localStorage.setItem('foco_cta_visible',(cv&&cv.checked)?'1':'0');}catch(e){} _contentRefresh('toolFocoExtra','toolFocoExtraInject'); if(typeof renderSeccoesAdmin==='function')renderSeccoesAdmin(); if(typeof _invPublish==='function')_invPublish(); if(typeof showToast==='function')showToast('Valores salvos!','✅'); };
     try{ if(document.readyState!=='loading') setTimeout(function(){if(window.verifUpdateBadge)verifUpdateBadge();},800); else document.addEventListener('DOMContentLoaded',function(){setTimeout(function(){if(window.verifUpdateBadge)verifUpdateBadge();},800);}); }catch(e){}
 
     // ════════ BOTÃO DE AÇÃO FLUTUANTE (ações rápidas: verificar, fotos, contato) ════════
@@ -23854,7 +24011,7 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
         strava:{t:'🏃 Coach IA — Corrida',d:'Peça dicas de treino, pace e prova.',sys:'Você é um treinador de corrida experiente (running coach) que prepara corredores de rua de 5k a maratona. Dê orientações práticas, seguras e personalizáveis sobre treino, pace, recuperação, força e provas. Tom de autoridade e motivação. Respostas curtas e acionáveis, em português do Brasil. Lembre que dor/lesão pede avaliação profissional.',sg:['Como melhorar meu pace?','Treino pra 10k em 8 semanas','O que comer antes da prova?']},
         edicao:{t:'✨ IA de Edição',d:'Descreva sua foto e a IA sugere o estilo ideal.',sys:'Você é diretor de arte e retocador especialista em fotografia esportiva de corrida (padrão do estúdio do Victor / presets P1 Victor). Recomende receitas de edição concretas: luz, contraste, cor, sombras, nitidez e mood. Fale com autoridade técnica mas acessível, em português do Brasil, curto.',sg:['Estilo pra foto ao pôr do sol','Deixar a foto mais dramática','Visual clean e profissional']},
         procure:{t:'👟 IA de Tênis',d:'Diga seu perfil e a IA recomenda o tênis ideal.',sys:'Você é um especialista (curador) em tênis de corrida, com domínio de pisada (neutra/pronada/supinada), drop, amortecimento e uso (treino, prova, trail). Recomende categorias e modelos populares por perfil, com autoridade e sem enrolação, em português do Brasil.',sg:['Tênis pra iniciante','Pisada neutra, 10k','Melhor custo-benefício']},
-        verificar:{t:'🔍 IA — Verificação',d:'Dúvidas sobre conferir ou remover suas fotos.',sys:'Você é o assistente de atendimento do Victor para verificação de fotos. Explique com clareza e segurança como conferir, comprar ou solicitar remoção das fotos, e tranquilize sobre privacidade e o uso da selfie (apenas para identificação). Tom acolhedor e confiável, em português do Brasil, curto.',sg:['Como remover minhas fotos?','É seguro enviar a selfie?','Como confirmo que sou eu?']},
+        verificar:{t:'🔍 IA — Verificação',d:'Dúvidas sobre conferir e garantir suas fotos.',sys:'Você é o assistente de atendimento do Victor para verificação de fotos. Explique com clareza e segurança como conferir, identificar e comprar as fotos, e que ao verificar a pessoa ganha um cupom exclusivo de desconto para as próximas compras. Tranquilize sobre privacidade e o uso da selfie (apenas para identificação). Tom acolhedor e confiável, em português do Brasil, curto.',sg:['Como acho minhas fotos?','É seguro enviar a selfie?','Como funciona o cupom exclusivo?']},
         preview:{t:'📱 IA de Legendas',d:'A IA cria legendas e hashtags pro seu post.',sys:'Você é social media especialista em conteúdo de corrida para Instagram. Crie legendas curtas, marcantes e originais + exatamente 5 hashtags relevantes (mix de nicho e alcance). Tom motivador e autoral, em português do Brasil.',sg:['Legenda pra foto de prova','Legenda de treino matinal','Algo motivacional']},
         ofertas:{t:'🔥 IA de Ofertas',d:'Diga seu perfil e a IA acha o tênis em oferta ideal pra você.',sys:'Você é um consultor especialista em tênis de corrida que encontra a melhor oferta por perfil (orçamento, pisada, distância, objetivo). Seja direto, confiável e empolgante, em português do Brasil. Justifique a escolha e crie um senso de oportunidade sem enganar.',sg:['Melhor oferta até R$400','Tênis em promoção pra 10k','Custo-benefício pra iniciante']}
       };
@@ -29498,16 +29655,40 @@ const _P1_VICTOR_BUILTIN_PRESETS = [{"id": "p1_01_cross_processing_yellow_light"
       ['Ciano','#00B8D4','#0091A7','#4DD0E1'],
       ['Dourado','#E0A800','#B38600','#FFD24D']
     ];
-    window.invSetPalette=function(name,hex,dark,light){
+    window.invSetPalette=function(name,hex,dark,light,accent){
       var r=document.documentElement;
       r.style.setProperty('--primary',hex); r.style.setProperty('--theme-primary',hex);
       r.style.setProperty('--primary-dark',dark); r.style.setProperty('--theme-primary-dark',dark);
       r.style.setProperty('--primary-light',light);
-      try{ localStorage.setItem('invPalette',JSON.stringify({name:name,hex:hex,dark:dark,light:light})); }catch(e){}
-      if(typeof showToast==='function')showToast('Cor do site: '+name,'🎨'); if(typeof _invPublish==='function')_invPublish();
+      var acc=accent||light;
+      r.style.setProperty('--accent',acc); r.style.setProperty('--accent-strong',dark);
+      try{ localStorage.setItem('invPalette',JSON.stringify({name:name,hex:hex,dark:dark,light:light,accent:acc})); }catch(e){}
+      if(typeof showToast==='function')showToast('Cores do site: '+name,'🎨'); if(typeof _invPublish==='function')_invPublish();
       if(typeof invPaletteRender==='function')invPaletteRender();
     };
-    (function(){ try{ var p=JSON.parse(localStorage.getItem('invPalette')||'null'); if(p&&p.hex){ var r=document.documentElement; r.style.setProperty('--primary',p.hex); r.style.setProperty('--theme-primary',p.hex); r.style.setProperty('--primary-dark',p.dark); r.style.setProperty('--theme-primary-dark',p.dark); r.style.setProperty('--primary-light',p.light); } }catch(e){} })();
+    // Combinações fortes (cor principal + cor de destaque) — harmônicas no fundo escuro premium
+    window.INV_COMBOS=[
+      ['Pôr do Sol','#FF6A00','#D85400','#FF9540','#FFD24D'],
+      ['Brasa','#FF3D2E','#C81E12','#FF6B5E','#FFB300'],
+      ['Oceano','#00B8D4','#0091A7','#4DD0E1','#7C4DFF'],
+      ['Neon','#00E676','#00B248','#69F0AE','#00B8D4'],
+      ['Realeza','#7C3AED','#5B21B6','#A78BFA','#FFD24D'],
+      ['Magenta','#E91E8C','#B0156B','#FF5FB0','#00E5FF'],
+      ['Ouro Negro','#E0A800','#B38600','#FFD24D','#FF6A00'],
+      ['Tropical','#00C853','#009E42','#5EE08A','#FF9100'],
+      ['Cyberpunk','#FF2E97','#C71772','#FF6FBE','#00F0FF'],
+      ['Lava','#FF5722','#D84315','#FF8A65','#FFC107']
+    ];
+    window.invSetCombo=function(name,hex,dark,light,accent){ invSetPalette(name,hex,dark,light,accent); };
+    (function(){ try{ var p=JSON.parse(localStorage.getItem('invPalette')||'null'); if(p&&p.hex){ var r=document.documentElement; r.style.setProperty('--primary',p.hex); r.style.setProperty('--theme-primary',p.hex); r.style.setProperty('--primary-dark',p.dark); r.style.setProperty('--theme-primary-dark',p.dark); r.style.setProperty('--primary-light',p.light); if(p.accent){ r.style.setProperty('--accent',p.accent); r.style.setProperty('--accent-strong',p.dark); } } }catch(e){}
+      // CSS da cor de destaque — pontos seguros e sempre presentes
+      try{ var ac=document.createElement('style'); ac.id='invAccentCSS'; ac.textContent=
+        '#sbEventos,#sbOfertas{color:var(--accent,var(--primary))!important;}'
+        +'#scrollTopBtn{background:linear-gradient(135deg,var(--primary),var(--accent,var(--primary-light)))!important;}'
+        +'.sneaker-promo-discount{color:var(--accent,#FFD24D)!important;}';
+        document.head.appendChild(ac);
+      }catch(e){}
+    })();
     window.invPaletteRender=function(){
       var host=document.getElementById('adminTab9'); if(!host) return;
       var box=document.getElementById('invPaletteBox');
@@ -29526,6 +29707,14 @@ const _P1_VICTOR_BUILTIN_PRESETS = [{"id": "p1_01_cross_processing_yellow_light"
           return '<button onclick="invSetPalette(\''+p[0]+'\',\''+p[1]+'\',\''+p[2]+'\',\''+p[3]+'\')" title="'+p[0]+'" style="display:flex;flex-direction:column;align-items:center;gap:5px;background:none;border:none;cursor:pointer;">'
             +'<span style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,'+p[1]+','+p[3]+');border:3px solid '+(sel?'#fff':'transparent')+';box-shadow:0 0 0 '+(sel?'2px '+p[1]:'1px rgba(0,0,0,0.15)')+';"></span>'
             +'<span style="font-size:10px;font-weight:700;color:'+(sel?'var(--primary)':'#9aa')+';">'+p[0]+'</span></button>';
+        }).join('')+'</div>'
+        +'<div style="font-size:14px;font-weight:900;color:var(--primary);margin:22px 0 4px;">🔥 Combinações fortes</div>'
+        +'<div style="font-size:11px;color:#9aa;margin-bottom:12px;">Pares de cores que combinam (principal + destaque). Toque pra aplicar — muda botões, números e destaques na hora e <b style="color:#51CF66;">já vai pros visitantes</b>.</div>'
+        +'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:10px;">'
+        +INV_COMBOS.map(function(p){ var sel=(p[1].toLowerCase()===(cur||'#ff6a00').toLowerCase());
+          return '<button onclick="invSetCombo(\''+p[0]+'\',\''+p[1]+'\',\''+p[2]+'\',\''+p[3]+'\',\''+p[4]+'\')" title="'+p[0]+'" style="display:flex;flex-direction:column;align-items:center;gap:6px;background:rgba(255,255,255,0.03);border:2px solid '+(sel?'var(--primary)':'rgba(255,255,255,0.08)')+';border-radius:12px;padding:11px 6px;cursor:pointer;">'
+            +'<span style="display:flex;border-radius:50%;overflow:hidden;width:40px;height:40px;border:2px solid rgba(255,255,255,0.15);box-shadow:0 2px 8px rgba(0,0,0,0.4);"><span style="flex:1;background:'+p[1]+';"></span><span style="flex:1;background:'+p[4]+';"></span></span>'
+            +'<span style="font-size:10px;font-weight:800;color:'+(sel?'var(--primary)':'#cdd6e4')+';text-align:center;line-height:1.15;">'+p[0]+'</span></button>';
         }).join('')+'</div>';
     };
 
@@ -29558,7 +29747,7 @@ const _P1_VICTOR_BUILTIN_PRESETS = [{"id": "p1_01_cross_processing_yellow_light"
     <!-- SITE FOOTER v62 -->
     <footer class="site-footer">
         <div class="site-footer-brand">@invictorcliques</div>
-        <div class="site-footer-sub">Fotografia Esportiva Premium · Natal RN · 2026 · v237.0001</div>
+        <div class="site-footer-sub">Fotografia Esportiva Premium · Natal RN · 2026 · v240.0001</div>
         <div style="margin-top:12px;display:flex;justify-content:center;gap:16px;">
             <button onclick="openSocialLink('instagram')" style="background:none;border:none;color:#555;cursor:pointer;font-size:18px;transition:color .2s;" onmouseover="this.style.color='#E1306C'" onmouseout="this.style.color='#555'"><i class="fab fa-instagram"></i></button>
             <button onclick="openSocialLink('tiktok')" style="background:none;border:none;color:#555;cursor:pointer;font-size:18px;transition:color .2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#555'"><i class="fab fa-tiktok"></i></button>
@@ -29602,8 +29791,8 @@ const _P1_VICTOR_BUILTIN_PRESETS = [{"id": "p1_01_cross_processing_yellow_light"
                 <div style="display:flex;align-items:center;gap:10px;">
                     <div style="width:36px;height:36px;background:linear-gradient(135deg,#a78bfa,#7c3aed);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;">🔍</div>
                     <div>
-                        <div style="font-size:16px;font-weight:900;color:#a78bfa;">PRESETS ON</div>
-                        <div style="font-size:10px;color:#555;">Clone de Estilo por Visão IA</div>
+                        <div style="font-size:16px;font-weight:900;color:#a78bfa;">SEU PRESET</div>
+                        <div style="font-size:10px;color:#888;">Crie seu estilo e aplique em todas as fotos</div>
                     </div>
                 </div>
                 <button onclick="presetsOnClose()" style="padding:7px 14px;background:rgba(255,0,0,0.08);border:1px solid rgba(255,0,0,0.2);border-radius:9px;color:#ff6b6b;font-size:12px;font-weight:700;cursor:pointer;">✕ Fechar</button>
@@ -29973,6 +30162,7 @@ const _P1_VICTOR_BUILTIN_PRESETS = [{"id": "p1_01_cross_processing_yellow_light"
             }
         });
         try { if (typeof applyPromoBanner === 'function') applyPromoBanner(); } catch(e) {}
+        try { if (typeof window.applyStatsBarVisibility === 'function') window.applyStatsBarVisibility(); } catch(e) {}
         // Se a lista de tênis ocultos mudou, re-renderiza o catálogo pra sumir na hora
         try {
             if (data.invictorHiddenTenis_v1 && data.invictorHiddenTenis_v1 !== window.__lastHiddenTenis) {
@@ -30673,6 +30863,7 @@ const _P1_VICTOR_BUILTIN_PRESETS = [{"id": "p1_01_cross_processing_yellow_light"
       })();
       // Aplica o banner de promoção (tênis girando) ao carregar
       try { if (typeof applyPromoBanner === 'function') applyPromoBanner(); } catch(e){}
+      try { if (typeof window.applyStatsBarVisibility === 'function') window.applyStatsBarVisibility(); } catch(e){}
 
       // ── POLIMENTO GLOBAL DAS FOTOS (todas as páginas) ──────────────
       // Fotos surgem com um fade suave ao carregar (em vez de "pipocar").
