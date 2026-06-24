@@ -5448,6 +5448,12 @@ select option{background:#17131f;color:#fff;}
 </style>
 <style id="invQualityLayer">
 @keyframes focoPulse { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:0.55;transform:scale(0.85);} }
+/* 🔤 Fonte do site (escolhida no admin) — não afeta ícones */
+body[data-invfont] :where(h1,h2,h3,h4,h5,p,span,div,button,a,input,textarea,select,label,li){ font-family: var(--inv-font) !important; }
+body[data-invfont] :where(i,.fa,.fas,.far,.fab,.fal,.fad,[class*="fa-"]){ font-family: revert !important; }
+/* 📐 Tamanho ajustável (admin) — promo e pesquisa */
+.sneaker-promo-banner{ zoom: var(--promo-scale, 1); }
+#toolSurveyForm{ zoom: var(--survey-scale, 1); }
 /* ════════ CAMADA DE QUALIDADE & RESPONSIVIDADE GLOBAL (v246) ════════
    Melhorias seguras aplicadas a TODAS as páginas — sem alterar a estrutura. */
 * { -webkit-tap-highlight-color: transparent; }
@@ -5615,7 +5621,7 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v259.0001</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v263.0001</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -6328,6 +6334,26 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                         <button onclick="invTestPublish()" style="padding:10px 18px;background:linear-gradient(135deg,#6C63FF,#4f46e5);color:#fff;border:none;border-radius:10px;font-weight:900;font-size:12px;cursor:pointer;white-space:nowrap;flex-shrink:0;margin-left:8px;">🔧 Testar publicação</button>
                         <div id="invTestPublishOut" style="display:none;width:100%;margin-top:10px;padding:11px 13px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.1);border-radius:10px;font-size:12px;line-height:1.55;"></div>
                     </div>
+
+                    <!-- 📖 GUIA DO SITE — onde mexer em cada coisa -->
+                    <details style="margin-bottom:18px;border:1.5px solid rgba(255,106,0,0.3);border-radius:13px;overflow:hidden;background:linear-gradient(135deg,rgba(255,106,0,0.06),rgba(255,106,0,0.02));">
+                        <summary style="cursor:pointer;list-style:none;padding:14px 16px;font-size:13px;font-weight:900;color:#FF8A3D;display:flex;align-items:center;justify-content:space-between;">
+                            <span>📖 Guia do site — onde mexer em cada coisa (passo a passo)</span><span style="font-size:11px;color:#888;">abrir ▾</span>
+                        </summary>
+                        <div style="padding:4px 16px 16px;font-size:11.5px;color:#cdd6e4;line-height:1.7;">
+                            <div style="background:rgba(81,207,102,0.08);border:1px solid rgba(81,207,102,0.25);border-radius:9px;padding:10px 12px;margin-bottom:12px;font-size:11px;">⚡ <strong style="color:#51CF66;">Regra de ouro:</strong> mexeu em algo → toque em <strong>🚀 Publicar Tudo Agora</strong> (aqui em cima) → no celular, abra em aba anônima pra ver como visitante.</div>
+                            <div style="display:flex;flex-direction:column;gap:9px;">
+                                <div style="border-left:3px solid #FF6A00;padding:2px 0 2px 11px;"><strong style="color:#fff;">🎨 Cores e Letras (fonte)</strong><br>Aba <strong>🎨 Cores & Tema</strong> → escolha a <strong>fonte do site</strong> no topo, os temas prontos e as combinações de cores.</div>
+                                <div style="border-left:3px solid #FF6A00;padding:2px 0 2px 11px;"><strong style="color:#fff;">🔲 Botões e Seções (mostrar/esconder, ordem)</strong><br>Aba <strong>🔲 Botões</strong> → liga/desliga seções, muda posição e os passos da verificação.</div>
+                                <div style="border-left:3px solid #FF6A00;padding:2px 0 2px 11px;"><strong style="color:#fff;">📸 Eventos / Catálogo / TBT</strong><br>Aba <strong>📸 Eventos</strong> → botão "Atualizar agora", controle do <strong>TBT</strong> (liga/desliga e escolhe as fotos) e importação de eventos.</div>
+                                <div style="border-left:3px solid #FF6A00;padding:2px 0 2px 11px;"><strong style="color:#fff;">📋 Promoção de tênis</strong><br>Aba <strong>📋 Ofertas</strong> → edita o texto, o desconto e o tempo do banner relâmpago.</div>
+                                <div style="border-left:3px solid #FF6A00;padding:2px 0 2px 11px;"><strong style="color:#fff;">🔗 Links e Redes sociais</strong><br>Aba <strong>Links & Redes</strong> e <strong>🌐 Redes Sociais</strong> → Instagram, WhatsApp, etc.</div>
+                                <div style="border-left:3px solid #FF6A00;padding:2px 0 2px 11px;"><strong style="color:#fff;">🤖 IA das páginas / 📷 Copiar Estilo</strong><br>Aba <strong>🤖 APIs & IAs</strong> → liga/desliga a IA por página. A senha do Copiar Estilo é <strong>PATATI12</strong>.</div>
+                                <div style="border-left:3px solid #FF6A00;padding:2px 0 2px 11px;"><strong style="color:#fff;">🎟️ Cupons / 👟 Tênis / 🏃 Strava</strong><br>Cada um tem sua aba na lateral do admin com o mesmo padrão: edita → Publicar.</div>
+                            </div>
+                            <div style="font-size:10px;color:#888;margin-top:12px;border-top:1px solid rgba(255,255,255,0.08);padding-top:9px;">💡 Dica: se mudou algo e não apareceu, quase sempre é <strong>cache</strong> — publique de novo e recarregue em aba anônima.</div>
+                        </div>
+                    </details>
                     
                     <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-bottom:20px;">
                         <div style="background:rgba(255,215,0,0.08);border:1.5px solid rgba(255,215,0,0.25);border-radius:12px;padding:16px;">
@@ -6355,6 +6381,13 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                 <div class="admin-section" id="adminTab9" style="display:none;">
                     <h3 style="color:#c4b5fd;margin-bottom:6px;font-size:1.1em;display:flex;align-items:center;gap:8px;">🎨 Cores & Tema do Site</h3>
                     <p style="color:#555;font-size:12px;margin-bottom:22px;">Personalize completamente as cores do seu site. As mudanças são aplicadas em tempo real.</p>
+
+                    <!-- 🔤 FONTE / LETRAS DO SITE -->
+                    <div style="margin-bottom:26px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.08);border-radius:13px;padding:15px;">
+                        <div style="font-size:13px;font-weight:900;color:#fff;margin-bottom:3px;display:flex;align-items:center;gap:7px;">🔤 Fonte do site (as letras)</div>
+                        <div style="font-size:11px;color:#777;margin-bottom:13px;">Escolha o estilo das letras de TODO o site. Aplica na hora e publica pros visitantes.</div>
+                        <div id="fontAdminGrid" style="display:grid;grid-template-columns:1fr 1fr;gap:9px;"></div>
+                    </div>
 
                     <!-- PRESETS RÁPIDOS -->
                     <div style="margin-bottom:26px;">
@@ -6504,6 +6537,26 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                 <div class="admin-section" id="adminTab10" style="display:none;">
                     <h3 style="color:var(--primary);margin-bottom:6px;font-size:1.1em;">🔲 Botões & Seções do Site</h3>
                     <p style="color:#555;font-size:12px;margin-bottom:18px;">Tudo que aparece (ou não) pro visitante fica aqui. Ligou = aparece na hora. Desligou = some na hora.</p>
+
+                    <!-- 📐 TAMANHO DOS ELEMENTOS -->
+                    <div style="background:rgba(96,165,250,0.06);border:1px solid rgba(96,165,250,0.25);border-radius:13px;padding:14px;margin-bottom:20px;">
+                        <div style="font-size:12.5px;font-weight:900;color:#60a5fa;margin-bottom:3px;">📐 Tamanho dos elementos</div>
+                        <div style="font-size:11px;color:#8a9;margin-bottom:13px;line-height:1.5;">Aumente ou diminua o banner de promoção e a pesquisa. Aplica na hora e publica.</div>
+                        <div style="display:flex;align-items:center;gap:10px;margin-bottom:11px;flex-wrap:wrap;">
+                            <div style="flex:1;min-width:120px;font-size:12px;color:#fff;font-weight:800;">🔥 Banner de promoção</div>
+                            <button onclick="setElemScale('promo',-0.05)" style="width:38px;height:38px;border-radius:10px;border:1.5px solid rgba(96,165,250,0.4);background:rgba(255,255,255,0.05);color:#fff;font-size:20px;font-weight:900;cursor:pointer;">−</button>
+                            <div id="elemScaleVal_promo" style="min-width:54px;text-align:center;font-size:14px;font-weight:900;color:#60a5fa;">100%</div>
+                            <button onclick="setElemScale('promo',0.05)" style="width:38px;height:38px;border-radius:10px;border:1.5px solid rgba(96,165,250,0.4);background:rgba(255,255,255,0.05);color:#fff;font-size:20px;font-weight:900;cursor:pointer;">+</button>
+                            <button onclick="resetElemScale('promo')" style="padding:0 10px;height:38px;border-radius:10px;border:1px solid rgba(255,255,255,0.12);background:transparent;color:#999;font-size:11px;font-weight:800;cursor:pointer;">reset</button>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                            <div style="flex:1;min-width:120px;font-size:12px;color:#fff;font-weight:800;">📋 Pesquisa (antes das fotos)</div>
+                            <button onclick="setElemScale('survey',-0.05)" style="width:38px;height:38px;border-radius:10px;border:1.5px solid rgba(96,165,250,0.4);background:rgba(255,255,255,0.05);color:#fff;font-size:20px;font-weight:900;cursor:pointer;">−</button>
+                            <div id="elemScaleVal_survey" style="min-width:54px;text-align:center;font-size:14px;font-weight:900;color:#60a5fa;">100%</div>
+                            <button onclick="setElemScale('survey',0.05)" style="width:38px;height:38px;border-radius:10px;border:1.5px solid rgba(96,165,250,0.4);background:rgba(255,255,255,0.05);color:#fff;font-size:20px;font-weight:900;cursor:pointer;">+</button>
+                            <button onclick="resetElemScale('survey')" style="padding:0 10px;height:38px;border-radius:10px;border:1px solid rgba(255,255,255,0.12);background:transparent;color:#999;font-size:11px;font-weight:800;cursor:pointer;">reset</button>
+                        </div>
+                    </div>
 
                     <!-- ░░ ABA INICIAL DO VISITANTE ░░ -->
                     <div style="background:rgba(81,207,102,0.06);border:1px solid rgba(81,207,102,0.25);border-radius:13px;padding:14px;margin-bottom:20px;">
@@ -8132,7 +8185,7 @@ Poderia me ajudar? 🙏"
 
     <!-- MENU PRINCIPAL -->
     <div class="main-menu" id="mainMenuGrid">
-        <button class="menu-btn menu-btn-live active-tab" id="menuBtn_foco" style="" onclick="switchTab('foco')">
+        <button class="menu-btn menu-btn-live active-tab" id="menuBtn_foco" style="" onclick="verFotos()">
             <span class="menu-icon">📸</span>
             <span class="btn-label">Suas Fotos</span><br><span class="btn-sub">Foco Radical</span>
         </button>
@@ -10224,29 +10277,16 @@ Poderia me ajudar? 🙏"
             }).join('');
         }
 
-        // Standalone opener for Roubar IA button (no password — different from PRESETS ON)
+        // Abertura do "Copiar Estilo" — AGORA EXIGE SENHA (PATATI12), igual ao PRESETS ON
         function roubarIAOpenStandalone() {
-            // Roubar Preset IA = same modal as PRESETS ON but NO password needed
-            const overlay = document.getElementById('presetsOnOverlay');
-            if (!overlay) return;
-            overlay.style.display = 'block';
-            document.body.style.overflow = 'hidden';
-            try { var _vs=document.getElementById('vipGroupSection'); if(_vs) _vs.style.display='none'; } catch(e){}
-            // Bypass password gate
-            _ponUnlocked = true;
-            const gate = document.getElementById('presetsOnGate');
-            const cont = document.getElementById('presetsOnContent');
-            if (gate) gate.style.display = 'none';
-            if (cont) cont.style.display = 'block';
-            // Update title to reflect this entry point
+            presetsOnOpen(); // respeita o portão de senha (mostra se não desbloqueado nesta sessão)
             const titleEl = document.querySelector('#presetsOnOverlay h2');
             if (titleEl) titleEl.innerHTML = '🎨 Copiar Estilo';
             const subEl = document.querySelector('#presetsOnOverlay [data-pon-subtitle]');
             if (subEl) subEl.textContent = 'Copie o estilo de qualquer foto';
-            // Reset to clone tab
-            setTimeout(() => {
-                if (typeof presetsOnSwitchTab === 'function') presetsOnSwitchTab('clone');
-            }, 50);
+            if (_ponUnlocked) {
+                setTimeout(() => { if (typeof presetsOnSwitchTab === 'function') presetsOnSwitchTab('clone'); }, 60);
+            }
         }
 
         
@@ -12768,7 +12808,7 @@ Poderia me ajudar? 🙏"
             //    sincronizam pra TODOS os visitantes e entre aparelhos do admin
             ['notify_topic','chat_db_url','chat_sb_url','chat_sb_key','chat_sb_table','chat_pantry',
              'invPalette','siteThemeColors','invictorStravaDefaultColor','catalog_layout','invictorEdicaoCodes','invictorMarketplaces',
-             'foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','foco_survey_visible','statsBar_visible','foco_steps_pos','foco_survey_pos','foco_price_pos','siteLandingTab','verif_steps','ai_pages','tbt_enabled','tbt_mode','tbt_picks'].forEach(function(k){
+             'foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','foco_survey_visible','statsBar_visible','foco_steps_pos','foco_survey_pos','foco_price_pos','siteLandingTab','verif_steps','ai_pages','tbt_enabled','tbt_mode','tbt_picks','site_font','promo_scale','survey_scale'].forEach(function(k){
                 try { var v = localStorage.getItem(k); if (v != null) payload[k] = v; } catch(e) {}
             });
 
@@ -12986,7 +13026,7 @@ Poderia me ajudar? 🙏"
                 'invictorEdicaoEmails', 'invictorEdicaoAtivos',
                 // === Configs novas: chat ao vivo / ntfy / paleta / conteúdo / IA ===
                 'notify_topic','chat_db_url','chat_sb_url','chat_sb_key','chat_sb_table','chat_pantry',
-                'invPalette','siteThemeColors','invictorStravaDefaultColor','catalog_layout','invictorEdicaoCodes','invictorMarketplaces','foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','foco_survey_visible','statsBar_visible','foco_steps_pos','foco_survey_pos','foco_price_pos','siteLandingTab','verif_steps','ai_pages','tbt_enabled','tbt_mode','tbt_picks',
+                'invPalette','siteThemeColors','invictorStravaDefaultColor','catalog_layout','invictorEdicaoCodes','invictorMarketplaces','foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','foco_survey_visible','statsBar_visible','foco_steps_pos','foco_survey_pos','foco_price_pos','siteLandingTab','verif_steps','ai_pages','tbt_enabled','tbt_mode','tbt_picks','site_font','promo_scale','survey_scale',
                 // === Last update marker ===
                 '_lastUpdate'
             ];
@@ -13277,8 +13317,8 @@ Poderia me ajudar? 🙏"
             if(tabIndex===0)  { setTimeout(function(){ if(typeof promoCfgLoadToPanel==='function') promoCfgLoadToPanel(); if(typeof renderSiteOverview==='function') renderSiteOverview(); }, 80); }
             if(tabIndex===1)  { setTimeout(function(){ if(typeof renderTbtAdmin==='function') renderTbtAdmin(); }, 60); }
             if(tabIndex===7) { _catVisPending={foco:null,banlek:null}; loadCatalogVisibilityFromStorage(); }
-            if(tabIndex===9) { loadThemeColorsIntoPanel(); setTimeout(function(){ if(typeof invPaletteRender==='function') invPaletteRender(); }, 40); }
-            if(tabIndex===10) { renderBotoesAdmin(); if(typeof renderSeccoesAdmin==='function') renderSeccoesAdmin(); if(typeof syncLandingTabSelect==='function') syncLandingTabSelect(); if(typeof renderVerifStepsAdmin==='function') renderVerifStepsAdmin(); }
+            if(tabIndex===9) { loadThemeColorsIntoPanel(); setTimeout(function(){ if(typeof invPaletteRender==='function') invPaletteRender(); if(typeof renderFontAdmin==='function') renderFontAdmin(); }, 40); }
+            if(tabIndex===10) { renderBotoesAdmin(); if(typeof renderSeccoesAdmin==='function') renderSeccoesAdmin(); if(typeof syncLandingTabSelect==='function') syncLandingTabSelect(); if(typeof renderVerifStepsAdmin==='function') renderVerifStepsAdmin(); if(typeof renderElemScaleAdmin==='function') renderElemScaleAdmin(); }
             if(tabIndex===11) { renderGaleria(); }
             if(tabIndex===12) { initApisTab(); }
             if(tabIndex===3)  { setTimeout(_refreshAdminCouponStock, 80); }
@@ -16724,6 +16764,40 @@ Poderia me ajudar? 🙏"
             }
         }
 
+        // 👁️ Analisa o ESTILO da foto de referência por visão de IA (copiar + melhorar o estilo)
+        window.roubarVisionStyle = async function(){
+            if(!_roubarPendingImg){ if(typeof showToast==='function') showToast('Escolha uma foto primeiro','⚠️'); return; }
+            var box=document.getElementById('roubarVisionResult'), btn=document.getElementById('roubarVisionBtn');
+            if(box){ box.style.display='block'; box.innerHTML='<div style="background:rgba(96,165,250,0.08);border:1.5px solid rgba(96,165,250,0.25);border-radius:11px;padding:13px;font-size:11.5px;color:#a78bfa;font-weight:800;">👁️ A IA está olhando a foto e lendo o estilo...</div>'; }
+            if(btn){ btn.disabled=true; btn.style.opacity='0.6'; }
+            // reduz a imagem pra enviar
+            var dataUrl=_roubarPendingImg;
+            try{
+                var im=new Image();
+                await new Promise(function(res,rej){ im.onload=res; im.onerror=rej; im.src=_roubarPendingImg; });
+                var w=720, h=Math.max(1,Math.round(720*im.height/im.width));
+                var cv=document.createElement('canvas'); cv.width=w; cv.height=h; cv.getContext('2d').drawImage(im,0,0,w,h);
+                dataUrl=cv.toDataURL('image/jpeg',0.72);
+            }catch(e){}
+            var prompt='Você é um diretor de fotografia e editor profissional. OLHE esta foto e descreva o ESTILO visual dela pra eu (Victor, @invictorcliques, fotógrafo esportivo de corridas em Natal/RN) conseguir REPRODUZIR e MELHORAR. '
+                +'Responda curto e direto, em português do Brasil, EXATAMENTE neste formato:\n'
+                +'🎨 Estilo: <2-4 palavras que definem o look>\n'
+                +'🌈 Cores/Tons: <cores dominantes, quentes/frias, saturação>\n'
+                +'💡 Luz: <tipo de luz, direção, contraste>\n'
+                +'📸 Pra TIRAR assim: <config e posicionamento de câmera pra chegar nessa foto>\n'
+                +'🎚️ Pra EDITAR assim: <3 ajustes-chave no Lightroom: ex. temperatura, contraste, HSL, curva>\n'
+                +'⭐ Pra ficar AINDA MELHOR: <1 sugestão que eleva a foto além do original>';
+            try{
+                var txt = (typeof invAIVision==='function') ? await invAIVision(dataUrl, prompt) : '';
+                if(box) box.innerHTML = txt
+                    ? '<div style="background:linear-gradient(135deg,rgba(96,165,250,0.1),rgba(124,58,237,0.04));border:1.5px solid rgba(96,165,250,0.35);border-radius:12px;padding:13px;"><div style="font-size:11px;font-weight:900;color:#60a5fa;margin-bottom:8px;">👁️ Estilo da foto (visto pela IA)</div><div style="font-size:11.5px;color:#cdd6e4;line-height:1.7;">'+txt.replace(/\n/g,'<br>')+'</div><div style="font-size:9.5px;color:#777;margin-top:9px;border-top:1px solid rgba(255,255,255,0.08);padding-top:8px;">💜 Agora gere o preset acima pra ter o .XMP e aplicar nas suas fotos.</div></div>'
+                    : '<div style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.25);border-radius:11px;padding:12px;font-size:11px;color:#f88;">A IA não respondeu agora. Tenta de novo daqui a pouco — ou siga com o "Gerar Preset".</div>';
+            }catch(e){
+                if(box) box.innerHTML='<div style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.25);border-radius:11px;padding:12px;font-size:11px;color:#f88;">Sem conexão com a IA de visão agora. Tenta de novo — o "Gerar Preset" continua funcionando normalmente.</div>';
+            }
+            if(btn){ btn.disabled=false; btn.style.opacity='1'; }
+        };
+
         // Chamado pelo botão "⚡ Gerar Preset desta Foto"
         window.roubarGenerate = function roubarGenerate() {
             if (!_roubarPendingImg) {
@@ -17801,6 +17875,7 @@ Poderia me ajudar? 🙏"
 
                     var lvl=Math.round(avg/255*100);
                     var per=CFG_PERIODOS[b.per];
+                    window._cfgLast = { b:b, wbNome:(wbObj.ic+' '+wbObj.nome+' ('+wbObj.kelvin+')'), avg:Math.round(avg), warmth:Math.round(warmth), std:Math.round(std), brightPct:brightPct, darkPct:darkPct, lvl:lvl, notas:notas.slice(), dataUrl:'' };
 
                     // revela com "verificação" (sensação de análise real)
                     if(r) r.innerHTML=
@@ -17826,6 +17901,12 @@ Poderia me ajudar? 🙏"
                         +'<div style="font-size:8.5px;color:#667;margin-bottom:10px;">📐 Medido: brilho '+Math.round(avg)+'/255 · contraste '+Math.round(std)+' · cor '+(warmth>0?'+':'')+Math.round(warmth)+' · estourado '+brightPct+'% · sombra '+darkPct+'%</div>'
                         +'<button onclick="cfgAskAIPhoto(\''+b.per+'\','+Math.round(avg)+','+Math.round(warmth)+','+Math.round(std)+','+brightPct+','+darkPct+')" style="width:100%;padding:11px;background:linear-gradient(135deg,#60a5fa,#3b82f6);color:#fff;border:none;border-radius:10px;font-weight:900;font-size:12px;cursor:pointer;">🤖 Receber a dica TOP da IA pra esta foto</button>'
                         +'<div id="cfgPhotoAi" style="display:none;margin-top:10px;font-size:11px;color:#cdd6e4;font-style:italic;background:rgba(96,165,250,0.07);border:1px solid rgba(96,165,250,0.2);border-radius:9px;padding:10px;line-height:1.6;"></div>'
+                        // 📄 Painel/PDF + ✨ Preset de edição
+                        +'<div style="display:flex;gap:7px;margin-top:10px;">'
+                        +'<button onclick="cfgExportPDF()" style="flex:1;padding:11px 6px;background:rgba(255,255,255,0.05);border:1.5px solid '+b.cor+'66;color:#fff;border-radius:10px;font-weight:900;font-size:11px;cursor:pointer;">📄 Painel / PDF</button>'
+                        +'<button onclick="cfgMakeEditPreset()" style="flex:1;padding:11px 6px;background:linear-gradient(135deg,#a78bfa,#7c3aed);border:none;color:#fff;border-radius:10px;font-weight:900;font-size:11px;cursor:pointer;">✨ Preset de edição</button>'
+                        +'</div>'
+                        +'<div id="cfgEditPreset" style="display:none;margin-top:10px;"></div>'
                         // 👁️ verdict da IA que VÊ a foto
                         +'<div id="cfgVisionBox" style="margin-top:11px;border:1.5px solid rgba(167,139,250,0.35);border-radius:11px;background:linear-gradient(135deg,rgba(167,139,250,0.1),rgba(124,58,237,0.03));padding:12px;">'
                         +'<div style="font-size:11px;font-weight:900;color:#a78bfa;display:flex;align-items:center;gap:6px;margin-bottom:7px;">👁️ A IA está vendo sua foto<span id="cfgVisionDots" style="color:#7c3aed;">...</span></div>'
@@ -17842,6 +17923,7 @@ Poderia me ajudar? 🙏"
                         var vcv=document.createElement('canvas'); vcv.width=vw; vcv.height=vh;
                         vcv.getContext('2d').drawImage(img,0,0,vw,vh);
                         var dataUrl=vcv.toDataURL('image/jpeg',0.7);
+                        try{ if(window._cfgLast) window._cfgLast.dataUrl=dataUrl; }catch(e){}
                         var horaNow; try{ horaNow=new Date().getHours()+'h'; }catch(e){ horaNow=''; }
                         var vprompt='Você é fotógrafo esportivo profissional. VEJA esta foto da cena onde o Victor (@invictorcliques) vai fotografar CORREDORES na pista da Alexandrino em Natal/RN (horário atual ~'+horaNow+'). '
                             +'Medições da foto: brilho '+Math.round(avg)+'/255, contraste '+Math.round(std)+', temperatura '+Math.round(warmth)+', '+brightPct+'% estourado, '+darkPct+'% sombra. '
@@ -17855,6 +17937,96 @@ Poderia me ajudar? 🙏"
             };
             img.onerror=function(){ if(r) r.innerHTML='<div style="color:#FF8787;font-size:11px;text-align:center;padding:12px;">Imagem inválida.</div>'; };
             img.src=url;
+        };
+
+        // 📄 Painel + PDF (config + predefinição da câmera) — abre p/ imprimir/salvar PDF
+        window.cfgExportPDF = function(){
+            var L=window._cfgLast; if(!L){ if(typeof showToast==='function') showToast('Analise uma foto primeiro','⚠️'); return; }
+            var b=L.b;
+            var dataHora=''; try{ dataHora=new Date().toLocaleString('pt-BR'); }catch(e){}
+            var notasHtml = (L.notas&&L.notas.length) ? ('<ul style="margin:6px 0 0;padding-left:18px;">'+L.notas.map(function(t){return '<li style="margin-bottom:3px;">'+t.replace(/<[^>]+>/g,function(m){return m;})+'</li>';}).join('')+'</ul>') : '';
+            var html='<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Configuração da Câmera — invictorcliques</title>'
+              +'<style>body{font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#fff;color:#111;margin:0;padding:24px;}'
+              +'.wrap{max-width:560px;margin:0 auto;}h1{font-size:20px;margin:0 0 2px;color:#FF6A00;}.sub{color:#666;font-size:12px;margin-bottom:16px;}'
+              +'.tag{display:inline-block;background:'+b.cor+';color:#000;font-weight:800;font-size:12px;padding:4px 12px;border-radius:20px;margin-bottom:14px;}'
+              +'.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0 14px;}.cell{border:1.5px solid #e5e5e5;border-radius:10px;padding:10px 12px;}'
+              +'.lbl{font-size:10px;color:#888;text-transform:uppercase;letter-spacing:.5px;font-weight:700;}.val{font-size:18px;font-weight:800;color:#111;}'
+              +'.box{border-left:4px solid '+b.cor+';background:#faf7f2;border-radius:0 10px 10px 0;padding:11px 14px;font-size:13px;line-height:1.6;margin-bottom:12px;}'
+              +'.cam{border:2px solid '+b.cor+';border-radius:12px;padding:14px;margin-bottom:14px;}.cam h3{margin:0 0 8px;font-size:14px;color:'+b.cor+';}'
+              +'.foot{color:#999;font-size:11px;border-top:1px solid #eee;padding-top:10px;margin-top:8px;}'
+              +'@media print{.noprint{display:none;}}'
+              +'.btn{display:inline-block;background:#FF6A00;color:#fff;border:none;border-radius:9px;padding:11px 18px;font-weight:800;font-size:14px;cursor:pointer;margin-top:8px;}</style></head><body><div class="wrap">'
+              +'<h1>📷 Configuração Ideal da Câmera</h1><div class="sub">@invictorcliques · gerado em '+dataHora+'</div>'
+              +'<div class="tag">'+b.ic+' '+b.lbl+'</div>'
+              +'<div class="cam"><h3>⚙️ Predefinição pra colocar na câmera</h3>'
+              +'<div class="grid">'
+              +'<div class="cell"><div class="lbl">ISO</div><div class="val">'+b.iso+'</div></div>'
+              +'<div class="cell"><div class="lbl">Velocidade</div><div class="val">'+b.vel+'</div></div>'
+              +'<div class="cell"><div class="lbl">Abertura</div><div class="val">'+b.abre+'</div></div>'
+              +'<div class="cell"><div class="lbl">Balanço de Branco</div><div class="val" style="font-size:14px;">'+L.wbNome+'</div></div>'
+              +'<div class="cell"><div class="lbl">Modo</div><div class="val" style="font-size:15px;">Tv / Manual</div></div>'
+              +'<div class="cell"><div class="lbl">Foco</div><div class="val" style="font-size:15px;">Contínuo (AI Servo)</div></div>'
+              +'</div>'
+              +'<div style="font-size:11px;color:#777;">💡 Dica: salve isso num modo personalizado (C1/C2/C3) da sua câmera pra chamar com 1 clique.</div></div>'
+              +'<div class="box"><strong>O melhor a fazer:</strong> '+CFG_PERIODOS[b.per].melhor+notasHtml+'</div>'
+              +'<div class="foot">📐 Medido na foto: brilho '+L.avg+'/255 · contraste '+L.std+' · cor '+(L.warmth>0?'+':'')+L.warmth+' · estourado '+L.brightPct+'% · sombra '+L.darkPct+'%<br>invictorcliques.com.br · Fotografia Esportiva · Natal/RN</div>'
+              +'<button class="btn noprint" onclick="window.print()">📄 Salvar como PDF / Imprimir</button>'
+              +'</div><script>setTimeout(function(){try{window.focus();}catch(e){}},200);<\/script></body></html>';
+            try{
+                var w=window.open('','_blank');
+                if(w){ w.document.open(); w.document.write(html); w.document.close(); }
+                else if(typeof showToast==='function') showToast('Permita pop-ups pra abrir o PDF','⚠️');
+            }catch(e){ if(typeof showToast==='function') showToast('Não consegui abrir o PDF','⚠️'); }
+        };
+
+        // ✨ Cria um PRESET DE EDIÇÃO (.xmp Lightroom) calibrado pra MELHORAR esta foto
+        window.cfgMakeEditPreset = function(){
+            var L=window._cfgLast; if(!L){ if(typeof showToast==='function') showToast('Analise uma foto primeiro','⚠️'); return; }
+            // deriva ajustes a partir do que foi medido (faithful)
+            var temp=0, tint=0, exposure=0, contrast=0, highlights=0, shadows=0, whites=0, blacks=0, vibrance=12, clarity=10, sat=4, sharp=45, dehaze=0;
+            if(L.warmth>25){ temp=-14; } else if(L.warmth>14){ temp=-7; } else if(L.warmth<-12){ temp=12; tint=4; } else if(L.warmth<-6){ temp=6; }
+            if(L.avg<55){ exposure=110; shadows=42; blacks=10; } else if(L.avg<90){ exposure=55; shadows=28; } else if(L.avg>205){ exposure=-45; highlights=-20; } else if(L.avg>175){ exposure=-15; }
+            if(L.std<25){ contrast=22; clarity=14; } else if(L.std>62){ contrast=-12; highlights=-18; shadows=22; }
+            if(L.brightPct>=14){ highlights=Math.min(highlights,-30); whites=-12; }
+            if(L.darkPct>=22){ shadows=Math.max(shadows,38); blacks=8; dehaze=6; }
+            function s(v){ return String(Math.round(v)); }
+            var presetName='Invictor '+(L.b.per==='dia'?'Dia':(L.b.per==='tarde'?'Tarde Golden':'Noite'))+' • Perfeita';
+            var xmp='<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="invictorcliques">\n'
+              +' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
+              +'  <rdf:Description rdf:about=""\n'
+              +'   xmlns:crs="http://ns.adobe.com/camera-raw-settings/1.0/"\n'
+              +'   crs:PresetType="Normal" crs:Cluster="" crs:Version="15.0"\n'
+              +'   crs:Name="'+presetName+'"\n'
+              +'   crs:IncrementalTemperature="'+s(temp)+'" crs:IncrementalTint="'+s(tint)+'"\n'
+              +'   crs:Exposure2012="'+(exposure/100).toFixed(2)+'" crs:Contrast2012="'+s(contrast)+'"\n'
+              +'   crs:Highlights2012="'+s(highlights)+'" crs:Shadows2012="'+s(shadows)+'"\n'
+              +'   crs:Whites2012="'+s(whites)+'" crs:Blacks2012="'+s(blacks)+'"\n'
+              +'   crs:Clarity2012="'+s(clarity)+'" crs:Dehaze="'+s(dehaze)+'"\n'
+              +'   crs:Vibrance="'+s(vibrance)+'" crs:Saturation="'+s(sat)+'"\n'
+              +'   crs:Sharpness="'+s(sharp)+'" crs:SharpenRadius="+1.0" crs:SharpenDetail="35"\n'
+              +'   crs:LuminanceSmoothing="'+(L.avg<55?'25':'12')+'" crs:ColorNoiseReduction="25"\n'
+              +'   crs:HasSettings="True">\n'
+              +'  </rdf:Description>\n </rdf:RDF>\n</x:xmpmeta>';
+            // download
+            try{
+                var blob=new Blob([xmp],{type:'application/octet-stream'});
+                var url=URL.createObjectURL(blob);
+                var a=document.createElement('a'); a.href=url; a.download=presetName.replace(/[^\w]+/g,'_')+'.xmp';
+                document.body.appendChild(a); a.click(); document.body.removeChild(a);
+                setTimeout(function(){ URL.revokeObjectURL(url); },1500);
+            }catch(e){}
+            // receita visível
+            var box=document.getElementById('cfgEditPreset');
+            if(box){ box.style.display='block';
+                function row(k,v){ if(Math.round(v)===0) return ''; return '<div style="display:flex;justify-content:space-between;font-size:11px;padding:3px 0;border-bottom:1px solid rgba(255,255,255,0.05);"><span style="color:#9aa;">'+k+'</span><span style="color:#fff;font-weight:800;">'+(v>0?'+':'')+Math.round(v)+'</span></div>'; }
+                box.innerHTML='<div style="background:linear-gradient(135deg,rgba(167,139,250,0.12),rgba(124,58,237,0.04));border:1.5px solid rgba(167,139,250,0.4);border-radius:12px;padding:13px;">'
+                  +'<div style="font-size:12px;font-weight:900;color:#a78bfa;margin-bottom:3px;">✨ Preset de edição baixado!</div>'
+                  +'<div style="font-size:10px;color:#999;margin-bottom:9px;">'+presetName+'.xmp — importe no Lightroom (Predefinições → Importar). Calibrado pra ESTA foto:</div>'
+                  +row('Temperatura',temp)+row('Matiz',tint)+row('Exposição',exposure/100*100? (exposure):0)+row('Contraste',contrast)+row('Realces',highlights)+row('Sombras',shadows)+row('Brancos',whites)+row('Pretos',blacks)+row('Clareza',clarity)+row('Vibração',vibrance)+row('Nitidez',sharp)+row('Dehaze',dehaze)
+                  +'<div style="font-size:10px;color:#7c8;margin-top:9px;border-top:1px solid rgba(255,255,255,0.08);padding-top:8px;">📸 Fluxo perfeito: 1) coloque a config na câmera → 2) tire a foto → 3) aplique este preset = foto perfeita. ✨</div></div>';
+                try{ box.scrollIntoView({behavior:'smooth',block:'nearest'}); }catch(e){}
+            }
+            if(typeof showToast==='function') showToast('Preset de edição criado! 🎨','✨');
         };
 
         // 👁️ Roda a visão de IA e mostra a config perfeita vista na foto
@@ -24148,6 +24320,20 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
     var _svAuth='';
     window.toolSurveyAuth=function(a){ _svAuth=a; var box=document.getElementById('svAuth'); if(!box)return; Array.prototype.forEach.call(box.querySelectorAll('button'),function(b){ var on=b.getAttribute('data-a')===a; b.style.background=on?'linear-gradient(135deg,var(--primary),#FF9A00)':'rgba(255,255,255,0.05)'; b.style.color=on?'#000':'#bbb'; }); };
     window.toolSurveyTone=function(t){ _svTone=t; var box=document.getElementById('svTone'); if(!box)return; Array.prototype.forEach.call(box.querySelectorAll('button'),function(b){ var on=b.getAttribute('data-t')===t; b.style.background=on?'linear-gradient(135deg,var(--primary),#FF9A00)':'rgba(255,255,255,0.05)'; b.style.color=on?'#000':'#bbb'; }); };
+    // 📸 "Suas Fotos" → abre o Foco Radical e DESLIZA direto pro catálogo/TBT
+    window.verFotos = function(){
+        try{ switchTab('foco'); }catch(e){}
+        var tries=0;
+        var iv=setInterval(function(){
+            tries++;
+            var c=document.getElementById('focoRadicalResults');
+            if((c && c.innerHTML && c.innerHTML.trim().length>30) || tries>12){
+                clearInterval(iv);
+                if(c){ try{ c.scrollIntoView({behavior:'smooth',block:'start'}); }catch(e){} }
+            }
+        }, 200);
+    };
+
     window.toolSurveySend=function(){
       var el=document.getElementById('svInsta'); var insta=(el?el.value:'').trim();
       if(!insta){ alert('Coloque seu @ do Instagram 🙂'); return; }
@@ -24163,7 +24349,7 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
       try{ if(typeof invNotify==='function') invNotify('📋 Nova pesquisa — '+insta, 'Fotos: '+toneTxt+(authTxt?('\n'+authTxt):'')); }catch(e){}
       try{ navigator.clipboard && navigator.clipboard.writeText(prefTxt); }catch(e){}
       document.getElementById('toolSurveyDone').innerHTML='<div style="text-align:center;background:rgba(76,205,100,0.1);border:1px solid rgba(76,205,100,0.3);border-radius:13px;padding:16px;"><div style="font-size:30px;">🙌</div><div style="font-size:14px;font-weight:900;color:#4CD964;margin:4px 0;">Obrigado, '+insta.replace(/</g,'&lt;')+'!</div><div style="font-size:12px;color:#cdd6e4;line-height:1.5;">Anotamos sua preferência. Agora <b>confira suas fotos logo abaixo</b> 👇</div><a href="https://ig.me/m/'+igHandle+'" target="_blank" rel="noopener" style="display:inline-block;margin-top:11px;padding:10px 16px;border-radius:10px;background:linear-gradient(135deg,#F58529,#DD2A7B,#8134AF);color:#fff;font-weight:900;font-size:12px;text-decoration:none;">📩 Mandar minha preferência no Instagram</a><div style="font-size:9px;color:#9aa;margin-top:6px;">Sua mensagem já foi copiada — é só colar no direct.</div></div>';
-      var s=document.getElementById('focoRadicalSearch'); if(s){ setTimeout(function(){ try{s.scrollIntoView({behavior:'smooth',block:'center'});}catch(e){} },250); }
+      var s=document.getElementById('focoRadicalResults')||document.getElementById('focoRadicalSearch'); if(s){ setTimeout(function(){ try{s.scrollIntoView({behavior:'smooth',block:'start'});}catch(e){} },300); }
     };
 
     // ── Modal "abrir link / escolher onde abrir / copiar" (reutilizável) ──
@@ -30569,6 +30755,9 @@ const _P1_VICTOR_BUILTIN_PRESETS = [{"id": "p1_01_cross_processing_yellow_light"
     };
     // Combinações fortes (cor principal + cor de destaque) — harmônicas no fundo escuro premium
     window.INV_COMBOS=[
+      ['⚡ Volt · Verde Limão','#CCFF00','#A3CC00','#E0FF66','#00E5FF'],
+      ['🔥 Laranja Corrida','#FF5722','#D84315','#FF8A65','#CCFF00'],
+      ['💧 Ciano Elétrico','#00E5FF','#00B8D4','#6CF3FF','#CCFF00'],
       ['Invictor Clássico','#FF6A00','#D85400','#FF9540','#FFFFFF'],
       ['Laranja & Branco','#FF7A1A','#E0610A','#FFB066','#EEF2F7'],
       ['Preto & Laranja','#FF5400','#C43F00','#FF8A3D','#FFB870'],
@@ -30587,6 +30776,80 @@ const _P1_VICTOR_BUILTIN_PRESETS = [{"id": "p1_01_cross_processing_yellow_light"
       ['Cyberpunk','#FF2E97','#C71772','#FF6FBE','#00F0FF']
     ];
     window.invSetCombo=function(name,hex,dark,light,accent){ invSetPalette(name,hex,dark,light,accent); };
+
+    // ════ 🔤 FONTE DO SITE (tipografia) ════
+    window.INV_FONTS = {
+        padrao:    { nome:'Padrão',      css:'' },
+        poppins:   { nome:'Poppins',     css:"'Poppins',sans-serif",    g:'Poppins:wght@400;600;800;900' },
+        montserrat:{ nome:'Montserrat',  css:"'Montserrat',sans-serif",  g:'Montserrat:wght@400;600;800;900' },
+        inter:     { nome:'Inter',       css:"'Inter',sans-serif",       g:'Inter:wght@400;600;800;900' },
+        oswald:    { nome:'Oswald',      css:"'Oswald',sans-serif",      g:'Oswald:wght@400;600;700' },
+        bebas:     { nome:'Bebas Neue',  css:"'Bebas Neue',cursive",     g:'Bebas+Neue' },
+        nunito:    { nome:'Nunito',      css:"'Nunito',sans-serif",      g:'Nunito:wght@400;700;900' },
+        robotoslab:{ nome:'Roboto Slab', css:"'Roboto Slab',serif",      g:'Roboto+Slab:wght@400;700;900' }
+    };
+    window.applySiteFont = function(key, save){
+        var f = (window.INV_FONTS[key]) ? key : 'padrao';
+        var def = window.INV_FONTS[f];
+        if(def.g){
+            var link=document.getElementById('invGFont');
+            if(!link){ link=document.createElement('link'); link.id='invGFont'; link.rel='stylesheet'; document.head.appendChild(link); }
+            link.href='https://fonts.googleapis.com/css2?family='+def.g+'&display=swap';
+        }
+        if(def.css){ document.documentElement.style.setProperty('--inv-font', def.css); document.body.setAttribute('data-invfont','1'); }
+        else { document.documentElement.style.removeProperty('--inv-font'); document.body.removeAttribute('data-invfont'); }
+        if(save){
+            try{ localStorage.setItem('site_font', f); }catch(e){}
+            try{ if(typeof saveData==='function') saveData(false); }catch(e){}
+            try{ if(typeof showToast==='function') showToast('Fonte aplicada: '+def.nome,'🔤'); }catch(e){}
+        }
+        try{ if(typeof renderFontAdmin==='function') renderFontAdmin(); }catch(e){}
+    };
+    window.renderFontAdmin = function(){
+        var box=document.getElementById('fontAdminGrid'); if(!box) return;
+        var cur='padrao'; try{ cur=localStorage.getItem('site_font')||'padrao'; }catch(e){}
+        box.innerHTML = Object.keys(window.INV_FONTS).map(function(k){
+            var f=window.INV_FONTS[k], on=(k===cur);
+            var sample = f.css ? ('font-family:'+f.css+';') : '';
+            return '<button onclick="applySiteFont(\''+k+'\',true)" style="text-align:left;padding:11px 13px;border-radius:11px;cursor:pointer;border:1.5px solid '+(on?'var(--primary,#FF6A00)':'rgba(255,255,255,0.1)')+';background:'+(on?'rgba(255,106,0,0.1)':'rgba(255,255,255,0.03)')+';color:#fff;">'
+              +'<div style="font-size:10px;color:#8a93a3;font-weight:700;margin-bottom:2px;">'+(on?'✓ ':'')+f.nome+'</div>'
+              +'<div style="font-size:17px;font-weight:800;'+sample+'">Aa Bb · Invictor 123</div></button>';
+        }).join('');
+    };
+    // aplica a fonte salva no carregamento
+    try{ window.applySiteFont((localStorage.getItem('site_font')||'padrao'), false); }catch(e){}
+
+    // ════ 📐 TAMANHO DE ELEMENTOS (promo + pesquisa) ════
+    window.applyElemScales = function(){
+        try{ var p=parseFloat(localStorage.getItem('promo_scale')||'1')||1; document.documentElement.style.setProperty('--promo-scale', p); }catch(e){}
+        try{ var s=parseFloat(localStorage.getItem('survey_scale')||'1')||1; document.documentElement.style.setProperty('--survey-scale', s); }catch(e){}
+    };
+    window.setElemScale = function(which, delta){
+        var key = which==='promo' ? 'promo_scale' : 'survey_scale';
+        var cur=1; try{ cur=parseFloat(localStorage.getItem(key)||'1')||1; }catch(e){}
+        cur = Math.round((cur + delta)*100)/100;
+        if(cur<0.7) cur=0.7; if(cur>1.4) cur=1.4;
+        try{ localStorage.setItem(key, String(cur)); }catch(e){}
+        applyElemScales();
+        if(typeof renderElemScaleAdmin==='function') renderElemScaleAdmin();
+        try{ if(typeof saveData==='function') saveData(false); }catch(e){}
+    };
+    window.resetElemScale = function(which){
+        var key = which==='promo' ? 'promo_scale' : 'survey_scale';
+        try{ localStorage.setItem(key, '1'); }catch(e){}
+        applyElemScales();
+        if(typeof renderElemScaleAdmin==='function') renderElemScaleAdmin();
+        try{ if(typeof saveData==='function') saveData(false); }catch(e){}
+    };
+    window.renderElemScaleAdmin = function(){
+        ['promo','survey'].forEach(function(w){
+            var key = w==='promo' ? 'promo_scale' : 'survey_scale';
+            var v=1; try{ v=parseFloat(localStorage.getItem(key)||'1')||1; }catch(e){}
+            var el=document.getElementById('elemScaleVal_'+w);
+            if(el) el.textContent = Math.round(v*100)+'%';
+        });
+    };
+    try{ window.applyElemScales(); }catch(e){}
     (function(){ try{ var p=JSON.parse(localStorage.getItem('invPalette')||'null'); if(p&&p.hex){ var r=document.documentElement; r.style.setProperty('--primary',p.hex); r.style.setProperty('--theme-primary',p.hex); r.style.setProperty('--primary-dark',p.dark); r.style.setProperty('--theme-primary-dark',p.dark); r.style.setProperty('--primary-light',p.light); if(p.accent){ r.style.setProperty('--accent',p.accent); r.style.setProperty('--accent-strong',p.dark); } } }catch(e){}
       // CSS da cor de destaque — pontos seguros e sempre presentes
       try{ var ac=document.createElement('style'); ac.id='invAccentCSS'; ac.textContent=
@@ -30815,6 +31078,12 @@ const _P1_VICTOR_BUILTIN_PRESETS = [{"id": "p1_01_cross_processing_yellow_light"
                         ⚡ Gerar Preset desta Foto
                     </button>
                     <div style="font-size:10px;color:#666;text-align:center;margin-top:6px;">Analisa cor, brilho, contraste e temperatura · gera .XMP do Lightroom</div>
+                    <button onclick="roubarVisionStyle()" id="roubarVisionBtn"
+                        style="width:100%;margin-top:9px;padding:12px;background:linear-gradient(135deg,#60a5fa,#3b82f6);color:#fff;border:none;border-radius:11px;font-weight:900;font-size:12.5px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;">
+                        👁️ Analisar o estilo (a IA vê a foto)
+                    </button>
+                    <div style="font-size:10px;color:#666;text-align:center;margin-top:5px;">A IA descreve o estilo e te diz como tirar + editar pra chegar nessa foto</div>
+                    <div id="roubarVisionResult" style="display:none;margin-top:11px;"></div>
                 </div>
             </div>
 
