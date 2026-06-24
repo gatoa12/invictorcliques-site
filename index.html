@@ -5621,7 +5621,7 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v263.0001</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v264.0001</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -17221,12 +17221,19 @@ Poderia me ajudar? 🙏"
         }
 
         function _buildPresetFromData(px, ai) {
-            // Build CSS filter using pixel data + AI adjustments
-            let bMult = px.brightness < 100 ? 1.15 : px.brightness > 160 ? 0.92 : 1.0;
-            let cMult = px.contrast < 60 ? 1.25 : px.contrast > 150 ? 0.92 : 1.08;
-            let sMult = px.saturation < 30 ? 0.0 : px.saturation < 60 ? 0.85 : px.saturation > 140 ? 1.30 : 1.10;
-            let hue   = px.warmth > 40 ? -8 : px.warmth < -40 ? 8 : 0;
-            let sep   = px.saturation < 20 ? 0.15 : 0;
+            // CONTÍNUO E FIEL: cada foto gera valores próprios (sem degraus fixos)
+            function _cl(v,a,b){ return Math.max(a,Math.min(b,v)); }
+            var br = (px.brightness!=null?px.brightness:128);
+            var co = (px.contrast!=null?px.contrast:70);
+            var sa = (px.saturation!=null?px.saturation:70);
+            var wa = (px.warmth!=null?px.warmth:0);
+            let bMult = _cl(0.92 + (br-128)/520, 0.82, 1.22);   // foto clara → +leve, escura → -leve
+            let cMult = _cl(1.0  + (co-72)/240,  0.85, 1.45);   // pouco contraste → realça
+            let sMult = _cl(0.60 + sa/95,        0.62, 1.62);   // reflete a saturação REAL (piso 0.62)
+            let hue   = wa < -30 ? 6 : (wa > 55 ? -5 : 0);
+            let sep   = wa > 8 ? _cl(wa/260, 0, 0.34) : 0;      // calor → sépia proporcional
+            // foto REALMENTE preto&branco (sat quase zero) → leve dessaturação, nunca 0 cego
+            if (sa < 12){ sMult = _cl(sMult, 0.18, 0.45); sep = Math.max(sep, 0.08); }
 
             // Apply AI adjustments if available
             if (ai) {
@@ -17237,7 +17244,7 @@ Poderia me ajudar? 🙏"
             }
             bMult = Math.max(0.5, Math.min(1.8, bMult));
             cMult = Math.max(0.5, Math.min(1.8, cMult));
-            sMult = Math.max(0.0, Math.min(2.0, sMult));
+            sMult = Math.max(0.15, Math.min(2.0, sMult));
 
             const filter = [
                 `brightness(${bMult.toFixed(2)})`,
@@ -17311,8 +17318,8 @@ Poderia me ajudar? 🙏"
             const whites = contrast>130 ? 14 : 0;
             const blacks = contrast>130 ? -16 : 4;
             const clarity = _clamp(Math.round((px.variance||0)/7), -10, 30);
-            const vibrance = sat<50 ? -18 : sat>130 ? 22 : 8;
-            const saturation = sat<25 ? -100 : _clamp(Math.round((sat-80)*0.28), -30, 30);
+            const vibrance = _clamp(Math.round((sat-70)*0.34), -22, 28);
+            const saturation = sat < 8 ? -82 : _clamp(Math.round((sat-80)*0.30), -26, 30);
             const temperature = _clamp(Math.round((px.wbTempBias!=null?px.wbTempBias:px.warmth)/3.2), -55, 55);
             const tint = _clamp(Math.round((px.wbTintBias!=null?px.wbTintBias:0)/3), -40, 40);
 
@@ -17613,12 +17620,14 @@ Poderia me ajudar? 🙏"
             const on = 'linear-gradient(135deg,#a78bfa,#7c3aed)', onS = 'linear-gradient(135deg,#f59e0b,#d97706)', onC = 'linear-gradient(135deg,#60a5fa,#3b82f6)';
             [bClone,bStudio,bExplain,bConfig].forEach(function(b){ if(b){ b.style.background='transparent'; b.style.color='#555'; } });
             if (config) config.style.display='none';
+            try{ if(typeof cfgStopClock==='function') cfgStopClock(); }catch(e){}
             if (mode === 'config') {
                 if (main) main.style.display='none';
                 if (explain) explain.style.display='none';
                 if (config) config.style.display='block';
                 if (bConfig){ bConfig.style.background=onC; bConfig.style.color='#fff'; }
                 if (typeof cfgPickNow==='function') cfgPickNow();
+                try{ if(typeof cfgStartClock==='function') cfgStartClock(); }catch(e){}
                 return;
             }
             if (mode === 'explain') {
@@ -17700,14 +17709,41 @@ Poderia me ajudar? 🙏"
         // Detecta período pela HORA atual (fiel ao horário)
         function cfgPeriodoPorHora(h){
             if (h == null) { try { h = new Date().getHours(); } catch(e){ h = 12; } }
-            if (h >= 6 && h < 16) return 'dia';
+            if (h >= 5 && h < 16) return 'dia';
             if (h >= 16 && h < 18) return 'tarde';
             return 'noite';
         }
+        // 🕐 Relógio REAL — hora exata + dia/tarde/noite de verdade (atualiza ao vivo)
+        var _cfgClockTimer=null;
+        window.cfgRenderClock = function(){
+            var now; try{ now=new Date(); }catch(e){ return; }
+            var h=now.getHours(), m=now.getMinutes(), s=now.getSeconds();
+            var hh=(h<10?'0':'')+h, mm=(m<10?'0':'')+m, ss=(s<10?'0':'')+s;
+            var per=cfgPeriodoPorHora(h);
+            var info = per==='dia'   ? {ic:'☀️', nome:'Dia',   cor:'#FDB813'}
+                     : per==='tarde' ? {ic:'🌅', nome:'Tarde', cor:'#FF7A1A'}
+                     :                 {ic:'🌙', nome:'Noite', cor:'#8A7CFF'};
+            // saudação real
+            var saud = h<12 ? 'Bom dia' : (h<18 ? 'Boa tarde' : 'Boa noite');
+            var tEl=document.getElementById('cfgClockTime'); if(tEl) tEl.innerHTML=hh+':'+mm+'<span style="font-size:12px;color:#7a8aa0;">:'+ss+'</span>';
+            var icEl=document.getElementById('cfgClockIcon'); if(icEl) icEl.textContent=info.ic;
+            var pEl=document.getElementById('cfgClockPeriod'); if(pEl){ pEl.style.color=info.cor; pEl.innerHTML=info.ic+' '+info.nome+'<div style="font-size:9px;color:#8a93a3;font-weight:700;margin-top:2px;">'+saud+'</div>'; }
+            var dEl=document.getElementById('cfgClockDate');
+            if(dEl){ try{ dEl.textContent=now.toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long'}); }catch(e){ dEl.textContent=hh+':'+mm; } }
+            // botão "Agora" mostra a hora real
+            var lbl=document.getElementById('cfgBtnAgoraLbl'); if(lbl) lbl.textContent='Agora '+hh+':'+mm;
+        };
+        window.cfgStartClock = function(){
+            try{ cfgRenderClock(); }catch(e){}
+            if(_cfgClockTimer) clearInterval(_cfgClockTimer);
+            _cfgClockTimer=setInterval(function(){ try{ cfgRenderClock(); }catch(e){} }, 1000);
+        };
+        window.cfgStopClock = function(){ if(_cfgClockTimer){ clearInterval(_cfgClockTimer); _cfgClockTimer=null; } };
         // Atalho "Agora"
         window.cfgPickNow = function(){
             var h; try{ h=new Date().getHours(); }catch(e){ h=12; }
             cfgPick(cfgPeriodoPorHora(h), true);
+            try{ cfgRenderClock(); }catch(e){}
         };
         // Seleciona um período (mostra o card na hora, SEM foto)
         window.cfgPick = function(p, fromNow){
@@ -30995,9 +31031,20 @@ const _P1_VICTOR_BUILTIN_PRESETS = [{"id": "p1_01_cross_processing_yellow_light"
                     <div style="font-size:11px;color:#7a8aa0;line-height:1.6;">Toque no período e veja na hora os ajustes ideais — <strong style="color:#60a5fa;">sem precisar de foto</strong>. Ou envie/tire uma foto lá embaixo que o site detecta a luz sozinho.</div>
                 </div>
 
+                <!-- 🕐 RELÓGIO REAL — hora exata + período de verdade -->
+                <div id="cfgClock" style="display:flex;align-items:center;gap:11px;background:linear-gradient(135deg,rgba(96,165,250,0.12),rgba(124,58,237,0.05));border:1.5px solid rgba(96,165,250,0.35);border-radius:13px;padding:12px 15px;margin-bottom:12px;">
+                    <div style="font-size:26px;" id="cfgClockIcon">🕐</div>
+                    <div style="flex:1;">
+                        <div style="font-size:9px;color:#8a93a3;font-weight:800;text-transform:uppercase;letter-spacing:1px;">Agora em Natal/RN</div>
+                        <div style="font-size:20px;font-weight:900;color:#fff;line-height:1.1;" id="cfgClockTime">--:--</div>
+                        <div style="font-size:10px;color:#9aa;font-weight:700;" id="cfgClockDate">—</div>
+                    </div>
+                    <div id="cfgClockPeriod" style="text-align:right;font-size:13px;font-weight:900;color:#60a5fa;">—</div>
+                </div>
+
                 <!-- BOTÕES DE PERÍODO (clicáveis, ativam na hora) -->
                 <div style="display:flex;gap:7px;margin-bottom:13px;flex-wrap:wrap;">
-                    <button id="cfgBtnAgora" onclick="cfgPickNow()" style="flex:1;min-width:70px;padding:11px 6px;border-radius:11px;border:1.5px solid rgba(96,165,250,0.5);background:linear-gradient(135deg,#60a5fa,#3b82f6);color:#fff;font-size:11px;font-weight:900;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;">🕐<span>Agora</span></button>
+                    <button id="cfgBtnAgora" onclick="cfgPickNow()" style="flex:1;min-width:70px;padding:11px 6px;border-radius:11px;border:1.5px solid rgba(96,165,250,0.5);background:linear-gradient(135deg,#60a5fa,#3b82f6);color:#fff;font-size:11px;font-weight:900;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;">🕐<span id="cfgBtnAgoraLbl">Agora</span></button>
                     <button id="cfgBtnDia"   onclick="cfgPick('dia')"   style="flex:1;min-width:70px;padding:11px 6px;border-radius:11px;border:1.5px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.03);color:#bbb;font-size:11px;font-weight:900;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;">☀️<span>Dia</span></button>
                     <button id="cfgBtnTarde" onclick="cfgPick('tarde')" style="flex:1;min-width:70px;padding:11px 6px;border-radius:11px;border:1.5px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.03);color:#bbb;font-size:11px;font-weight:900;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;">🌅<span>Tarde</span></button>
                     <button id="cfgBtnNoite" onclick="cfgPick('noite')" style="flex:1;min-width:70px;padding:11px 6px;border-radius:11px;border:1.5px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.03);color:#bbb;font-size:11px;font-weight:900;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;">🌙<span>Noite</span></button>
