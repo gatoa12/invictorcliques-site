@@ -5447,6 +5447,7 @@ select option{background:#17131f;color:#fff;}
 @media (prefers-reduced-motion: reduce){*{animation-duration:.01ms !important;transition-duration:.01ms !important;scroll-behavior:auto !important}}
 </style>
 <style id="invQualityLayer">
+@keyframes focoPulse { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:0.55;transform:scale(0.85);} }
 /* ════════ CAMADA DE QUALIDADE & RESPONSIVIDADE GLOBAL (v246) ════════
    Melhorias seguras aplicadas a TODAS as páginas — sem alterar a estrutura. */
 * { -webkit-tap-highlight-color: transparent; }
@@ -5614,7 +5615,7 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v252.0001</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v256.0001</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -5708,7 +5709,7 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                         <div class="ap-nav-group">
                             <div class="admin-section-label">📦 Conteúdo</div>
                             <button class="admin-tab-btn active" id="sideTab0" onclick="switchAdminTab(0)"><span>📋</span>Ofertas</button>
-                            <button class="admin-tab-btn" id="sideTab1" onclick="switchAdminTab(1)"><span>📸</span>Eventos Foco <span id="focoCountBadge" style="background:rgba(255,215,0,0.18);color:var(--ap-gold,#FFD24D);border-radius:9px;padding:0 6px;font-size:10px;font-weight:900;margin-left:auto;">0</span></button>
+                            <button class="admin-tab-btn" id="sideTab1" onclick="switchAdminTab(1)"><span>📸</span>Eventos Foco <span id="focoCountBadge" class="focoCountBadge" style="background:rgba(255,215,0,0.18);color:var(--ap-gold,#FFD24D);border-radius:9px;padding:0 6px;font-size:10px;font-weight:900;margin-left:auto;">0</span></button>
                             <button class="admin-tab-btn ap-tab-orange" id="sideTab22" onclick="switchAdminTab(22)"><span>🔍</span>Verificações <span id="verifBadge" style="background:#FF6A00;color:#000;border-radius:9px;padding:0 6px;font-size:10px;font-weight:900;margin-left:2px;display:none;">0</span></button>
                             <button class="admin-tab-btn ap-tab-green" id="sideTab23" onclick="switchAdminTab(23)"><span>🤖</span>IA & Bot <span id="aiBadge" style="background:#00E676;color:#000;border-radius:9px;padding:0 6px;font-size:10px;font-weight:900;margin-left:2px;display:none;">0</span></button>
                             <button class="admin-tab-btn ap-tab-orange" id="sideTab24" onclick="switchAdminTab(24)"><span>📝</span>Conteúdo</button>
@@ -5888,7 +5889,7 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                     </div>
                     <!-- Current events count badge + always-visible list -->
                     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;padding:8px 12px;background:rgba(255,215,0,0.04);border:1px solid rgba(255,215,0,0.12);border-radius:9px;">
-                        <span style="font-size:11px;color:#FF6A00;font-weight:800;">📋 Eventos no site: <span id="focoCountBadge" style="font-size:15px;font-weight:900;">19</span></span>
+                        <span style="font-size:11px;color:#FF6A00;font-weight:800;">📋 Eventos no site: <span id="focoCountBadge2" class="focoCountBadge" style="font-size:15px;font-weight:900;">0</span></span>
                         <div style="display:flex;gap:5px;">
                             <button onclick="focoAdminShowList()" style="padding:4px 11px;background:rgba(255,215,0,0.1);border:1px solid rgba(255,215,0,0.25);color:#FF6A00;border-radius:6px;font-size:10px;font-weight:700;cursor:pointer;" title="Atualizar lista">🔄 Atualizar</button>
                         </div>
@@ -14538,6 +14539,48 @@ Poderia me ajudar? 🙏"
                   + '</div>';
             }
 
+            // ── 🟢 Aviso de atualização automática ──────────────────
+            var _lastTs = 0;
+            try { _lastTs = parseInt(localStorage.getItem('_lastUpdate')||localStorage.getItem('focoEventosReais_ts')||'0',10)||0; } catch(e){}
+            var _agoTxt = '';
+            if(_lastTs){
+                var _df = Date.now()-_lastTs, _mins = Math.floor(_df/60000);
+                if(_mins<2) _agoTxt='agora mesmo';
+                else if(_mins<60) _agoTxt='há '+_mins+' min';
+                else { var _h=Math.floor(_mins/60); _agoTxt = _h<24 ? ('há '+_h+'h') : ('há '+Math.floor(_h/24)+'d'); }
+            }
+            var noticeHtml = '<div style="display:flex;align-items:center;gap:9px;background:linear-gradient(135deg,rgba(81,207,102,0.12),rgba(81,207,102,0.03));border:1px solid rgba(81,207,102,0.28);border-radius:12px;padding:10px 13px;margin-bottom:14px;">'
+                +'<span style="font-size:16px;animation:focoPulse 2s infinite;">🟢</span>'
+                +'<div style="flex:1;min-width:0;"><div style="font-size:12px;font-weight:900;color:#51CF66;">Catálogo atualizado automaticamente</div>'
+                +'<div style="font-size:10px;color:#7faf8f;line-height:1.4;">'+(_agoTxt?('Última atualização <strong>'+_agoTxt+'</strong> · '):'')+'novos treinos entram sozinhos 🎯</div></div></div>';
+
+            // ── 📸 TBT — fotos que atraem, direcionam pro Foco Radical ──
+            var _comBanner = visiveis.filter(function(e){ return e.banner; });
+            var tbtHtml = '';
+            if(_comBanner.length >= 3){
+                var _tbtPick = _comBanner.slice();
+                for(var _i=_tbtPick.length-1;_i>0;_i--){ var _j=Math.floor(Math.random()*(_i+1)); var _t=_tbtPick[_i]; _tbtPick[_i]=_tbtPick[_j]; _tbtPick[_j]=_t; }
+                _tbtPick = _tbtPick.slice(0,6);
+                tbtHtml = '<div style="margin-bottom:18px;">'
+                    +'<div style="display:flex;align-items:center;gap:7px;margin-bottom:10px;flex-wrap:wrap;">'
+                    +'<span style="font-size:18px;">📸</span>'
+                    +'<span style="font-size:14px;font-weight:900;color:#fff;letter-spacing:.3px;">TBT — Reviva seus treinos</span>'
+                    +'<span style="font-size:9.5px;color:#FFD24D;background:rgba(255,215,0,0.12);border:1px solid rgba(255,215,0,0.25);padding:2px 9px;border-radius:20px;font-weight:800;">toque e ache suas fotos ✨</span></div>'
+                    +'<div style="display:flex;gap:11px;overflow-x:auto;padding:2px 2px 8px;-webkit-overflow-scrolling:touch;scrollbar-width:none;">'
+                    + _tbtPick.map(function(e){
+                        var _u=(e.url||'').replace(/'/g,"\\'");
+                        return '<div onclick="window.open(\''+_u+'\',\'_blank\')" style="flex-shrink:0;width:142px;cursor:pointer;border-radius:13px;overflow:hidden;position:relative;box-shadow:0 5px 16px rgba(0,0,0,0.5);transition:transform .25s,box-shadow .25s;" onmouseover="this.style.transform=\'translateY(-4px)\';this.style.boxShadow=\'0 10px 24px rgba(255,106,0,0.35)\'" onmouseout="this.style.transform=\'\';this.style.boxShadow=\'0 5px 16px rgba(0,0,0,0.5)\'">'
+                          +'<img src="'+e.banner+'" loading="lazy" style="width:142px;height:178px;object-fit:cover;display:block;">'
+                          +'<div style="position:absolute;inset:0;background:linear-gradient(180deg,transparent 38%,rgba(0,0,0,0.85));"></div>'
+                          +'<div style="position:absolute;top:8px;left:8px;background:rgba(0,0,0,0.55);backdrop-filter:blur(4px);border:1px solid rgba(255,215,0,0.4);color:#FFD24D;font-size:8.5px;font-weight:900;padding:3px 8px;border-radius:20px;">⏪ TBT</div>'
+                          +'<div style="position:absolute;bottom:0;left:0;right:0;padding:10px 10px 11px;">'
+                          +'<div style="font-size:9.5px;color:#FFD24D;font-weight:900;margin-bottom:2px;">'+(e.date||'')+(e.periodo?(' · '+e.periodo):'')+'</div>'
+                          +'<div style="font-size:11px;color:#fff;font-weight:900;line-height:1.15;display:flex;align-items:center;gap:4px;">Ver minhas fotos <span style="color:#FF8A3D;">→</span></div>'
+                          +'</div></div>';
+                      }).join('')
+                    +'</div></div>';
+            }
+
             if (visiveis.length === 0) {
                 div.innerHTML = `<div style="text-align:center;padding:60px 20px;">
                     <div style="font-size:56px;margin-bottom:16px;opacity:0.4;">📸</div>
@@ -14554,6 +14597,8 @@ Poderia me ajudar? 🙏"
             }
 
             div.innerHTML = `
+              ${noticeHtml}
+              ${tbtHtml}
               ${chipsHtml}
               <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding:0 2px;flex-wrap:wrap;gap:8px;">
                 <div style="font-size:12px;color:#555;font-weight:700;">${mostrados.length} evento(s)${window._focoCat!=='TODOS'?' em '+window._focoCat.toLowerCase():' disponíveis'}</div>
@@ -17451,11 +17496,22 @@ Poderia me ajudar? 🙏"
         window.presetsOnSetMode = function presetsOnSetMode(mode) {
             const main = document.getElementById('presetsOnMainContent');
             const explain = document.getElementById('presetsOnExplainTab');
+            const config = document.getElementById('configIdealContent');
             const bClone = document.getElementById('presetsOnTabCloneBtn');
             const bStudio = document.getElementById('presetsOnTabStudioBtn');
             const bExplain = document.getElementById('presetsOnTabExplainBtn');
-            const on = 'linear-gradient(135deg,#a78bfa,#7c3aed)', onS = 'linear-gradient(135deg,#f59e0b,#d97706)';
-            [bClone,bStudio,bExplain].forEach(function(b){ if(b){ b.style.background='transparent'; b.style.color='#555'; } });
+            const bConfig = document.getElementById('presetsOnTabConfigBtn');
+            const on = 'linear-gradient(135deg,#a78bfa,#7c3aed)', onS = 'linear-gradient(135deg,#f59e0b,#d97706)', onC = 'linear-gradient(135deg,#60a5fa,#3b82f6)';
+            [bClone,bStudio,bExplain,bConfig].forEach(function(b){ if(b){ b.style.background='transparent'; b.style.color='#555'; } });
+            if (config) config.style.display='none';
+            if (mode === 'config') {
+                if (main) main.style.display='none';
+                if (explain) explain.style.display='none';
+                if (config) config.style.display='block';
+                if (bConfig){ bConfig.style.background=onC; bConfig.style.color='#fff'; }
+                if (typeof cfgPickNow==='function') cfgPickNow();
+                return;
+            }
             if (mode === 'explain') {
                 if (main) main.style.display='none';
                 if (explain) explain.style.display='block';
@@ -17478,6 +17534,266 @@ Poderia me ajudar? 🙏"
             }
             // Re-renderiza o guia se já houver um resultado na tela
             if (window._roubarLastPx && typeof roubarRenderGuide === 'function') roubarRenderGuide();
+        };
+
+        // ══════════════════════════════════════════════════════════
+        //  📷 CONFIG IDEAL — analisa a luz da cena e diz a config ideal
+        // ══════════════════════════════════════════════════════════
+        //  📷 CONFIG IDEAL — períodos clicáveis + 2 versões + 2 WB
+        // ══════════════════════════════════════════════════════════
+        // Dados ricos por período (fiel a dia/tarde/noite/hora, local: Alexandrino/Natal)
+        const CFG_PERIODOS = {
+            dia: {
+                ic:'☀️', cor:'#FDB813', nome:'DIA · Sol forte', hora:'~10h às 16h', luz:'Muita luz, sombra dura',
+                wbA:{ nome:'Real (5500K)', desc:'cores fiéis, luz do dia' },
+                wbB:{ nome:'Sombra (6500–7000K)', desc:'esquenta um pouco, evita azulado na sombra' },
+                versoes:{
+                    nitida:{ rotulo:'📸 Nítida (segura)', iso:'100–200', vel:'1/2000s', abre:'f/5.6', nota:'Velocidade alta congela o passo. Mais profundidade = foco garantido.' },
+                    cine:{   rotulo:'🎬 Cinematográfica', iso:'100', vel:'1/1000s', abre:'f/2.8', nota:'Fundo bem desfocado, atleta destacado. Cuidado pra não estourar o céu.' }
+                },
+                melhor:'Com sol forte, priorize VELOCIDADE alta. Posicione o sol nas costas do corredor pra não dar sombra dura no rosto. Sol a pino? Procure sombra aberta e exponha pela pele.'
+            },
+            tarde: {
+                ic:'🌅', cor:'#FF8A3D', nome:'TARDE · Golden hour', hora:'~16h às 18h', luz:'Luz quente, suave e baixa',
+                wbA:{ nome:'Nublado (6500K)', desc:'reforça o dourado da hora mágica' },
+                wbB:{ nome:'Real (5500K)', desc:'mais neutro, se quiser cor fiel' },
+                versoes:{
+                    nitida:{ rotulo:'📸 Nítida (segura)', iso:'200–400', vel:'1/1250s', abre:'f/3.5', nota:'Ainda congela bem e segura a luz que está caindo.' },
+                    cine:{   rotulo:'🎬 Cinematográfica', iso:'200', vel:'1/800s', abre:'f/2.0–2.8', nota:'Contraluz dourado no contorno do atleta + desfoque cremoso.' }
+                },
+                melhor:'A MELHOR luz do dia. Coloque o sol atrás/lateral pra dar brilho dourado no contorno (contraluz). Abra mais o diafragma. Dispare em rajada — a luz muda rápido.'
+            },
+            noite: {
+                ic:'🌙', cor:'#6C8Cff', nome:'NOITE · Pouca luz', hora:'após ~18h', luz:'Pouca luz, postes/refletores',
+                wbA:{ nome:'Tungstênio (3200K)', desc:'corrige o laranja dos postes' },
+                wbB:{ nome:'Auto', desc:'deixa a câmera decidir, ajuste depois' },
+                versoes:{
+                    nitida:{ rotulo:'📸 Nítida (segura)', iso:'3200–6400', vel:'1/640s', abre:'f/1.8–2.8', nota:'ISO alto sem medo: foto nítida vale mais que ruído. Foco contínuo no atleta.' },
+                    cine:{   rotulo:'🎬 Cinematográfica', iso:'1600', vel:'1/250s', abre:'f/1.8', nota:'Mais luz e clima; aceita leve rastro de movimento. Use a luz dos postes como recorte.' }
+                },
+                melhor:'Abra TUDO (f mais baixo) e suba o ISO sem medo — foto tremida é pior que ruído. Velocidade mínima 1/500s pra congelar. Use a luz dos postes/refletores como recorte no atleta.'
+            }
+        };
+        let _cfgPeriodo = 'dia', _cfgVersao = 'nitida';
+
+        // 🎨 Presets de Balanço de Branco (opções clicáveis)
+        const CFG_WB = [
+            {k:'sol',    ic:'☀️', nome:'Luz do sol',          kelvin:'5200–5500K', uso:'Sol aberto / dia claro — deixa as cores fiéis e naturais.'},
+            {k:'nublado',ic:'☁️', nome:'Nublado',             kelvin:'6000–6500K', uso:'Céu nublado ou golden hour — esquenta a foto e realça o dourado.'},
+            {k:'sombra', ic:'⛅', nome:'Sombra',              kelvin:'7000–7500K', uso:'Atleta na sombra — tira o azulado e deixa a pele saudável.'},
+            {k:'tungst', ic:'💡', nome:'Tungstênio',          kelvin:'3000–3200K', uso:'Luz amarela dos postes — neutraliza o laranja, branco fica branco.'},
+            {k:'branca', ic:'🏢', nome:'Luz branca / Fluor.', kelvin:'3800–4200K', uso:'Lâmpada branca / quadra coberta — tira o tom esverdeado.'},
+            {k:'auto',   ic:'🅰️', nome:'Auto (AWB)',          kelvin:'câmera decide', uso:'Na dúvida ou luz mista — deixa no automático e ajusta depois no app.'}
+        ];
+        const CFG_WB_REC = { dia:['sol','sombra'], tarde:['nublado','sol'], noite:['tungst','branca','auto'] };
+        let _cfgWb = 'sol';
+
+        // Detecta período pela HORA atual (fiel ao horário)
+        function cfgPeriodoPorHora(h){
+            if (h == null) { try { h = new Date().getHours(); } catch(e){ h = 12; } }
+            if (h >= 6 && h < 16) return 'dia';
+            if (h >= 16 && h < 18) return 'tarde';
+            return 'noite';
+        }
+        // Atalho "Agora"
+        window.cfgPickNow = function(){
+            var h; try{ h=new Date().getHours(); }catch(e){ h=12; }
+            cfgPick(cfgPeriodoPorHora(h), true);
+        };
+        // Seleciona um período (mostra o card na hora, SEM foto)
+        window.cfgPick = function(p, fromNow){
+            if(!CFG_PERIODOS[p]) p='dia';
+            _cfgPeriodo = p;
+            // estado dos botões
+            var map={agora:'cfgBtnAgora',dia:'cfgBtnDia',tarde:'cfgBtnTarde',noite:'cfgBtnNoite'};
+            Object.keys(map).forEach(function(k){
+                var b=document.getElementById(map[k]); if(!b) return;
+                var act = fromNow ? (k==='agora') : (k===p);
+                if(act){ var cor = (k==='agora')?'#60a5fa':CFG_PERIODOS[p].cor; b.style.background='linear-gradient(135deg,'+cor+','+cor+'cc)'; b.style.color='#fff'; b.style.borderColor=cor; }
+                else { b.style.background='rgba(255,255,255,0.03)'; b.style.color='#bbb'; b.style.borderColor='rgba(255,255,255,0.1)'; }
+            });
+            cfgRenderPeriodCard();
+            cfgRenderCheat(p);
+            // pré-seleciona o WB recomendado do período e mostra as opções
+            _cfgWb = (CFG_WB_REC[p]||['auto'])[0];
+            cfgRenderWb(); cfgShowWbDetail(_cfgWb);
+        };
+
+        // 🎨 Renderiza as opções de balanço de branco (recomendadas ⭐ por período)
+        function cfgRenderWb(){
+            var grid=document.getElementById('cfgWbGrid'); if(!grid) return;
+            var rec = CFG_WB_REC[_cfgPeriodo]||[];
+            grid.innerHTML = CFG_WB.map(function(w){
+                var isRec=rec.indexOf(w.k)>=0, on=(_cfgWb===w.k);
+                return '<button onclick="cfgPickWb(\''+w.k+'\')" style="text-align:left;padding:9px 10px;border-radius:10px;border:1.5px solid '+(on?'#60a5fa':(isRec?'rgba(96,165,250,0.45)':'rgba(255,255,255,0.1)'))+';background:'+(on?'rgba(96,165,250,0.2)':(isRec?'rgba(96,165,250,0.06)':'rgba(0,0,0,0.15)'))+';color:#fff;cursor:pointer;transition:all .15s;">'
+                  +'<div style="font-size:11px;font-weight:900;display:flex;align-items:center;gap:5px;line-height:1.15;">'+w.ic+' '+w.nome+(isRec?' <span style="color:#FDB813;font-size:10px;">⭐</span>':'')+'</div>'
+                  +'<div style="font-size:9px;color:'+(on?'#9cc3ff':'#8a93a3')+';margin-top:2px;font-weight:700;">'+w.kelvin+'</div></button>';
+            }).join('');
+        }
+        function cfgShowWbDetail(k){
+            var d=document.getElementById('cfgWbDetail'); if(!d) return;
+            var w=CFG_WB.filter(function(x){return x.k===k;})[0]; if(!w){ d.innerHTML=''; return; }
+            var rec=(CFG_WB_REC[_cfgPeriodo]||[]).indexOf(k)>=0;
+            d.innerHTML='<div style="font-size:11px;color:#cdd6e4;background:rgba(96,165,250,0.08);border-left:3px solid #60a5fa;padding:9px 11px;border-radius:0 8px 8px 0;line-height:1.55;">'
+                +'<strong style="color:#60a5fa;">'+w.ic+' '+w.nome+' ('+w.kelvin+')'+(rec?' ⭐':'')+':</strong> '+w.uso
+                +(rec?'<div style="font-size:9.5px;color:#FDB813;margin-top:4px;font-weight:800;">⭐ Recomendado pra esse período</div>':'')+'</div>';
+        }
+        window.cfgPickWb=function(k){ _cfgWb=k; cfgRenderWb(); cfgShowWbDetail(k); };
+        window.cfgSetVersao = function(v){ _cfgVersao = (v==='cine')?'cine':'nitida'; cfgRenderPeriodCard(); };
+
+        // Card grande do período selecionado (com 2 versões + 2 WB)
+        function cfgRenderPeriodCard(){
+            var el=document.getElementById('cfgPeriodCard'); if(!el) return;
+            var c=CFG_PERIODOS[_cfgPeriodo]; if(!c) return;
+            var v=c.versoes[_cfgVersao]||c.versoes.nitida;
+            var agoraH; try{ agoraH=new Date().getHours(); }catch(e){ agoraH=null; }
+            var ehAgora = (agoraH!=null && cfgPeriodoPorHora(agoraH)===_cfgPeriodo);
+            function vbtn(key,rot){ var on=(_cfgVersao===key);
+                return '<button onclick="cfgSetVersao(\''+key+'\')" style="flex:1;padding:8px 6px;border-radius:9px;border:1.5px solid '+(on?c.cor:'rgba(255,255,255,0.12)')+';background:'+(on?c.cor+'22':'rgba(255,255,255,0.02)')+';color:'+(on?c.cor:'#888')+';font-size:10.5px;font-weight:900;cursor:pointer;">'+rot+'</button>';
+            }
+            el.innerHTML =
+                '<div style="background:linear-gradient(135deg,'+c.cor+'1f,'+c.cor+'08);border:1.5px solid '+c.cor+'66;border-radius:14px;padding:15px;">'
+                +'<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;"><span style="font-size:28px;">'+c.ic+'</span>'
+                +'<div style="flex:1;"><div style="font-size:16px;color:'+c.cor+';font-weight:900;line-height:1.1;">'+c.nome+'</div>'
+                +'<div style="font-size:10px;color:#8a93a3;font-weight:700;margin-top:2px;">🕐 '+c.hora+' · '+c.luz+'</div></div>'
+                +(ehAgora?'<span style="font-size:8.5px;color:#000;background:'+c.cor+';padding:3px 9px;border-radius:20px;font-weight:900;">É AGORA</span>':'')+'</div>'
+
+                // toggle de versão
+                +'<div style="display:flex;gap:7px;margin-bottom:12px;">'+vbtn('nitida',c.versoes.nitida.rotulo)+vbtn('cine',c.versoes.cine.rotulo)+'</div>'
+
+                // grid de settings
+                +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:11px;">'
+                +cfgChip('📊','ISO',v.iso,c.cor)+cfgChip('⚡','Velocidade',v.vel,c.cor)+cfgChip('🔘','Abertura',v.abre,c.cor)
+                +'<div style="background:rgba(0,0,0,0.25);border:1px solid '+c.cor+'33;border-radius:10px;padding:9px 10px;">'
+                +'<div style="font-size:9px;color:#8a93a3;font-weight:800;text-transform:uppercase;letter-spacing:.5px;">🎯 Modo</div>'
+                +'<div style="font-size:12px;color:#fff;font-weight:900;margin-top:2px;">Tv / Manual</div></div>'
+                +'</div>'
+
+                // balanço de branco recomendado (detalhe completo no seletor abaixo)
+                +'<div style="display:flex;align-items:center;gap:8px;background:rgba(0,0,0,0.22);border-radius:10px;padding:9px 11px;margin-bottom:11px;">'
+                +'<span style="font-size:16px;">🎨</span><div style="flex:1;"><div style="font-size:9.5px;color:#8a93a3;font-weight:800;text-transform:uppercase;letter-spacing:.5px;">Balanço de Branco</div>'
+                +'<div style="font-size:11.5px;color:#fff;font-weight:800;">'+(function(){var r=(CFG_WB_REC[_cfgPeriodo]||[]).map(function(k){var w=CFG_WB.filter(function(x){return x.k===k;})[0];return w?(w.ic+' '+w.nome):'';}).filter(Boolean);return r.join('  ou  ');})()+'</div></div>'
+                +'<span style="font-size:9px;color:#60a5fa;font-weight:800;">opções ↓</span></div>'
+
+                // melhor a fazer
+                +'<div style="font-size:11px;color:#cdd6e4;line-height:1.6;background:rgba(255,255,255,0.03);border-left:3px solid '+c.cor+';padding:9px 11px;border-radius:0 9px 9px 0;margin-bottom:8px;">'
+                +'<strong style="color:'+c.cor+';">O melhor a fazer:</strong> '+c.melhor+'</div>'
+                +'<div style="font-size:10px;color:#8a93a3;line-height:1.5;background:rgba(0,0,0,0.18);border-radius:8px;padding:8px 10px;">💡 <strong style="color:#aab;">Versão escolhida:</strong> '+v.nota+'</div>'
+
+                +'<button onclick="cfgAskAI(\''+_cfgPeriodo+'\',null,null,null)" id="cfgAiBtn" style="width:100%;margin-top:11px;padding:11px;background:linear-gradient(135deg,#60a5fa,#3b82f6);color:#fff;border:none;border-radius:10px;font-weight:900;font-size:12px;cursor:pointer;">🤖 Pedir dica extra da IA pra esse período</button>'
+                +'<div id="cfgAiBox" style="display:none;margin-top:10px;font-size:11px;color:#bbb;font-style:italic;background:rgba(96,165,250,0.07);border:1px solid rgba(96,165,250,0.2);border-radius:9px;padding:10px;line-height:1.6;"></div>'
+                +'</div>';
+        }
+
+        // Resumo rápido (3 períodos compactos)
+        function cfgRenderCheat(highlight){
+            var el=document.getElementById('cfgCheatSheet'); if(!el) return;
+            el.innerHTML = ['dia','tarde','noite'].map(function(k){
+                var c=CFG_PERIODOS[k], v=c.versoes.nitida, hot=(highlight===k);
+                return '<div onclick="cfgPick(\''+k+'\')" style="cursor:pointer;border:1.5px solid '+(hot?c.cor:'rgba(255,255,255,0.08)')+';background:'+(hot?'rgba(255,255,255,0.04)':'rgba(0,0,0,0.15)')+';border-radius:11px;padding:10px 12px;'+(hot?'box-shadow:0 0 0 3px '+c.cor+'22;':'')+'">'
+                  +'<div style="display:flex;align-items:center;gap:7px;margin-bottom:5px;"><span style="font-size:15px;">'+c.ic+'</span><span style="font-size:11.5px;font-weight:900;color:'+c.cor+';">'+c.nome+'</span><span style="font-size:8.5px;color:#667;margin-left:auto;">'+c.hora+'</span></div>'
+                  +'<div style="font-size:10px;color:#aab;">📊 ISO '+v.iso+' · ⚡ '+v.vel+' · 🔘 '+v.abre+' · 🎨 '+c.wbA.nome+'</div>'
+                  +'</div>';
+            }).join('');
+        }
+
+        function cfgChip(ic,label,val,cor){
+            return '<div style="background:rgba(0,0,0,0.25);border:1px solid '+cor+'33;border-radius:10px;padding:9px 10px;">'
+              +'<div style="font-size:9px;color:#8a93a3;font-weight:800;text-transform:uppercase;letter-spacing:.5px;">'+ic+' '+label+'</div>'
+              +'<div style="font-size:13px;color:#fff;font-weight:900;margin-top:2px;line-height:1.1;">'+val+'</div></div>';
+        }
+
+        function cfgClear(){
+            var w=document.getElementById('cfgPreviewWrap'); if(w) w.style.display='none';
+            var r=document.getElementById('cfgResult'); if(r){ r.style.display='none'; r.innerHTML=''; }
+            ['cfgCamInput','cfgFileInput'].forEach(function(id){ var i=document.getElementById(id); if(i) i.value=''; });
+        }
+        window.cfgClear = cfgClear;
+
+        // Análise pela foto: detecta a luz e SELECIONA o período sozinho
+        window.cfgAnalyze = function(input){
+            var file = input && input.files && input.files[0]; if(!file) return;
+            var r=document.getElementById('cfgResult');
+            var url=URL.createObjectURL(file);
+            var pw=document.getElementById('cfgPreviewWrap'), pi=document.getElementById('cfgPreviewImg');
+            if(pi) pi.src=url; if(pw) pw.style.display='block';
+            if(r){ r.style.display='block'; r.innerHTML='<div style="text-align:center;padding:16px;color:#60a5fa;font-size:12px;font-weight:800;">🔍 Lendo a luz da cena...</div>'; }
+            var img=new Image();
+            img.onload=function(){
+                try{
+                    var W=80, H=Math.max(1,Math.round(80*img.height/img.width));
+                    var cv=document.createElement('canvas'); cv.width=W; cv.height=H;
+                    var ctx=cv.getContext('2d'); ctx.drawImage(img,0,0,W,H);
+                    var d=ctx.getImageData(0,0,W,H).data;
+                    var sum=0,rS=0,bS=0,n=0,lumArr=[];
+                    for(var i=0;i<d.length;i+=4){ var R=d[i],G=d[i+1],B=d[i+2]; var L=0.2126*R+0.7152*G+0.0722*B; sum+=L; rS+=R; bS+=B; lumArr.push(L); n++; }
+                    var avg=sum/n, warmth=(rS/n)-(bS/n);
+                    var vS=0; for(var k=0;k<lumArr.length;k++){ var dd=lumArr[k]-avg; vS+=dd*dd; } var std=Math.sqrt(vS/lumArr.length);
+                    URL.revokeObjectURL(url);
+                    // classifica período
+                    var key;
+                    if(avg < 55) key='noite';
+                    else if(warmth > 16 && avg < 150) key='tarde';
+                    else if(avg >= 130) key='dia';
+                    else key='tarde';
+                    // fix WB text + sugere balanço de branco pela cor real
+                    var notas=[];
+                    if(warmth > 25) notas.push('Luz bem <strong>quente/dourada</strong> — ótimo pra contraluz.');
+                    else if(warmth < -10) notas.push('Luz <strong>fria/azulada</strong> — aqueça o WB pra pele não ficar pálida.');
+                    if(std < 25) notas.push('Cena <strong>plana</strong> — procure um fundo com luz separando o atleta.');
+                    if(std > 60) notas.push('Contraste <strong>alto</strong> — exponha pelo rosto pra não estourar.');
+                    if(avg < 35) notas.push('<strong>Muito escura</strong> — abra ao máximo e suba o ISO; velocidade ≥ 1/500s.');
+                    if(avg > 210) notas.push('<strong>Muito clara</strong> — feche um pouco (f maior) ou suba a velocidade.');
+                    var wbSug;
+                    if(key==='noite') wbSug='tungst';
+                    else if(warmth > 22) wbSug='nublado';
+                    else if(warmth < -8) wbSug='sombra';
+                    else if(key==='dia') wbSug='sol';
+                    else wbSug=(CFG_WB_REC[key]||['auto'])[0];
+                    var wbObj=CFG_WB.filter(function(x){return x.k===wbSug;})[0]||CFG_WB[0];
+                    var vv=CFG_PERIODOS[key].versoes.nitida;
+                    var lvl=Math.round(avg/255*100);
+                    var c=CFG_PERIODOS[key];
+                    if(r) r.innerHTML='<div style="background:'+c.cor+'14;border:1.5px solid '+c.cor+'55;border-radius:12px;padding:13px;">'
+                        +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><span style="font-size:22px;">'+c.ic+'</span>'
+                        +'<div><div style="font-size:9.5px;color:#8a93a3;font-weight:800;text-transform:uppercase;">✅ Solução pra essa foto</div>'
+                        +'<div style="font-size:14px;color:'+c.cor+';font-weight:900;">'+c.nome+'</div></div></div>'
+                        +'<div style="height:7px;background:rgba(255,255,255,0.08);border-radius:7px;overflow:hidden;margin-bottom:4px;"><div style="height:100%;width:'+lvl+'%;background:linear-gradient(90deg,#3b4252,'+c.cor+');"></div></div>'
+                        +'<div style="display:flex;justify-content:space-between;font-size:8px;color:#667;margin-bottom:10px;"><span>escuro</span><span>luz '+lvl+'%</span><span>claro</span></div>'
+                        // config rápida direto no resultado
+                        +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:9px;">'
+                        +'<div style="background:rgba(0,0,0,0.25);border-radius:8px;padding:7px 9px;"><div style="font-size:8.5px;color:#8a93a3;font-weight:800;">📊 ISO</div><div style="font-size:12px;color:#fff;font-weight:900;">'+vv.iso+'</div></div>'
+                        +'<div style="background:rgba(0,0,0,0.25);border-radius:8px;padding:7px 9px;"><div style="font-size:8.5px;color:#8a93a3;font-weight:800;">⚡ Velocidade</div><div style="font-size:12px;color:#fff;font-weight:900;">'+vv.vel+'</div></div>'
+                        +'<div style="background:rgba(0,0,0,0.25);border-radius:8px;padding:7px 9px;"><div style="font-size:8.5px;color:#8a93a3;font-weight:800;">🔘 Abertura</div><div style="font-size:12px;color:#fff;font-weight:900;">'+vv.abre+'</div></div>'
+                        +'<div style="background:rgba(96,165,250,0.12);border:1px solid rgba(96,165,250,0.4);border-radius:8px;padding:7px 9px;"><div style="font-size:8.5px;color:#60a5fa;font-weight:800;">🎨 Bal. Branco</div><div style="font-size:11px;color:#fff;font-weight:900;">'+wbObj.ic+' '+wbObj.nome+'</div></div>'
+                        +'</div>'
+                        +(notas.length?'<div style="font-size:10px;color:#aab;line-height:1.6;margin-bottom:9px;">'+notas.map(function(t){return '• '+t;}).join('<br>')+'</div>':'')
+                        +'<button onclick="document.getElementById(\'cfgPeriodCard\').scrollIntoView({behavior:\'smooth\',block:\'center\'});" style="width:100%;padding:10px;background:linear-gradient(135deg,'+c.cor+','+c.cor+'cc);color:#000;border:none;border-radius:9px;font-weight:900;font-size:12px;cursor:pointer;">👆 Ver config completa + versões</button>'
+                        +'</div>';
+                    // seleciona período E balanço de branco no topo
+                    cfgPick(key);
+                    cfgPickWb(wbSug);
+                }catch(e){
+                    if(r) r.innerHTML='<div style="color:#FF8787;font-size:11px;text-align:center;padding:12px;">Não consegui analisar. Tenta outra foto.</div>';
+                }
+            };
+            img.onerror=function(){ if(r) r.innerHTML='<div style="color:#FF8787;font-size:11px;text-align:center;padding:12px;">Imagem inválida.</div>'; };
+            img.src=url;
+        };
+
+        window.cfgAskAI = async function(key){
+            var box=document.getElementById('cfgAiBox'), btn=document.getElementById('cfgAiBtn');
+            if(box){ box.style.display='block'; box.textContent='🤖 Pensando na melhor dica...'; }
+            if(btn){ btn.disabled=true; btn.style.opacity='0.6'; }
+            var per = key==='dia'?'dia ensolarado (sol forte)':(key==='tarde'?'fim de tarde / golden hour':'noite com pouca luz');
+            var prompt='Você é o assistente do fotógrafo esportivo Victor (@invictorcliques), que fotografa corredores na pista da Alexandrino em Natal/RN. '
+                +'Período: '+per+'. Dê 3 dicas curtas, práticas e diretas (1 linha cada) de COMO fotografar corredores nessa luz pra sair foto nítida e bonita — config de câmera e posicionamento. '
+                +'Sem enrolação, português do Brasil, tom de amigo fotógrafo.';
+            try{
+                var txt = (typeof invAI==='function') ? await invAI(prompt) : '';
+                if(box) box.innerHTML = txt ? txt.replace(/\n/g,'<br>') : 'Não consegui agora — a config acima já te atende. Tenta de novo daqui a pouco.';
+            }catch(e){ if(box) box.textContent='Não consegui agora. A config acima já resolve!'; }
+            if(btn){ btn.disabled=false; btn.style.opacity='1'; btn.textContent='🤖 Pedir outra dica'; }
         };
 
         // Wrapper recolhível (fica fechado até o usuário tocar)
@@ -20166,8 +20482,12 @@ Poderia me ajudar? 🙏"
         }
 
         function _updateFocoCountBadge() {
-            const el = document.getElementById('focoCountBadge');
-            if (el) el.textContent = FOCO_EVENTOS_REAIS.length;
+            try {
+                var n = (typeof FOCO_EVENTOS_REAIS !== 'undefined' && FOCO_EVENTOS_REAIS) ? FOCO_EVENTOS_REAIS.length : 0;
+                document.querySelectorAll('.focoCountBadge').forEach(function(el){ el.textContent = n; });
+                var legacy = document.getElementById('focoCountBadge');
+                if (legacy && !legacy.classList.contains('focoCountBadge')) legacy.textContent = n;
+            } catch(e) {}
         }
 
         // ── Atualização automática: dispara o Worker pra buscar o portal agora ──
@@ -30183,6 +30503,10 @@ const _P1_VICTOR_BUILTIN_PRESETS = [{"id": "p1_01_cross_processing_yellow_light"
                     style="flex:1;padding:8px 4px;background:transparent;color:#555;border:none;border-radius:9px;font-size:10.5px;font-weight:800;cursor:pointer;">
                     🎬 Estúdio
                 </button>
+                <button onclick="presetsOnSetMode('config')" id="presetsOnTabConfigBtn"
+                    style="flex:1;padding:8px 4px;background:transparent;color:#555;border:none;border-radius:9px;font-size:10.5px;font-weight:800;cursor:pointer;">
+                    📷 Config Ideal
+                </button>
                 <button onclick="presetsOnSetMode('explain')" id="presetsOnTabExplainBtn"
                     style="flex:1;padding:8px 4px;background:transparent;color:#555;border:none;border-radius:9px;font-size:10.5px;font-weight:800;cursor:pointer;">
                     📖 Como Funciona
@@ -30190,6 +30514,64 @@ const _P1_VICTOR_BUILTIN_PRESETS = [{"id": "p1_01_cross_processing_yellow_light"
             </div>
 
             <!-- ── MAIN CLONE CONTENT ── -->
+            <!-- ══ 📷 CONFIG IDEAL — clique no período e veja na hora (sem foto) ══ -->
+            <div id="configIdealContent" style="display:none;">
+                <div style="background:linear-gradient(135deg,rgba(96,165,250,0.1),rgba(59,130,246,0.04));border:1.5px solid rgba(96,165,250,0.25);border-radius:14px;padding:15px 16px;margin-bottom:13px;">
+                    <div style="font-size:13px;color:#60a5fa;font-weight:900;margin-bottom:4px;">📷 Configuração ideal pra fotografar</div>
+                    <div style="font-size:11px;color:#7a8aa0;line-height:1.6;">Toque no período e veja na hora os ajustes ideais — <strong style="color:#60a5fa;">sem precisar de foto</strong>. Ou envie/tire uma foto lá embaixo que o site detecta a luz sozinho.</div>
+                </div>
+
+                <!-- BOTÕES DE PERÍODO (clicáveis, ativam na hora) -->
+                <div style="display:flex;gap:7px;margin-bottom:13px;flex-wrap:wrap;">
+                    <button id="cfgBtnAgora" onclick="cfgPickNow()" style="flex:1;min-width:70px;padding:11px 6px;border-radius:11px;border:1.5px solid rgba(96,165,250,0.5);background:linear-gradient(135deg,#60a5fa,#3b82f6);color:#fff;font-size:11px;font-weight:900;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;">🕐<span>Agora</span></button>
+                    <button id="cfgBtnDia"   onclick="cfgPick('dia')"   style="flex:1;min-width:70px;padding:11px 6px;border-radius:11px;border:1.5px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.03);color:#bbb;font-size:11px;font-weight:900;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;">☀️<span>Dia</span></button>
+                    <button id="cfgBtnTarde" onclick="cfgPick('tarde')" style="flex:1;min-width:70px;padding:11px 6px;border-radius:11px;border:1.5px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.03);color:#bbb;font-size:11px;font-weight:900;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;">🌅<span>Tarde</span></button>
+                    <button id="cfgBtnNoite" onclick="cfgPick('noite')" style="flex:1;min-width:70px;padding:11px 6px;border-radius:11px;border:1.5px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.03);color:#bbb;font-size:11px;font-weight:900;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;">🌙<span>Noite</span></button>
+                </div>
+
+                <!-- CARD DO PERÍODO SELECIONADO (preenchido na hora) -->
+                <div id="cfgPeriodCard" style="margin-bottom:14px;"></div>
+
+                <!-- 🎨 BALANÇO DE BRANCO — opções clicáveis -->
+                <div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.08);border-radius:13px;padding:14px;margin-bottom:13px;">
+                    <div style="font-size:12px;color:#fff;font-weight:900;margin-bottom:4px;display:flex;align-items:center;gap:7px;">🎨 Balanço de Branco (tom da cor)</div>
+                    <div style="font-size:10px;color:#7a8aa0;margin-bottom:11px;line-height:1.5;">Toque na luz do ambiente. As <strong style="color:#60a5fa;">recomendadas ⭐</strong> mudam conforme o período acima.</div>
+                    <div id="cfgWbGrid" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;"></div>
+                    <div id="cfgWbDetail" style="margin-top:10px;"></div>
+                </div>
+
+                <!-- 📸 FOTO DO MOMENTO EXATO — sempre visível e destacada -->
+                <div style="background:linear-gradient(135deg,rgba(96,165,250,0.12),rgba(59,130,246,0.04));border:1.5px solid rgba(96,165,250,0.4);border-radius:14px;padding:15px;margin-bottom:13px;">
+                    <div style="font-size:13px;color:#60a5fa;font-weight:900;margin-bottom:3px;display:flex;align-items:center;gap:7px;">📸 Foto do momento exato</div>
+                    <div style="font-size:10.5px;color:#7a8aa0;margin-bottom:12px;line-height:1.55;">Aponte pra cena e tire a foto (ou envie uma). O site lê a luz e te dá a <strong style="color:#60a5fa;">solução completa</strong> — config, balanço de branco e o que melhorar.</div>
+                    <div style="display:flex;gap:9px;flex-wrap:wrap;margin-bottom:11px;">
+                        <label for="cfgCamInput" style="flex:1;min-width:130px;display:flex;flex-direction:column;align-items:center;gap:7px;padding:16px 10px;cursor:pointer;border-radius:12px;border:2px solid rgba(96,165,250,0.55);background:rgba(96,165,250,0.1);transition:all .2s;">
+                            <input type="file" accept="image/*" capture="environment" id="cfgCamInput" onchange="cfgAnalyze(this)" style="display:none;">
+                            <span style="font-size:34px;line-height:1;">📸</span>
+                            <span style="font-size:12.5px;color:#60a5fa;font-weight:900;">Tirar foto agora</span>
+                            <span style="font-size:9px;color:#667;text-align:center;">abre a câmera do celular</span>
+                        </label>
+                        <label for="cfgFileInput" style="flex:1;min-width:130px;display:flex;flex-direction:column;align-items:center;gap:7px;padding:16px 10px;cursor:pointer;border-radius:12px;border:2px dashed rgba(96,165,250,0.45);background:rgba(255,255,255,0.02);transition:all .2s;">
+                            <input type="file" accept="image/*" id="cfgFileInput" onchange="cfgAnalyze(this)" style="display:none;">
+                            <span style="font-size:34px;line-height:1;">🖼️</span>
+                            <span style="font-size:12.5px;color:#60a5fa;font-weight:900;">Enviar da galeria</span>
+                            <span style="font-size:9px;color:#667;text-align:center;">escolha uma foto salva</span>
+                        </label>
+                    </div>
+                    <div id="cfgPreviewWrap" style="display:none;position:relative;">
+                        <img id="cfgPreviewImg" src="" alt="cena" style="width:100%;border-radius:10px;max-height:220px;object-fit:cover;display:block;">
+                        <button onclick="cfgClear()" style="position:absolute;top:7px;right:7px;width:28px;height:28px;background:rgba(0,0,0,0.8);border:2px solid rgba(255,255,255,0.3);border-radius:50%;color:#fff;font-size:14px;font-weight:900;cursor:pointer;line-height:1;">✕</button>
+                    </div>
+                    <div id="cfgResult" style="display:none;margin-top:12px;"></div>
+                </div>
+
+                <!-- cola de bolso: dia / tarde / noite -->
+                <div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.07);border-radius:13px;padding:14px;">
+                    <div style="font-size:12px;color:#fff;font-weight:900;margin-bottom:11px;display:flex;align-items:center;gap:7px;">🗒️ Resumo rápido — corrida na Alexandrino</div>
+                    <div id="cfgCheatSheet" style="display:flex;flex-direction:column;gap:9px;"></div>
+                </div>
+            </div>
+
             <div id="presetsOnMainContent">
             <!-- Roubar Preset Content -->
             <div style="background:linear-gradient(135deg,rgba(167,139,250,0.08),rgba(108,99,255,0.04));border:1.5px solid rgba(167,139,250,0.2);border-radius:14px;padding:16px;margin-bottom:14px;">
