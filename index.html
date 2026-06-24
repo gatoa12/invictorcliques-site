@@ -5615,7 +5615,7 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v256.0001</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v259.0001</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -5852,6 +5852,27 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                             <button id="btnRefreshFocoNow" onclick="refreshFocoAgora()" style="background:linear-gradient(135deg,#51CF66,#2FBF4F);color:#000;border:none;border-radius:10px;padding:11px 18px;font-weight:900;cursor:pointer;font-size:12px;white-space:nowrap;flex-shrink:0;box-shadow:0 4px 12px rgba(81,207,102,0.3);">🔄 Atualizar agora</button>
                         </div>
                         <div id="refreshFocoStatus" style="font-size:11px;color:#8a9;margin-top:9px;display:none;"></div>
+                    </div>
+
+                    <!-- ⏪ CONTROLE DO TBT (v257) -->
+                    <div style="background:linear-gradient(135deg,rgba(255,215,0,0.08),rgba(255,106,0,0.03));border:1.5px solid rgba(255,215,0,0.3);border-radius:14px;padding:15px 16px;margin-bottom:16px;">
+                        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;">
+                            <div style="flex:1;min-width:160px;">
+                                <div style="font-weight:900;color:#FFD24D;font-size:13px;margin-bottom:2px;">⏪ TBT — Reviva seus treinos</div>
+                                <div style="font-size:10.5px;color:#a99;line-height:1.5;">A faixa de fotos que aparece acima do catálogo e leva o atleta direto pras fotos.</div>
+                            </div>
+                            <button id="tbtToggleBtn" onclick="toggleTbt()" style="flex-shrink:0;border:none;border-radius:22px;padding:9px 16px;font-weight:900;font-size:12px;cursor:pointer;white-space:nowrap;">⏳</button>
+                        </div>
+                        <div id="tbtModeRow" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;">
+                            <button onclick="setTbtMode('aleatorio')" class="tbtModeBtn" data-m="aleatorio" style="flex:1;min-width:72px;padding:8px 4px;border-radius:9px;font-size:10px;font-weight:800;cursor:pointer;border:1.5px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.03);color:#bbb;">🔀 Aleatório</button>
+                            <button onclick="setTbtMode('recentes')" class="tbtModeBtn" data-m="recentes" style="flex:1;min-width:72px;padding:8px 4px;border-radius:9px;font-size:10px;font-weight:800;cursor:pointer;border:1.5px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.03);color:#bbb;">🆕 Recentes</button>
+                            <button onclick="setTbtMode('antigos')" class="tbtModeBtn" data-m="antigos" style="flex:1;min-width:72px;padding:8px 4px;border-radius:9px;font-size:10px;font-weight:800;cursor:pointer;border:1.5px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.03);color:#bbb;">⏳ Antigos</button>
+                            <button onclick="setTbtMode('manual')" class="tbtModeBtn" data-m="manual" style="flex:1;min-width:72px;padding:8px 4px;border-radius:9px;font-size:10px;font-weight:800;cursor:pointer;border:1.5px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.03);color:#bbb;">✅ Escolher</button>
+                        </div>
+                        <div id="tbtPickerWrap" style="display:none;">
+                            <div style="font-size:10px;color:#a99;margin-bottom:7px;">Marque as fotos que vão aparecer no TBT:</div>
+                            <div id="tbtPicker" style="display:flex;flex-direction:column;gap:6px;max-height:240px;overflow-y:auto;"></div>
+                        </div>
                     </div>
 
                     <!-- FOCO RADICAL — Enhanced sync panel -->
@@ -9956,7 +9977,7 @@ Poderia me ajudar? 🙏"
             if(typeof forcePublishAll==='function') forcePublishAll();
         }
         // PRESETS ON — funções globais
-        const _PON_PWD='0007'; let _ponUnlocked=false;
+        const _PON_PWD='PATATI12'; let _ponUnlocked=false;
                 // ═══════════════════════════════════════════════════════════════
         //  BANCO DE PRESETS — Sistema completo de captura e gerenciamento
         // ═══════════════════════════════════════════════════════════════
@@ -11781,11 +11802,10 @@ Poderia me ajudar? 🙏"
                 }
             } catch(e) {}
 
-            // ══ JSONBin = PRIORIDADE — grava em TODAS as contas (F1+F2+F3) ══
-            // Escreve o MESMO pacote nas 3 contas EM PARALELO e ESPERA o resultado.
-            // Assim as contas NUNCA divergem — qualquer visitante, lendo qualquer
-            // conta, recebe exatamente a mesma versão (fim da divergência entre abas).
-            if (JSONBIN_BIN_ID && JSONBIN_API_KEY) {
+            // ══ JSONBin = RESERVA — só grava se o KV (cofre próprio) falhar ══
+            // Antes gravava sempre e estourava a cota ("JSON esgotando/falhando").
+            // Agora, com o KV como padrão, o JSONBin só entra se o KV não funcionar.
+            if (!kvOk && JSONBIN_BIN_ID && JSONBIN_API_KEY) {
                 let dataToSend = data;
                 const payload = JSON.stringify(data);
                 const sizeKB = Math.round(payload.length / 1024);
@@ -11834,10 +11854,8 @@ Poderia me ajudar? 🙏"
                 _updateSyncIndicator();
             }
 
-            // ── Gist = REDE DE SEGURANÇA (grava SEMPRE, mesmo timestamp) ──
-            // Mantém o Gist em paridade com o JSON para o newest-wins do visitante
-            // funcionar mesmo se a gravação no JSON falhar em algum visitante/host.
-            if (_gistId) {
+            // ── Gist = REDE DE SEGURANÇA — só se o KV falhar ──
+            if (!kvOk && _gistId) {
                 gistOk = await _gistSet(data);
                 if (gistOk && !jsonbinOk) {
                     _syncState.working = true;
@@ -11848,8 +11866,8 @@ Poderia me ajudar? 🙏"
                 }
             }
 
-            // ── Firebase (backup adicional, se configurado) ──
-            firebaseOk = await _firebaseSet(data);
+            // ── Firebase (backup adicional) — só se o KV falhar ──
+            if (!kvOk) firebaseOk = await _firebaseSet(data);
             if (firebaseOk && !jsonbinOk && !gistOk) {
                 _syncState.working = true;
                 _updateSyncIndicator();
@@ -12750,7 +12768,7 @@ Poderia me ajudar? 🙏"
             //    sincronizam pra TODOS os visitantes e entre aparelhos do admin
             ['notify_topic','chat_db_url','chat_sb_url','chat_sb_key','chat_sb_table','chat_pantry',
              'invPalette','siteThemeColors','invictorStravaDefaultColor','catalog_layout','invictorEdicaoCodes','invictorMarketplaces',
-             'foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','foco_survey_visible','statsBar_visible','foco_steps_pos','foco_survey_pos','foco_price_pos','siteLandingTab','verif_steps','ai_pages'].forEach(function(k){
+             'foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','foco_survey_visible','statsBar_visible','foco_steps_pos','foco_survey_pos','foco_price_pos','siteLandingTab','verif_steps','ai_pages','tbt_enabled','tbt_mode','tbt_picks'].forEach(function(k){
                 try { var v = localStorage.getItem(k); if (v != null) payload[k] = v; } catch(e) {}
             });
 
@@ -12968,7 +12986,7 @@ Poderia me ajudar? 🙏"
                 'invictorEdicaoEmails', 'invictorEdicaoAtivos',
                 // === Configs novas: chat ao vivo / ntfy / paleta / conteúdo / IA ===
                 'notify_topic','chat_db_url','chat_sb_url','chat_sb_key','chat_sb_table','chat_pantry',
-                'invPalette','siteThemeColors','invictorStravaDefaultColor','catalog_layout','invictorEdicaoCodes','invictorMarketplaces','foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','foco_survey_visible','statsBar_visible','foco_steps_pos','foco_survey_pos','foco_price_pos','siteLandingTab','verif_steps','ai_pages',
+                'invPalette','siteThemeColors','invictorStravaDefaultColor','catalog_layout','invictorEdicaoCodes','invictorMarketplaces','foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','foco_survey_visible','statsBar_visible','foco_steps_pos','foco_survey_pos','foco_price_pos','siteLandingTab','verif_steps','ai_pages','tbt_enabled','tbt_mode','tbt_picks',
                 // === Last update marker ===
                 '_lastUpdate'
             ];
@@ -13257,6 +13275,7 @@ Poderia me ajudar? 🙏"
 
             // 3. Callbacks por aba
             if(tabIndex===0)  { setTimeout(function(){ if(typeof promoCfgLoadToPanel==='function') promoCfgLoadToPanel(); if(typeof renderSiteOverview==='function') renderSiteOverview(); }, 80); }
+            if(tabIndex===1)  { setTimeout(function(){ if(typeof renderTbtAdmin==='function') renderTbtAdmin(); }, 60); }
             if(tabIndex===7) { _catVisPending={foco:null,banlek:null}; loadCatalogVisibilityFromStorage(); }
             if(tabIndex===9) { loadThemeColorsIntoPanel(); setTimeout(function(){ if(typeof invPaletteRender==='function') invPaletteRender(); }, 40); }
             if(tabIndex===10) { renderBotoesAdmin(); if(typeof renderSeccoesAdmin==='function') renderSeccoesAdmin(); if(typeof syncLandingTabSelect==='function') syncLandingTabSelect(); if(typeof renderVerifStepsAdmin==='function') renderVerifStepsAdmin(); }
@@ -14554,31 +14573,47 @@ Poderia me ajudar? 🙏"
                 +'<div style="flex:1;min-width:0;"><div style="font-size:12px;font-weight:900;color:#51CF66;">Catálogo atualizado automaticamente</div>'
                 +'<div style="font-size:10px;color:#7faf8f;line-height:1.4;">'+(_agoTxt?('Última atualização <strong>'+_agoTxt+'</strong> · '):'')+'novos treinos entram sozinhos 🎯</div></div></div>';
 
-            // ── 📸 TBT — fotos que atraem, direcionam pro Foco Radical ──
-            var _comBanner = visiveis.filter(function(e){ return e.banner; });
+            // ── 📸 TBT — fotos que atraem (com liga/desliga + modos) ──
+            var _tbtOn = true, _tbtMode = 'aleatorio', _tbtPicks = [];
+            try { _tbtOn = localStorage.getItem('tbt_enabled') !== 'false'; } catch(e){}
+            try { _tbtMode = localStorage.getItem('tbt_mode') || 'aleatorio'; } catch(e){}
+            try { _tbtPicks = JSON.parse(localStorage.getItem('tbt_picks') || '[]') || []; } catch(e){ _tbtPicks=[]; }
             var tbtHtml = '';
-            if(_comBanner.length >= 3){
-                var _tbtPick = _comBanner.slice();
-                for(var _i=_tbtPick.length-1;_i>0;_i--){ var _j=Math.floor(Math.random()*(_i+1)); var _t=_tbtPick[_i]; _tbtPick[_i]=_tbtPick[_j]; _tbtPick[_j]=_t; }
-                _tbtPick = _tbtPick.slice(0,6);
-                tbtHtml = '<div style="margin-bottom:18px;">'
-                    +'<div style="display:flex;align-items:center;gap:7px;margin-bottom:10px;flex-wrap:wrap;">'
-                    +'<span style="font-size:18px;">📸</span>'
-                    +'<span style="font-size:14px;font-weight:900;color:#fff;letter-spacing:.3px;">TBT — Reviva seus treinos</span>'
-                    +'<span style="font-size:9.5px;color:#FFD24D;background:rgba(255,215,0,0.12);border:1px solid rgba(255,215,0,0.25);padding:2px 9px;border-radius:20px;font-weight:800;">toque e ache suas fotos ✨</span></div>'
-                    +'<div style="display:flex;gap:11px;overflow-x:auto;padding:2px 2px 8px;-webkit-overflow-scrolling:touch;scrollbar-width:none;">'
-                    + _tbtPick.map(function(e){
-                        var _u=(e.url||'').replace(/'/g,"\\'");
-                        return '<div onclick="window.open(\''+_u+'\',\'_blank\')" style="flex-shrink:0;width:142px;cursor:pointer;border-radius:13px;overflow:hidden;position:relative;box-shadow:0 5px 16px rgba(0,0,0,0.5);transition:transform .25s,box-shadow .25s;" onmouseover="this.style.transform=\'translateY(-4px)\';this.style.boxShadow=\'0 10px 24px rgba(255,106,0,0.35)\'" onmouseout="this.style.transform=\'\';this.style.boxShadow=\'0 5px 16px rgba(0,0,0,0.5)\'">'
-                          +'<img src="'+e.banner+'" loading="lazy" style="width:142px;height:178px;object-fit:cover;display:block;">'
-                          +'<div style="position:absolute;inset:0;background:linear-gradient(180deg,transparent 38%,rgba(0,0,0,0.85));"></div>'
-                          +'<div style="position:absolute;top:8px;left:8px;background:rgba(0,0,0,0.55);backdrop-filter:blur(4px);border:1px solid rgba(255,215,0,0.4);color:#FFD24D;font-size:8.5px;font-weight:900;padding:3px 8px;border-radius:20px;">⏪ TBT</div>'
-                          +'<div style="position:absolute;bottom:0;left:0;right:0;padding:10px 10px 11px;">'
-                          +'<div style="font-size:9.5px;color:#FFD24D;font-weight:900;margin-bottom:2px;">'+(e.date||'')+(e.periodo?(' · '+e.periodo):'')+'</div>'
-                          +'<div style="font-size:11px;color:#fff;font-weight:900;line-height:1.15;display:flex;align-items:center;gap:4px;">Ver minhas fotos <span style="color:#FF8A3D;">→</span></div>'
-                          +'</div></div>';
-                      }).join('')
-                    +'</div></div>';
+            if(_tbtOn){
+                var _comBanner = visiveis.filter(function(e){ return e.banner; });
+                if(_comBanner.length < 2){ try { _comBanner = (FOCO_EVENTOS_REAIS||[]).filter(function(e){ return e.banner; }); } catch(e){} }
+                var _tbtPick = [];
+                if(_tbtMode==='manual' && _tbtPicks.length){
+                    _tbtPick = _comBanner.filter(function(e){ return _tbtPicks.indexOf(e.url)>=0; });
+                } else if(_tbtMode==='recentes'){
+                    _tbtPick = _comBanner.slice(0,8);
+                } else if(_tbtMode==='antigos'){
+                    _tbtPick = _comBanner.slice().reverse().slice(0,8);
+                } else {
+                    _tbtPick = _comBanner.slice();
+                    for(var _i=_tbtPick.length-1;_i>0;_i--){ var _j=Math.floor(Math.random()*(_i+1)); var _t=_tbtPick[_i]; _tbtPick[_i]=_tbtPick[_j]; _tbtPick[_j]=_t; }
+                    _tbtPick = _tbtPick.slice(0,6);
+                }
+                if(_tbtPick.length >= 2){
+                    tbtHtml = '<div style="margin-bottom:18px;">'
+                        +'<div style="display:flex;align-items:center;gap:7px;margin-bottom:10px;flex-wrap:wrap;">'
+                        +'<span style="font-size:18px;">📸</span>'
+                        +'<span style="font-size:14px;font-weight:900;color:#fff;letter-spacing:.3px;">TBT — Reviva seus treinos</span>'
+                        +'<span style="font-size:9.5px;color:#FFD24D;background:rgba(255,215,0,0.12);border:1px solid rgba(255,215,0,0.25);padding:2px 9px;border-radius:20px;font-weight:800;">toque e ache suas fotos ✨</span></div>'
+                        +'<div style="display:flex;gap:11px;overflow-x:auto;padding:2px 2px 8px;-webkit-overflow-scrolling:touch;scrollbar-width:none;">'
+                        + _tbtPick.map(function(e){
+                            var _u=(e.url||'').replace(/'/g,"\\'");
+                            return '<div onclick="window.open(\''+_u+'\',\'_blank\')" style="flex-shrink:0;width:142px;cursor:pointer;border-radius:13px;overflow:hidden;position:relative;box-shadow:0 5px 16px rgba(0,0,0,0.5);transition:transform .25s,box-shadow .25s;" onmouseover="this.style.transform=\'translateY(-4px)\';this.style.boxShadow=\'0 10px 24px rgba(255,106,0,0.35)\'" onmouseout="this.style.transform=\'\';this.style.boxShadow=\'0 5px 16px rgba(0,0,0,0.5)\'">'
+                              +'<img src="'+e.banner+'" loading="lazy" style="width:142px;height:178px;object-fit:cover;display:block;">'
+                              +'<div style="position:absolute;inset:0;background:linear-gradient(180deg,transparent 38%,rgba(0,0,0,0.85));"></div>'
+                              +'<div style="position:absolute;top:8px;left:8px;background:rgba(0,0,0,0.55);backdrop-filter:blur(4px);border:1px solid rgba(255,215,0,0.4);color:#FFD24D;font-size:8.5px;font-weight:900;padding:3px 8px;border-radius:20px;">⏪ TBT</div>'
+                              +'<div style="position:absolute;bottom:0;left:0;right:0;padding:10px 10px 11px;">'
+                              +'<div style="font-size:9.5px;color:#FFD24D;font-weight:900;margin-bottom:2px;">'+(e.date||'')+(e.periodo?(' · '+e.periodo):'')+'</div>'
+                              +'<div style="font-size:11px;color:#fff;font-weight:900;line-height:1.15;display:flex;align-items:center;gap:4px;">Ver minhas fotos <span style="color:#FF8A3D;">→</span></div>'
+                              +'</div></div>';
+                          }).join('')
+                        +'</div></div>';
+                }
             }
 
             if (visiveis.length === 0) {
@@ -17721,65 +17756,145 @@ Poderia me ajudar? 🙏"
             var img=new Image();
             img.onload=function(){
                 try{
-                    var W=80, H=Math.max(1,Math.round(80*img.height/img.width));
+                    var W=90, H=Math.max(1,Math.round(90*img.height/img.width));
                     var cv=document.createElement('canvas'); cv.width=W; cv.height=H;
                     var ctx=cv.getContext('2d'); ctx.drawImage(img,0,0,W,H);
                     var d=ctx.getImageData(0,0,W,H).data;
-                    var sum=0,rS=0,bS=0,n=0,lumArr=[];
-                    for(var i=0;i<d.length;i+=4){ var R=d[i],G=d[i+1],B=d[i+2]; var L=0.2126*R+0.7152*G+0.0722*B; sum+=L; rS+=R; bS+=B; lumArr.push(L); n++; }
-                    var avg=sum/n, warmth=(rS/n)-(bS/n);
+                    var sum=0,rS=0,gS=0,bS=0,n=0,lumArr=[],darkN=0,brightN=0;
+                    for(var i=0;i<d.length;i+=4){ var R=d[i],G=d[i+1],B=d[i+2]; var L=0.2126*R+0.7152*G+0.0722*B; sum+=L; rS+=R; gS+=G; bS+=B; lumArr.push(L); if(L<40)darkN++; if(L>225)brightN++; n++; }
+                    var avg=sum/n, warmth=(rS/n)-(bS/n), greenish=(gS/n)-((rS/n+bS/n)/2);
                     var vS=0; for(var k=0;k<lumArr.length;k++){ var dd=lumArr[k]-avg; vS+=dd*dd; } var std=Math.sqrt(vS/lumArr.length);
+                    var darkPct=Math.round(darkN/n*100), brightPct=Math.round(brightN/n*100);
                     URL.revokeObjectURL(url);
-                    // classifica período
-                    var key;
-                    if(avg < 55) key='noite';
-                    else if(warmth > 16 && avg < 150) key='tarde';
-                    else if(avg >= 130) key='dia';
-                    else key='tarde';
-                    // fix WB text + sugere balanço de branco pela cor real
-                    var notas=[];
-                    if(warmth > 25) notas.push('Luz bem <strong>quente/dourada</strong> — ótimo pra contraluz.');
-                    else if(warmth < -10) notas.push('Luz <strong>fria/azulada</strong> — aqueça o WB pra pele não ficar pálida.');
-                    if(std < 25) notas.push('Cena <strong>plana</strong> — procure um fundo com luz separando o atleta.');
-                    if(std > 60) notas.push('Contraste <strong>alto</strong> — exponha pelo rosto pra não estourar.');
-                    if(avg < 35) notas.push('<strong>Muito escura</strong> — abra ao máximo e suba o ISO; velocidade ≥ 1/500s.');
-                    if(avg > 210) notas.push('<strong>Muito clara</strong> — feche um pouco (f maior) ou suba a velocidade.');
+
+                    // ── DERIVA A CONFIG A PARTIR DO BRILHO REAL (8 níveis) ──
+                    var b;
+                    if(avg>=190)      b={lbl:'Sol forte · muita luz',     per:'dia',   cor:'#FDB813', ic:'☀️', iso:'100',        vel:'1/2000s', abre:'f/6.3', ev:'+'};
+                    else if(avg>=158) b={lbl:'Dia claro',                 per:'dia',   cor:'#FDB813', ic:'☀️', iso:'100–200',    vel:'1/1600s', abre:'f/5.6', ev:''};
+                    else if(avg>=128) b={lbl:'Dia ameno · meio nublado',  per:'dia',   cor:'#FBC02D', ic:'⛅', iso:'200–400',    vel:'1/1250s', abre:'f/4.5', ev:''};
+                    else if(avg>=98)  b={lbl:'Tarde · sombra clara',      per:'tarde', cor:'#FF9A3D', ic:'🌤️', iso:'400–640',    vel:'1/1000s', abre:'f/3.5', ev:''};
+                    else if(avg>=68)  b={lbl:'Fim de tarde · golden hour',per:'tarde', cor:'#FF7A1A', ic:'🌅', iso:'800–1250',   vel:'1/800s',  abre:'f/2.8', ev:''};
+                    else if(avg>=42)  b={lbl:'Entardecer · luz fraca',    per:'noite', cor:'#8A7CFF', ic:'🌆', iso:'1600–3200',  vel:'1/640s',  abre:'f/2.2', ev:'-'};
+                    else if(avg>=22)  b={lbl:'Noite · luz de postes',     per:'noite', cor:'#6C8Cff', ic:'🌙', iso:'3200–6400',  vel:'1/500s',  abre:'f/1.8', ev:'-'};
+                    else              b={lbl:'Noite muito escura',        per:'noite', cor:'#5566cc', ic:'🌑', iso:'6400–12800', vel:'1/400s',  abre:'f/1.4–1.8', ev:'--'};
+
+                    // ── BALANÇO DE BRANCO pela cor real ──
                     var wbSug;
-                    if(key==='noite') wbSug='tungst';
-                    else if(warmth > 22) wbSug='nublado';
-                    else if(warmth < -8) wbSug='sombra';
-                    else if(key==='dia') wbSug='sol';
-                    else wbSug=(CFG_WB_REC[key]||['auto'])[0];
+                    if(b.per==='noite'){ wbSug = (greenish>10) ? 'branca' : 'tungst'; }
+                    else if(warmth>30) wbSug='nublado';
+                    else if(warmth>14) wbSug=(b.per==='tarde'?'nublado':'sol');
+                    else if(warmth<-10) wbSug='sombra';
+                    else if(greenish>12) wbSug='branca';
+                    else wbSug='sol';
                     var wbObj=CFG_WB.filter(function(x){return x.k===wbSug;})[0]||CFG_WB[0];
-                    var vv=CFG_PERIODOS[key].versoes.nitida;
+
+                    // ── NOTAS específicas da foto (fiéis ao que foi medido) ──
+                    var notas=[];
+                    if(brightPct>=14) notas.push('☀️ Tem área <strong>estourando</strong> ('+brightPct+'%) — meça pelo rosto do atleta ou feche +1 ponto (f maior).');
+                    if(darkPct>=22)   notas.push('🌑 Muita <strong>sombra</strong> ('+darkPct+'%) — suba o ISO e posicione o atleta num ponto de luz.');
+                    if(warmth>28)     notas.push('🔥 Luz <strong>quente/dourada</strong> — perfeita pra contraluz; mantenha o WB Nublado pra realçar.');
+                    else if(warmth<-12) notas.push('❄️ Luz <strong>fria/azulada</strong> — use WB Sombra pra pele não ficar pálida.');
+                    if(greenish>12)   notas.push('💚 Tom <strong>esverdeado</strong> (lâmpada/quadra) — WB "Luz branca" corrige.');
+                    if(std<22)        notas.push('◽ Cena <strong>plana</strong> (pouco contraste) — busque um fundo que separe o atleta.');
+                    else if(std>62)   notas.push('◼ Contraste <strong>alto</strong> — exponha pela pele pra não perder o rosto.');
+                    if(!notas.length) notas.push('✅ Luz equilibrada — pode disparar com a config acima.');
+
                     var lvl=Math.round(avg/255*100);
-                    var c=CFG_PERIODOS[key];
-                    if(r) r.innerHTML='<div style="background:'+c.cor+'14;border:1.5px solid '+c.cor+'55;border-radius:12px;padding:13px;">'
-                        +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><span style="font-size:22px;">'+c.ic+'</span>'
-                        +'<div><div style="font-size:9.5px;color:#8a93a3;font-weight:800;text-transform:uppercase;">✅ Solução pra essa foto</div>'
-                        +'<div style="font-size:14px;color:'+c.cor+';font-weight:900;">'+c.nome+'</div></div></div>'
-                        +'<div style="height:7px;background:rgba(255,255,255,0.08);border-radius:7px;overflow:hidden;margin-bottom:4px;"><div style="height:100%;width:'+lvl+'%;background:linear-gradient(90deg,#3b4252,'+c.cor+');"></div></div>'
-                        +'<div style="display:flex;justify-content:space-between;font-size:8px;color:#667;margin-bottom:10px;"><span>escuro</span><span>luz '+lvl+'%</span><span>claro</span></div>'
-                        // config rápida direto no resultado
-                        +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:9px;">'
-                        +'<div style="background:rgba(0,0,0,0.25);border-radius:8px;padding:7px 9px;"><div style="font-size:8.5px;color:#8a93a3;font-weight:800;">📊 ISO</div><div style="font-size:12px;color:#fff;font-weight:900;">'+vv.iso+'</div></div>'
-                        +'<div style="background:rgba(0,0,0,0.25);border-radius:8px;padding:7px 9px;"><div style="font-size:8.5px;color:#8a93a3;font-weight:800;">⚡ Velocidade</div><div style="font-size:12px;color:#fff;font-weight:900;">'+vv.vel+'</div></div>'
-                        +'<div style="background:rgba(0,0,0,0.25);border-radius:8px;padding:7px 9px;"><div style="font-size:8.5px;color:#8a93a3;font-weight:800;">🔘 Abertura</div><div style="font-size:12px;color:#fff;font-weight:900;">'+vv.abre+'</div></div>'
-                        +'<div style="background:rgba(96,165,250,0.12);border:1px solid rgba(96,165,250,0.4);border-radius:8px;padding:7px 9px;"><div style="font-size:8.5px;color:#60a5fa;font-weight:800;">🎨 Bal. Branco</div><div style="font-size:11px;color:#fff;font-weight:900;">'+wbObj.ic+' '+wbObj.nome+'</div></div>'
+                    var per=CFG_PERIODOS[b.per];
+
+                    // revela com "verificação" (sensação de análise real)
+                    if(r) r.innerHTML=
+                        '<div style="background:'+b.cor+'14;border:1.5px solid '+b.cor+'66;border-radius:13px;padding:14px;">'
+                        +'<div style="display:flex;align-items:center;gap:9px;margin-bottom:10px;"><span style="font-size:24px;">'+b.ic+'</span>'
+                        +'<div style="flex:1;"><div style="font-size:9px;color:#51CF66;font-weight:900;text-transform:uppercase;letter-spacing:1px;">✅ Verificado · config ideal PRA ESTA foto</div>'
+                        +'<div style="font-size:15px;color:'+b.cor+';font-weight:900;line-height:1.1;">'+b.lbl+'</div></div></div>'
+                        // barra de luz medida
+                        +'<div style="height:8px;background:rgba(255,255,255,0.08);border-radius:8px;overflow:hidden;margin-bottom:4px;"><div style="height:100%;width:'+lvl+'%;background:linear-gradient(90deg,#3b4252,'+b.cor+');"></div></div>'
+                        +'<div style="display:flex;justify-content:space-between;font-size:8px;color:#667;margin-bottom:11px;"><span>escuro</span><span>luz medida '+lvl+'%</span><span>claro</span></div>'
+                        // GRID com a config calculada
+                        +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:10px;">'
+                        +'<div style="background:rgba(0,0,0,0.28);border-radius:9px;padding:8px 10px;"><div style="font-size:8.5px;color:#8a93a3;font-weight:800;">📊 ISO</div><div style="font-size:14px;color:#fff;font-weight:900;">'+b.iso+'</div></div>'
+                        +'<div style="background:rgba(0,0,0,0.28);border-radius:9px;padding:8px 10px;"><div style="font-size:8.5px;color:#8a93a3;font-weight:800;">⚡ Velocidade</div><div style="font-size:14px;color:#fff;font-weight:900;">'+b.vel+'</div></div>'
+                        +'<div style="background:rgba(0,0,0,0.28);border-radius:9px;padding:8px 10px;"><div style="font-size:8.5px;color:#8a93a3;font-weight:800;">🔘 Abertura</div><div style="font-size:14px;color:#fff;font-weight:900;">'+b.abre+'</div></div>'
+                        +'<div style="background:rgba(96,165,250,0.14);border:1px solid rgba(96,165,250,0.45);border-radius:9px;padding:8px 10px;"><div style="font-size:8.5px;color:#60a5fa;font-weight:800;">🎨 Bal. Branco</div><div style="font-size:11.5px;color:#fff;font-weight:900;line-height:1.1;">'+wbObj.ic+' '+wbObj.nome+'</div></div>'
                         +'</div>'
-                        +(notas.length?'<div style="font-size:10px;color:#aab;line-height:1.6;margin-bottom:9px;">'+notas.map(function(t){return '• '+t;}).join('<br>')+'</div>':'')
-                        +'<button onclick="document.getElementById(\'cfgPeriodCard\').scrollIntoView({behavior:\'smooth\',block:\'center\'});" style="width:100%;padding:10px;background:linear-gradient(135deg,'+c.cor+','+c.cor+'cc);color:#000;border:none;border-radius:9px;font-weight:900;font-size:12px;cursor:pointer;">👆 Ver config completa + versões</button>'
+                        +(b.ev?'<div style="font-size:9.5px;color:'+b.cor+';font-weight:800;margin-bottom:9px;">🎚️ Compensação de exposição sugerida: '+(b.ev.indexOf('-')>=0?('−'+b.ev.length+' (clareie no escuro)'):('+'+b.ev.length+' se o fundo enganar o medidor'))+'</div>':'')
+                        // notas fiéis
+                        +'<div style="font-size:10px;color:#cdd6e4;line-height:1.65;background:rgba(255,255,255,0.03);border-left:3px solid '+b.cor+';padding:9px 11px;border-radius:0 8px 8px 0;margin-bottom:8px;">'
+                        +notas.map(function(t){return '• '+t;}).join('<br>')+'</div>'
+                        // dados medidos (transparência = confiança)
+                        +'<div style="font-size:8.5px;color:#667;margin-bottom:10px;">📐 Medido: brilho '+Math.round(avg)+'/255 · contraste '+Math.round(std)+' · cor '+(warmth>0?'+':'')+Math.round(warmth)+' · estourado '+brightPct+'% · sombra '+darkPct+'%</div>'
+                        +'<button onclick="cfgAskAIPhoto(\''+b.per+'\','+Math.round(avg)+','+Math.round(warmth)+','+Math.round(std)+','+brightPct+','+darkPct+')" style="width:100%;padding:11px;background:linear-gradient(135deg,#60a5fa,#3b82f6);color:#fff;border:none;border-radius:10px;font-weight:900;font-size:12px;cursor:pointer;">🤖 Receber a dica TOP da IA pra esta foto</button>'
+                        +'<div id="cfgPhotoAi" style="display:none;margin-top:10px;font-size:11px;color:#cdd6e4;font-style:italic;background:rgba(96,165,250,0.07);border:1px solid rgba(96,165,250,0.2);border-radius:9px;padding:10px;line-height:1.6;"></div>'
+                        // 👁️ verdict da IA que VÊ a foto
+                        +'<div id="cfgVisionBox" style="margin-top:11px;border:1.5px solid rgba(167,139,250,0.35);border-radius:11px;background:linear-gradient(135deg,rgba(167,139,250,0.1),rgba(124,58,237,0.03));padding:12px;">'
+                        +'<div style="font-size:11px;font-weight:900;color:#a78bfa;display:flex;align-items:center;gap:6px;margin-bottom:7px;">👁️ A IA está vendo sua foto<span id="cfgVisionDots" style="color:#7c3aed;">...</span></div>'
+                        +'<div id="cfgVisionTxt" style="font-size:11px;color:#cdd6e4;line-height:1.65;">Analisando a imagem pra te dar a configuração perfeita pra esse exato momento...</div>'
+                        +'</div>'
                         +'</div>';
-                    // seleciona período E balanço de branco no topo
-                    cfgPick(key);
-                    cfgPickWb(wbSug);
+                    // sincroniza período e WB no topo
+                    cfgPick(b.per); cfgPickWb(wbSug);
+                    try{ r.scrollIntoView({behavior:'smooth',block:'nearest'}); }catch(e){}
+
+                    // 👁️ VISÃO REAL: redimensiona e manda a IA VER a foto
+                    try{
+                        var vw=640, vh=Math.max(1,Math.round(640*img.height/img.width));
+                        var vcv=document.createElement('canvas'); vcv.width=vw; vcv.height=vh;
+                        vcv.getContext('2d').drawImage(img,0,0,vw,vh);
+                        var dataUrl=vcv.toDataURL('image/jpeg',0.7);
+                        var horaNow; try{ horaNow=new Date().getHours()+'h'; }catch(e){ horaNow=''; }
+                        var vprompt='Você é fotógrafo esportivo profissional. VEJA esta foto da cena onde o Victor (@invictorcliques) vai fotografar CORREDORES na pista da Alexandrino em Natal/RN (horário atual ~'+horaNow+'). '
+                            +'Medições da foto: brilho '+Math.round(avg)+'/255, contraste '+Math.round(std)+', temperatura '+Math.round(warmth)+', '+brightPct+'% estourado, '+darkPct+'% sombra. '
+                            +'Olhando a imagem, me dê a CONFIGURAÇÃO PERFEITA pra fotografar corredores nessa luz exata. Responda EXATAMENTE neste formato curto, em português do Brasil:\n'
+                            +'📊 ISO: <valor>\n⚡ Velocidade: <valor>\n🔘 Abertura: <valor>\n🎨 Balanço de branco: <valor + kelvin>\n🎯 Modo: <Tv/Manual>\n💡 Pra melhorar: <1 frase de posicionamento/exposição específica do que você vê na foto>\n✨ Depois: aplique seu preset pra acabamento.';
+                        cfgRunVision(dataUrl, vprompt);
+                    }catch(e){ var vt=document.getElementById('cfgVisionTxt'); if(vt) vt.textContent='Não consegui preparar a imagem pra IA — mas a config acima já está calibrada pela medição.'; var vd=document.getElementById('cfgVisionDots'); if(vd) vd.textContent=''; }
                 }catch(e){
-                    if(r) r.innerHTML='<div style="color:#FF8787;font-size:11px;text-align:center;padding:12px;">Não consegui analisar. Tenta outra foto.</div>';
+                    if(r) r.innerHTML='<div style="color:#FF8787;font-size:11px;text-align:center;padding:12px;">Não consegui analisar essa imagem. Tenta outra foto.</div>';
                 }
             };
             img.onerror=function(){ if(r) r.innerHTML='<div style="color:#FF8787;font-size:11px;text-align:center;padding:12px;">Imagem inválida.</div>'; };
             img.src=url;
         };
+
+        // 👁️ Roda a visão de IA e mostra a config perfeita vista na foto
+        window.cfgRunVision = async function(dataUrl, prompt){
+            var box=document.getElementById('cfgVisionTxt'), dots=document.getElementById('cfgVisionDots');
+            var alive=true, n=0;
+            var tmr=setInterval(function(){ if(!alive){clearInterval(tmr);return;} n=(n+1)%4; if(dots) dots.textContent='.'.repeat(n); },400);
+            try{
+                var txt = (typeof invAIVision==='function') ? await invAIVision(dataUrl, prompt) : '';
+                alive=false; clearInterval(tmr); if(dots) dots.textContent='';
+                if(box){
+                    if(txt){
+                        var head=document.querySelector('#cfgVisionBox > div'); if(head) head.innerHTML='👁️ A IA viu sua foto · config perfeita';
+                        box.innerHTML = txt.replace(/\n/g,'<br>');
+                    } else {
+                        box.textContent='A IA não respondeu agora — mas a config calculada acima já está calibrada pela medição da sua foto.';
+                    }
+                }
+            }catch(e){
+                alive=false; clearInterval(tmr); if(dots) dots.textContent='';
+                var head2=document.querySelector('#cfgVisionBox > div'); if(head2) head2.innerHTML='👁️ Visão da IA indisponível agora';
+                if(box) box.textContent='Sem conexão com a IA no momento — use a config calculada acima, que foi calibrada pela medição da sua foto. Tente de novo daqui a pouco.';
+            }
+        };
+
+        // Dica TOP da IA usando os números REAIS medidos na foto
+        window.cfgAskAIPhoto = async function(per,avg,warmth,std,brightPct,darkPct){
+            var box=document.getElementById('cfgPhotoAi');
+            if(box){ box.style.display='block'; box.textContent='🤖 Analisando os números da sua foto...'; }
+            var periodo = per==='dia'?'dia':(per==='tarde'?'fim de tarde/golden hour':'noite');
+            var prompt='Você é o assistente do fotógrafo esportivo Victor (@invictorcliques), que fotografa corredores na pista da Alexandrino em Natal/RN. '
+                +'Analisei a foto que ele tirou da cena: período '+periodo+', brilho médio '+avg+'/255, contraste '+std+', temperatura de cor '+warmth+', '+brightPct+'% estourado, '+darkPct+'% de sombra. '
+                +'Com base NESSES números, dê a MELHOR orientação em 3 linhas curtas e diretas: 1) ajuste fino de exposição, 2) balanço de branco, 3) posicionamento do atleta/luz. '
+                +'Português do Brasil, tom de amigo fotógrafo, sem enrolação, seja específico pra ESSES números.';
+            try{
+                var txt = (typeof invAI==='function') ? await invAI(prompt) : '';
+                if(box) box.innerHTML = txt ? txt.replace(/\n/g,'<br>') : 'A config acima já está calibrada pra sua foto. Tenta a IA de novo daqui a pouco.';
+            }catch(e){ if(box) box.textContent='A config acima já está calibrada pra sua foto!'; }
+        };
+
 
         window.cfgAskAI = async function(key){
             var box=document.getElementById('cfgAiBox'), btn=document.getElementById('cfgAiBtn');
@@ -18627,7 +18742,7 @@ Poderia me ajudar? 🙏"
         }
 
         // ═══ PRESETS ON — Password & Navigation ═══
-        window._PRESETS_ON_PWD = '0007';
+        window._PRESETS_ON_PWD = 'PATATI12';
         window._presetsOnUnlocked = false;
 
         window.presetsOnOpen = function presetsOnOpen() {
@@ -20516,6 +20631,64 @@ Poderia me ajudar? 🙏"
                 if(st){ st.style.color='#FF8787'; st.textContent='⚠️ Sem resposta do servidor. (Publique o _worker.js novo primeiro.)'; }
             }
             if(btn){ btn.disabled=false; btn.style.opacity='1'; }
+        };
+
+        // ══ ⏪ CONTROLE DO TBT (admin) ══
+        function _tbtGet(k,def){ try{ var v=localStorage.getItem(k); return v==null?def:v; }catch(e){ return def; } }
+        function _tbtSaveSync(){
+            try{ if(typeof renderTodosEventos==='function') renderTodosEventos(); }catch(e){}
+            try{ if(typeof saveData==='function') saveData(false); }catch(e){}
+        }
+        window.renderTbtAdmin = function(){
+            var on = _tbtGet('tbt_enabled','true')!=='false';
+            var mode = _tbtGet('tbt_mode','aleatorio');
+            var btn=document.getElementById('tbtToggleBtn');
+            if(btn){
+                btn.textContent = on ? '🟢 LIGADO' : '⚪ Desligado';
+                btn.style.background = on ? 'linear-gradient(135deg,#51CF66,#2FBF4F)' : 'rgba(255,255,255,0.08)';
+                btn.style.color = on ? '#000' : '#888';
+            }
+            document.querySelectorAll('.tbtModeBtn').forEach(function(b){
+                var act=(b.getAttribute('data-m')===mode);
+                b.style.background = act ? 'linear-gradient(135deg,#FFD24D,#FF9A00)' : 'rgba(255,255,255,0.03)';
+                b.style.color = act ? '#000' : '#bbb';
+                b.style.borderColor = act ? '#FFD24D' : 'rgba(255,255,255,0.12)';
+            });
+            var pw=document.getElementById('tbtPickerWrap');
+            if(pw) pw.style.display = (mode==='manual') ? 'block' : 'none';
+            if(mode==='manual') renderTbtPicker();
+        };
+        window.toggleTbt = function(){
+            var on = _tbtGet('tbt_enabled','true')!=='false';
+            try{ localStorage.setItem('tbt_enabled', on?'false':'true'); }catch(e){}
+            renderTbtAdmin(); _tbtSaveSync();
+            if(typeof showToast==='function') showToast(on?'TBT desligado':'TBT ligado ✨','⏪');
+        };
+        window.setTbtMode = function(m){
+            try{ localStorage.setItem('tbt_mode', m); }catch(e){}
+            renderTbtAdmin(); _tbtSaveSync();
+        };
+        function renderTbtPicker(){
+            var box=document.getElementById('tbtPicker'); if(!box) return;
+            var picks=[]; try{ picks=JSON.parse(localStorage.getItem('tbt_picks')||'[]')||[]; }catch(e){}
+            var evs=[]; try{ evs=(FOCO_EVENTOS_REAIS||[]).filter(function(e){return e.banner;}); }catch(e){}
+            if(!evs.length){ box.innerHTML='<div style="font-size:10px;color:#777;">Nenhuma foto com capa pra escolher.</div>'; return; }
+            box.innerHTML = evs.map(function(e){
+                var on = picks.indexOf(e.url)>=0;
+                var u=(e.url||'').replace(/'/g,"\\'");
+                return '<div onclick="toggleTbtPick(\''+u+'\')" style="display:flex;align-items:center;gap:9px;padding:6px 8px;border-radius:9px;cursor:pointer;border:1px solid '+(on?'rgba(255,215,0,0.5)':'rgba(255,255,255,0.07)')+';background:'+(on?'rgba(255,215,0,0.08)':'rgba(0,0,0,0.15)')+';">'
+                  +'<div style="width:20px;height:20px;border-radius:6px;flex-shrink:0;border:2px solid '+(on?'#FFD24D':'rgba(255,255,255,0.25)')+';background:'+(on?'#FFD24D':'transparent')+';display:flex;align-items:center;justify-content:center;font-size:11px;color:#000;font-weight:900;">'+(on?'✓':'')+'</div>'
+                  +'<img src="'+e.banner+'" loading="lazy" style="width:34px;height:34px;border-radius:6px;object-fit:cover;flex-shrink:0;">'
+                  +'<div style="flex:1;min-width:0;"><div style="font-size:10.5px;color:#fff;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+(e.title||'Treino')+'</div>'
+                  +'<div style="font-size:9px;color:#999;">'+(e.date||'')+(e.periodo?(' · '+e.periodo):'')+'</div></div></div>';
+            }).join('');
+        }
+        window.toggleTbtPick = function(url){
+            var picks=[]; try{ picks=JSON.parse(localStorage.getItem('tbt_picks')||'[]')||[]; }catch(e){}
+            var i=picks.indexOf(url);
+            if(i>=0) picks.splice(i,1); else picks.push(url);
+            try{ localStorage.setItem('tbt_picks', JSON.stringify(picks)); }catch(e){}
+            renderTbtPicker(); _tbtSaveSync();
         };
 
         async function atualizarEventosFocoRadical() {
@@ -24528,6 +24701,44 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
       throw new Error('IA indisponível');
     }
     window.invAI=invAI;
+
+    // 👁️ invAIVision — a IA REALMENTE VÊ a foto (Pollinations vision, grátis, sem chave)
+    window.invAIVision = async function(dataUrl, prompt){
+        // 1) Pollinations OpenAI-compatible (vê imagem)
+        try{
+            var body={ model:'openai', private:true, max_tokens:600, messages:[
+                { role:'user', content:[
+                    { type:'text', text: prompt },
+                    { type:'image_url', image_url:{ url: dataUrl } }
+                ]}
+            ]};
+            var r=await fetch('https://text.pollinations.ai/openai',{ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
+            if(r.ok){
+                var j=await r.json();
+                var txt=(j&&j.choices&&j.choices[0]&&j.choices[0].message&&j.choices[0].message.content)||'';
+                if(typeof txt!=='string') txt='';
+                txt=txt.trim();
+                if(txt.length>3 && txt.charAt(0)!=='<' && !/rate limit|too many/i.test(txt.slice(0,40))) return txt;
+            }
+        }catch(e){}
+        // 2) Anthropic (preview/proxy) — também enxerga imagem
+        try{
+            var m=String(dataUrl).match(/^data:(image\/\w+);base64,(.+)$/);
+            if(m){
+                var body2={ model:'claude-sonnet-4-20250514', max_tokens:600, messages:[
+                    { role:'user', content:[
+                        { type:'image', source:{ type:'base64', media_type:m[1], data:m[2] } },
+                        { type:'text', text: prompt }
+                    ]}
+                ]};
+                var url='https://api.anthropic.com/v1/messages';
+                try{ var p=localStorage.getItem('aiProxyUrl'); if(p) url=p; }catch(e){}
+                var resp=await fetch(url,{ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body2) });
+                if(resp.ok){ var data=await resp.json(); var t=((data.content)||[]).filter(function(b){return b.type==='text';}).map(function(b){return b.text;}).join('\n').trim(); if(t) return t; }
+            }
+        }catch(e){}
+        throw new Error('Visão IA indisponível');
+    };
     var invAIHist={};
     // ════════ CHAT AO VIVO (mão dupla) — 2 modos grátis: Firebase OU ntfy (sem conta) ════════
     function chatDbUrl(){ try{ return (localStorage.getItem('chat_db_url')||'').replace(/\/+$/,''); }catch(e){ return ''; } }
