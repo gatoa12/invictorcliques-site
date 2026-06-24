@@ -8,5 +8,8 @@
   "assets": { "directory": ".", "binding": "ASSETS" },
   "kv_namespaces": [
     { "binding": "INV_KV", "id": "38799b52b2a24050b43b1cda8b2b6297" }
-  ]
+  ],
+  "triggers": {
+    "crons": ["0 */3 * * *"]
+  }
 }

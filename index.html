@@ -5614,7 +5614,7 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v250.0001</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v252.0001</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -5840,6 +5840,18 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
 
                 <!-- TAB 1: EVENTOS -->
                 <div class="admin-section" id="adminTab1">
+
+                    <!-- ⚡ ATUALIZAÇÃO AUTOMÁTICA (v251) -->
+                    <div style="background:linear-gradient(135deg,rgba(81,207,102,0.1),rgba(81,207,102,0.03));border:1.5px solid rgba(81,207,102,0.35);border-radius:14px;padding:15px 18px;margin-bottom:16px;">
+                        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+                            <div style="flex:1;min-width:180px;">
+                                <div style="font-weight:900;color:#51CF66;font-size:13px;margin-bottom:3px;">🤖 Atualização automática LIGADA</div>
+                                <div style="font-size:10.5px;color:#8a9;line-height:1.5;">O site busca os eventos novos do Foco Radical sozinho, a cada 3 horas. Você não precisa fazer nada. Se quiser forçar agora, é só tocar no botão.</div>
+                            </div>
+                            <button id="btnRefreshFocoNow" onclick="refreshFocoAgora()" style="background:linear-gradient(135deg,#51CF66,#2FBF4F);color:#000;border:none;border-radius:10px;padding:11px 18px;font-weight:900;cursor:pointer;font-size:12px;white-space:nowrap;flex-shrink:0;box-shadow:0 4px 12px rgba(81,207,102,0.3);">🔄 Atualizar agora</button>
+                        </div>
+                        <div id="refreshFocoStatus" style="font-size:11px;color:#8a9;margin-top:9px;display:none;"></div>
+                    </div>
 
                     <!-- FOCO RADICAL — Enhanced sync panel -->
                     <div style="background:linear-gradient(135deg,rgba(255,215,0,0.08),rgba(255,215,0,0.03));border:1.5px solid rgba(255,215,0,0.3);border-radius:14px;padding:16px 18px;margin-bottom:16px;">
@@ -14279,15 +14291,15 @@ Poderia me ajudar? 🙏"
             {"title":"TREINO ALEXANDRINO NOITE DE TERÇA - TODOS FOTÓGRAFOS","subtitle":"Noite","date":"26/05/2026","dia":"Ter","periodo":"Noite","url":"https://invictorcliques.focoradical.com.br/prova/20260526-treino-alexandrino-noite-de-terca-todos-fotografos-18535","banner":"https://cdn.focoradical.com.br/newfoco/banners/20260526202454AZ27494.jpg"}
         ];
         // Cópia fixa dos eventos atuais (v241) — usada pelo seed único pra publicar na nuvem
-        window.__FOCO_SEED_V241 = FOCO_EVENTOS_REAIS.map(function(e){ return Object.assign({}, e); });
+        window.__FOCO_SEED_V251 = FOCO_EVENTOS_REAIS.map(function(e){ return Object.assign({}, e); });
         // ── SEED ÚNICO v241: publica os eventos atuais na nuvem 1x (só no aparelho admin) ──
-        (function _focoSeedV241(){
+        (function _focoSeedV251(){
             try{
-                if(localStorage.getItem('focoSeed_v241')) return;                       // já rodou
+                if(localStorage.getItem('focoSeed_v251')) return;                       // já rodou
                 if(!(typeof _kvAdminKey==='function' && _kvAdminKey())) return;          // só admin (tem a chave)
                 setTimeout(async function(){
                     try{
-                        var seed = window.__FOCO_SEED_V241;
+                        var seed = window.__FOCO_SEED_V251;
                         if(!seed || !seed.length) return;
                         // Restaura a lista pros eventos novos (caso o sync da nuvem tenha trazido os antigos)
                         FOCO_EVENTOS_REAIS.length = 0;
@@ -14299,7 +14311,7 @@ Poderia me ajudar? 🙏"
                         if(typeof sharedSetKeys === 'function'){
                             var ok = await sharedSetKeys({'focoEventosReais':json,'focoEventosReais_v46':json,'focoEventosReais_rev':Date.now().toString(),'_lastUpdate':Date.now().toString()});
                             if(ok){
-                                localStorage.setItem('focoSeed_v241','1');
+                                localStorage.setItem('focoSeed_v251','1');
                                 if(typeof renderTodosEventos === 'function') renderTodosEventos();
                                 if(typeof focoAdminShowList === 'function') focoAdminShowList();
                                 if(typeof _updateFocoCountBadge === 'function') _updateFocoCountBadge();
@@ -20157,6 +20169,34 @@ Poderia me ajudar? 🙏"
             const el = document.getElementById('focoCountBadge');
             if (el) el.textContent = FOCO_EVENTOS_REAIS.length;
         }
+
+        // ── Atualização automática: dispara o Worker pra buscar o portal agora ──
+        window.refreshFocoAgora = async function(){
+            var btn=document.getElementById('btnRefreshFocoNow');
+            var st=document.getElementById('refreshFocoStatus');
+            if(st){ st.style.display='block'; st.style.color='#8a9'; st.textContent='⟳ Buscando eventos novos no Foco Radical...'; }
+            if(btn){ btn.disabled=true; btn.style.opacity='0.6'; }
+            try{
+                var r=await fetch('/api/refresh-foco?_='+Date.now(),{headers:{'Accept':'application/json'}});
+                var j=await r.json().catch(function(){return {};});
+                if(j && j.ok){
+                    if(st){ st.style.color='#51CF66'; st.textContent='✅ Atualizado! '+(j.total||0)+' eventos na nuvem. Recarregando...'; }
+                    if(typeof showToast==='function') showToast('Eventos atualizados! 🎉','🤖');
+                    // puxa os dados frescos da nuvem e re-renderiza
+                    setTimeout(async function(){
+                        try{ if(typeof tryLiveFocoUpdate==='function') await tryLiveFocoUpdate(); }catch(e){}
+                        try{ if(typeof renderTodosEventos==='function') renderTodosEventos(); }catch(e){}
+                        try{ if(typeof _updateFocoCountBadge==='function') _updateFocoCountBadge(); }catch(e){}
+                        if(st) st.textContent='✅ Pronto! '+(j.total||0)+' eventos. Tudo no ar.';
+                    }, 1200);
+                } else {
+                    if(st){ st.style.color='#FF8787'; st.textContent='⚠️ Não consegui agora ('+((j&&j.reason)||'erro')+'). O automático tenta de novo sozinho.'; }
+                }
+            }catch(e){
+                if(st){ st.style.color='#FF8787'; st.textContent='⚠️ Sem resposta do servidor. (Publique o _worker.js novo primeiro.)'; }
+            }
+            if(btn){ btn.disabled=false; btn.style.opacity='1'; }
+        };
 
         async function atualizarEventosFocoRadical() {
             const btn    = document.getElementById('btnAtualizarFoco');

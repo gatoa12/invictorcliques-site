@@ -1,20 +1,31 @@
 // Cloudflare Worker — entrada principal do site invictorcliques
 // Serve o site (arquivos estáticos) e responde às rotas /api/*.
 // À prova de falha: se qualquer /api/ der erro, o site continua no ar.
+//
+// ✨ NOVO (v251): atualização AUTOMÁTICA dos eventos do Foco Radical.
+//   - scheduled(): roda sozinho no horário do cron (ver wrangler.jsonc),
+//     busca o portal, lê os eventos e grava na nuvem (KV) — sem ninguém fazer nada.
+//   - /api/refresh-foco: dispara a mesma atualização na hora (botão do admin).
 
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
     const path = url.pathname;
     try {
-      if (path === "/api/data")        return await handleData(request, env);
-      if (path === "/api/gist")        return await handleGist(request, env);
-      if (path === "/api/marketplace") return await handleMarketplace(request, env);
+      if (path === "/api/data")         return await handleData(request, env);
+      if (path === "/api/gist")         return await handleGist(request, env);
+      if (path === "/api/marketplace")  return await handleMarketplace(request, env);
+      if (path === "/api/refresh-foco") return await handleRefreshFoco(request, env);
     } catch (e) {
       return json({ error: String((e && e.message) || e) }, 500);
     }
     // Qualquer outra coisa = arquivos estáticos do site
     return env.ASSETS.fetch(request);
+  },
+
+  // ⏰ Roda automaticamente no horário definido no cron (wrangler.jsonc).
+  async scheduled(event, env, ctx) {
+    ctx.waitUntil(updateFocoFromPortal(env).catch(() => {}));
   },
 };
 
@@ -44,6 +55,93 @@ async function handleData(request, env) {
     return json({ ok: true, savedAt: Date.now() });
   }
   return json({ error: "method_not_allowed" }, 405);
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  ATUALIZAÇÃO AUTOMÁTICA DOS EVENTOS DO FOCO RADICAL
+// ══════════════════════════════════════════════════════════════════
+const FOCO_PORTAL = "https://invictorcliques.focoradical.com.br/";
+
+// Converte os eventos do portal pro formato do site
+function _focoMapEvents(comps) {
+  const dias = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
+  return (comps || []).map((c) => {
+    const parts = String(c.date || "").split("-").map(Number);
+    const y = parts[0], mo = parts[1], d = parts[2];
+    const dateBR = String(d).padStart(2, "0") + "/" + String(mo).padStart(2, "0") + "/" + y;
+    let dia = "";
+    try { dia = dias[new Date(y, mo - 1, d).getDay()]; } catch (e) {}
+    let hour = 20;
+    try { hour = parseInt(String(c.launch_date).split(" ")[1].split(":")[0], 10); } catch (e) {}
+    const name = String(c.name || "");
+    let periodo = "Noite";
+    if (/MANH/i.test(name)) periodo = "Manhã";
+    else if (/TREIN[ÃA]O/i.test(name)) periodo = "Treinão";
+    else if (/TARDE\/NOITE/i.test(name)) periodo = "Tarde/Noite";
+    else if (hour < 12) periodo = "Manhã";
+    else if (hour < 18) periodo = "Tarde/Noite";
+    const img = c.coverPhotoOrIcon && c.coverPhotoOrIcon.image;
+    const banner = (img && img.indexOf("/banners/") >= 0) ? img : null;
+    return {
+      title: name,
+      subtitle: periodo,
+      date: dateBR,
+      dia: dia,
+      periodo: periodo,
+      url: "https://invictorcliques.focoradical.com.br/prova/" + c.path,
+      banner: banner,
+    };
+  });
+}
+
+function _parseBR(s) {
+  const p = String(s || "").split("/");
+  return p.length === 3 ? new Date(+p[2], +p[1] - 1, +p[0]).getTime() : 0;
+}
+
+// Busca o portal, lê os eventos e grava na nuvem (mesclando com os que já existem)
+async function updateFocoFromPortal(env) {
+  const res = await fetch(FOCO_PORTAL, {
+    headers: { "User-Agent": "Mozilla/5.0 (compatible; invictorcliques-bot)" },
+    cf: { cacheTtl: 0 },
+  });
+  if (!res.ok) return { ok: false, reason: "portal HTTP " + res.status };
+  const html = await res.text();
+  const m = html.match(/<script id="dto"[^>]*>([\s\S]*?)<\/script>/);
+  if (!m) return { ok: false, reason: "dto não encontrado" };
+  let dto;
+  try { dto = JSON.parse(m[1]); } catch (e) { return { ok: false, reason: "json inválido" }; }
+  const comps = (dto && dto.pageData && dto.pageData.competitions) || [];
+  if (!comps.length) return { ok: false, reason: "sem eventos" };
+  const novos = _focoMapEvents(comps);
+
+  // lê o blob atual da nuvem
+  const KEY = "site_data";
+  let blob = {};
+  try { blob = JSON.parse((await env.INV_KV.get(KEY)) || "{}"); } catch (e) { blob = {}; }
+  let existentes = [];
+  try { existentes = JSON.parse(blob.focoEventosReais || "[]"); } catch (e) { existentes = []; }
+
+  // mescla por URL (novos têm prioridade), remove duplicados
+  const byUrl = {};
+  novos.concat(existentes).forEach((e) => { if (e && e.url && !byUrl[e.url]) byUrl[e.url] = e; });
+  let merged = Object.keys(byUrl).map((k) => byUrl[k]);
+  merged.sort((a, b) => _parseBR(b.date) - _parseBR(a.date));
+  merged = merged.slice(0, 60); // guarda no máximo 60 (os mais recentes)
+
+  const jsonStr = JSON.stringify(merged);
+  blob.focoEventosReais = jsonStr;
+  blob.focoEventosReais_v46 = jsonStr;
+  blob._lastUpdate = String(Date.now());
+  await env.INV_KV.put(KEY, JSON.stringify(blob));
+  return { ok: true, total: merged.length, novosNoPortal: novos.length };
+}
+
+// ── /api/refresh-foco — dispara a atualização na hora (botão do admin) ──
+async function handleRefreshFoco(request, env) {
+  if (request.method === "OPTIONS") return new Response(null, { headers: CORS });
+  const result = await updateFocoFromPortal(env);
+  return json(result, result.ok ? 200 : 502);
 }
 
 // ── /api/gist — proxy do GitHub Gist ──────────────────────────────
