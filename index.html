@@ -5621,7 +5621,7 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v272.0001</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v275.0001</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -6668,6 +6668,26 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                             <label style="font-size:9px;color:#777;font-weight:800;text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px;">💚 Grupo de ofertas WhatsApp (opcional)</label>
                             <input id="iaWhatsOfertas" placeholder="https://chat.whatsapp.com/..." style="width:100%;margin-bottom:11px;padding:9px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.12);border-radius:9px;color:#fff;font-size:12px;outline:none;box-sizing:border-box;">
                             <button onclick="iaOfertaLinksSave()" style="width:100%;padding:11px;background:linear-gradient(135deg,#00c896,#00a078);color:#fff;border:none;border-radius:10px;font-weight:900;font-size:12px;cursor:pointer;">💾 Salvar links de oferta</button>
+                        </div>
+
+                        <!-- 🛒 LOJAS: o cliente escolhe onde comprar -->
+                        <div style="margin-top:14px;border-top:1px solid rgba(255,255,255,0.1);padding-top:13px;">
+                            <div style="font-size:11.5px;font-weight:900;color:#ff8a3d;margin-bottom:3px;">🛒 Lojas pra comprar (o cliente escolhe)</div>
+                            <div style="font-size:10px;color:#8a9;margin-bottom:11px;line-height:1.5;">A IA mostra estes botões pro cliente escolher <strong>onde comprar</strong> (Shopee, Mercado Livre, Nike…). Cole <strong>SEU link de afiliado</strong> de cada loja. Dica: se o link tiver <code style="color:#ff8a3d;">{q}</code>, ele vira a busca do produto (ex: <code style="color:#ff8a3d;">...search?keyword={q}</code>).</div>
+                            <div id="iaLojasList" style="display:flex;flex-direction:column;gap:8px;margin-bottom:11px;"></div>
+                            <div style="display:flex;gap:7px;margin-bottom:8px;">
+                                <input id="iaLojaEmoji" maxlength="2" placeholder="🛒" style="width:46px;text-align:center;padding:9px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.12);border-radius:9px;color:#fff;font-size:14px;outline:none;">
+                                <input id="iaLojaNome" placeholder="Nome da loja (ex: Mercado Livre)" style="flex:1;padding:9px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.12);border-radius:9px;color:#fff;font-size:12px;outline:none;">
+                            </div>
+                            <input id="iaLojaLink" placeholder="Seu link de afiliado (pode ter {q} pra buscar)" style="width:100%;margin-bottom:9px;padding:9px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.12);border-radius:9px;color:#fff;font-size:12px;outline:none;box-sizing:border-box;">
+                            <button onclick="iaLojaAdd()" style="width:100%;padding:11px;background:linear-gradient(135deg,#ee4d2d,#ff6a3d);color:#fff;border:none;border-radius:10px;font-weight:900;font-size:12px;cursor:pointer;">➕ Adicionar loja</button>
+                        </div>
+
+                        <!-- 🎛️ Quais opções (chips) aparecem na IA -->
+                        <div style="margin-top:14px;border-top:1px solid rgba(255,255,255,0.1);padding-top:13px;">
+                            <div style="font-size:11.5px;font-weight:900;color:#a78bfa;margin-bottom:3px;">🎛️ Opções que aparecem na IA</div>
+                            <div style="font-size:10px;color:#8a9;margin-bottom:11px;line-height:1.5;">Ligue/desligue cada botão de sugestão que aparece pros clientes em cada IA. Toque pra alternar.</div>
+                            <div id="aiChipsList" style="display:flex;flex-direction:column;gap:7px;"></div>
                         </div>
                     </div>
 
@@ -12884,7 +12904,7 @@ Poderia me ajudar? 🙏"
             //    sincronizam pra TODOS os visitantes e entre aparelhos do admin
             ['notify_topic','chat_db_url','chat_sb_url','chat_sb_key','chat_sb_table','chat_pantry',
              'invPalette','siteThemeColors','invictorStravaDefaultColor','catalog_layout','invictorEdicaoCodes','invictorMarketplaces',
-             'foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','foco_survey_visible','statsBar_visible','foco_steps_pos','foco_survey_pos','foco_price_pos','siteLandingTab','verif_steps','ai_pages','tbt_enabled','tbt_mode','tbt_picks','site_font','promo_scale','survey_scale','stats_cfg','ia_tenis','ia_shopee_cupom','ia_telegram','ia_whats_ofertas'].forEach(function(k){
+             'foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','foco_survey_visible','statsBar_visible','foco_steps_pos','foco_survey_pos','foco_price_pos','siteLandingTab','verif_steps','ai_pages','tbt_enabled','tbt_mode','tbt_picks','site_font','promo_scale','survey_scale','stats_cfg','ia_tenis','ia_shopee_cupom','ia_telegram','ia_whats_ofertas','ia_lojas','ai_chips_hidden'].forEach(function(k){
                 try { var v = localStorage.getItem(k); if (v != null) payload[k] = v; } catch(e) {}
             });
 
@@ -13102,7 +13122,7 @@ Poderia me ajudar? 🙏"
                 'invictorEdicaoEmails', 'invictorEdicaoAtivos',
                 // === Configs novas: chat ao vivo / ntfy / paleta / conteúdo / IA ===
                 'notify_topic','chat_db_url','chat_sb_url','chat_sb_key','chat_sb_table','chat_pantry',
-                'invPalette','siteThemeColors','invictorStravaDefaultColor','catalog_layout','invictorEdicaoCodes','invictorMarketplaces','foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','foco_survey_visible','statsBar_visible','foco_steps_pos','foco_survey_pos','foco_price_pos','siteLandingTab','verif_steps','ai_pages','tbt_enabled','tbt_mode','tbt_picks','site_font','promo_scale','survey_scale','stats_cfg','ia_tenis','ia_shopee_cupom','ia_telegram','ia_whats_ofertas',
+                'invPalette','siteThemeColors','invictorStravaDefaultColor','catalog_layout','invictorEdicaoCodes','invictorMarketplaces','foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','foco_survey_visible','statsBar_visible','foco_steps_pos','foco_survey_pos','foco_price_pos','siteLandingTab','verif_steps','ai_pages','tbt_enabled','tbt_mode','tbt_picks','site_font','promo_scale','survey_scale','stats_cfg','ia_tenis','ia_shopee_cupom','ia_telegram','ia_whats_ofertas','ia_lojas','ai_chips_hidden',
                 // === Last update marker ===
                 '_lastUpdate'
             ];
@@ -13396,7 +13416,7 @@ Poderia me ajudar? 🙏"
             if(tabIndex===9) { loadThemeColorsIntoPanel(); setTimeout(function(){ if(typeof invPaletteRender==='function') invPaletteRender(); if(typeof renderFontAdmin==='function') renderFontAdmin(); }, 40); }
             if(tabIndex===10) { renderBotoesAdmin(); if(typeof renderSeccoesAdmin==='function') renderSeccoesAdmin(); if(typeof syncLandingTabSelect==='function') syncLandingTabSelect(); if(typeof renderVerifStepsAdmin==='function') renderVerifStepsAdmin(); if(typeof renderElemScaleAdmin==='function') renderElemScaleAdmin(); if(typeof renderStatsCfgAdmin==='function') renderStatsCfgAdmin(); }
             if(tabIndex===11) { renderGaleria(); }
-            if(tabIndex===12) { initApisTab(); if(typeof renderIaTenisAdmin==='function') renderIaTenisAdmin(); if(typeof iaOfertaLinksLoad==='function') iaOfertaLinksLoad(); if(typeof shopeeStatus==='function') setTimeout(shopeeStatus, 60); }
+            if(tabIndex===12) { initApisTab(); if(typeof renderIaTenisAdmin==='function') renderIaTenisAdmin(); if(typeof iaOfertaLinksLoad==='function') iaOfertaLinksLoad(); if(typeof renderIaLojasAdmin==='function') renderIaLojasAdmin(); if(typeof renderAiChipsAdmin==='function') renderAiChipsAdmin(); if(typeof shopeeStatus==='function') setTimeout(shopeeStatus, 60); }
             if(tabIndex===3)  { setTimeout(_refreshAdminCouponStock, 80); }
             if(tabIndex===13) {
                 setTimeout(() => {
@@ -25283,7 +25303,9 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
     function _invContactVal(){ try{ return (localStorage.getItem('inv_contact')||'').replace(/"/g,'&quot;'); }catch(e){ return ''; } }
     function _invAICardHtml(k){
       var c=_invAICfg(k);
-      var chips=c.sg.map(function(s){return '<button onclick="invAIAsk(\''+k+'\',this.textContent)" style="font-size:11px;background:rgba(255,106,0,0.1);border:1px solid rgba(255,106,0,0.32);color:var(--primary);border-radius:20px;padding:6px 11px;cursor:pointer;font-weight:700;">'+s+'</button>';}).join('');
+      var hidden=[]; try{ hidden=JSON.parse(localStorage.getItem('ai_chips_hidden')||'[]')||[]; }catch(e){}
+      var sgVis=c.sg.filter(function(s){ return hidden.indexOf(s)<0; });
+      var chips=sgVis.map(function(s){return '<button onclick="invAIAsk(\''+k+'\',this.textContent)" style="font-size:11px;background:rgba(255,106,0,0.1);border:1px solid rgba(255,106,0,0.32);color:var(--primary);border-radius:20px;padding:6px 11px;cursor:pointer;font-weight:700;">'+s+'</button>';}).join('');
       return _toolCard(_toolH(c.t,c.d)
         +(k==='foco'?'<div style="display:inline-flex;align-items:center;gap:5px;background:rgba(255,106,0,0.12);border:1px solid rgba(255,106,0,0.35);color:var(--primary);font-size:9.5px;font-weight:900;letter-spacing:.5px;text-transform:uppercase;padding:4px 10px;border-radius:20px;margin-bottom:10px;">✨ Exclusivo das suas fotos</div>':'')
         +'<input id="invAIContact_'+k+'" value="'+_invContactVal()+'" placeholder="📱 Seu @ ou WhatsApp (pro Victor te responder)" style="width:100%;padding:9px;margin-bottom:9px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,106,0,0.22);border-radius:9px;color:#fff;font-size:12px;box-sizing:border-box;outline:none;">'
@@ -25336,7 +25358,101 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
       if(k==='foco'){ var ft=document.getElementById('focoTopAI'); if(ft){ var df=document.createElement('div'); df.id=cardId; df.style.cssText='padding:0 16px;'; df.innerHTML=_invAICardHtml(k); ft.appendChild(df); return; } }
       if(typeof _toolMount==='function') _toolMount(secId, cardId, _invAICardHtml(k));
     };
-    // ════ 🎟️ LINKS DE OFERTA (Shopee cupom + Telegram + WhatsApp) ════
+    // ════ 🎛️ VISIBILIDADE DAS OPÇÕES (chips) DA IA ════
+    window.getAllAiChips = function(){
+        var seen={}, out=[];
+        try{ ['foco','strava','edicao','procure','verificar','preview','ofertas'].forEach(function(k){
+            var c=_invAICfg(k); (c.sg||[]).forEach(function(s){ if(!seen[s]){ seen[s]=1; out.push({label:s,page:c.t}); } });
+        }); }catch(e){}
+        return out;
+    };
+    window.getHiddenChips = function(){ try{ var v=JSON.parse(localStorage.getItem('ai_chips_hidden')||'[]'); return Array.isArray(v)?v:[]; }catch(e){ return []; } };
+    window.toggleAiChip = function(label){
+        var h=getHiddenChips(); var i=h.indexOf(label);
+        if(i>=0) h.splice(i,1); else h.push(label);
+        try{ localStorage.setItem('ai_chips_hidden', JSON.stringify(h)); }catch(e){}
+        renderAiChipsAdmin();
+        try{ if(typeof saveData==='function') saveData(false); }catch(e){}
+        try{ ['foco','ofertas','procure','strava','edicao','verificar','preview'].forEach(function(k){ var el=document.getElementById('invAICard_'+k); if(el){ el.remove(); if(typeof invAIInject==='function') invAIInject(k); } }); }catch(e){}
+    };
+    window.renderAiChipsAdmin = function(){
+        var box=document.getElementById('aiChipsList'); if(!box) return;
+        var all=getAllAiChips(), hidden=getHiddenChips();
+        box.innerHTML=all.map(function(c){
+            var on=hidden.indexOf(c.label)<0;
+            return '<button onclick="toggleAiChip(\''+c.label.replace(/'/g,"\\'")+'\')" style="display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;text-align:left;padding:10px 12px;border-radius:10px;cursor:pointer;border:1.5px solid '+(on?'rgba(0,200,150,0.4)':'rgba(255,255,255,0.1)')+';background:'+(on?'rgba(0,200,150,0.08)':'rgba(255,255,255,0.02)')+';color:#fff;">'
+              +'<span style="font-size:11.5px;font-weight:700;">'+c.label.replace(/</g,'&lt;')+'<span style="font-size:9px;color:#778;display:block;font-weight:600;">'+c.page+'</span></span>'
+              +'<span style="font-size:11px;font-weight:900;color:'+(on?'#00e0a0':'#778')+';flex-shrink:0;">'+(on?'✅ visível':'⬜ oculto')+'</span></button>';
+        }).join('');
+    };
+
+    // ════ 🛒 LOJAS DE AFILIADO (seletor de onde comprar) ════
+    // Cada loja tem: emoji, nome e o LINK de afiliado do Victor.
+    // O link pode ter {q} → vira a busca do produto (ex: .../search?keyword={q}).
+    window.getIaLojas = function(){
+        try{ var v=JSON.parse(localStorage.getItem('ia_lojas')); if(Array.isArray(v)&&v.length) return v; }catch(e){}
+        return [
+            {emoji:'🛒',nome:'Shopee',link:'https://s.shopee.com.br/3LOjetdnW8'},
+            {emoji:'🟡',nome:'Mercado Livre',link:'https://meli.la/1aqQUtQ'},
+            {emoji:'✔️',nome:'Nike',link:'https://tidd.ly/4f1RZY3'},
+            {emoji:'👟',nome:'Netshoes',link:'https://click.linksynergy.com/deeplink?id=ygHYQtO3gCY&mid=43984&murl=https%3A%2F%2Fwww.netshoes.com.br%2Fbusca%3Fq%3D{q}'},
+            {emoji:'🔵',nome:'Olympikus',link:'https://tidd.ly/3Sou2l2'}
+        ];
+    };
+    window.iaLojaAdd = function(){
+        var emoji=((document.getElementById('iaLojaEmoji')||{}).value||'🛒').trim()||'🛒';
+        var nome=((document.getElementById('iaLojaNome')||{}).value||'').trim();
+        var link=((document.getElementById('iaLojaLink')||{}).value||'').trim();
+        if(!nome){ if(typeof showToast==='function') showToast('Coloque o nome da loja','⚠️'); return; }
+        if(link && !/^https?:\/\//i.test(link) && link.indexOf('{q}')<0) link='https://'+link;
+        var arr=getIaLojas(); arr.push({emoji:emoji,nome:nome,link:link});
+        try{ localStorage.setItem('ia_lojas', JSON.stringify(arr)); }catch(e){}
+        ['iaLojaEmoji','iaLojaNome','iaLojaLink'].forEach(function(id){ var el=document.getElementById(id); if(el) el.value=''; });
+        renderIaLojasAdmin(); try{ if(typeof saveData==='function') saveData(false); }catch(e){}
+        if(typeof showToast==='function') showToast('Loja adicionada! 🛒','✅');
+    };
+    window.iaLojaRemove = function(i){
+        var arr=getIaLojas(); if(i<0||i>=arr.length) return; arr.splice(i,1);
+        try{ localStorage.setItem('ia_lojas', JSON.stringify(arr)); }catch(e){}
+        renderIaLojasAdmin(); try{ if(typeof saveData==='function') saveData(false); }catch(e){}
+    };
+    window.renderIaLojasAdmin = function(){
+        var box=document.getElementById('iaLojasList'); if(!box) return;
+        var arr=getIaLojas();
+        box.innerHTML=arr.map(function(s,i){
+            return '<div style="display:flex;align-items:center;gap:9px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:9px 11px;">'
+              +'<span style="font-size:18px;">'+(s.emoji||'🛒')+'</span>'
+              +'<div style="flex:1;min-width:0;"><div style="font-size:12px;font-weight:900;color:#fff;">'+(s.nome||'').replace(/</g,'&lt;')+'</div>'
+              +(s.link?('<div style="font-size:9px;color:#60a5fa;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+(s.link.indexOf('{q}')>=0?'🔎 busca · ':'🔗 ')+s.link.replace(/</g,'&lt;')+'</div>'):'<div style="font-size:9px;color:#FF8787;">⚠️ sem link</div>')+'</div>'
+              +'<button onclick="iaLojaRemove('+i+')" style="background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);color:#f88;border-radius:8px;padding:6px 9px;font-size:11px;font-weight:800;cursor:pointer;flex-shrink:0;">🗑️</button>'
+              +'</div>';
+        }).join('');
+    };
+
+    // Footer da recomendação: SELETOR DE LOJA (onde comprar) + grupos + finalizar
+    window.iaOfertaFooterHtml = function(k, prod){
+        var lojas=getIaLojas();
+        var L=getIaOfertaLinks();
+        var qenc=encodeURIComponent((prod||'tênis de corrida').slice(0,60));
+        function btn(href,bg,bd,txt){ return '<a href="'+String(href).replace(/"/g,'&quot;')+'" target="_blank" rel="noopener sponsored" style="display:block;text-align:center;text-decoration:none;background:'+bg+';border:1px solid '+bd+';color:#fff;border-radius:10px;padding:10px;font-size:11.5px;font-weight:900;margin-bottom:7px;">'+txt+'</a>'; }
+        var out='<div style="margin-top:9px;border-top:1px dashed rgba(255,255,255,0.14);padding-top:10px;">';
+        out+='<div style="font-size:10px;font-weight:900;color:#00e0a0;margin-bottom:8px;">🛒 Escolha onde comprar'+(prod?(' <span style="color:#fff;">'+String(prod).replace(/</g,'&lt;')+'</span>'):'')+' (com meu cupom/afiliado):</div>';
+        var any=false;
+        lojas.forEach(function(s){
+            if(!s.link) return; any=true;
+            var href = s.link.indexOf('{q}')>=0 ? s.link.replace(/\{q\}/g,qenc) : s.link;
+            out+=btn(href,'linear-gradient(135deg,#ee4d2d,#ff6a3d)','rgba(238,77,45,0.45)',(s.emoji||'🛒')+' '+(s.nome||'Loja'));
+        });
+        if(!any) out+='<div style="font-size:10px;color:#999;margin-bottom:7px;">Configure suas lojas no painel admin.</div>';
+        if(L.telegram) out+=btn(L.telegram,'linear-gradient(135deg,#2AABEE,#229ED9)','rgba(42,171,238,0.5)','📨 Ofertas no Telegram');
+        if(L.whats) out+=btn(L.whats,'linear-gradient(135deg,#25D366,#1da851)','rgba(37,211,102,0.5)','💚 Grupo de ofertas no WhatsApp');
+        out+='<button onclick="iaFinalizar(\''+k+'\')" style="width:100%;padding:11px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.2);color:#fff;border-radius:10px;font-size:12px;font-weight:900;cursor:pointer;margin-top:2px;">✅ Escolhi! Boas compras 🏃</button>';
+        out+='<div style="font-size:8.5px;color:#667;text-align:center;margin-top:7px;">Link patrocinado · #publicidade</div>';
+        out+='</div>';
+        return out;
+    };
+
+    // ════ 🎟️ LINKS DE OFERTA (Telegram + WhatsApp) ════
     window.getIaOfertaLinks = function(){
         function g(k,d){ try{ var v=localStorage.getItem(k); return (v!=null&&v!=='')?v:d; }catch(e){ return d; } }
         var vw='', vt='';
@@ -25361,20 +25477,6 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
         var c=document.getElementById('iaCupomShopee'); if(c&&!c.value) c.value=L.cupom;
         var t=document.getElementById('iaTelegram'); if(t&&!t.value) t.value=L.telegram;
         var w=document.getElementById('iaWhatsOfertas'); if(w&&!w.value) w.value=L.whats;
-    };
-    // Footer que aparece SEMPRE no final da recomendação de tênis
-    window.iaOfertaFooterHtml = function(k){
-        var L=getIaOfertaLinks();
-        var btn=function(href,bg,bd,txt){ return '<a href="'+String(href).replace(/"/g,'&quot;')+'" target="_blank" rel="noopener sponsored" style="display:block;text-align:center;text-decoration:none;background:'+bg+';border:1px solid '+bd+';color:#fff;border-radius:10px;padding:10px;font-size:11.5px;font-weight:900;margin-bottom:7px;">'+txt+'</a>'; };
-        var out='<div style="margin-top:9px;border-top:1px dashed rgba(255,255,255,0.14);padding-top:10px;">';
-        out+='<div style="font-size:10px;font-weight:900;color:#00e0a0;margin-bottom:8px;">🛒 Garanta o seu com desconto:</div>';
-        if(L.cupom) out+=btn(L.cupom,'linear-gradient(135deg,#ee4d2d,#ff6a3d)','rgba(238,77,45,0.5)','🎟️ Cupons Shopee + preços (clique aqui)');
-        if(L.telegram) out+=btn(L.telegram,'linear-gradient(135deg,#2AABEE,#229ED9)','rgba(42,171,238,0.5)','📨 Ofertas no Telegram');
-        if(L.whats) out+=btn(L.whats,'linear-gradient(135deg,#25D366,#1da851)','rgba(37,211,102,0.5)','💚 Grupo de ofertas no WhatsApp');
-        out+='<button onclick="iaFinalizar(\''+k+'\')" style="width:100%;padding:11px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.2);color:#fff;border-radius:10px;font-size:12px;font-weight:900;cursor:pointer;margin-top:2px;">✅ Escolhi! Boas compras 🏃</button>';
-        out+='<div style="font-size:8.5px;color:#667;text-align:center;margin-top:7px;">Link patrocinado · #publicidade</div>';
-        out+='</div>';
-        return out;
     };
     // Finaliza: some o painel da IA e mostra a mensagem fixa
     window.iaFinalizar = function(k){
@@ -25435,9 +25537,9 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
         var arr=getIaTenis();
         var base='\n\n[REGRA DE TÊNIS — siga EXATAMENTE esta ordem] Quando o assunto for tênis/calçado de corrida: '
           +'1) Dê uma DICA rápida e útil em 1 linha. '
-          +'2) Indique 1 ou 2 modelos com o PREÇO aproximado e um motivo curto. '
-          +'3) Termine dizendo que o LINK pra comprar (com o preço) e os CUPONS de desconto estão logo ABAIXO, nos botões. '
-          +'NUNCA invente link ou URL — os botões aparecem automáticos embaixo da sua mensagem. Seja curto, simpático e direto, em português do Brasil.';
+          +'2) Indique 1 ou 2 modelos — coloque o NOME do modelo entre **asteriscos** (negrito) seguido do PREÇO aproximado e um motivo curto. Ex: **Nike Pegasus 41** — R$ 599, ótimo amortecimento. '
+          +'3) Termine dizendo que é só ESCOLHER A LOJA nos botões abaixo pra comprar com desconto. '
+          +'NUNCA escreva link ou URL — os botões de loja aparecem automáticos embaixo. Seja curto, simpático e direto, em português do Brasil.';
         if(arr.length){
             var lista=arr.map(function(t){ return '- '+(t.emoji||'')+' '+t.nome+(t.preco?(' ('+t.preco+')'):'')+(t.desc?(' — '+t.desc):''); }).join('\n');
             base+='\nPrefira recomendar SOMENTE estes modelos que o Victor selecionou:\n'+lista+'\nSe o cliente quiser algo fora da lista, sugira o mais parecido e peça pra confirmar com o Victor no Instagram @invictorcliques.';
@@ -25542,8 +25644,10 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
         // 👟 nas páginas de tênis/ofertas mostra SEMPRE; nas outras, só quando o assunto é tênis
         var _tenisCards = '';
         try{ if(_isOfferPage || (typeof _isTenisQuery==='function' && (_isTenisQuery(q)||_isTenisQuery(ans)))){
+            // tenta pegar o 1º modelo citado (pra montar a busca na loja)
+            var _prod=''; try{ var pm=ans.match(/\*\*([^*]{3,46})\*\*/)||ans.match(/[-•]\s*([A-Za-zÀ-ÿ0-9 ]{4,40})\s*[-–:]/); if(pm) _prod=pm[1].replace(/\s+/g,' ').trim(); }catch(_p){}
             if(typeof iaTenisCardsHtml==='function') _tenisCards += iaTenisCardsHtml();
-            if(typeof iaOfertaFooterHtml==='function') _tenisCards += iaOfertaFooterHtml(k);
+            if(typeof iaOfertaFooterHtml==='function') _tenisCards += iaOfertaFooterHtml(k, _prod);
         } }catch(_){}
         var tb=document.getElementById(typingId);
         if(tb){ tb.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span style="font-size:9px;font-weight:900;color:var(--primary);letter-spacing:.5px;">🤖 ASSISTENTE IA</span>'
