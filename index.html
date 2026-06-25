@@ -5638,7 +5638,7 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v282.0001</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v284.0001</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -6690,6 +6690,24 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                             <button onclick="iaTenisAdd()" style="width:100%;padding:11px;background:linear-gradient(135deg,#00c896,#00a078);color:#fff;border:none;border-radius:10px;font-weight:900;font-size:12.5px;cursor:pointer;">➕ Adicionar à lista da IA</button>
                         </div>
                         <div style="font-size:10px;color:#667;margin-top:10px;line-height:1.5;">💡 A IA também vai <strong>pedir sua opinião</strong> quando não tiver certeza: se o cliente pedir algo que foge da sua lista, ela sugere o mais próximo e manda o cliente confirmar com você no Instagram.</div>
+
+                        <!-- 🎯 Modo de recomendação: os 2 processos -->
+                        <div style="margin-top:14px;border-top:1px solid rgba(255,255,255,0.1);padding-top:13px;">
+                            <div style="font-size:11.5px;font-weight:900;color:#00e0a0;margin-bottom:3px;">🎯 Como a IA recomenda (2 processos)</div>
+                            <div style="font-size:10px;color:#8a9;margin-bottom:11px;line-height:1.5;">Escolha o processo. Os botões de loja (afiliado) aparecem sempre — o que muda é se a IA puxa produto real da Shopee e/ou a sua curadoria.</div>
+                            <div onclick="setIaRecMode('both')" id="iaRecMode_both" style="cursor:pointer;border:1.5px solid rgba(0,200,150,0.45);background:rgba(0,200,150,0.13);border-radius:11px;padding:11px 13px;margin-bottom:8px;display:flex;gap:9px;align-items:center;">
+                                <span id="iaRecModeChk_both" style="color:#00e0a0;font-size:15px;">●</span>
+                                <div><div style="font-size:12px;font-weight:900;color:#fff;">🔥 Os dois (recomendado)</div><div style="font-size:9.5px;color:#9aa;">Produto real da Shopee + sua curadoria + lojas</div></div>
+                            </div>
+                            <div onclick="setIaRecMode('auto')" id="iaRecMode_auto" style="cursor:pointer;border:1.5px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.02);border-radius:11px;padding:11px 13px;margin-bottom:8px;display:flex;gap:9px;align-items:center;">
+                                <span id="iaRecModeChk_auto" style="color:#00e0a0;font-size:15px;">○</span>
+                                <div><div style="font-size:12px;font-weight:900;color:#fff;">🤖 Automático (API Shopee)</div><div style="font-size:9.5px;color:#9aa;">Só produtos reais da Shopee + lojas (sem curadoria)</div></div>
+                            </div>
+                            <div onclick="setIaRecMode('manual')" id="iaRecMode_manual" style="cursor:pointer;border:1.5px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.02);border-radius:11px;padding:11px 13px;display:flex;gap:9px;align-items:center;">
+                                <span id="iaRecModeChk_manual" style="color:#00e0a0;font-size:15px;">○</span>
+                                <div><div style="font-size:12px;font-weight:900;color:#fff;">✍️ Curadoria (sem API)</div><div style="font-size:9.5px;color:#9aa;">Só sua lista de tênis + lojas (não precisa da Shopee API)</div></div>
+                            </div>
+                        </div>
 
                         <!-- Links de oferta que aparecem SEMPRE no final da recomendação -->
                         <div style="margin-top:14px;border-top:1px solid rgba(255,255,255,0.1);padding-top:13px;">
@@ -12978,7 +12996,7 @@ Poderia me ajudar? 🙏"
             //    sincronizam pra TODOS os visitantes e entre aparelhos do admin
             ['notify_topic','chat_db_url','chat_sb_url','chat_sb_key','chat_sb_table','chat_pantry',
              'invPalette','siteThemeColors','invictorStravaDefaultColor','catalog_layout','invictorEdicaoCodes','invictorMarketplaces',
-             'foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','foco_survey_visible','statsBar_visible','foco_steps_pos','foco_survey_pos','foco_price_pos','siteLandingTab','verif_steps','ai_pages','tbt_enabled','tbt_mode','tbt_picks','site_font','promo_scale','survey_scale','stats_cfg','ia_tenis','ia_shopee_cupom','ia_telegram','ia_whats_ofertas','ia_lojas','ai_chips_hidden','ai_chips_custom','promo_deadline','ia_clicks'].forEach(function(k){
+             'foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','foco_survey_visible','statsBar_visible','foco_steps_pos','foco_survey_pos','foco_price_pos','siteLandingTab','verif_steps','ai_pages','tbt_enabled','tbt_mode','tbt_picks','site_font','promo_scale','survey_scale','stats_cfg','ia_tenis','ia_shopee_cupom','ia_telegram','ia_whats_ofertas','ia_lojas','ai_chips_hidden','ai_chips_custom','promo_deadline','ia_clicks','ia_rec_mode'].forEach(function(k){
                 try { var v = localStorage.getItem(k); if (v != null) payload[k] = v; } catch(e) {}
             });
 
@@ -13196,7 +13214,7 @@ Poderia me ajudar? 🙏"
                 'invictorEdicaoEmails', 'invictorEdicaoAtivos',
                 // === Configs novas: chat ao vivo / ntfy / paleta / conteúdo / IA ===
                 'notify_topic','chat_db_url','chat_sb_url','chat_sb_key','chat_sb_table','chat_pantry',
-                'invPalette','siteThemeColors','invictorStravaDefaultColor','catalog_layout','invictorEdicaoCodes','invictorMarketplaces','foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','foco_survey_visible','statsBar_visible','foco_steps_pos','foco_survey_pos','foco_price_pos','siteLandingTab','verif_steps','ai_pages','tbt_enabled','tbt_mode','tbt_picks','site_font','promo_scale','survey_scale','stats_cfg','ia_tenis','ia_shopee_cupom','ia_telegram','ia_whats_ofertas','ia_lojas','ai_chips_hidden','ai_chips_custom','promo_deadline','ia_clicks',
+                'invPalette','siteThemeColors','invictorStravaDefaultColor','catalog_layout','invictorEdicaoCodes','invictorMarketplaces','foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','foco_survey_visible','statsBar_visible','foco_steps_pos','foco_survey_pos','foco_price_pos','siteLandingTab','verif_steps','ai_pages','tbt_enabled','tbt_mode','tbt_picks','site_font','promo_scale','survey_scale','stats_cfg','ia_tenis','ia_shopee_cupom','ia_telegram','ia_whats_ofertas','ia_lojas','ai_chips_hidden','ai_chips_custom','promo_deadline','ia_clicks','ia_rec_mode',
                 // === Last update marker ===
                 '_lastUpdate'
             ];
@@ -13490,7 +13508,7 @@ Poderia me ajudar? 🙏"
             if(tabIndex===9) { loadThemeColorsIntoPanel(); setTimeout(function(){ if(typeof invPaletteRender==='function') invPaletteRender(); if(typeof renderFontAdmin==='function') renderFontAdmin(); }, 40); }
             if(tabIndex===10) { renderBotoesAdmin(); if(typeof renderSeccoesAdmin==='function') renderSeccoesAdmin(); if(typeof syncLandingTabSelect==='function') syncLandingTabSelect(); if(typeof renderVerifStepsAdmin==='function') renderVerifStepsAdmin(); if(typeof renderElemScaleAdmin==='function') renderElemScaleAdmin(); if(typeof renderStatsCfgAdmin==='function') renderStatsCfgAdmin(); if(typeof renderPromoAdminStatus==='function') renderPromoAdminStatus(); }
             if(tabIndex===11) { renderGaleria(); }
-            if(tabIndex===12) { initApisTab(); if(typeof renderIaTenisAdmin==='function') renderIaTenisAdmin(); if(typeof iaOfertaLinksLoad==='function') iaOfertaLinksLoad(); if(typeof renderIaLojasAdmin==='function') renderIaLojasAdmin(); if(typeof renderAiChipsAdmin==='function') renderAiChipsAdmin(); if(typeof shopeeStatus==='function') setTimeout(shopeeStatus, 60); }
+            if(tabIndex===12) { initApisTab(); if(typeof renderIaTenisAdmin==='function') renderIaTenisAdmin(); if(typeof iaOfertaLinksLoad==='function') iaOfertaLinksLoad(); if(typeof renderIaRecMode==='function') renderIaRecMode(); if(typeof renderIaLojasAdmin==='function') renderIaLojasAdmin(); if(typeof renderAiChipsAdmin==='function') renderAiChipsAdmin(); if(typeof shopeeStatus==='function') setTimeout(shopeeStatus, 60); }
             if(tabIndex===3)  { setTimeout(_refreshAdminCouponStock, 80); }
             if(tabIndex===13) {
                 setTimeout(() => {
@@ -25567,7 +25585,44 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
     window.iaTrackClick = function(store){
         try{ var c=JSON.parse(localStorage.getItem('ia_clicks')||'{}'); c[store]=(c[store]||0)+1; localStorage.setItem('ia_clicks',JSON.stringify(c)); if(typeof saveData==='function') saveData(false); if(typeof renderIaLojasAdmin==='function') renderIaLojasAdmin(); }catch(e){}
     };
+    // 🎯 Modo de recomendação: 'both' (os dois), 'auto' (só Shopee API), 'manual' (só curadoria+lojas)
+    window.getIaRecMode = function(){ try{ var v=localStorage.getItem('ia_rec_mode'); return (v==='auto'||v==='manual')?v:'both'; }catch(e){ return 'both'; } };
+    window.setIaRecMode = function(m){ try{ localStorage.setItem('ia_rec_mode', m); }catch(e){} try{ if(typeof saveData==='function') saveData(false); }catch(e){} if(typeof renderIaRecMode==='function') renderIaRecMode(); if(typeof showToast==='function') showToast('Modo salvo!','✅'); };
+    window.renderIaRecMode = function(){
+        var m=getIaRecMode();
+        ['both','auto','manual'].forEach(function(opt){
+            var el=document.getElementById('iaRecMode_'+opt); if(!el) return;
+            var on=(opt===m);
+            el.style.background = on ? 'rgba(0,200,150,0.13)' : 'rgba(255,255,255,0.02)';
+            el.style.borderColor = on ? 'rgba(0,200,150,0.45)' : 'rgba(255,255,255,0.1)';
+            var chk=document.getElementById('iaRecModeChk_'+opt); if(chk) chk.textContent = on ? '●' : '○';
+        });
+    };
+
     window.getIaClicks = function(){ try{ return JSON.parse(localStorage.getItem('ia_clicks')||'{}')||{}; }catch(e){ return {}; } };
+
+    // 🛒 Busca PRODUTOS REAIS na Shopee (preço + link de afiliado automáticos) e injeta na resposta da IA
+    window.iaShopeeInject = async function(k, bubbleId, query){
+        try{
+            var r=await fetch('/api/shopee?action=search&q='+encodeURIComponent((query||'tênis de corrida').slice(0,70))+'&limit=3&_='+Date.now(), {headers:{'Accept':'application/json'}});
+            var ct=(r.headers.get('content-type')||''); if(ct.indexOf('json')<0) return; // Worker não publicado
+            var d=await r.json();
+            if(!d || d.configured===false || !d.items || !d.items.length) return;
+            var html='<div style="margin-top:10px;border-top:1px dashed rgba(255,255,255,0.14);padding-top:10px;">'
+                +'<div style="font-size:10px;font-weight:900;color:#ee4d2d;margin-bottom:8px;">🛒 Achei na Shopee pra você (preço real):</div>';
+            d.items.forEach(function(it){
+                html+='<a href="'+String(it.link||'#').replace(/"/g,'&quot;')+'" target="_blank" rel="noopener sponsored" onclick="iaTrackClick(\'Shopee\')" style="display:flex;gap:9px;align-items:center;text-decoration:none;background:rgba(238,77,45,0.06);border:1px solid rgba(238,77,45,0.25);border-radius:10px;padding:8px;margin-bottom:7px;">'
+                    +(it.img?('<img src="'+String(it.img).replace(/"/g,'&quot;')+'" style="width:46px;height:46px;border-radius:8px;object-fit:cover;flex-shrink:0;" onerror="this.style.display=\'none\'">'):'')
+                    +'<div style="flex:1;min-width:0;"><div style="font-size:11px;font-weight:800;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+String(it.nome||'').replace(/</g,'&lt;')+'</div>'
+                    +'<div style="font-size:12.5px;font-weight:900;color:#ee4d2d;">'+String(it.preco||'').replace(/</g,'&lt;')+'</div></div>'
+                    +'<span style="font-size:10px;font-weight:900;color:#fff;background:#ee4d2d;border-radius:7px;padding:6px 9px;flex-shrink:0;">Comprar</span></a>';
+            });
+            html+='</div>';
+            var tb=document.getElementById(bubbleId);
+            if(tb){ tb.insertAdjacentHTML('beforeend', html); }
+            var th=document.getElementById('invAIThread_'+k); if(th) th.scrollTop=th.scrollHeight;
+        }catch(e){}
+    };
 
     // ════ 🛒 LOJAS DE AFILIADO (seletor de onde comprar) ════
     // Cada loja tem: emoji, nome e o LINK de afiliado do Victor.
@@ -25826,18 +25881,26 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
         }
         invAIHist[k].push({role:'assistant',content:ans});
         try{ var L=JSON.parse(localStorage.getItem('ai_leads')||'[]'); L.unshift({t:Date.now(),page:k,q:q,a:ans,contact:contact}); localStorage.setItem('ai_leads',JSON.stringify(L.slice(0,120))); if(typeof aiUpdateBadge==='function')aiUpdateBadge(); }catch(_){}
-        // 👟 nas páginas de tênis/ofertas mostra SEMPRE; nas outras, só quando o assunto é tênis
+        // PROCESSO 2 (curadoria): lista do Victor + botões de loja (sempre confiável)
         var _tenisCards = '';
         try{ if(_isOfferPage || (typeof _isTenisQuery==='function' && (_isTenisQuery(q)||_isTenisQuery(ans)))){
+            var _recM = (typeof getIaRecMode==='function') ? getIaRecMode() : 'both';
             // tenta pegar o 1º modelo citado (pra montar a busca na loja)
             var _prod=''; try{ var pm=ans.match(/\*\*([^*]{3,46})\*\*/)||ans.match(/[-•]\s*([A-Za-zÀ-ÿ0-9 ]{4,40})\s*[-–:]/); if(pm) _prod=pm[1].replace(/\s+/g,' ').trim(); }catch(_p){}
-            if(typeof iaTenisCardsHtml==='function') _tenisCards += iaTenisCardsHtml();
-            if(typeof iaOfertaFooterHtml==='function') _tenisCards += iaOfertaFooterHtml(k, _prod);
+            if(_recM!=='auto' && typeof iaTenisCardsHtml==='function') _tenisCards += iaTenisCardsHtml(); // curadoria some no modo automático
+            if(typeof iaOfertaFooterHtml==='function') _tenisCards += iaOfertaFooterHtml(k, _prod); // botões de loja: sempre (afiliado garantido)
         } }catch(_){}
         var tb=document.getElementById(typingId);
         if(tb){ tb.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span style="font-size:9px;font-weight:900;color:var(--primary);letter-spacing:.5px;">🤖 ASSISTENTE IA</span>'
           +'<button onclick="(function(b){try{navigator.clipboard.writeText(b.getAttribute(\'data-a\'));if(typeof showToast===\'function\')showToast(\'Copiado!\',\'📋\');}catch(e){}})(this)" data-a="'+ans.replace(/"/g,'&quot;')+'" style="background:rgba(255,255,255,0.08);border:none;border-radius:6px;padding:3px 7px;color:#cdd6e4;font-size:9px;font-weight:700;cursor:pointer;">📋</button></div>'+fmt(ans)+_tenisCards; }
         var th=document.getElementById('invAIThread_'+k); if(th)th.scrollTop=th.scrollHeight;
+        // 🛒 PROCESSO 1 (automático): se a Shopee estiver ligada E o modo permitir, injeta PRODUTOS REAIS
+        try{
+            var _recMode = (typeof getIaRecMode==='function') ? getIaRecMode() : 'both';
+            if(_recMode!=='manual' && (_isOfferPage || (typeof _isTenisQuery==='function' && (_isTenisQuery(q)||_isTenisQuery(ans))))){
+                if(typeof iaShopeeInject==='function') iaShopeeInject(k, typingId, _prod || q || 'tênis de corrida');
+            }
+        }catch(_){}
       }catch(e){
         try{ var L2=JSON.parse(localStorage.getItem('ai_leads')||'[]'); L2.unshift({t:Date.now(),page:k,q:q,a:'',contact:contact}); localStorage.setItem('ai_leads',JSON.stringify(L2.slice(0,120))); if(typeof aiUpdateBadge==='function')aiUpdateBadge(); }catch(_){}
         var tb2=document.getElementById(typingId);
