@@ -5638,7 +5638,7 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v281.0001</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v282.0001</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -25181,16 +25181,31 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
     async function invAI(input, systemText, maxTokens){
       var sys=systemText||'';
       var messages = (typeof input==='string') ? [{role:'user',content:input}] : (input||[]);
-      // 1) Pollinations — GRÁTIS, sem chave, funciona no site publicado
+      // 1) Pollinations via POST (OpenAI-compat) — aguenta prompt LONGO (vai no corpo, não na URL)
+      try{
+        var msgs2=[];
+        if(sys) msgs2.push({role:'system', content:sys});
+        (messages||[]).forEach(function(m){ msgs2.push({ role:(m.role==='assistant'?'assistant':'user'), content:m.content }); });
+        var r=await fetch('https://text.pollinations.ai/openai',{ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ model:'openai', messages:msgs2, private:true }) });
+        if(r.ok){
+          var j=await r.json();
+          var t=(j&&j.choices&&j.choices[0]&&j.choices[0].message&&j.choices[0].message.content)||'';
+          if(typeof t==='string'){ t=t.trim(); if(t.length>1 && t.charAt(0)!=='<' && !/rate limit|too many|^error/i.test(t.slice(0,40))) return t; }
+        }
+      }catch(e){}
+      // 2) Pollinations via GET (fallback curto)
       try{
         var full=(sys?(sys+'\n\n'):'');
         messages.forEach(function(m){ full += (m.role==='user'?'Usuário: ':'Você: ')+m.content+'\n'; });
         full += '\nResponda em português do Brasil, curto e útil, continuando a conversa.\nVocê:';
-        var pu='https://text.pollinations.ai/'+encodeURIComponent(full)+'?model=openai&private=true';
-        var pr=await fetch(pu);
-        if(pr.ok){ var pt=((await pr.text())||'').trim(); if(pt && pt.length>1 && pt.charAt(0)!=='<' && !/rate limit|too many|error/i.test(pt.slice(0,40))) return pt; }
+        // GET só serve pra prompt curto (URL tem limite). Se for grande, pula direto.
+        if(full.length < 1500){
+          var pu='https://text.pollinations.ai/'+encodeURIComponent(full)+'?model=openai&private=true';
+          var pr=await fetch(pu);
+          if(pr.ok){ var pt=((await pr.text())||'').trim(); if(pt && pt.length>1 && pt.charAt(0)!=='<' && !/rate limit|too many|error/i.test(pt.slice(0,40))) return pt; }
+        }
       }catch(e){}
-      // 2) Anthropic — funciona no preview do Claude (ou via proxy salvo)
+      // 3) Anthropic — funciona no preview do Claude (ou via proxy salvo)
       try{
         var body={ model:'claude-sonnet-4-20250514', max_tokens:maxTokens||450, messages:messages };
         if(sys) body.system=sys;
