@@ -5638,7 +5638,7 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v289.0001</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v290.0001</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -18173,18 +18173,15 @@ Poderia me ajudar? 🙏"
                         +'<div style="background:rgba(96,165,250,0.14);border:1px solid rgba(96,165,250,0.45);border-radius:9px;padding:8px 10px;"><div style="font-size:8.5px;color:#60a5fa;font-weight:800;">🎨 Bal. Branco</div><div style="font-size:11.5px;color:#fff;font-weight:900;line-height:1.1;">'+wbObj.ic+' '+wbObj.nome+'</div></div>'
                         +'</div>'
                         +(b.ev?'<div style="font-size:9.5px;color:'+b.cor+';font-weight:800;margin-bottom:8px;">🎚️ Compensação de exposição: '+(b.ev.indexOf('-')>=0?('−'+b.ev.length+' (clareie no escuro)'):('+'+b.ev.length+' se o fundo enganar o medidor'))+'</div>':'')
-                        // 🎛️ Picture Style da Canon R7 (nitidez/contraste/saturação/tom)
+                        // 🎛️ Estilo da Foto da Canon R7 (formato do menu) + Kelvin
                         +(function(){ var p=cfgCanonPicStyle(b,std,warmth,avg); return ''
-                            +'<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:10px 11px;margin-bottom:8px;">'
-                            +'<div style="font-size:9.5px;color:#a78bfa;font-weight:900;margin-bottom:7px;">🎛️ ESTILO DE IMAGEM (Canon R7) → base <span style="color:#fff;">'+p.base+'</span></div>'
-                            +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:10.5px;">'
-                            +'<div style="color:#cdd6e4;">✏️ Nitidez · Força: <b style="color:#fff;">'+p.sharp+'</b></div>'
-                            +'<div style="color:#cdd6e4;">▫️ Finura: <b style="color:#fff;">'+p.fine+'</b> · Limiar: <b style="color:#fff;">'+p.thr+'</b></div>'
-                            +'<div style="color:#cdd6e4;">🌗 Contraste: <b style="color:#fff;">'+_sgn(p.contrast)+'</b></div>'
-                            +'<div style="color:#cdd6e4;">🎨 Saturação: <b style="color:#fff;">'+_sgn(p.sat)+'</b></div>'
-                            +'<div style="color:#cdd6e4;">🌡️ Tom de cor: <b style="color:#fff;">'+_sgn(p.tone)+'</b></div>'
-                            +'<div style="color:#8a93a3;font-size:9px;align-self:center;">⚙️ Menu → Estilo de Imagem → Detalhe</div>'
-                            +'</div></div>'; })()
+                            +'<div style="background:rgba(167,139,250,0.06);border:1px solid rgba(167,139,250,0.3);border-radius:10px;padding:10px 11px;margin-bottom:8px;">'
+                            +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;"><span style="font-size:9.5px;color:#a78bfa;font-weight:900;">🎛️ ESTILO DA FOTO (Canon R7)</span><span style="font-size:13px;font-weight:900;color:#fff;background:rgba(167,139,250,0.25);padding:2px 10px;border-radius:7px;">'+p.style+'</span></div>'
+                            +'<div style="background:#111722;border-radius:8px;padding:8px 10px;font-family:monospace;font-size:13px;color:#ffd28a;font-weight:900;letter-spacing:1px;text-align:center;margin-bottom:6px;">'+_fmtPic(p.params)+'</div>'
+                            +'<div style="font-size:8.5px;color:#8a93a3;display:grid;grid-template-columns:repeat(3,1fr);gap:2px;text-align:center;margin-bottom:7px;"><span>Nitidez '+p.params[0]+'</span><span>Finura '+p.params[1]+'</span><span>Limiar '+p.params[2]+'</span><span>Contr. '+_sgn(p.params[3])+'</span><span>Satur. '+_sgn(p.params[4])+'</span><span>Tom '+_sgn(p.params[5])+'</span></div>'
+                            +'<div style="display:flex;gap:7px;align-items:center;background:rgba(96,165,250,0.1);border:1px solid rgba(96,165,250,0.3);border-radius:8px;padding:7px 10px;margin-bottom:6px;"><span style="font-size:15px;">🌡️</span><div><div style="font-size:9px;color:#60a5fa;font-weight:800;">TEMPERATURA (KELVIN)</div><div style="font-size:15px;color:#fff;font-weight:900;line-height:1;">'+p.kelvin+'K</div></div></div>'
+                            +'<div style="font-size:9px;color:#8a93a3;line-height:1.4;">💡 '+p.why+' · ⚙️ Menu → Estilo da Foto → INFO Conf. det.</div>'
+                            +'</div>'; })()
                         +'<div style="font-size:8.5px;color:#667;margin-bottom:14px;">📐 Medido: brilho '+Math.round(avg)+'/255 · contraste '+Math.round(std)+' · cor '+(warmth>0?'+':'')+Math.round(warmth)+' · estourado '+brightPct+'% · sombra '+darkPct+'%</div>'
 
                         // ════ PASSO 2 — NO LIGHTROOM CLASSIC ════
@@ -18300,6 +18297,8 @@ Poderia me ajudar? 🙏"
                     // ajustes de câmera puxando pra referência
                     var cContrast = refVa<25?'+1' : refVa>60?'+3' : '+2';
                     var cSat = refSv>120?'+2' : refSv<40?'−1' : '+1';
+                    var refStyle = refSv>120?'Paisagem' : (refVa>60?'Neutra' : 'Alta Nitidez');
+                    var momK = (L&&L.b&&typeof cfgCanonPicStyle==='function') ? cfgCanonPicStyle(L.b, (L.std||40), (L.warmth||0), (L.avg||128)).kelvin : 5400;
                     var momImg=(L&&L.dataUrl)?L.dataUrl:refUrl;
                     var html=''
                       +'<div style="font-size:11.5px;color:'+(ok?'#51CF66':'#FFA726')+';font-weight:800;line-height:1.55;background:rgba(255,255,255,0.03);border-left:3px solid '+(ok?'#51CF66':'#FFA726')+';padding:9px 11px;border-radius:0 8px 8px 0;margin-bottom:12px;">'+aviso+'</div>'
@@ -18309,10 +18308,10 @@ Poderia me ajudar? 🙏"
                       +'<div><img src="'+momImg+'" style="width:100%;height:110px;object-fit:cover;border-radius:9px;"><div style="text-align:center;font-size:9px;color:#888;margin-top:3px;">Seu momento</div></div>'
                       +'<div><img src="'+momImg+'" style="width:100%;height:110px;object-fit:cover;border-radius:9px;filter:'+preset.filter+';"><div style="text-align:center;font-size:9px;color:#a78bfa;font-weight:800;margin-top:3px;">Com o estilo ✨</div></div>'
                       +'</div>'
-                      // ajuste de câmera puxando pro estilo
-                      +'<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:10px 11px;margin-bottom:11px;">'
+                      // ajuste de câmera puxando pro estilo (Estilo da Foto + Kelvin)
+                      +'<div style="background:rgba(167,139,250,0.06);border:1px solid rgba(167,139,250,0.3);border-radius:10px;padding:10px 11px;margin-bottom:11px;">'
                       +'<div style="font-size:9.5px;color:#a78bfa;font-weight:900;margin-bottom:6px;">📷 NA CÂMERA, pra já puxar pro estilo</div>'
-                      +'<div style="font-size:10.5px;color:#cdd6e4;line-height:1.7;">🌗 Contraste: <b style="color:#fff;">'+cContrast+'</b> &nbsp; 🎨 Saturação: <b style="color:#fff;">'+cSat+'</b> &nbsp; ✏️ Nitidez forte<br><span style="font-size:9px;color:#8a93a3;">+ a exposição/WB do preset acima</span></div></div>'
+                      +'<div style="font-size:10.5px;color:#cdd6e4;line-height:1.8;">🎛️ Estilo da Foto: <b style="color:#fff;">'+refStyle+'</b><br>🌗 Contraste: <b style="color:#fff;">'+cContrast+'</b> &nbsp; 🎨 Saturação: <b style="color:#fff;">'+cSat+'</b> &nbsp; ✏️ Nitidez forte<br>🌡️ Kelvin (sua luz agora): <b style="color:#fff;">'+momK+'K</b></div></div>'
                       // download do preset do estilo
                       +'<button onclick="cfgRefDownloadXmp()" style="width:100%;padding:11px;background:linear-gradient(135deg,#a78bfa,#7c3aed);color:#fff;border:none;border-radius:10px;font-weight:900;font-size:12px;cursor:pointer;margin-bottom:8px;">🎞️ Baixar preset Lightroom desse estilo (.xmp)</button>'
                       +'<button onclick="cfgRefAiTip()" style="width:100%;padding:11px;background:linear-gradient(135deg,#60a5fa,#3b82f6);color:#fff;border:none;border-radius:10px;font-weight:900;font-size:12px;cursor:pointer;">🤖 Pedir ajuda de cor da IA pra igualar</button>'
@@ -18414,19 +18413,25 @@ Poderia me ajudar? 🙏"
         };
 
         // 👁️ Roda a visão de IA e mostra a config perfeita vista na foto
-        // 🎛️ Picture Style da Canon R7 (nitidez/contraste/saturação/tom) calculado pela luz medida
+        // 🎛️ Estilo da Foto REAL da Canon R7 (Auto/Padrão/Retrato/Paisagem/Alta Nitidez/Neutra)
+        // params na ordem do menu: [Nitidez Força, Finura, Limiar, Contraste, Saturação, Tom de cor]
         window.cfgCanonPicStyle = function(b, std, warmth, avg){
-            var highISO = (avg<68); // pouca luz → ISO alto → segura a nitidez pra não estourar ruído
-            var sharp = highISO ? 4 : 5;      // Força da nitidez (0–7) — esporte pede definição
-            var fine  = 2;                     // Finura (1–5)
-            var thr   = highISO ? 4 : 3;      // Limiar (1–5) — maior no escuro pra não realçar ruído
-            var contrast = std<22 ? 2 : (std>62 ? -1 : 0);   // foto plana → +, muito dura → −
-            var sat = (warmth>30 ? 1 : 0);                    // golden hour → +1 de cor
-            var tone = (warmth<-12 ? 1 : 0);                  // luz fria → +1 (puxa pele mais quente)
-            var base = 'Neutro';                               // melhor pra editar no Lightroom depois
-            return { base:base, sharp:sharp, fine:fine, thr:thr, contrast:contrast, sat:sat, tone:tone };
+            var highISO=(avg<68);
+            var style, params, why;
+            if(highISO){ style='Neutra'; params=[2,2,2,0,1,0]; why='pouca luz: base suave segura o ruído e dá margem pra editar'; }
+            else if(std<24){ style='Paisagem'; params=[5,2,3,1,1,0]; why='cena plana: Paisagem dá punch e cor'; }
+            else if(std>62){ style='Neutra'; params=[3,2,2,-1,0,0]; why='cena de alto contraste: Neutra preserva detalhe pra editar'; }
+            else { style='Alta Nitidez'; params=[4,1,1,0,1,0]; why='ação esportiva: detalhe fino e definição máxima'; }
+            // 🌡️ Kelvin (você fotografa em K)
+            var per=(b&&b.per)||'dia';
+            var kelvin = per==='tarde' ? 5800 : (per==='noite' ? 4200 : 5400);
+            if(warmth<-12) kelvin += 800;        // cena fria/sombra → sobe K pra aquecer
+            else if(warmth>30) kelvin -= 200;    // já muito quente → leve correção
+            kelvin = Math.round(kelvin/100)*100;
+            return { style:style, params:params, why:why, kelvin:kelvin, highISO:highISO };
         };
         function _sgn(v){ return (v>0?'+':'')+v; }
+        function _fmtPic(p){ return p[0]+','+p[1]+','+p[2]+','+_sgn(p[3])+','+_sgn(p[4])+','+_sgn(p[5]); }
 
         // Leitura REAL e fiel da foto (sempre verdadeira, nunca aleatória) — feita pelos números medidos
         window.cfgMeasuredVerdict = function(){
