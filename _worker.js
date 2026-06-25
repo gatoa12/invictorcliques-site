@@ -25,6 +25,7 @@ export default {
       if (path === "/api/gist")         return await handleGist(request, env);
       if (path === "/api/marketplace")  return await handleMarketplace(request, env);
       if (path === "/api/shopee")       return await handleShopee(request, env, url);
+      if (path === "/api/ai")           return await handleAI(request, env);
       if (path === "/api/refresh-foco") return await handleRefreshFoco(request, env);
     } catch (e) {
       return json({ error: String((e && e.message) || e) }, 500);
@@ -60,6 +61,48 @@ const CORS = {
 };
 function json(obj, status = 200) {
   return new Response(JSON.stringify(obj), { status, headers: { "content-type": "application/json", ...CORS } });
+}
+
+// ── /api/ai — IA estável pelo servidor (Pollinations + Anthropic de reserva) ──
+async function handleAI(request, env) {
+  if (request.method !== "POST") return json({ text: "", error: "use POST" }, 200);
+  let body = {};
+  try { body = await request.json(); } catch (e) {}
+  const messages = Array.isArray(body.messages) ? body.messages : [];
+  const system = body.system || "";
+  const maxTokens = body.max_tokens || 450;
+  const msgs = [];
+  if (system) msgs.push({ role: "system", content: system });
+  messages.forEach(function (m) { msgs.push({ role: m.role === "assistant" ? "assistant" : "user", content: m.content }); });
+  // 1) Pollinations (lado do servidor — sem CORS, sem limite de URL)
+  try {
+    const r = await fetch("https://text.pollinations.ai/openai", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ model: "openai", messages: msgs, private: true })
+    });
+    if (r.ok) {
+      const j = await r.json();
+      const t = j && j.choices && j.choices[0] && j.choices[0].message && j.choices[0].message.content;
+      if (t && String(t).trim()) return json({ text: String(t).trim() }, 200);
+    }
+  } catch (e) {}
+  // 2) Anthropic (se a chave estiver configurada no Worker)
+  try {
+    const akey = env.ANTHROPIC_API_KEY;
+    if (akey) {
+      const ar = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "x-api-key": akey, "anthropic-version": "2023-06-01" },
+        body: JSON.stringify({ model: "claude-3-5-haiku-20241022", max_tokens: maxTokens, system: system || undefined, messages: messages })
+      });
+      if (ar.ok) {
+        const aj = await ar.json();
+        const t = (aj.content || []).filter(function (b) { return b.type === "text"; }).map(function (b) { return b.text; }).join("\n").trim();
+        if (t) return json({ text: t }, 200);
+      }
+    }
+  } catch (e) {}
+  return json({ text: "", error: "ai_unavailable" }, 200);
 }
 
 // ── /api/shopee — config segura + busca de tênis com link de afiliado ──

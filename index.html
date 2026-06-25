@@ -5638,7 +5638,7 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v291.0001</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v292.0001</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -18310,10 +18310,12 @@ Poderia me ajudar? 🙏"
                       +'</div>'
                       // ajuste de câmera puxando pro estilo (Estilo da Foto + Kelvin)
                       +'<div style="background:rgba(167,139,250,0.06);border:1px solid rgba(167,139,250,0.3);border-radius:10px;padding:10px 11px;margin-bottom:11px;">'
-                      +'<div style="font-size:9.5px;color:#a78bfa;font-weight:900;margin-bottom:6px;">📷 NA CÂMERA, pra já puxar pro estilo</div>'
+                      +'<div style="font-size:9.5px;color:#a78bfa;font-weight:900;margin-bottom:6px;">1️⃣ 📷 NA CÂMERA — pra já puxar pro estilo</div>'
                       +'<div style="font-size:10.5px;color:#cdd6e4;line-height:1.8;">🎛️ Estilo da Foto: <b style="color:#fff;">'+refStyle+'</b><br>🌗 Contraste: <b style="color:#fff;">'+cContrast+'</b> &nbsp; 🎨 Saturação: <b style="color:#fff;">'+cSat+'</b> &nbsp; ✏️ Nitidez forte<br>🌡️ Kelvin (sua luz agora): <b style="color:#fff;">'+momK+'K</b></div></div>'
                       // download do preset do estilo
-                      +'<button onclick="cfgRefDownloadXmp()" style="width:100%;padding:11px;background:linear-gradient(135deg,#a78bfa,#7c3aed);color:#fff;border:none;border-radius:10px;font-weight:900;font-size:12px;cursor:pointer;margin-bottom:8px;">🎞️ Baixar preset Lightroom desse estilo (.xmp)</button>'
+                      +'<div style="font-size:9.5px;color:#a78bfa;font-weight:900;margin-bottom:6px;">2️⃣ 🎞️ BAIXE O PRESET (qualidade PRO: sem ruído, nítido, cor real)</div>'
+                      +'<button onclick="cfgRefDownloadXmp()" style="width:100%;padding:11px;background:linear-gradient(135deg,#a78bfa,#7c3aed);color:#fff;border:none;border-radius:10px;font-weight:900;font-size:12px;cursor:pointer;margin-bottom:11px;">🎞️ Baixar preset Lightroom desse estilo (.xmp)</button>'
+                      +'<div style="font-size:9.5px;color:#60a5fa;font-weight:900;margin-bottom:6px;">3️⃣ 🤖 AJUDA DA IA — pra igualar de vez</div>'
                       +'<button onclick="cfgRefAiTip()" style="width:100%;padding:11px;background:linear-gradient(135deg,#60a5fa,#3b82f6);color:#fff;border:none;border-radius:10px;font-weight:900;font-size:12px;cursor:pointer;">🤖 Pedir ajuda de cor da IA pra igualar</button>'
                       +'<div id="cfgRefAiBox" style="display:none;margin-top:10px;font-size:11px;color:#cdd6e4;background:rgba(96,165,250,0.07);border:1px solid rgba(96,165,250,0.2);border-radius:9px;padding:10px;line-height:1.6;"></div>';
                     if(box) box.innerHTML=html;
@@ -25357,6 +25359,11 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
     async function invAI(input, systemText, maxTokens){
       var sys=systemText||'';
       var messages = (typeof input==='string') ? [{role:'user',content:input}] : (input||[]);
+      // 0) Pelo NOSSO Worker (servidor) — mais estável, sem CORS nem limite de URL
+      try{
+        var r0=await fetch('/api/ai',{ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ messages:messages, system:sys, max_tokens:maxTokens||450 }) });
+        if(r0.ok){ var ct0=(r0.headers.get('content-type')||''); if(ct0.indexOf('json')>=0){ var j0=await r0.json(); if(j0 && j0.text && String(j0.text).trim().length>1) return String(j0.text).trim(); } }
+      }catch(e){}
       // 1) Pollinations via POST (OpenAI-compat) — aguenta prompt LONGO (vai no corpo, não na URL)
       try{
         var msgs2=[];
