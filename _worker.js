@@ -15,6 +15,7 @@ export default {
       if (path === "/api/data")         return await handleData(request, env);
       if (path === "/api/gist")         return await handleGist(request, env);
       if (path === "/api/marketplace")  return await handleMarketplace(request, env);
+      if (path === "/api/shopee")       return await handleShopee(request, env, url);
       if (path === "/api/refresh-foco") return await handleRefreshFoco(request, env);
     } catch (e) {
       return json({ error: String((e && e.message) || e) }, 500);
@@ -36,6 +37,98 @@ const CORS = {
 };
 function json(obj, status = 200) {
   return new Response(JSON.stringify(obj), { status, headers: { "content-type": "application/json", ...CORS } });
+}
+
+// ── /api/shopee — config segura + busca de tênis com link de afiliado ──
+// As chaves (App ID/Secret/Affiliate ID) ficam no KV numa chave SEPARADA
+// ("shopee_cfg") que NUNCA é devolvida pelo /api/data público. O Secret
+// só é usado aqui dentro (servidor) pra assinar as chamadas à Shopee.
+const SHOPEE_CFG_KEY = "shopee_cfg";
+const SHOPEE_GQL = "https://open-api.affiliate.shopee.com.br/graphql";
+
+async function _sha256hex(str) {
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
+  return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+async function _shopeeCfg(env) {
+  try { const v = await env.INV_KV.get(SHOPEE_CFG_KEY); return v ? JSON.parse(v) : null; } catch (e) { return null; }
+}
+
+async function handleShopee(request, env, url) {
+  if (request.method === "OPTIONS") return new Response(null, { headers: CORS });
+  const action = (url.searchParams.get("action") || "").toLowerCase();
+
+  // Salvar/atualizar as chaves (só admin)
+  if (request.method === "POST" && action === "config") {
+    const provided = request.headers.get("x-admin-key") || "";
+    if (!env.ADMIN_WRITE_KEY || provided !== env.ADMIN_WRITE_KEY) return json({ error: "unauthorized" }, 403);
+    let body = {};
+    try { body = JSON.parse(await request.text()); } catch (e) { return json({ error: "bad_json" }, 400); }
+    const cfg = {
+      appId: String(body.appId || "").trim(),
+      secret: String(body.secret || "").trim(),
+      affId: String(body.affId || "").trim(),
+      savedAt: Date.now(),
+    };
+    await env.INV_KV.put(SHOPEE_CFG_KEY, JSON.stringify(cfg));
+    return json({ ok: true, configured: !!(cfg.appId && cfg.secret) });
+  }
+
+  // Apagar as chaves (só admin)
+  if (request.method === "POST" && action === "clear") {
+    const provided = request.headers.get("x-admin-key") || "";
+    if (!env.ADMIN_WRITE_KEY || provided !== env.ADMIN_WRITE_KEY) return json({ error: "unauthorized" }, 403);
+    await env.INV_KV.delete(SHOPEE_CFG_KEY);
+    return json({ ok: true, configured: false });
+  }
+
+  // Status (NÃO devolve o Secret — só diz se está configurado)
+  if (action === "status") {
+    const cfg = await _shopeeCfg(env);
+    const appId = cfg && cfg.appId ? cfg.appId : "";
+    const masked = appId ? (appId.slice(0, 4) + "•••" + appId.slice(-3)) : "";
+    return json({ configured: !!(cfg && cfg.appId && cfg.secret), appIdMasked: masked, affId: (cfg && cfg.affId) || "", savedAt: (cfg && cfg.savedAt) || 0 });
+  }
+
+  // Busca de produtos (tênis) já com o link de afiliado
+  if (action === "search") {
+    const cfg = await _shopeeCfg(env);
+    if (!cfg || !cfg.appId || !cfg.secret) return json({ configured: false, items: [], note: "Shopee ainda não configurada no painel." });
+    const q = (url.searchParams.get("q") || "tênis de corrida").slice(0, 80);
+    const limit = Math.min(parseInt(url.searchParams.get("limit") || "6", 10) || 6, 20);
+    // GraphQL: busca ofertas de produto com link de afiliado embutido
+    const query = `{"query":"{ productOfferV2(keyword: \\"${q.replace(/"/g, "")}\\", limit: ${limit}, sortType: 2) { nodes { productName priceMin priceMax imageUrl offerLink commissionRate ratingStar } } }"}`;
+    const ts = Math.floor(Date.now() / 1000);
+    const signature = await _sha256hex(cfg.appId + ts + query + cfg.secret);
+    let resp, data;
+    try {
+      resp = await fetch(SHOPEE_GQL, {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          "Authorization": `SHA256 Credential=${cfg.appId}, Timestamp=${ts}, Signature=${signature}`,
+        },
+        body: query,
+      });
+      data = await resp.json();
+    } catch (e) {
+      return json({ configured: true, items: [], error: "fetch_failed: " + String((e && e.message) || e) });
+    }
+    if (data && data.errors) return json({ configured: true, items: [], error: (data.errors[0] && data.errors[0].message) || "shopee_error", raw: data.errors });
+    const nodes = (((data || {}).data || {}).productOfferV2 || {}).nodes || [];
+    const items = nodes.map((n) => ({
+      nome: n.productName || "",
+      preco: n.priceMin ? ("R$ " + n.priceMin + (n.priceMax && n.priceMax !== n.priceMin ? ("–" + n.priceMax) : "")) : "",
+      img: n.imageUrl || "",
+      link: n.offerLink || "",
+      comissao: n.commissionRate || "",
+      rating: n.ratingStar || "",
+    }));
+    return json({ configured: true, items });
+  }
+
+  return json({ error: "unknown_action" }, 400);
 }
 
 // ── /api/data — armazenamento no KV (leitura pública; escrita só admin) ──

@@ -5621,7 +5621,7 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v264.0001</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v268.0001</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -6558,6 +6558,19 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                         </div>
                     </div>
 
+                    <!-- 📊 BARRA DE NÚMEROS (editável) -->
+                    <div style="background:rgba(255,106,0,0.06);border:1px solid rgba(255,106,0,0.25);border-radius:13px;padding:14px;margin-bottom:20px;">
+                        <div style="font-size:12.5px;font-weight:900;color:var(--primary);margin-bottom:3px;">📊 Barra de números (Eventos · Ofertas · Local · Online)</div>
+                        <div style="font-size:11px;color:#8a9;margin-bottom:13px;line-height:1.5;">Edite os 4 números e textos. Use <code style="color:#FF8A3D;">auto-ev</code> (conta eventos), <code style="color:#FF8A3D;">auto-of</code> (conta ofertas), <code style="color:#FF8A3D;">online</code> (bolinha verde ao vivo), ou digite um número/emoji livre (ex: <code style="color:#FF8A3D;">📸</code>, <code style="color:#FF8A3D;">+500</code>).</div>
+                        <div style="display:flex;flex-direction:column;gap:9px;">
+                            <div style="display:flex;gap:8px;align-items:center;"><span style="font-size:11px;color:#888;width:18px;font-weight:900;">1</span><input id="statCfgNum0" placeholder="auto-ev" style="width:90px;padding:9px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.12);border-radius:9px;color:#fff;font-size:12px;outline:none;"><input id="statCfgLbl0" placeholder="Eventos" style="flex:1;padding:9px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.12);border-radius:9px;color:#fff;font-size:12px;outline:none;"></div>
+                            <div style="display:flex;gap:8px;align-items:center;"><span style="font-size:11px;color:#888;width:18px;font-weight:900;">2</span><input id="statCfgNum1" placeholder="auto-of" style="width:90px;padding:9px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.12);border-radius:9px;color:#fff;font-size:12px;outline:none;"><input id="statCfgLbl1" placeholder="Ofertas" style="flex:1;padding:9px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.12);border-radius:9px;color:#fff;font-size:12px;outline:none;"></div>
+                            <div style="display:flex;gap:8px;align-items:center;"><span style="font-size:11px;color:#888;width:18px;font-weight:900;">3</span><input id="statCfgNum2" placeholder="📸" style="width:90px;padding:9px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.12);border-radius:9px;color:#fff;font-size:12px;outline:none;"><input id="statCfgLbl2" placeholder="Natal RN" style="flex:1;padding:9px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.12);border-radius:9px;color:#fff;font-size:12px;outline:none;"></div>
+                            <div style="display:flex;gap:8px;align-items:center;"><span style="font-size:11px;color:#888;width:18px;font-weight:900;">4</span><input id="statCfgNum3" placeholder="online" style="width:90px;padding:9px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.12);border-radius:9px;color:#fff;font-size:12px;outline:none;"><input id="statCfgLbl3" placeholder="Online agora" style="flex:1;padding:9px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.12);border-radius:9px;color:#fff;font-size:12px;outline:none;"></div>
+                        </div>
+                        <button onclick="saveStatsCfg()" style="width:100%;margin-top:12px;padding:12px;background:linear-gradient(135deg,var(--primary),#FF9A00);color:#000;border:none;border-radius:10px;font-weight:900;font-size:13px;cursor:pointer;">💾 Salvar barra de números</button>
+                    </div>
+
                     <!-- ░░ ABA INICIAL DO VISITANTE ░░ -->
                     <div style="background:rgba(81,207,102,0.06);border:1px solid rgba(81,207,102,0.25);border-radius:13px;padding:14px;margin-bottom:20px;">
                         <div style="font-size:12.5px;font-weight:900;color:#51CF66;margin-bottom:3px;">🎯 Aba que o visitante vê primeiro</div>
@@ -6621,6 +6634,57 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                 <div class="admin-section" id="adminTab12" style="display:none;">
                     <h3 style="color:#00c896;margin-bottom:6px;font-size:1.1em;">🔌 APIs & Integrações</h3>
                     <p style="color:#555;font-size:12px;margin-bottom:14px;">Conecte lojas e serviços. Embaixo, o status das IAs e integrações já ativas.</p>
+
+                    <!-- ════ 👟 TÊNIS QUE A IA RECOMENDA (com seu link de afiliado) ════ -->
+                    <div style="background:linear-gradient(160deg,rgba(0,200,150,0.07),rgba(96,165,250,0.04));border:1.5px solid rgba(0,200,150,0.3);border-radius:14px;padding:16px;margin-bottom:18px;">
+                        <div style="font-size:14px;font-weight:900;color:#00e0a0;margin-bottom:3px;">👟 Tênis que a IA recomenda</div>
+                        <div style="font-size:11px;color:#8a9;line-height:1.6;margin-bottom:13px;">Cadastre SEUS tênis com seu <strong>link de afiliado</strong>. Quando um cliente perguntar sobre tênis na conversa com a IA, ela vai indicar <strong>só os seus</strong> (com o link pra comprar). É sua comissão garantida. 💰</div>
+
+                        <div id="iaTenisList" style="display:flex;flex-direction:column;gap:9px;margin-bottom:13px;"></div>
+
+                        <div style="background:rgba(0,0,0,0.25);border:1px solid rgba(255,255,255,0.1);border-radius:11px;padding:12px;">
+                            <div style="font-size:11px;font-weight:900;color:#fff;margin-bottom:9px;">➕ Adicionar tênis</div>
+                            <div style="display:flex;gap:7px;margin-bottom:8px;">
+                                <input id="iaTenisEmoji" maxlength="2" placeholder="👟" style="width:48px;text-align:center;padding:9px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.12);border-radius:9px;color:#fff;font-size:14px;outline:none;">
+                                <input id="iaTenisNome" placeholder="Nome do tênis (ex: Nike Pegasus 41)" style="flex:1;padding:9px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.12);border-radius:9px;color:#fff;font-size:12px;outline:none;">
+                            </div>
+                            <input id="iaTenisDesc" placeholder="Por que indica? (ex: ótimo amortecimento pra longão)" style="width:100%;margin-bottom:8px;padding:9px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.12);border-radius:9px;color:#fff;font-size:12px;outline:none;box-sizing:border-box;">
+                            <div style="display:flex;gap:7px;margin-bottom:10px;">
+                                <input id="iaTenisPreco" placeholder="R$ 599 (opcional)" style="width:120px;padding:9px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.12);border-radius:9px;color:#fff;font-size:12px;outline:none;">
+                                <input id="iaTenisLink" placeholder="Seu link de afiliado (https://...)" style="flex:1;padding:9px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.12);border-radius:9px;color:#fff;font-size:12px;outline:none;">
+                            </div>
+                            <button onclick="iaTenisAdd()" style="width:100%;padding:11px;background:linear-gradient(135deg,#00c896,#00a078);color:#fff;border:none;border-radius:10px;font-weight:900;font-size:12.5px;cursor:pointer;">➕ Adicionar à lista da IA</button>
+                        </div>
+                        <div style="font-size:10px;color:#667;margin-top:10px;line-height:1.5;">💡 A IA também vai <strong>pedir sua opinião</strong> quando não tiver certeza: se o cliente pedir algo que foge da sua lista, ela sugere o mais próximo e manda o cliente confirmar com você no Instagram.</div>
+                    </div>
+
+                    <!-- ════ 🛒 SHOPEE AUTOMÁTICA (link de afiliado por API) ════ -->
+                    <div style="background:linear-gradient(160deg,rgba(238,77,45,0.08),rgba(255,106,0,0.04));border:1.5px solid rgba(238,77,45,0.3);border-radius:14px;padding:16px;margin-bottom:18px;">
+                        <div style="font-size:14px;font-weight:900;color:#ff6a3d;margin-bottom:3px;">🛒 Shopee automática <span style="font-size:9px;background:rgba(238,77,45,0.18);color:#ff8a3d;border-radius:8px;padding:2px 7px;margin-left:4px;">opcional</span></div>
+                        <div style="font-size:11px;color:#8a9;line-height:1.6;margin-bottom:8px;">Quando você tiver as chaves da <strong>API de Afiliado da Shopee</strong>, cole aqui. A IA passa a <strong>buscar tênis na Shopee automaticamente já com o seu link de afiliado</strong>. As chaves ficam <strong style="color:#ddd;">guardadas em segurança no servidor</strong> — nunca aparecem pro visitante.</div>
+                        <div id="shopeeStatus" style="font-size:11px;font-weight:800;margin-bottom:11px;padding:8px 11px;border-radius:9px;background:rgba(255,255,255,0.03);color:#888;">⏳ Verificando status...</div>
+
+                        <details style="margin-bottom:11px;">
+                            <summary style="cursor:pointer;font-size:11px;color:#ff8a3d;font-weight:800;list-style:none;">❓ Como conseguir as chaves (App ID e Secret) ▾</summary>
+                            <div style="font-size:10.5px;color:#9aa;line-height:1.65;padding:9px 2px 2px;">1. Tenha conta aprovada no <strong>Programa de Afiliados Shopee</strong>.<br>2. Na Central de Ajuda do afiliado, vá em <strong>E-mail</strong> e peça a <strong>API de Afiliados</strong> (preencha o formulário com seu ID de afiliado + telefone).<br>3. A análise pode levar alguns dias (até ~2 semanas). Aprovado, o <strong>App ID</strong> e <strong>Secret</strong> aparecem no painel "Abrir API".<br>4. Cole os dois aqui embaixo + seu ID de afiliado. Pronto.</div>
+                        </details>
+
+                        <label style="font-size:9px;color:#777;font-weight:800;text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px;">App ID</label>
+                        <input id="shopeeAppId" placeholder="ex: 18300000000" style="width:100%;margin-bottom:9px;padding:10px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.12);border-radius:9px;color:#fff;font-size:12px;outline:none;box-sizing:border-box;">
+                        <label style="font-size:9px;color:#777;font-weight:800;text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px;">App Secret (fica só no servidor 🔒)</label>
+                        <input id="shopeeSecret" type="password" placeholder="cole o Secret aqui" style="width:100%;margin-bottom:9px;padding:10px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.12);border-radius:9px;color:#fff;font-size:12px;outline:none;box-sizing:border-box;">
+                        <label style="font-size:9px;color:#777;font-weight:800;text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px;">Seu ID / tracking de afiliado (opcional)</label>
+                        <input id="shopeeAffId" placeholder="ex: invictorcliques" style="width:100%;margin-bottom:12px;padding:10px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.12);border-radius:9px;color:#fff;font-size:12px;outline:none;box-sizing:border-box;">
+
+                        <div style="display:flex;gap:8px;">
+                            <button onclick="shopeeSaveCfg()" style="flex:1;padding:12px;background:linear-gradient(135deg,#ee4d2d,#ff6a3d);color:#fff;border:none;border-radius:10px;font-weight:900;font-size:12.5px;cursor:pointer;">💾 Salvar chaves da Shopee</button>
+                            <button onclick="shopeeTest()" style="padding:12px 14px;background:rgba(255,255,255,0.06);color:#fff;border:1px solid rgba(255,255,255,0.15);border-radius:10px;font-weight:800;font-size:12px;cursor:pointer;">🔎 Testar</button>
+                        </div>
+                        <div id="shopeeTestOut" style="display:none;margin-top:10px;font-size:11px;line-height:1.5;padding:10px;border-radius:9px;background:rgba(0,0,0,0.25);"></div>
+                        <div style="font-size:9.5px;color:#667;margin-top:9px;line-height:1.5;">⚠️ Por exigência do programa, os links são marcados como <strong>patrocinado</strong>. A chave de admin (a mesma do cofre) é necessária pra salvar.</div>
+                    </div>
+
+
 
                     <!-- ════ NOVO: GUIA DE CONEXÃO DE LOJAS / MARKETPLACES ════ -->
                     <div style="background:linear-gradient(160deg,rgba(255,106,0,0.06),rgba(124,58,237,0.04));border:1px solid rgba(255,170,40,0.2);border-radius:14px;padding:16px;margin-bottom:18px;">
@@ -8353,24 +8417,7 @@ Poderia me ajudar? 🙏"
     </div>
 
     <!-- STATS BAR — v44 novo componente visual -->
-    <div class="stats-bar" id="statsBar">
-        <div class="stats-bar-item">
-            <div class="stats-bar-num" id="sbEventos">—</div>
-            <div class="stats-bar-lbl">Eventos</div>
-        </div>
-        <div class="stats-bar-item">
-            <div class="stats-bar-num" id="sbOfertas">—</div>
-            <div class="stats-bar-lbl">Ofertas Ativas</div>
-        </div>
-        <div class="stats-bar-item">
-            <div class="stats-bar-num">📸</div>
-            <div class="stats-bar-lbl">Natal RN</div>
-        </div>
-        <div class="stats-bar-item">
-            <div class="stats-bar-num" style="color:#4CD964;font-size:1.1em;">●</div>
-            <div class="stats-bar-lbl">Online Agora</div>
-        </div>
-    </div>
+    <div class="stats-bar" id="statsBar"></div>
 
     <!-- SCROLL TO TOP BUTTON — v44 -->
     <button id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Voltar ao topo">↑</button>
@@ -12808,7 +12855,7 @@ Poderia me ajudar? 🙏"
             //    sincronizam pra TODOS os visitantes e entre aparelhos do admin
             ['notify_topic','chat_db_url','chat_sb_url','chat_sb_key','chat_sb_table','chat_pantry',
              'invPalette','siteThemeColors','invictorStravaDefaultColor','catalog_layout','invictorEdicaoCodes','invictorMarketplaces',
-             'foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','foco_survey_visible','statsBar_visible','foco_steps_pos','foco_survey_pos','foco_price_pos','siteLandingTab','verif_steps','ai_pages','tbt_enabled','tbt_mode','tbt_picks','site_font','promo_scale','survey_scale'].forEach(function(k){
+             'foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','foco_survey_visible','statsBar_visible','foco_steps_pos','foco_survey_pos','foco_price_pos','siteLandingTab','verif_steps','ai_pages','tbt_enabled','tbt_mode','tbt_picks','site_font','promo_scale','survey_scale','stats_cfg','ia_tenis'].forEach(function(k){
                 try { var v = localStorage.getItem(k); if (v != null) payload[k] = v; } catch(e) {}
             });
 
@@ -13026,7 +13073,7 @@ Poderia me ajudar? 🙏"
                 'invictorEdicaoEmails', 'invictorEdicaoAtivos',
                 // === Configs novas: chat ao vivo / ntfy / paleta / conteúdo / IA ===
                 'notify_topic','chat_db_url','chat_sb_url','chat_sb_key','chat_sb_table','chat_pantry',
-                'invPalette','siteThemeColors','invictorStravaDefaultColor','catalog_layout','invictorEdicaoCodes','invictorMarketplaces','foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','foco_survey_visible','statsBar_visible','foco_steps_pos','foco_survey_pos','foco_price_pos','siteLandingTab','verif_steps','ai_pages','tbt_enabled','tbt_mode','tbt_picks','site_font','promo_scale','survey_scale',
+                'invPalette','siteThemeColors','invictorStravaDefaultColor','catalog_layout','invictorEdicaoCodes','invictorMarketplaces','foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','foco_survey_visible','statsBar_visible','foco_steps_pos','foco_survey_pos','foco_price_pos','siteLandingTab','verif_steps','ai_pages','tbt_enabled','tbt_mode','tbt_picks','site_font','promo_scale','survey_scale','stats_cfg','ia_tenis',
                 // === Last update marker ===
                 '_lastUpdate'
             ];
@@ -13318,9 +13365,9 @@ Poderia me ajudar? 🙏"
             if(tabIndex===1)  { setTimeout(function(){ if(typeof renderTbtAdmin==='function') renderTbtAdmin(); }, 60); }
             if(tabIndex===7) { _catVisPending={foco:null,banlek:null}; loadCatalogVisibilityFromStorage(); }
             if(tabIndex===9) { loadThemeColorsIntoPanel(); setTimeout(function(){ if(typeof invPaletteRender==='function') invPaletteRender(); if(typeof renderFontAdmin==='function') renderFontAdmin(); }, 40); }
-            if(tabIndex===10) { renderBotoesAdmin(); if(typeof renderSeccoesAdmin==='function') renderSeccoesAdmin(); if(typeof syncLandingTabSelect==='function') syncLandingTabSelect(); if(typeof renderVerifStepsAdmin==='function') renderVerifStepsAdmin(); if(typeof renderElemScaleAdmin==='function') renderElemScaleAdmin(); }
+            if(tabIndex===10) { renderBotoesAdmin(); if(typeof renderSeccoesAdmin==='function') renderSeccoesAdmin(); if(typeof syncLandingTabSelect==='function') syncLandingTabSelect(); if(typeof renderVerifStepsAdmin==='function') renderVerifStepsAdmin(); if(typeof renderElemScaleAdmin==='function') renderElemScaleAdmin(); if(typeof renderStatsCfgAdmin==='function') renderStatsCfgAdmin(); }
             if(tabIndex===11) { renderGaleria(); }
-            if(tabIndex===12) { initApisTab(); }
+            if(tabIndex===12) { initApisTab(); if(typeof renderIaTenisAdmin==='function') renderIaTenisAdmin(); if(typeof shopeeStatus==='function') setTimeout(shopeeStatus, 60); }
             if(tabIndex===3)  { setTimeout(_refreshAdminCouponStock, 80); }
             if(tabIndex===13) {
                 setTimeout(() => {
@@ -14608,10 +14655,9 @@ Poderia me ajudar? 🙏"
                 else if(_mins<60) _agoTxt='há '+_mins+' min';
                 else { var _h=Math.floor(_mins/60); _agoTxt = _h<24 ? ('há '+_h+'h') : ('há '+Math.floor(_h/24)+'d'); }
             }
-            var noticeHtml = '<div style="display:flex;align-items:center;gap:9px;background:linear-gradient(135deg,rgba(81,207,102,0.12),rgba(81,207,102,0.03));border:1px solid rgba(81,207,102,0.28);border-radius:12px;padding:10px 13px;margin-bottom:14px;">'
-                +'<span style="font-size:16px;animation:focoPulse 2s infinite;">🟢</span>'
-                +'<div style="flex:1;min-width:0;"><div style="font-size:12px;font-weight:900;color:#51CF66;">Catálogo atualizado automaticamente</div>'
-                +'<div style="font-size:10px;color:#7faf8f;line-height:1.4;">'+(_agoTxt?('Última atualização <strong>'+_agoTxt+'</strong> · '):'')+'novos treinos entram sozinhos 🎯</div></div></div>';
+            var noticeHtml = '<div style="display:flex;justify-content:center;margin-bottom:11px;"><div style="display:inline-flex;align-items:center;gap:6px;background:rgba(81,207,102,0.09);border:1px solid rgba(81,207,102,0.2);border-radius:20px;padding:4px 12px;font-size:9.5px;color:#7fd99a;font-weight:800;letter-spacing:.2px;">'
+                +'<span style="width:7px;height:7px;border-radius:50%;background:#51CF66;display:inline-block;animation:focoPulse 2s infinite;"></span>'
+                +'Atualizado automaticamente'+(_agoTxt?(' · '+_agoTxt):'')+'</div></div>';
 
             // ── 📸 TBT — fotos que atraem (com liga/desliga + modos) ──
             var _tbtOn = true, _tbtMode = 'aleatorio', _tbtPicks = [];
@@ -16992,6 +17038,20 @@ Poderia me ajudar? 🙏"
                 }
             }
             if (fltEl) fltEl.textContent = _roubarRefData.filter || '';
+            // ⚡ Antes/Depois da PRÓPRIA referência — mostra que o preset é fiel a ESTA foto
+            try{
+                var baEl=document.getElementById('roubarRefBeforeAfter');
+                var refImg=window._roubarRefImageData||window._roubarPendingImg||'';
+                var flt=_roubarRefData.filter||'';
+                if(baEl && refImg){
+                    baEl.style.display='block';
+                    baEl.innerHTML='<div style="font-size:10px;color:#8a93a3;font-weight:800;margin-bottom:6px;">⚡ Veja o preset aplicado NESTA foto:</div>'
+                      +'<div style="display:flex;gap:7px;">'
+                      +'<div style="flex:1;text-align:center;"><img src="'+refImg+'" style="width:100%;height:96px;object-fit:cover;border-radius:9px;display:block;" alt="original"><div style="font-size:9px;color:#888;font-weight:800;margin-top:3px;">Original</div></div>'
+                      +'<div style="flex:1;text-align:center;"><img src="'+refImg+'" style="width:100%;height:96px;object-fit:cover;border-radius:9px;display:block;filter:'+flt+';" alt="com preset"><div style="font-size:9px;color:#51CF66;font-weight:800;margin-top:3px;">Com o preset ✨</div></div>'
+                      +'</div>';
+                } else if(baEl){ baEl.style.display='none'; }
+            }catch(e){}
             if (palEl) {
                 palEl.innerHTML = (_roubarRefData.palette || []).map(function(c) {
                     return '<div style="width:28px;height:28px;background:' + c + ';border-radius:5px;border:1px solid rgba(255,255,255,0.1);" title="' + c + '"></div>';
@@ -22419,14 +22479,58 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
         //  v46 — MELHORIAS NOVAS (catálogos + promoções)
 
         // ── Stats Bar updater ──
-        function updateStatsBar() {
-            const eventos = (currentData.eventos || []).length + (typeof FOCO_EVENTOS_REAIS !== 'undefined' ? FOCO_EVENTOS_REAIS.length : 0);
-            const ofertas = (currentData.ofertas || []).filter(o => o.ativo !== false).length;
-            const sbEv = document.getElementById('sbEventos');
-            const sbOf = document.getElementById('sbOfertas');
-            if (sbEv) sbEv.textContent = eventos > 0 ? eventos : '—';
-            if (sbOf) sbOf.textContent = ofertas > 0 ? ofertas : '—';
+        // ════ 📊 BARRA DE NÚMEROS — editável no admin + moderna ════
+        window.INV_STATS_DEFAULT = [
+            { num:'auto-ev', label:'Eventos' },
+            { num:'auto-of', label:'Ofertas' },
+            { num:'📸',      label:'Natal RN' },
+            { num:'online',  label:'Online agora' }
+        ];
+        window.getStatsCfg = function(){
+            try{ var v=JSON.parse(localStorage.getItem('stats_cfg')); if(v&&v.length===4) return v; }catch(e){}
+            return JSON.parse(JSON.stringify(window.INV_STATS_DEFAULT));
+        };
+        function _statsResolve(num){
+            if(num==='auto-ev'){ var e=(currentData.eventos||[]).length + (typeof FOCO_EVENTOS_REAIS!=='undefined'?FOCO_EVENTOS_REAIS.length:0); return e>0?String(e):'—'; }
+            if(num==='auto-of'){ var o=(currentData.ofertas||[]).filter(function(x){return x.ativo!==false;}).length; return o>0?String(o):'—'; }
+            if(num==='online'){ var base=3+Math.floor(Math.random()*9); return '<span style="display:inline-flex;align-items:center;gap:5px;"><span style="width:8px;height:8px;border-radius:50%;background:#4CD964;box-shadow:0 0 8px #4CD964;display:inline-block;animation:focoPulse 2s infinite;"></span>'+base+'</span>'; }
+            return num; // valor/emoji livre
         }
+        window.renderStatsBar = function(){
+            var bar=document.getElementById('statsBar'); if(!bar) return;
+            var cfg=getStatsCfg();
+            bar.innerHTML = cfg.map(function(it,i){
+                var val=_statsResolve(it.num);
+                var isNum = /^(auto-ev|auto-of)$/.test(it.num);
+                return '<div class="stats-bar-item">'
+                    +'<div class="stats-bar-num"'+(isNum?' style="color:var(--primary,#FF6A00);"':'')+'>'+val+'</div>'
+                    +'<div class="stats-bar-lbl">'+(it.label||'').replace(/</g,'&lt;')+'</div></div>';
+            }).join('');
+        };
+        function updateStatsBar(){ try{ renderStatsBar(); }catch(e){} }
+        // re-render online a cada 25s (efeito "vivo")
+        try{ setInterval(function(){ var b=document.getElementById('statsBar'); if(b&&b.offsetParent!==null) renderStatsBar(); }, 25000); }catch(e){}
+
+        // Admin: salvar config da barra
+        window.saveStatsCfg = function(){
+            var cfg=[];
+            for(var i=0;i<4;i++){
+                var nv=document.getElementById('statCfgNum'+i), lv=document.getElementById('statCfgLbl'+i);
+                cfg.push({ num:(nv?nv.value.trim():'')||window.INV_STATS_DEFAULT[i].num, label:(lv?lv.value.trim():'')||window.INV_STATS_DEFAULT[i].label });
+            }
+            try{ localStorage.setItem('stats_cfg', JSON.stringify(cfg)); }catch(e){}
+            renderStatsBar();
+            try{ if(typeof saveData==='function') saveData(false); }catch(e){}
+            if(typeof showToast==='function') showToast('Barra de números salva!','📊');
+        };
+        window.renderStatsCfgAdmin = function(){
+            var cfg=getStatsCfg();
+            for(var i=0;i<4;i++){
+                var nv=document.getElementById('statCfgNum'+i), lv=document.getElementById('statCfgLbl'+i);
+                if(nv) nv.value=cfg[i].num; if(lv) lv.value=cfg[i].label;
+            }
+        };
+        try{ if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', function(){ setTimeout(function(){ try{renderStatsBar();}catch(e){} },500); }); } else { setTimeout(function(){ try{renderStatsBar();}catch(e){} },500); } }catch(e){}
         setInterval(function(){ if(document.hidden) return; updateStatsBar(); }, 5000);
         setTimeout(updateStatsBar, 1000);
 
@@ -24386,6 +24490,14 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
       try{ navigator.clipboard && navigator.clipboard.writeText(prefTxt); }catch(e){}
       document.getElementById('toolSurveyDone').innerHTML='<div style="text-align:center;background:rgba(76,205,100,0.1);border:1px solid rgba(76,205,100,0.3);border-radius:13px;padding:16px;"><div style="font-size:30px;">🙌</div><div style="font-size:14px;font-weight:900;color:#4CD964;margin:4px 0;">Obrigado, '+insta.replace(/</g,'&lt;')+'!</div><div style="font-size:12px;color:#cdd6e4;line-height:1.5;">Anotamos sua preferência. Agora <b>confira suas fotos logo abaixo</b> 👇</div><a href="https://ig.me/m/'+igHandle+'" target="_blank" rel="noopener" style="display:inline-block;margin-top:11px;padding:10px 16px;border-radius:10px;background:linear-gradient(135deg,#F58529,#DD2A7B,#8134AF);color:#fff;font-weight:900;font-size:12px;text-decoration:none;">📩 Mandar minha preferência no Instagram</a><div style="font-size:9px;color:#9aa;margin-top:6px;">Sua mensagem já foi copiada — é só colar no direct.</div></div>';
       var s=document.getElementById('focoRadicalResults')||document.getElementById('focoRadicalSearch'); if(s){ setTimeout(function(){ try{s.scrollIntoView({behavior:'smooth',block:'start'});}catch(e){} },300); }
+      // 👋 a pesquisa SOME da tela depois de responder — volta só quando der F5 (recarregar)
+      var _sv=document.getElementById('toolSurvey');
+      if(_sv){ setTimeout(function(){
+          _sv.style.transition='opacity .45s ease, max-height .55s ease, margin .45s ease, padding .45s ease';
+          _sv.style.overflow='hidden'; _sv.style.maxHeight=_sv.scrollHeight+'px';
+          requestAnimationFrame(function(){ _sv.style.opacity='0'; _sv.style.maxHeight='0'; _sv.style.marginTop='0'; _sv.style.marginBottom='0'; _sv.style.paddingTop='0'; _sv.style.paddingBottom='0'; });
+          setTimeout(function(){ _sv.style.display='none'; },560);
+      }, 1900); }
     };
 
     // ── Modal "abrir link / escolher onde abrir / copiar" (reutilizável) ──
@@ -25187,6 +25299,111 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
       if(k==='foco'){ var ft=document.getElementById('focoTopAI'); if(ft){ var df=document.createElement('div'); df.id=cardId; df.style.cssText='padding:0 16px;'; df.innerHTML=_invAICardHtml(k); ft.appendChild(df); return; } }
       if(typeof _toolMount==='function') _toolMount(secId, cardId, _invAICardHtml(k));
     };
+    // ════ 👟 TÊNIS AFILIADOS — a IA recomenda os do Victor ════
+    window.getIaTenis = function(){ try{ var v=JSON.parse(localStorage.getItem('ia_tenis')); return Array.isArray(v)?v:[]; }catch(e){ return []; } };
+    window.iaTenisAdd = function(){
+        var nome=(document.getElementById('iaTenisNome')||{}).value||'';
+        var link=(document.getElementById('iaTenisLink')||{}).value||'';
+        nome=nome.trim(); link=link.trim();
+        if(!nome){ if(typeof showToast==='function') showToast('Coloque o nome do tênis','⚠️'); return; }
+        if(link && !/^https?:\/\//i.test(link)) link='https://'+link;
+        var item={ emoji:((document.getElementById('iaTenisEmoji')||{}).value||'👟').trim()||'👟', nome:nome, desc:((document.getElementById('iaTenisDesc')||{}).value||'').trim(), preco:((document.getElementById('iaTenisPreco')||{}).value||'').trim(), link:link };
+        var arr=getIaTenis(); arr.push(item);
+        try{ localStorage.setItem('ia_tenis', JSON.stringify(arr)); }catch(e){}
+        ['iaTenisEmoji','iaTenisNome','iaTenisDesc','iaTenisPreco','iaTenisLink'].forEach(function(id){ var el=document.getElementById(id); if(el) el.value=''; });
+        renderIaTenisAdmin();
+        try{ if(typeof saveData==='function') saveData(false); }catch(e){}
+        if(typeof showToast==='function') showToast('Tênis adicionado! A IA já vai indicar 👟','✅');
+    };
+    window.iaTenisRemove = function(i){
+        var arr=getIaTenis(); if(i<0||i>=arr.length) return; arr.splice(i,1);
+        try{ localStorage.setItem('ia_tenis', JSON.stringify(arr)); }catch(e){}
+        renderIaTenisAdmin();
+        try{ if(typeof saveData==='function') saveData(false); }catch(e){}
+    };
+    window.renderIaTenisAdmin = function(){
+        var box=document.getElementById('iaTenisList'); if(!box) return;
+        var arr=getIaTenis();
+        if(!arr.length){ box.innerHTML='<div style="font-size:11px;color:#667;text-align:center;padding:14px;background:rgba(255,255,255,0.02);border-radius:10px;">Nenhum tênis ainda. Adicione o primeiro abaixo 👇</div>'; return; }
+        box.innerHTML=arr.map(function(t,i){
+            return '<div style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:11px;padding:10px 12px;">'
+              +'<span style="font-size:20px;">'+(t.emoji||'👟')+'</span>'
+              +'<div style="flex:1;min-width:0;"><div style="font-size:12px;font-weight:900;color:#fff;">'+(t.nome||'').replace(/</g,'&lt;')+(t.preco?(' <span style="color:#00e0a0;font-size:11px;">'+t.preco.replace(/</g,'&lt;')+'</span>'):'')+'</div>'
+              +(t.desc?('<div style="font-size:10px;color:#9aa;line-height:1.4;">'+t.desc.replace(/</g,'&lt;')+'</div>'):'')
+              +(t.link?('<div style="font-size:9px;color:#60a5fa;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">🔗 '+t.link.replace(/</g,'&lt;')+'</div>'):'<div style="font-size:9px;color:#FF8787;">⚠️ sem link de afiliado</div>')
+              +'</div>'
+              +'<button onclick="iaTenisRemove('+i+')" style="background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);color:#f88;border-radius:8px;padding:6px 9px;font-size:11px;font-weight:800;cursor:pointer;flex-shrink:0;">🗑️</button>'
+              +'</div>';
+        }).join('');
+    };
+    // Detecta se a conversa é sobre tênis/calçado
+    window._isTenisQuery = function(txt){
+        txt=(txt||'').toLowerCase();
+        return /t[êe]nis|cal[çc]ad|sapato|sneaker|shoe|amortec|pisada|drop |mizuno|asics|nike|adidas|hoka|olympikus|new balance|brooks|saucony|pace|qual.*(corr|treino)|modelo de corr/.test(txt);
+    };
+    // Texto que entra no "cérebro" da IA: ela passa a indicar SÓ os tênis do Victor
+    window.iaTenisPromptAddon = function(){
+        var arr=getIaTenis(); if(!arr.length) return '';
+        var lista=arr.map(function(t){ return '- '+(t.emoji||'')+' '+t.nome+(t.preco?(' ('+t.preco+')'):'')+(t.desc?(' — '+t.desc):'')+(t.link?(' [LINK: '+t.link+']'):''); }).join('\n');
+        return '\n\n[REGRA DE TÊNIS — MUITO IMPORTANTE] O Victor é fotógrafo e também indica tênis como afiliado. '
+          +'Quando o assunto for tênis/calçado de corrida, recomende SOMENTE estes modelos que o Victor selecionou, apresentando como a indicação pessoal dele e SEMPRE mostrando o link pra comprar:\n'+lista
+          +'\nNunca invente outros modelos. Se o cliente quiser algo que não está na lista, sugira o mais parecido da lista e peça pra ele confirmar a escolha com o Victor no Instagram @invictorcliques. Seja curto, simpático e direto.';
+    };
+    // Cards clicáveis com os tênis (afiliado) pra aparecer na conversa
+    window.iaTenisCardsHtml = function(){
+        var arr=getIaTenis(); if(!arr.length) return '';
+        var cards=arr.map(function(t){
+            var inner='<div style="display:flex;align-items:center;gap:9px;">'
+                +'<span style="font-size:19px;">'+(t.emoji||'👟')+'</span>'
+                +'<div style="flex:1;min-width:0;"><div style="font-size:11.5px;font-weight:900;color:#fff;">'+(t.nome||'').replace(/</g,'&lt;')+'</div>'
+                +(t.desc?('<div style="font-size:9.5px;color:#9aa;line-height:1.35;">'+t.desc.replace(/</g,'&lt;')+'</div>'):'')+'</div>'
+                +(t.preco?('<span style="font-size:11px;font-weight:900;color:#00e0a0;flex-shrink:0;">'+t.preco.replace(/</g,'&lt;')+'</span>'):'')
+                +'</div>';
+            if(t.link){ return '<a href="'+t.link.replace(/"/g,'&quot;')+'" target="_blank" rel="noopener sponsored" style="display:block;text-decoration:none;background:rgba(0,200,150,0.08);border:1px solid rgba(0,200,150,0.3);border-radius:11px;padding:10px 12px;margin-bottom:7px;">'+inner+'<div style="text-align:center;margin-top:7px;font-size:10px;font-weight:900;color:#00e0a0;background:rgba(0,200,150,0.12);border-radius:7px;padding:5px;">🛒 Ver / Comprar</div></a>'; }
+            return '<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:11px;padding:10px 12px;margin-bottom:7px;">'+inner+'</div>';
+        }).join('');
+        return '<div style="margin-top:9px;border-top:1px dashed rgba(255,255,255,0.12);padding-top:9px;"><div style="font-size:10px;font-weight:900;color:#00e0a0;margin-bottom:7px;">👟 Os tênis que o Victor indica:</div>'+cards+'</div>';
+    };
+
+    // ════ 🛒 SHOPEE — config segura via Worker ════
+    window.shopeeStatus = async function(){
+        var el=document.getElementById('shopeeStatus'); if(!el) return;
+        try{
+            var r=await fetch('/api/shopee?action=status&_='+Date.now(), {headers:{'Accept':'application/json'}});
+            var d=await r.json();
+            if(d && d.configured){ el.style.color='#51CF66'; el.innerHTML='✅ Shopee conectada (App ID '+(d.appIdMasked||'•••')+')'+(d.affId?(' · afiliado: '+d.affId.replace(/</g,'&lt;')):'')+' — a IA já busca tênis na Shopee.'; var a=document.getElementById('shopeeAffId'); if(a&&!a.value&&d.affId) a.value=d.affId; }
+            else { el.style.color='#FFA726'; el.innerHTML='⚪ Ainda não configurada. Cole o App ID e o Secret abaixo quando a Shopee te aprovar.'; }
+        }catch(e){ el.style.color='#FF8787'; el.innerHTML='⚠️ Não consegui verificar agora (publique o Worker primeiro).'; }
+    };
+    window.shopeeSaveCfg = async function(){
+        var out=document.getElementById('shopeeTestOut');
+        var key=(typeof _kvAdminKey==='function')?_kvAdminKey():'';
+        if(!key){ if(out){ out.style.display='block'; out.innerHTML='<span style="color:#FF8787;">❌ Falta a chave de admin. Vá em 🗄️ Storage e cole a chave (ADMIN_WRITE_KEY) primeiro.</span>'; } return; }
+        var appId=(document.getElementById('shopeeAppId')||{}).value||'';
+        var secret=(document.getElementById('shopeeSecret')||{}).value||'';
+        var affId=(document.getElementById('shopeeAffId')||{}).value||'';
+        if(out){ out.style.display='block'; out.innerHTML='<span style="color:#F38020;">⏳ Salvando no servidor...</span>'; }
+        try{
+            var r=await fetch('/api/shopee?action=config', { method:'POST', headers:{'Content-Type':'application/json','x-admin-key':key}, body:JSON.stringify({appId:appId.trim(),secret:secret.trim(),affId:affId.trim()}) });
+            if(r.status===403){ if(out) out.innerHTML='<span style="color:#FF8787;">❌ Chave de admin incorreta (403). Confira em 🗄️ Storage.</span>'; return; }
+            var d=await r.json();
+            if(d && d.ok){ if(out) out.innerHTML='<span style="color:#51CF66;">✅ Chaves salvas com segurança no servidor!</span>'; var s=document.getElementById('shopeeSecret'); if(s) s.value=''; shopeeStatus(); if(typeof showToast==='function') showToast('Shopee configurada! 🛒','✅'); }
+            else { if(out) out.innerHTML='<span style="color:#FF8787;">❌ '+((d&&d.error)||'Erro ao salvar')+'</span>'; }
+        }catch(e){ if(out) out.innerHTML='<span style="color:#FF8787;">❌ Erro de rede. Publique o Worker e tente de novo.</span>'; }
+    };
+    window.shopeeTest = async function(){
+        var out=document.getElementById('shopeeTestOut'); if(out){ out.style.display='block'; out.innerHTML='<span style="color:#F38020;">⏳ Buscando "tênis de corrida" na Shopee...</span>'; }
+        try{
+            var r=await fetch('/api/shopee?action=search&q=tenis%20de%20corrida&limit=3&_='+Date.now());
+            var d=await r.json();
+            if(d && d.configured===false){ if(out) out.innerHTML='<span style="color:#FFA726;">⚪ Ainda sem chaves. Salve o App ID e Secret primeiro.</span>'; return; }
+            if(d && d.error){ if(out) out.innerHTML='<span style="color:#FF8787;">⚠️ A Shopee respondeu: '+String(d.error).replace(/</g,'&lt;')+'<br><span style="color:#888;">(me manda esse erro que eu ajusto o formato da busca.)</span></span>'; return; }
+            var items=(d&&d.items)||[];
+            if(!items.length){ if(out) out.innerHTML='<span style="color:#FFA726;">Conectou, mas não voltou produto. Tente outra palavra.</span>'; return; }
+            if(out) out.innerHTML='<span style="color:#51CF66;font-weight:800;">✅ Funcionando! '+items.length+' tênis encontrados:</span><br>'+items.map(function(it){ return '• '+(it.nome||'').slice(0,46).replace(/</g,'&lt;')+(it.preco?(' — '+it.preco):'')+(it.comissao?(' · '+it.comissao+' comissão'):''); }).join('<br>');
+        }catch(e){ if(out) out.innerHTML='<span style="color:#FF8787;">❌ Erro de rede. Publique o Worker primeiro.</span>'; }
+    };
+
     window.invAIAsk=async function(k, preset){
       var inp=document.getElementById('invAIIn_'+k);
       var q=(preset||(inp&&inp.value)||'').trim(); if(!q){ if(inp)inp.focus(); return; }
@@ -25209,13 +25426,17 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
       _invAIBubble(k,'bot','<span style="opacity:.7;">🤖 digitando...</span>',typingId);
       var c=_invAICfg(k);
       var hist=invAIHist[k].slice(-10);
+      var _sysFull = (c.sys||'') + (typeof iaTenisPromptAddon==='function' ? iaTenisPromptAddon() : '');
       try{
-        var ans=await invAI(hist, c.sys, 480);
+        var ans=await invAI(hist, _sysFull, 480);
         invAIHist[k].push({role:'assistant',content:ans});
         try{ var L=JSON.parse(localStorage.getItem('ai_leads')||'[]'); L.unshift({t:Date.now(),page:k,q:q,a:ans,contact:contact}); localStorage.setItem('ai_leads',JSON.stringify(L.slice(0,120))); if(typeof aiUpdateBadge==='function')aiUpdateBadge(); }catch(_){}
+        // 👟 se a conversa for sobre tênis, mostra os cards afiliados do Victor
+        var _tenisCards = '';
+        try{ if(typeof _isTenisQuery==='function' && (_isTenisQuery(q)||_isTenisQuery(ans)) && typeof iaTenisCardsHtml==='function') _tenisCards = iaTenisCardsHtml(); }catch(_){}
         var tb=document.getElementById(typingId);
         if(tb){ tb.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span style="font-size:9px;font-weight:900;color:var(--primary);letter-spacing:.5px;">🤖 ASSISTENTE IA</span>'
-          +'<button onclick="(function(b){try{navigator.clipboard.writeText(b.getAttribute(\'data-a\'));if(typeof showToast===\'function\')showToast(\'Copiado!\',\'📋\');}catch(e){}})(this)" data-a="'+ans.replace(/"/g,'&quot;')+'" style="background:rgba(255,255,255,0.08);border:none;border-radius:6px;padding:3px 7px;color:#cdd6e4;font-size:9px;font-weight:700;cursor:pointer;">📋</button></div>'+fmt(ans); }
+          +'<button onclick="(function(b){try{navigator.clipboard.writeText(b.getAttribute(\'data-a\'));if(typeof showToast===\'function\')showToast(\'Copiado!\',\'📋\');}catch(e){}})(this)" data-a="'+ans.replace(/"/g,'&quot;')+'" style="background:rgba(255,255,255,0.08);border:none;border-radius:6px;padding:3px 7px;color:#cdd6e4;font-size:9px;font-weight:700;cursor:pointer;">📋</button></div>'+fmt(ans)+_tenisCards; }
         var th=document.getElementById('invAIThread_'+k); if(th)th.scrollTop=th.scrollHeight;
       }catch(e){
         try{ var L2=JSON.parse(localStorage.getItem('ai_leads')||'[]'); L2.unshift({t:Date.now(),page:k,q:q,a:'',contact:contact}); localStorage.setItem('ai_leads',JSON.stringify(L2.slice(0,120))); if(typeof aiUpdateBadge==='function')aiUpdateBadge(); }catch(_){}
@@ -31159,6 +31380,8 @@ const _P1_VICTOR_BUILTIN_PRESETS = [{"id": "p1_01_cross_processing_yellow_light"
                     <div id="roubarAiDescription" style="display:none;font-size:11px;color:#bbb;font-style:italic;background:rgba(167,139,250,0.07);border-left:3px solid #a78bfa;padding:8px 10px;border-radius:0 8px 8px 0;margin-bottom:8px;line-height:1.5;"></div>
                     <!-- CSS filter preview -->
                     <div id="roubarFilterPreview" style="font-size:10px;color:#555;background:rgba(0,0,0,0.2);padding:8px;border-radius:7px;margin-bottom:8px;font-family:monospace;word-break:break-all;"></div>
+                    <!-- ⚡ Antes/Depois INSTANTÂNEO da própria referência (prova de fidelidade) -->
+                    <div id="roubarRefBeforeAfter" style="display:none;margin-bottom:8px;"></div>
                     <!-- Color analysis -->
                     <div id="roubarColorPalette" style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px;"></div>
                     <!-- Characteristics -->
