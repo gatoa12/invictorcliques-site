@@ -5621,7 +5621,7 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v271.0001</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v272.0001</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -25273,10 +25273,10 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
         foco:{t:'🤖 Assistente IA — Suas Fotos',d:'Tire dúvidas sobre achar, comprar e baixar suas fotos.',sys:'Você é o assistente OFICIAL do Victor (@invictorcliques), fotógrafo esportivo referência em corrida de rua em Natal-RN. Guie o cliente com segurança para achar, comprar e baixar as fotos dele no Foco Radical, e incentive a finalizar a compra. Fale com autoridade, simpatia e objetividade, em português do Brasil. Nunca invente eventos; se não souber, oriente a usar a busca por data.',sg:['Como acho minhas fotos?','Como baixo em alta resolução?','Posso pedir edição?']},
         strava:{t:'🏃 Coach IA — Corrida',d:'Peça dicas de treino, pace e prova.',sys:'Você é um treinador de corrida experiente (running coach) que prepara corredores de rua de 5k a maratona. Dê orientações práticas, seguras e personalizáveis sobre treino, pace, recuperação, força e provas. Tom de autoridade e motivação. Respostas curtas e acionáveis, em português do Brasil. Lembre que dor/lesão pede avaliação profissional.',sg:['Como melhorar meu pace?','Treino pra 10k em 8 semanas','O que comer antes da prova?']},
         edicao:{t:'✨ IA de Edição',d:'Descreva sua foto e a IA sugere o estilo ideal.',sys:'Você é diretor de arte e retocador especialista em fotografia esportiva de corrida (padrão do estúdio do Victor / presets P1 Victor). Recomende receitas de edição concretas: luz, contraste, cor, sombras, nitidez e mood. Fale com autoridade técnica mas acessível, em português do Brasil, curto.',sg:['Estilo pra foto ao pôr do sol','Deixar a foto mais dramática','Visual clean e profissional']},
-        procure:{t:'👟 IA de Tênis',d:'Diga seu perfil e a IA recomenda o tênis ideal.',sys:'Você é um especialista (curador) em tênis de corrida, com domínio de pisada (neutra/pronada/supinada), drop, amortecimento e uso (treino, prova, trail). Recomende categorias e modelos populares por perfil, com autoridade e sem enrolação, em português do Brasil.',sg:['Tênis pra iniciante','Pisada neutra, 10k','Melhor custo-benefício']},
+        procure:{t:'👟 IA de Tênis',d:'Diga seu perfil e a IA recomenda o tênis ideal.',sys:'Você é um especialista (curador) em tênis de corrida, com domínio de pisada (neutra/pronada/supinada), drop, amortecimento e uso (treino, prova, trail). Recomende categorias e modelos populares por perfil, com autoridade e sem enrolação, em português do Brasil. NUNCA escreva links ou URLs de lojas (Netshoes, Amazon, Centauro etc) — o ÚNICO link válido aparece nos botões automáticos abaixo da sua resposta.',sg:['👟 Recomendações do Victor IA','Tênis pra iniciante','Pisada neutra, 10k','Melhor custo-benefício']},
         verificar:{t:'🔍 IA — Verificação',d:'Dúvidas sobre conferir e garantir suas fotos.',sys:'Você é o assistente de atendimento do Victor para verificação de fotos. Explique com clareza e segurança como conferir, identificar e comprar as fotos, e que ao verificar a pessoa ganha um cupom exclusivo de desconto para as próximas compras. Tranquilize sobre privacidade e o uso da selfie (apenas para identificação). Tom acolhedor e confiável, em português do Brasil, curto.',sg:['Como acho minhas fotos?','É seguro enviar a selfie?','Como funciona o cupom exclusivo?']},
         preview:{t:'📱 IA de Legendas',d:'A IA cria legendas e hashtags pro seu post.',sys:'Você é social media especialista em conteúdo de corrida para Instagram. Crie legendas curtas, marcantes e originais + exatamente 5 hashtags relevantes (mix de nicho e alcance). Tom motivador e autoral, em português do Brasil.',sg:['Legenda pra foto de prova','Legenda de treino matinal','Algo motivacional']},
-        ofertas:{t:'🔥 IA de Ofertas',d:'Diga seu perfil e a IA acha o tênis em oferta ideal pra você.',sys:'Você é um consultor especialista em tênis de corrida que encontra a melhor oferta por perfil (orçamento, pisada, distância, objetivo). Seja direto, confiável e empolgante, em português do Brasil. Justifique a escolha e crie um senso de oportunidade sem enganar.',sg:['Melhor oferta até R$400','Tênis em promoção pra 10k','Custo-benefício pra iniciante']}
+        ofertas:{t:'🔥 IA de Ofertas',d:'Diga seu perfil e a IA acha o tênis em oferta ideal pra você.',sys:'Você é um consultor especialista em tênis de corrida que encontra a melhor oferta por perfil (orçamento, pisada, distância, objetivo). Seja direto, confiável e empolgante, em português do Brasil. Justifique a escolha e crie senso de oportunidade sem enganar. NUNCA escreva links ou URLs de lojas (Netshoes, Amazon, Centauro etc) — o ÚNICO link válido pra comprar aparece nos botões automáticos logo abaixo da sua resposta. Só diga a dica + o nome do modelo + o preço, e mande conferir o botão de cupons abaixo.',sg:['👟 Recomendações do Victor IA','Melhor oferta até R$400','Tênis em promoção pra 10k','Custo-benefício pra iniciante']}
       };
       return C[k]||C.foco;
     }
@@ -25339,10 +25339,12 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
     // ════ 🎟️ LINKS DE OFERTA (Shopee cupom + Telegram + WhatsApp) ════
     window.getIaOfertaLinks = function(){
         function g(k,d){ try{ var v=localStorage.getItem(k); return (v!=null&&v!=='')?v:d; }catch(e){ return d; } }
+        var vw='', vt='';
+        try{ if(typeof currentData!=='undefined' && currentData){ vw=currentData.vipGroupWhatsapp||''; vt=currentData.vipGroupTelegram||''; } }catch(e){}
         return {
             cupom: g('ia_shopee_cupom','https://s.shopee.com.br/6VLlP94Mny'),
-            telegram: g('ia_telegram',''),
-            whats: g('ia_whats_ofertas','')
+            telegram: g('ia_telegram', vt),   // usa o Telegram do grupo VIP se não houver específico
+            whats: g('ia_whats_ofertas', vw)  // usa o WhatsApp do grupo VIP se não houver específico
         };
     };
     window.iaOfertaLinksSave = function(){
@@ -25528,13 +25530,18 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
       var c=_invAICfg(k);
       var hist=invAIHist[k].slice(-10);
       var _sysFull = (c.sys||'') + (typeof iaTenisPromptAddon==='function' ? iaTenisPromptAddon() : '');
+      var _isOfferPage = (k==='ofertas' || k==='procure');
       try{
         var ans=await invAI(hist, _sysFull, 480);
+        // 🛡️ tira QUALQUER link externo que a IA inventar (Netshoes, Amazon, etc) — o link certo é o do botão
+        if(_isOfferPage || (typeof _isTenisQuery==='function' && _isTenisQuery(ans))){
+          ans = ans.replace(/<?\bhttps?:\/\/[^\s>)\]]+>?/gi, '👇 (link nos botões abaixo)');
+        }
         invAIHist[k].push({role:'assistant',content:ans});
         try{ var L=JSON.parse(localStorage.getItem('ai_leads')||'[]'); L.unshift({t:Date.now(),page:k,q:q,a:ans,contact:contact}); localStorage.setItem('ai_leads',JSON.stringify(L.slice(0,120))); if(typeof aiUpdateBadge==='function')aiUpdateBadge(); }catch(_){}
-        // 👟 se a conversa for sobre tênis, mostra os cards + cupons Shopee + grupos
+        // 👟 nas páginas de tênis/ofertas mostra SEMPRE; nas outras, só quando o assunto é tênis
         var _tenisCards = '';
-        try{ if(typeof _isTenisQuery==='function' && (_isTenisQuery(q)||_isTenisQuery(ans))){
+        try{ if(_isOfferPage || (typeof _isTenisQuery==='function' && (_isTenisQuery(q)||_isTenisQuery(ans)))){
             if(typeof iaTenisCardsHtml==='function') _tenisCards += iaTenisCardsHtml();
             if(typeof iaOfertaFooterHtml==='function') _tenisCards += iaOfertaFooterHtml(k);
         } }catch(_){}
