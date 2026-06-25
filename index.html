@@ -5638,7 +5638,7 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v287.0001</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v289.0001</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -18173,6 +18173,18 @@ Poderia me ajudar? 🙏"
                         +'<div style="background:rgba(96,165,250,0.14);border:1px solid rgba(96,165,250,0.45);border-radius:9px;padding:8px 10px;"><div style="font-size:8.5px;color:#60a5fa;font-weight:800;">🎨 Bal. Branco</div><div style="font-size:11.5px;color:#fff;font-weight:900;line-height:1.1;">'+wbObj.ic+' '+wbObj.nome+'</div></div>'
                         +'</div>'
                         +(b.ev?'<div style="font-size:9.5px;color:'+b.cor+';font-weight:800;margin-bottom:8px;">🎚️ Compensação de exposição: '+(b.ev.indexOf('-')>=0?('−'+b.ev.length+' (clareie no escuro)'):('+'+b.ev.length+' se o fundo enganar o medidor'))+'</div>':'')
+                        // 🎛️ Picture Style da Canon R7 (nitidez/contraste/saturação/tom)
+                        +(function(){ var p=cfgCanonPicStyle(b,std,warmth,avg); return ''
+                            +'<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:10px 11px;margin-bottom:8px;">'
+                            +'<div style="font-size:9.5px;color:#a78bfa;font-weight:900;margin-bottom:7px;">🎛️ ESTILO DE IMAGEM (Canon R7) → base <span style="color:#fff;">'+p.base+'</span></div>'
+                            +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:10.5px;">'
+                            +'<div style="color:#cdd6e4;">✏️ Nitidez · Força: <b style="color:#fff;">'+p.sharp+'</b></div>'
+                            +'<div style="color:#cdd6e4;">▫️ Finura: <b style="color:#fff;">'+p.fine+'</b> · Limiar: <b style="color:#fff;">'+p.thr+'</b></div>'
+                            +'<div style="color:#cdd6e4;">🌗 Contraste: <b style="color:#fff;">'+_sgn(p.contrast)+'</b></div>'
+                            +'<div style="color:#cdd6e4;">🎨 Saturação: <b style="color:#fff;">'+_sgn(p.sat)+'</b></div>'
+                            +'<div style="color:#cdd6e4;">🌡️ Tom de cor: <b style="color:#fff;">'+_sgn(p.tone)+'</b></div>'
+                            +'<div style="color:#8a93a3;font-size:9px;align-self:center;">⚙️ Menu → Estilo de Imagem → Detalhe</div>'
+                            +'</div></div>'; })()
                         +'<div style="font-size:8.5px;color:#667;margin-bottom:14px;">📐 Medido: brilho '+Math.round(avg)+'/255 · contraste '+Math.round(std)+' · cor '+(warmth>0?'+':'')+Math.round(warmth)+' · estourado '+brightPct+'% · sombra '+darkPct+'%</div>'
 
                         // ════ PASSO 2 — NO LIGHTROOM CLASSIC ════
@@ -18207,6 +18219,7 @@ Poderia me ajudar? 🙏"
                         vcv.getContext('2d').drawImage(img,0,0,vw,vh);
                         var dataUrl=vcv.toDataURL('image/jpeg',0.7);
                         try{ if(window._cfgLast) window._cfgLast.dataUrl=dataUrl; }catch(e){}
+                        try{ var rmw=document.getElementById('cfgRefMatchWrap'); if(rmw) rmw.style.display='block'; }catch(e){}
                         var horaNow; try{ horaNow=new Date().getHours()+'h'; }catch(e){ horaNow=''; }
                         var vprompt='Você é fotógrafo esportivo profissional. VEJA esta foto da cena onde o Victor (@invictorcliques) vai fotografar CORREDORES na pista da Alexandrino em Natal/RN (horário atual ~'+horaNow+'). '
                             +'Medições da foto: brilho '+Math.round(avg)+'/255, contraste '+Math.round(std)+', temperatura '+Math.round(warmth)+', '+brightPct+'% estourado, '+darkPct+'% sombra. '
@@ -18262,6 +18275,94 @@ Poderia me ajudar? 🙏"
             }catch(e){ if(typeof showToast==='function') showToast('Não consegui abrir o PDF','⚠️'); }
         };
 
+        // 🎯 COPIAR ESTILO: compara a referência com o SEU momento, mostra viabilidade + preview + .xmp
+        window.cfgRefMatch = function(input){
+            var file=input&&input.files&&input.files[0]; if(!file) return;
+            var L=window._cfgLast;
+            var box=document.getElementById('cfgRefResult');
+            if(box){ box.style.display='block'; box.innerHTML='<div style="text-align:center;padding:14px;color:#a78bfa;font-size:12px;font-weight:800;">🔍 Comparando o estilo da referência com a sua luz...</div>'; }
+            var refUrl=URL.createObjectURL(file);
+            (async function(){
+                try{
+                    var refPx = await _doPixelAnalysisAsync(refUrl);
+                    window._cfgRefPx = refPx;
+                    var preset = _buildPresetFromData(refPx, null); // tem .filter (CSS)
+                    var momAvg=(L&&L.avg!=null)?L.avg:128;
+                    var per=(L&&L.b)?L.b.per:'dia';
+                    var refBright=(refPx.brightness!=null)?refPx.brightness:128;
+                    var refSv=(refPx.satVivid!=null)?refPx.satVivid:60;
+                    var refVa=(refPx.variance!=null)?refPx.variance:45;
+                    // viabilidade pra luz do momento
+                    var ok=true, aviso='';
+                    if(refBright>165 && momAvg<72){ ok=false; aviso='⚠️ A referência é bem <b>clara</b>, mas seu momento tem <b>pouca luz</b>'+(per==='noite'?' (noite)':'')+'. Dá pra aproximar com ISO alto + clarear no Lightroom, mas não fica idêntico sem mais luz.'; }
+                    else if(refBright<78 && momAvg>180){ aviso='💡 A referência é <b>escura/dramática</b> e seu momento tem <b>muita luz</b> — feche a exposição (−) ou escureça no Lightroom pra pegar esse clima.'; }
+                    else { aviso='✅ Dá pra chegar <b>bem perto</b> desse estilo com a luz do seu momento na R7!'; }
+                    // ajustes de câmera puxando pra referência
+                    var cContrast = refVa<25?'+1' : refVa>60?'+3' : '+2';
+                    var cSat = refSv>120?'+2' : refSv<40?'−1' : '+1';
+                    var momImg=(L&&L.dataUrl)?L.dataUrl:refUrl;
+                    var html=''
+                      +'<div style="font-size:11.5px;color:'+(ok?'#51CF66':'#FFA726')+';font-weight:800;line-height:1.55;background:rgba(255,255,255,0.03);border-left:3px solid '+(ok?'#51CF66':'#FFA726')+';padding:9px 11px;border-radius:0 8px 8px 0;margin-bottom:12px;">'+aviso+'</div>'
+                      // PREVIEW antes/depois aplicado no SEU momento
+                      +'<div style="font-size:9px;color:#a78bfa;font-weight:900;letter-spacing:1px;margin-bottom:7px;">👁️ COMO SUA FOTO PODE FICAR</div>'
+                      +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:13px;">'
+                      +'<div><img src="'+momImg+'" style="width:100%;height:110px;object-fit:cover;border-radius:9px;"><div style="text-align:center;font-size:9px;color:#888;margin-top:3px;">Seu momento</div></div>'
+                      +'<div><img src="'+momImg+'" style="width:100%;height:110px;object-fit:cover;border-radius:9px;filter:'+preset.filter+';"><div style="text-align:center;font-size:9px;color:#a78bfa;font-weight:800;margin-top:3px;">Com o estilo ✨</div></div>'
+                      +'</div>'
+                      // ajuste de câmera puxando pro estilo
+                      +'<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:10px 11px;margin-bottom:11px;">'
+                      +'<div style="font-size:9.5px;color:#a78bfa;font-weight:900;margin-bottom:6px;">📷 NA CÂMERA, pra já puxar pro estilo</div>'
+                      +'<div style="font-size:10.5px;color:#cdd6e4;line-height:1.7;">🌗 Contraste: <b style="color:#fff;">'+cContrast+'</b> &nbsp; 🎨 Saturação: <b style="color:#fff;">'+cSat+'</b> &nbsp; ✏️ Nitidez forte<br><span style="font-size:9px;color:#8a93a3;">+ a exposição/WB do preset acima</span></div></div>'
+                      // download do preset do estilo
+                      +'<button onclick="cfgRefDownloadXmp()" style="width:100%;padding:11px;background:linear-gradient(135deg,#a78bfa,#7c3aed);color:#fff;border:none;border-radius:10px;font-weight:900;font-size:12px;cursor:pointer;margin-bottom:8px;">🎞️ Baixar preset Lightroom desse estilo (.xmp)</button>'
+                      +'<button onclick="cfgRefAiTip()" style="width:100%;padding:11px;background:linear-gradient(135deg,#60a5fa,#3b82f6);color:#fff;border:none;border-radius:10px;font-weight:900;font-size:12px;cursor:pointer;">🤖 Pedir ajuda de cor da IA pra igualar</button>'
+                      +'<div id="cfgRefAiBox" style="display:none;margin-top:10px;font-size:11px;color:#cdd6e4;background:rgba(96,165,250,0.07);border:1px solid rgba(96,165,250,0.2);border-radius:9px;padding:10px;line-height:1.6;"></div>';
+                    if(box) box.innerHTML=html;
+                    setTimeout(function(){ try{ URL.revokeObjectURL(refUrl); }catch(e){} }, 2000);
+                }catch(e){ if(box) box.innerHTML='<div style="color:#FF8787;font-size:11px;padding:10px;">Não consegui ler a referência. Tente outra foto.</div>'; }
+            })();
+        };
+        window.cfgRefDownloadXmp = function(){
+            var px=window._cfgRefPx; if(!px){ if(typeof showToast==='function') showToast('Envie a referência primeiro','⚠️'); return; }
+            var w=(px.warmth!=null?px.warmth:0), va=(px.variance!=null?px.variance:45), sv=(px.satVivid!=null?px.satVivid:60), br=(px.brightness!=null?px.brightness:128);
+            var temp=w>25?-12:(w>12?-6:(w<-12?12:0)), tint=w<-12?4:0;
+            var contrast=va<25?14:(va>60?-8:6), exposure=br>185?-25:(br<80?28:0);
+            var vibrance=sv>120?18:(sv<40?-6:8), sat=sv>120?6:0;
+            var highlights=br>185?-18:0, shadows=br<80?34:0, clarity=va<25?12:6, sharp=42;
+            function s(v){return String(Math.round(v));}
+            var name='Estilo Copiado • Invictor';
+            var xmp='<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="invictorcliques">\n'
+              +' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
+              +'  <rdf:Description rdf:about=""\n'
+              +'   xmlns:crs="http://ns.adobe.com/camera-raw-settings/1.0/"\n'
+              +'   crs:PresetType="Normal" crs:Version="15.0" crs:Name="'+name+'"\n'
+              +'   crs:IncrementalTemperature="'+s(temp)+'" crs:IncrementalTint="'+s(tint)+'"\n'
+              +'   crs:Exposure2012="'+(exposure/100).toFixed(2)+'" crs:Contrast2012="'+s(contrast)+'"\n'
+              +'   crs:Highlights2012="'+s(highlights)+'" crs:Shadows2012="'+s(shadows)+'"\n'
+              +'   crs:Clarity2012="'+s(clarity)+'" crs:Vibrance="'+s(vibrance)+'" crs:Saturation="'+s(sat)+'"\n'
+              +'   crs:Sharpness="'+s(sharp)+'" crs:HasSettings="True">\n'
+              +'  </rdf:Description>\n </rdf:RDF>\n</x:xmpmeta>';
+            try{
+                var blob=new Blob([xmp],{type:'application/octet-stream'});
+                var url=URL.createObjectURL(blob);
+                var a=document.createElement('a'); a.href=url; a.download='Estilo_Copiado_Invictor.xmp';
+                document.body.appendChild(a); a.click(); document.body.removeChild(a);
+                setTimeout(function(){ URL.revokeObjectURL(url); },1500);
+                if(typeof showToast==='function') showToast('Preset do estilo baixado! 🎞️','✅');
+            }catch(e){}
+        };
+        window.cfgRefAiTip = async function(){
+            var box=document.getElementById('cfgRefAiBox'); if(!box) return;
+            box.style.display='block'; box.textContent='🤖 Pensando em como igualar as cores...';
+            var px=window._cfgRefPx||{}, L=window._cfgLast||{};
+            var prompt='Sou fotógrafo esportivo (Victor). Quero deixar a foto do MEU momento parecida com uma foto de referência. '
+              +'Meu momento: brilho '+Math.round(L.avg||128)+'/255, cor '+Math.round(L.warmth||0)+', contraste '+Math.round(L.std||40)+'. '
+              +'Referência: brilho '+Math.round(px.brightness||128)+', cor '+Math.round(px.warmth||0)+', contraste '+Math.round(px.variance||45)+', saturação '+Math.round(px.satVivid||60)+'. '
+              +'Em 3 linhas curtas e diretas, diga o que mexer no Lightroom (temperatura, contraste, cor) pra minha foto ficar com o ESTILO da referência. Português do Brasil.';
+            try{ var t=await invAI([{role:'user',content:prompt}],'',300); box.innerHTML='💡 '+(t||'').replace(/\n/g,'<br>'); }
+            catch(e){ box.textContent='IA indisponível agora — use o preset .xmp acima, que já foi calibrado pelo estilo da referência.'; }
+        };
+
         // ✨ Cria um PRESET DE EDIÇÃO (.xmp Lightroom) calibrado pra MELHORAR esta foto
         window.cfgMakeEditPreset = function(){
             var L=window._cfgLast; if(!L){ if(typeof showToast==='function') showToast('Analise uma foto primeiro','⚠️'); return; }
@@ -18313,6 +18414,20 @@ Poderia me ajudar? 🙏"
         };
 
         // 👁️ Roda a visão de IA e mostra a config perfeita vista na foto
+        // 🎛️ Picture Style da Canon R7 (nitidez/contraste/saturação/tom) calculado pela luz medida
+        window.cfgCanonPicStyle = function(b, std, warmth, avg){
+            var highISO = (avg<68); // pouca luz → ISO alto → segura a nitidez pra não estourar ruído
+            var sharp = highISO ? 4 : 5;      // Força da nitidez (0–7) — esporte pede definição
+            var fine  = 2;                     // Finura (1–5)
+            var thr   = highISO ? 4 : 3;      // Limiar (1–5) — maior no escuro pra não realçar ruído
+            var contrast = std<22 ? 2 : (std>62 ? -1 : 0);   // foto plana → +, muito dura → −
+            var sat = (warmth>30 ? 1 : 0);                    // golden hour → +1 de cor
+            var tone = (warmth<-12 ? 1 : 0);                  // luz fria → +1 (puxa pele mais quente)
+            var base = 'Neutro';                               // melhor pra editar no Lightroom depois
+            return { base:base, sharp:sharp, fine:fine, thr:thr, contrast:contrast, sat:sat, tone:tone };
+        };
+        function _sgn(v){ return (v>0?'+':'')+v; }
+
         // Leitura REAL e fiel da foto (sempre verdadeira, nunca aleatória) — feita pelos números medidos
         window.cfgMeasuredVerdict = function(){
             var c=window._cfgLast||{};
@@ -31788,6 +31903,19 @@ const _P1_VICTOR_BUILTIN_PRESETS = [{"id": "p1_01_cross_processing_yellow_light"
                         <button onclick="cfgClear()" style="position:absolute;top:7px;right:7px;width:28px;height:28px;background:rgba(0,0,0,0.8);border:2px solid rgba(255,255,255,0.3);border-radius:50%;color:#fff;font-size:14px;font-weight:900;cursor:pointer;line-height:1;">✕</button>
                     </div>
                     <div id="cfgResult" style="display:none;margin-top:12px;"></div>
+
+                    <!-- 🎯 COPIAR ESTILO DE OUTRA FOTO (referência) — aparece após analisar o momento -->
+                    <div id="cfgRefMatchWrap" style="display:none;margin-top:13px;background:linear-gradient(135deg,rgba(167,139,250,0.1),rgba(124,58,237,0.04));border:1.5px solid rgba(167,139,250,0.35);border-radius:14px;padding:15px;">
+                        <div style="font-size:12.5px;color:#a78bfa;font-weight:900;margin-bottom:3px;">🎯 Copiar o estilo de outra foto</div>
+                        <div style="font-size:10.5px;color:#7a8aa0;margin-bottom:11px;line-height:1.55;">Envie a foto de <b>referência</b> (o visual que você quer). A IA vê se dá pra chegar nesse estilo com a luz do <b>seu momento</b> na Canon R7 — e mostra como sua foto pode ficar.</div>
+                        <label for="cfgRefInput" style="display:flex;flex-direction:column;align-items:center;gap:7px;padding:14px;cursor:pointer;border-radius:12px;border:2px dashed rgba(167,139,250,0.45);background:rgba(167,139,250,0.05);">
+                            <input type="file" accept="image/*" id="cfgRefInput" onchange="cfgRefMatch(this)" style="display:none;">
+                            <span style="font-size:30px;line-height:1;">🎨</span>
+                            <span style="font-size:12px;color:#a78bfa;font-weight:900;">Enviar foto de referência</span>
+                            <span style="font-size:9px;color:#667;">o estilo que você quer copiar</span>
+                        </label>
+                        <div id="cfgRefResult" style="display:none;margin-top:12px;"></div>
+                    </div>
                 </div>
 
                 <!-- cola de bolso: dia / tarde / noite -->
