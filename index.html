@@ -5638,7 +5638,7 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v284.0001</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v286.0001</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -17464,13 +17464,14 @@ Poderia me ajudar? 🙏"
             var va = (px.variance!=null?px.variance:45);          // contraste REAL (desvio padrão)
             var sv = (px.satVivid!=null?px.satVivid:(px.avgSat!=null?px.avgSat:60)); // saturação dos pixels coloridos
             var wa = (px.warmth!=null?px.warmth:0);
-            let bMult = _cl(0.94 + (br-128)/620, 0.86, 1.16);   // exposição: ajuste leve
-            let cMult = _cl(0.96 + (va-45)/300,  0.9,  1.28);   // contraste suave pelo desvio real
-            let sMult = _cl(0.72 + sv/230,       0.72, 1.45);   // reflete a cor REAL (do rótulo/roupa)
-            let hue   = wa < -28 ? 6 : (wa > 55 ? -5 : 0);
-            let sep   = wa > 10 ? _cl(wa/280, 0, 0.30) : 0;     // calor → sépia proporcional
+            // CENTRADO: foto típica → ~1.0 (fiel, sem exagero). Só ajusta nos extremos reais.
+            let bMult = _cl(1.0 + (br-128)/700, 0.90, 1.12);   // exposição quase neutra
+            let cMult = _cl(1.0 + (va-45)/340,  0.92, 1.20);   // contraste pelo desvio real
+            let sMult = _cl(0.90 + (sv-90)/430, 0.80, 1.22);   // saturação fiel (sv~90 = neutro)
+            let hue   = wa < -32 ? 5 : (wa > 60 ? -4 : 0);
+            let sep   = wa > 16 ? _cl((wa-16)/340, 0, 0.22) : 0; // calor → sépia suave proporcional
             // só fica P&B se a imagem for MESMO sem cor nenhuma
-            if (sv < 10){ sMult = _cl(sMult, 0.20, 0.50); sep = Math.max(sep, 0.06); }
+            if (sv < 10){ sMult = _cl(sMult, 0.20, 0.50); sep = Math.max(sep, 0.05); }
 
             // Apply AI adjustments if available
             if (ai) {
@@ -18157,32 +18158,38 @@ Poderia me ajudar? 🙏"
                     if(r) r.innerHTML=
                         '<div style="background:'+b.cor+'14;border:1.5px solid '+b.cor+'66;border-radius:13px;padding:14px;">'
                         +'<div style="display:flex;align-items:center;gap:9px;margin-bottom:10px;"><span style="font-size:24px;">'+b.ic+'</span>'
-                        +'<div style="flex:1;"><div style="font-size:9px;color:#51CF66;font-weight:900;text-transform:uppercase;letter-spacing:1px;">✅ Verificado · config ideal PRA ESTA foto</div>'
+                        +'<div style="flex:1;"><div style="font-size:9px;color:#51CF66;font-weight:900;text-transform:uppercase;letter-spacing:1px;">✅ Verificado · guia completo PRA ESTA foto</div>'
                         +'<div style="font-size:15px;color:'+b.cor+';font-weight:900;line-height:1.1;">'+b.lbl+'</div></div></div>'
                         // barra de luz medida
                         +'<div style="height:8px;background:rgba(255,255,255,0.08);border-radius:8px;overflow:hidden;margin-bottom:4px;"><div style="height:100%;width:'+lvl+'%;background:linear-gradient(90deg,#3b4252,'+b.cor+');"></div></div>'
-                        +'<div style="display:flex;justify-content:space-between;font-size:8px;color:#667;margin-bottom:11px;"><span>escuro</span><span>luz medida '+lvl+'%</span><span>claro</span></div>'
-                        // GRID com a config calculada
-                        +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:10px;">'
+                        +'<div style="display:flex;justify-content:space-between;font-size:8px;color:#667;margin-bottom:13px;"><span>escuro</span><span>luz medida '+lvl+'%</span><span>claro</span></div>'
+
+                        // ════ PASSO 1 — NA CÂMERA ════
+                        +'<div style="display:flex;align-items:center;gap:7px;margin-bottom:9px;"><span style="background:'+b.cor+';color:#111;font-weight:900;font-size:11px;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">1</span><span style="font-size:11.5px;font-weight:900;color:'+b.cor+';letter-spacing:.5px;">📷 NA CÂMERA — ajuste assim</span></div>'
+                        +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:8px;">'
                         +'<div style="background:rgba(0,0,0,0.28);border-radius:9px;padding:8px 10px;"><div style="font-size:8.5px;color:#8a93a3;font-weight:800;">📊 ISO</div><div style="font-size:14px;color:#fff;font-weight:900;">'+b.iso+'</div></div>'
                         +'<div style="background:rgba(0,0,0,0.28);border-radius:9px;padding:8px 10px;"><div style="font-size:8.5px;color:#8a93a3;font-weight:800;">⚡ Velocidade</div><div style="font-size:14px;color:#fff;font-weight:900;">'+b.vel+'</div></div>'
                         +'<div style="background:rgba(0,0,0,0.28);border-radius:9px;padding:8px 10px;"><div style="font-size:8.5px;color:#8a93a3;font-weight:800;">🔘 Abertura</div><div style="font-size:14px;color:#fff;font-weight:900;">'+b.abre+'</div></div>'
                         +'<div style="background:rgba(96,165,250,0.14);border:1px solid rgba(96,165,250,0.45);border-radius:9px;padding:8px 10px;"><div style="font-size:8.5px;color:#60a5fa;font-weight:800;">🎨 Bal. Branco</div><div style="font-size:11.5px;color:#fff;font-weight:900;line-height:1.1;">'+wbObj.ic+' '+wbObj.nome+'</div></div>'
                         +'</div>'
-                        +(b.ev?'<div style="font-size:9.5px;color:'+b.cor+';font-weight:800;margin-bottom:9px;">🎚️ Compensação de exposição sugerida: '+(b.ev.indexOf('-')>=0?('−'+b.ev.length+' (clareie no escuro)'):('+'+b.ev.length+' se o fundo enganar o medidor'))+'</div>':'')
-                        // notas fiéis
-                        +'<div style="font-size:10px;color:#cdd6e4;line-height:1.65;background:rgba(255,255,255,0.03);border-left:3px solid '+b.cor+';padding:9px 11px;border-radius:0 8px 8px 0;margin-bottom:8px;">'
-                        +notas.map(function(t){return '• '+t;}).join('<br>')+'</div>'
-                        // dados medidos (transparência = confiança)
-                        +'<div style="font-size:8.5px;color:#667;margin-bottom:10px;">📐 Medido: brilho '+Math.round(avg)+'/255 · contraste '+Math.round(std)+' · cor '+(warmth>0?'+':'')+Math.round(warmth)+' · estourado '+brightPct+'% · sombra '+darkPct+'%</div>'
-                        +'<button onclick="cfgAskAIPhoto(\''+b.per+'\','+Math.round(avg)+','+Math.round(warmth)+','+Math.round(std)+','+brightPct+','+darkPct+')" style="width:100%;padding:11px;background:linear-gradient(135deg,#60a5fa,#3b82f6);color:#fff;border:none;border-radius:10px;font-weight:900;font-size:12px;cursor:pointer;">🤖 Receber a dica TOP da IA pra esta foto</button>'
-                        +'<div id="cfgPhotoAi" style="display:none;margin-top:10px;font-size:11px;color:#cdd6e4;font-style:italic;background:rgba(96,165,250,0.07);border:1px solid rgba(96,165,250,0.2);border-radius:9px;padding:10px;line-height:1.6;"></div>'
-                        // 📄 Painel/PDF + ✨ Preset de edição
-                        +'<div style="display:flex;gap:7px;margin-top:10px;">'
-                        +'<button onclick="cfgExportPDF()" style="flex:1;padding:11px 6px;background:rgba(255,255,255,0.05);border:1.5px solid '+b.cor+'66;color:#fff;border-radius:10px;font-weight:900;font-size:11px;cursor:pointer;">📄 Painel / PDF</button>'
-                        +'<button onclick="cfgMakeEditPreset()" style="flex:1;padding:11px 6px;background:linear-gradient(135deg,#a78bfa,#7c3aed);border:none;color:#fff;border-radius:10px;font-weight:900;font-size:11px;cursor:pointer;">✨ Preset de edição</button>'
+                        +(b.ev?'<div style="font-size:9.5px;color:'+b.cor+';font-weight:800;margin-bottom:8px;">🎚️ Compensação de exposição: '+(b.ev.indexOf('-')>=0?('−'+b.ev.length+' (clareie no escuro)'):('+'+b.ev.length+' se o fundo enganar o medidor'))+'</div>':'')
+                        +'<div style="font-size:8.5px;color:#667;margin-bottom:14px;">📐 Medido: brilho '+Math.round(avg)+'/255 · contraste '+Math.round(std)+' · cor '+(warmth>0?'+':'')+Math.round(warmth)+' · estourado '+brightPct+'% · sombra '+darkPct+'%</div>'
+
+                        // ════ PASSO 2 — NO LIGHTROOM CLASSIC ════
+                        +'<div style="border-top:1px solid rgba(255,255,255,0.1);padding-top:12px;display:flex;align-items:center;gap:7px;margin-bottom:8px;"><span style="background:#a78bfa;color:#111;font-weight:900;font-size:11px;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">2</span><span style="font-size:11.5px;font-weight:900;color:#a78bfa;letter-spacing:.5px;">🎞️ NO LIGHTROOM — preset fiel a essa luz</span></div>'
+                        +'<div style="font-size:9.5px;color:#9aa;margin-bottom:9px;line-height:1.5;">Baixe o preset (.xmp) calculado pra essa luz e arraste no Lightroom Classic. Ou gere o painel/PDF pra consultar.</div>'
+                        +'<div style="display:flex;gap:7px;">'
+                        +'<button onclick="cfgMakeEditPreset()" style="flex:1.4;padding:11px 6px;background:linear-gradient(135deg,#a78bfa,#7c3aed);border:none;color:#fff;border-radius:10px;font-weight:900;font-size:11px;cursor:pointer;">✨ Baixar preset .XMP</button>'
+                        +'<button onclick="cfgExportPDF()" style="flex:1;padding:11px 6px;background:rgba(255,255,255,0.05);border:1.5px solid '+b.cor+'66;color:#fff;border-radius:10px;font-weight:900;font-size:11px;cursor:pointer;">📄 Painel/PDF</button>'
                         +'</div>'
                         +'<div id="cfgEditPreset" style="display:none;margin-top:10px;"></div>'
+
+                        // ════ PASSO 3 — PRA DEIXAR TOP ════
+                        +'<div style="border-top:1px solid rgba(255,255,255,0.1);padding-top:12px;margin-top:13px;display:flex;align-items:center;gap:7px;margin-bottom:9px;"><span style="background:#51CF66;color:#111;font-weight:900;font-size:11px;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">3</span><span style="font-size:11.5px;font-weight:900;color:#51CF66;letter-spacing:.5px;">✨ PRA DEIXAR TOP</span></div>'
+                        +'<div style="font-size:10px;color:#cdd6e4;line-height:1.65;background:rgba(255,255,255,0.03);border-left:3px solid '+b.cor+';padding:9px 11px;border-radius:0 8px 8px 0;margin-bottom:9px;">'
+                        +notas.map(function(t){return '• '+t;}).join('<br>')+'</div>'
+                        +'<button onclick="cfgAskAIPhoto(\''+b.per+'\','+Math.round(avg)+','+Math.round(warmth)+','+Math.round(std)+','+brightPct+','+darkPct+')" style="width:100%;padding:11px;background:linear-gradient(135deg,#60a5fa,#3b82f6);color:#fff;border:none;border-radius:10px;font-weight:900;font-size:12px;cursor:pointer;">🤖 Receber a dica TOP da IA pra esta foto</button>'
+                        +'<div id="cfgPhotoAi" style="display:none;margin-top:10px;font-size:11px;color:#cdd6e4;font-style:italic;background:rgba(96,165,250,0.07);border:1px solid rgba(96,165,250,0.2);border-radius:9px;padding:10px;line-height:1.6;"></div>'
                         // 👁️ verdict da IA que VÊ a foto
                         +'<div id="cfgVisionBox" style="margin-top:11px;border:1.5px solid rgba(167,139,250,0.35);border-radius:11px;background:linear-gradient(135deg,rgba(167,139,250,0.1),rgba(124,58,237,0.03));padding:12px;">'
                         +'<div style="font-size:11px;font-weight:900;color:#a78bfa;display:flex;align-items:center;gap:6px;margin-bottom:7px;">👁️ A IA está vendo sua foto<span id="cfgVisionDots" style="color:#7c3aed;">...</span></div>'
@@ -25845,7 +25852,7 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
             if(d && d.error){ if(out) out.innerHTML='<span style="color:#FF8787;">⚠️ A Shopee respondeu: '+String(d.error).replace(/</g,'&lt;')+'<br><span style="color:#888;">(me manda esse erro que eu ajusto o formato da busca.)</span></span>'; return; }
             var items=(d&&d.items)||[];
             if(!items.length){ if(out) out.innerHTML='<span style="color:#FFA726;">Conectou, mas não voltou produto. Tente outra palavra.</span>'; return; }
-            if(out) out.innerHTML='<span style="color:#51CF66;font-weight:800;">✅ Funcionando! '+items.length+' tênis encontrados:</span><br>'+items.map(function(it){ return '• '+(it.nome||'').slice(0,46).replace(/</g,'&lt;')+(it.preco?(' — '+it.preco):'')+(it.comissao?(' · '+it.comissao+' comissão'):''); }).join('<br>');
+            if(out) out.innerHTML='<span style="color:#51CF66;font-weight:800;">✅ Funcionando! '+items.length+' tênis encontrados:</span><br>'+items.map(function(it){ return '• '+(it.nome||'').slice(0,46).replace(/</g,'&lt;')+(it.preco?(' — '+it.preco):'')+(it.comissao?(' · '+it.comissao+' comissão'):''); }).join('<br>')+'<br><span style="color:#00e0a0;font-size:10px;">🤖 A IA já vai mostrar esses produtos no chat de Ofertas/Tênis automaticamente.</span>';
         }catch(e){ if(out) out.innerHTML='<span style="color:#FF8787;">❌ Erro de rede. Publique o Worker primeiro.</span>'; }
     };
 
