@@ -5621,7 +5621,7 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v270.0001</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v271.0001</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -6656,6 +6656,19 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                             <button onclick="iaTenisAdd()" style="width:100%;padding:11px;background:linear-gradient(135deg,#00c896,#00a078);color:#fff;border:none;border-radius:10px;font-weight:900;font-size:12.5px;cursor:pointer;">➕ Adicionar à lista da IA</button>
                         </div>
                         <div style="font-size:10px;color:#667;margin-top:10px;line-height:1.5;">💡 A IA também vai <strong>pedir sua opinião</strong> quando não tiver certeza: se o cliente pedir algo que foge da sua lista, ela sugere o mais próximo e manda o cliente confirmar com você no Instagram.</div>
+
+                        <!-- Links de oferta que aparecem SEMPRE no final da recomendação -->
+                        <div style="margin-top:14px;border-top:1px solid rgba(255,255,255,0.1);padding-top:13px;">
+                            <div style="font-size:11.5px;font-weight:900;color:#00e0a0;margin-bottom:3px;">🎟️ Links que aparecem no final (com seu afiliado)</div>
+                            <div style="font-size:10px;color:#8a9;margin-bottom:11px;line-height:1.5;">Toda recomendação de tênis termina com estes botões. O de cupons Shopee é o principal — já vem com seu link.</div>
+                            <label style="font-size:9px;color:#777;font-weight:800;text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px;">🛒 Link de cupons/afiliado Shopee</label>
+                            <input id="iaCupomShopee" placeholder="https://s.shopee.com.br/..." style="width:100%;margin-bottom:9px;padding:9px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.12);border-radius:9px;color:#fff;font-size:12px;outline:none;box-sizing:border-box;">
+                            <label style="font-size:9px;color:#777;font-weight:800;text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px;">📨 Telegram de ofertas (opcional)</label>
+                            <input id="iaTelegram" placeholder="https://t.me/..." style="width:100%;margin-bottom:9px;padding:9px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.12);border-radius:9px;color:#fff;font-size:12px;outline:none;box-sizing:border-box;">
+                            <label style="font-size:9px;color:#777;font-weight:800;text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px;">💚 Grupo de ofertas WhatsApp (opcional)</label>
+                            <input id="iaWhatsOfertas" placeholder="https://chat.whatsapp.com/..." style="width:100%;margin-bottom:11px;padding:9px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.12);border-radius:9px;color:#fff;font-size:12px;outline:none;box-sizing:border-box;">
+                            <button onclick="iaOfertaLinksSave()" style="width:100%;padding:11px;background:linear-gradient(135deg,#00c896,#00a078);color:#fff;border:none;border-radius:10px;font-weight:900;font-size:12px;cursor:pointer;">💾 Salvar links de oferta</button>
+                        </div>
                     </div>
 
                     <!-- ════ 🛒 SHOPEE AUTOMÁTICA (link de afiliado por API) ════ -->
@@ -12871,7 +12884,7 @@ Poderia me ajudar? 🙏"
             //    sincronizam pra TODOS os visitantes e entre aparelhos do admin
             ['notify_topic','chat_db_url','chat_sb_url','chat_sb_key','chat_sb_table','chat_pantry',
              'invPalette','siteThemeColors','invictorStravaDefaultColor','catalog_layout','invictorEdicaoCodes','invictorMarketplaces',
-             'foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','foco_survey_visible','statsBar_visible','foco_steps_pos','foco_survey_pos','foco_price_pos','siteLandingTab','verif_steps','ai_pages','tbt_enabled','tbt_mode','tbt_picks','site_font','promo_scale','survey_scale','stats_cfg','ia_tenis'].forEach(function(k){
+             'foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','foco_survey_visible','statsBar_visible','foco_steps_pos','foco_survey_pos','foco_price_pos','siteLandingTab','verif_steps','ai_pages','tbt_enabled','tbt_mode','tbt_picks','site_font','promo_scale','survey_scale','stats_cfg','ia_tenis','ia_shopee_cupom','ia_telegram','ia_whats_ofertas'].forEach(function(k){
                 try { var v = localStorage.getItem(k); if (v != null) payload[k] = v; } catch(e) {}
             });
 
@@ -13089,7 +13102,7 @@ Poderia me ajudar? 🙏"
                 'invictorEdicaoEmails', 'invictorEdicaoAtivos',
                 // === Configs novas: chat ao vivo / ntfy / paleta / conteúdo / IA ===
                 'notify_topic','chat_db_url','chat_sb_url','chat_sb_key','chat_sb_table','chat_pantry',
-                'invPalette','siteThemeColors','invictorStravaDefaultColor','catalog_layout','invictorEdicaoCodes','invictorMarketplaces','foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','foco_survey_visible','statsBar_visible','foco_steps_pos','foco_survey_pos','foco_price_pos','siteLandingTab','verif_steps','ai_pages','tbt_enabled','tbt_mode','tbt_picks','site_font','promo_scale','survey_scale','stats_cfg','ia_tenis',
+                'invPalette','siteThemeColors','invictorStravaDefaultColor','catalog_layout','invictorEdicaoCodes','invictorMarketplaces','foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','foco_survey_visible','statsBar_visible','foco_steps_pos','foco_survey_pos','foco_price_pos','siteLandingTab','verif_steps','ai_pages','tbt_enabled','tbt_mode','tbt_picks','site_font','promo_scale','survey_scale','stats_cfg','ia_tenis','ia_shopee_cupom','ia_telegram','ia_whats_ofertas',
                 // === Last update marker ===
                 '_lastUpdate'
             ];
@@ -13383,7 +13396,7 @@ Poderia me ajudar? 🙏"
             if(tabIndex===9) { loadThemeColorsIntoPanel(); setTimeout(function(){ if(typeof invPaletteRender==='function') invPaletteRender(); if(typeof renderFontAdmin==='function') renderFontAdmin(); }, 40); }
             if(tabIndex===10) { renderBotoesAdmin(); if(typeof renderSeccoesAdmin==='function') renderSeccoesAdmin(); if(typeof syncLandingTabSelect==='function') syncLandingTabSelect(); if(typeof renderVerifStepsAdmin==='function') renderVerifStepsAdmin(); if(typeof renderElemScaleAdmin==='function') renderElemScaleAdmin(); if(typeof renderStatsCfgAdmin==='function') renderStatsCfgAdmin(); }
             if(tabIndex===11) { renderGaleria(); }
-            if(tabIndex===12) { initApisTab(); if(typeof renderIaTenisAdmin==='function') renderIaTenisAdmin(); if(typeof shopeeStatus==='function') setTimeout(shopeeStatus, 60); }
+            if(tabIndex===12) { initApisTab(); if(typeof renderIaTenisAdmin==='function') renderIaTenisAdmin(); if(typeof iaOfertaLinksLoad==='function') iaOfertaLinksLoad(); if(typeof shopeeStatus==='function') setTimeout(shopeeStatus, 60); }
             if(tabIndex===3)  { setTimeout(_refreshAdminCouponStock, 80); }
             if(tabIndex===13) {
                 setTimeout(() => {
@@ -25323,6 +25336,56 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
       if(k==='foco'){ var ft=document.getElementById('focoTopAI'); if(ft){ var df=document.createElement('div'); df.id=cardId; df.style.cssText='padding:0 16px;'; df.innerHTML=_invAICardHtml(k); ft.appendChild(df); return; } }
       if(typeof _toolMount==='function') _toolMount(secId, cardId, _invAICardHtml(k));
     };
+    // ════ 🎟️ LINKS DE OFERTA (Shopee cupom + Telegram + WhatsApp) ════
+    window.getIaOfertaLinks = function(){
+        function g(k,d){ try{ var v=localStorage.getItem(k); return (v!=null&&v!=='')?v:d; }catch(e){ return d; } }
+        return {
+            cupom: g('ia_shopee_cupom','https://s.shopee.com.br/6VLlP94Mny'),
+            telegram: g('ia_telegram',''),
+            whats: g('ia_whats_ofertas','')
+        };
+    };
+    window.iaOfertaLinksSave = function(){
+        var c=(document.getElementById('iaCupomShopee')||{}).value||'';
+        var t=(document.getElementById('iaTelegram')||{}).value||'';
+        var w=(document.getElementById('iaWhatsOfertas')||{}).value||'';
+        function fix(u){ u=(u||'').trim(); if(u && !/^https?:\/\//i.test(u)) u='https://'+u; return u; }
+        try{ localStorage.setItem('ia_shopee_cupom', fix(c)); localStorage.setItem('ia_telegram', fix(t)); localStorage.setItem('ia_whats_ofertas', fix(w)); }catch(e){}
+        try{ if(typeof saveData==='function') saveData(false); }catch(e){}
+        if(typeof showToast==='function') showToast('Links de oferta salvos! 🎟️','✅');
+    };
+    window.iaOfertaLinksLoad = function(){
+        var L=getIaOfertaLinks();
+        var c=document.getElementById('iaCupomShopee'); if(c&&!c.value) c.value=L.cupom;
+        var t=document.getElementById('iaTelegram'); if(t&&!t.value) t.value=L.telegram;
+        var w=document.getElementById('iaWhatsOfertas'); if(w&&!w.value) w.value=L.whats;
+    };
+    // Footer que aparece SEMPRE no final da recomendação de tênis
+    window.iaOfertaFooterHtml = function(k){
+        var L=getIaOfertaLinks();
+        var btn=function(href,bg,bd,txt){ return '<a href="'+String(href).replace(/"/g,'&quot;')+'" target="_blank" rel="noopener sponsored" style="display:block;text-align:center;text-decoration:none;background:'+bg+';border:1px solid '+bd+';color:#fff;border-radius:10px;padding:10px;font-size:11.5px;font-weight:900;margin-bottom:7px;">'+txt+'</a>'; };
+        var out='<div style="margin-top:9px;border-top:1px dashed rgba(255,255,255,0.14);padding-top:10px;">';
+        out+='<div style="font-size:10px;font-weight:900;color:#00e0a0;margin-bottom:8px;">🛒 Garanta o seu com desconto:</div>';
+        if(L.cupom) out+=btn(L.cupom,'linear-gradient(135deg,#ee4d2d,#ff6a3d)','rgba(238,77,45,0.5)','🎟️ Cupons Shopee + preços (clique aqui)');
+        if(L.telegram) out+=btn(L.telegram,'linear-gradient(135deg,#2AABEE,#229ED9)','rgba(42,171,238,0.5)','📨 Ofertas no Telegram');
+        if(L.whats) out+=btn(L.whats,'linear-gradient(135deg,#25D366,#1da851)','rgba(37,211,102,0.5)','💚 Grupo de ofertas no WhatsApp');
+        out+='<button onclick="iaFinalizar(\''+k+'\')" style="width:100%;padding:11px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.2);color:#fff;border-radius:10px;font-size:12px;font-weight:900;cursor:pointer;margin-top:2px;">✅ Escolhi! Boas compras 🏃</button>';
+        out+='<div style="font-size:8.5px;color:#667;text-align:center;margin-top:7px;">Link patrocinado · #publicidade</div>';
+        out+='</div>';
+        return out;
+    };
+    // Finaliza: some o painel da IA e mostra a mensagem fixa
+    window.iaFinalizar = function(k){
+        var card=document.getElementById('invAICard_'+k);
+        var html='<div style="text-align:center;padding:28px 18px;background:linear-gradient(135deg,rgba(255,106,0,0.13),rgba(0,200,150,0.07));border:1.5px solid rgba(255,106,0,0.35);border-radius:16px;">'
+            +'<div style="font-size:36px;margin-bottom:8px;">🏃👟</div>'
+            +'<div style="font-size:17px;font-weight:900;color:#fff;margin-bottom:5px;">Boas compras e boa corrida!</div>'
+            +'<div style="font-size:12px;color:#9aa;line-height:1.5;">Qualquer dúvida, é só chamar o Victor no Instagram <strong style="color:#FF8A3D;">@invictorcliques</strong> 🧡</div>'
+            +'</div>';
+        if(card){ card.innerHTML=html; try{ card.scrollIntoView({behavior:'smooth',block:'center'}); }catch(e){} }
+        else if(typeof showToast==='function') showToast('Boas compras e boa corrida! 🏃👟','🧡');
+    };
+
     // ════ 👟 TÊNIS AFILIADOS — a IA recomenda os do Victor ════
     window.getIaTenis = function(){ try{ var v=JSON.parse(localStorage.getItem('ia_tenis')); return Array.isArray(v)?v:[]; }catch(e){ return []; } };
     window.iaTenisAdd = function(){
@@ -25365,13 +25428,19 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
         txt=(txt||'').toLowerCase();
         return /t[êe]nis|cal[çc]ad|sapato|sneaker|shoe|amortec|pisada|drop |mizuno|asics|nike|adidas|hoka|olympikus|new balance|brooks|saucony|pace|qual.*(corr|treino)|modelo de corr/.test(txt);
     };
-    // Texto que entra no "cérebro" da IA: ela passa a indicar SÓ os tênis do Victor
+    // Texto que entra no "cérebro" da IA: fluxo dica → produto → link/cupons
     window.iaTenisPromptAddon = function(){
-        var arr=getIaTenis(); if(!arr.length) return '';
-        var lista=arr.map(function(t){ return '- '+(t.emoji||'')+' '+t.nome+(t.preco?(' ('+t.preco+')'):'')+(t.desc?(' — '+t.desc):'')+(t.link?(' [LINK: '+t.link+']'):''); }).join('\n');
-        return '\n\n[REGRA DE TÊNIS — MUITO IMPORTANTE] O Victor é fotógrafo e também indica tênis como afiliado. '
-          +'Quando o assunto for tênis/calçado de corrida, recomende SOMENTE estes modelos que o Victor selecionou, apresentando como a indicação pessoal dele e SEMPRE mostrando o link pra comprar:\n'+lista
-          +'\nNunca invente outros modelos. Se o cliente quiser algo que não está na lista, sugira o mais parecido da lista e peça pra ele confirmar a escolha com o Victor no Instagram @invictorcliques. Seja curto, simpático e direto.';
+        var arr=getIaTenis();
+        var base='\n\n[REGRA DE TÊNIS — siga EXATAMENTE esta ordem] Quando o assunto for tênis/calçado de corrida: '
+          +'1) Dê uma DICA rápida e útil em 1 linha. '
+          +'2) Indique 1 ou 2 modelos com o PREÇO aproximado e um motivo curto. '
+          +'3) Termine dizendo que o LINK pra comprar (com o preço) e os CUPONS de desconto estão logo ABAIXO, nos botões. '
+          +'NUNCA invente link ou URL — os botões aparecem automáticos embaixo da sua mensagem. Seja curto, simpático e direto, em português do Brasil.';
+        if(arr.length){
+            var lista=arr.map(function(t){ return '- '+(t.emoji||'')+' '+t.nome+(t.preco?(' ('+t.preco+')'):'')+(t.desc?(' — '+t.desc):''); }).join('\n');
+            base+='\nPrefira recomendar SOMENTE estes modelos que o Victor selecionou:\n'+lista+'\nSe o cliente quiser algo fora da lista, sugira o mais parecido e peça pra confirmar com o Victor no Instagram @invictorcliques.';
+        }
+        return base;
     };
     // Cards clicáveis com os tênis (afiliado) pra aparecer na conversa
     window.iaTenisCardsHtml = function(){
@@ -25463,9 +25532,12 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
         var ans=await invAI(hist, _sysFull, 480);
         invAIHist[k].push({role:'assistant',content:ans});
         try{ var L=JSON.parse(localStorage.getItem('ai_leads')||'[]'); L.unshift({t:Date.now(),page:k,q:q,a:ans,contact:contact}); localStorage.setItem('ai_leads',JSON.stringify(L.slice(0,120))); if(typeof aiUpdateBadge==='function')aiUpdateBadge(); }catch(_){}
-        // 👟 se a conversa for sobre tênis, mostra os cards afiliados do Victor
+        // 👟 se a conversa for sobre tênis, mostra os cards + cupons Shopee + grupos
         var _tenisCards = '';
-        try{ if(typeof _isTenisQuery==='function' && (_isTenisQuery(q)||_isTenisQuery(ans)) && typeof iaTenisCardsHtml==='function') _tenisCards = iaTenisCardsHtml(); }catch(_){}
+        try{ if(typeof _isTenisQuery==='function' && (_isTenisQuery(q)||_isTenisQuery(ans))){
+            if(typeof iaTenisCardsHtml==='function') _tenisCards += iaTenisCardsHtml();
+            if(typeof iaOfertaFooterHtml==='function') _tenisCards += iaOfertaFooterHtml(k);
+        } }catch(_){}
         var tb=document.getElementById(typingId);
         if(tb){ tb.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span style="font-size:9px;font-weight:900;color:var(--primary);letter-spacing:.5px;">🤖 ASSISTENTE IA</span>'
           +'<button onclick="(function(b){try{navigator.clipboard.writeText(b.getAttribute(\'data-a\'));if(typeof showToast===\'function\')showToast(\'Copiado!\',\'📋\');}catch(e){}})(this)" data-a="'+ans.replace(/"/g,'&quot;')+'" style="background:rgba(255,255,255,0.08);border:none;border-radius:6px;padding:3px 7px;color:#cdd6e4;font-size:9px;font-weight:700;cursor:pointer;">📋</button></div>'+fmt(ans)+_tenisCards; }
