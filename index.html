@@ -5134,26 +5134,28 @@
 
         /* Section labels */
         .admin-section-label {
-            font-size: 8.5px !important;
+            font-size: 9px !important;
             font-weight: 900 !important;
             text-transform: uppercase !important;
-            letter-spacing: 1.5px !important;
-            color: #2d2f3a !important;
-            padding: 8px 8px 3px !important;
-            margin: 0 !important;
+            letter-spacing: 1.4px !important;
+            color: #6b6f82 !important;
+            padding: 9px 8px 5px !important;
+            margin: 6px 0 1px !important;
+            border-top: 1px solid rgba(255,255,255,0.05) !important;
         }
+        #adminSidebar .ap-nav-group:first-of-type .admin-section-label { border-top: none !important; margin-top: 0 !important; }
 
         /* Sidebar buttons */
         #adminSidebar .admin-tab-btn {
             display: flex !important;
             align-items: center !important;
-            gap: 7px !important;
+            gap: 8px !important;
             width: 100% !important;
-            padding: 7px 8px 7px 10px !important;
+            padding: 8px 8px 8px 11px !important;
             border-radius: var(--ap-radius-sm) !important;
             border: 1px solid transparent !important;
             background: transparent !important;
-            color: #555 !important;
+            color: #6a6d7e !important;
             font-size: 11.5px !important;
             font-weight: 600 !important;
             cursor: pointer !important;
@@ -5161,7 +5163,7 @@
             white-space: nowrap !important;
             overflow: hidden !important;
             transition: all .15s !important;
-            margin-bottom: 1px !important;
+            margin-bottom: 2px !important;
             position: relative !important;
         }
         #adminSidebar .admin-tab-btn span:first-child {
@@ -5174,10 +5176,11 @@
             transform: translateX(1px) !important;
         }
         #adminSidebar .admin-tab-btn.active {
-            background: rgba(255,215,0,0.1) !important;
-            border-color: rgba(255,215,0,0.25) !important;
+            background: rgba(255,215,0,0.13) !important;
+            border-color: rgba(255,215,0,0.3) !important;
             color: var(--ap-gold) !important;
             font-weight: 800 !important;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.25) !important;
         }
         #adminSidebar .admin-tab-btn.active::before {
             content: '' !important;
@@ -5621,7 +5624,7 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v275.0001</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v276.0001</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -6688,6 +6691,21 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                             <div style="font-size:11.5px;font-weight:900;color:#a78bfa;margin-bottom:3px;">🎛️ Opções que aparecem na IA</div>
                             <div style="font-size:10px;color:#8a9;margin-bottom:11px;line-height:1.5;">Ligue/desligue cada botão de sugestão que aparece pros clientes em cada IA. Toque pra alternar.</div>
                             <div id="aiChipsList" style="display:flex;flex-direction:column;gap:7px;"></div>
+                            <div style="margin-top:12px;background:rgba(167,139,250,0.06);border:1px solid rgba(167,139,250,0.25);border-radius:11px;padding:12px;">
+                                <div style="font-size:11px;font-weight:900;color:#a78bfa;margin-bottom:9px;">➕ Criar minha própria opção</div>
+                                <select id="customChipPage" style="width:100%;margin-bottom:8px;padding:9px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.12);border-radius:9px;color:#fff;font-size:12px;outline:none;">
+                                    <option value="ofertas">🔥 Ofertas</option>
+                                    <option value="procure">👟 Tênis</option>
+                                    <option value="foco">📸 Suas Fotos</option>
+                                    <option value="strava">🏃 Corridas</option>
+                                    <option value="edicao">✨ Edição IA</option>
+                                    <option value="verificar">🔍 Verificar</option>
+                                    <option value="preview">📱 Preview</option>
+                                </select>
+                                <input id="customChipText" placeholder="Texto da opção (ex: Tênis pra maratona)" style="width:100%;margin-bottom:9px;padding:9px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.12);border-radius:9px;color:#fff;font-size:12px;outline:none;box-sizing:border-box;">
+                                <button onclick="addCustomChip()" style="width:100%;padding:10px;background:linear-gradient(135deg,#a78bfa,#7c3aed);color:#fff;border:none;border-radius:9px;font-weight:900;font-size:12px;cursor:pointer;">➕ Criar opção</button>
+                                <div id="customChipsList" style="display:flex;flex-direction:column;gap:7px;margin-top:10px;"></div>
+                            </div>
                         </div>
                     </div>
 
@@ -12904,7 +12922,7 @@ Poderia me ajudar? 🙏"
             //    sincronizam pra TODOS os visitantes e entre aparelhos do admin
             ['notify_topic','chat_db_url','chat_sb_url','chat_sb_key','chat_sb_table','chat_pantry',
              'invPalette','siteThemeColors','invictorStravaDefaultColor','catalog_layout','invictorEdicaoCodes','invictorMarketplaces',
-             'foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','foco_survey_visible','statsBar_visible','foco_steps_pos','foco_survey_pos','foco_price_pos','siteLandingTab','verif_steps','ai_pages','tbt_enabled','tbt_mode','tbt_picks','site_font','promo_scale','survey_scale','stats_cfg','ia_tenis','ia_shopee_cupom','ia_telegram','ia_whats_ofertas','ia_lojas','ai_chips_hidden'].forEach(function(k){
+             'foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','foco_survey_visible','statsBar_visible','foco_steps_pos','foco_survey_pos','foco_price_pos','siteLandingTab','verif_steps','ai_pages','tbt_enabled','tbt_mode','tbt_picks','site_font','promo_scale','survey_scale','stats_cfg','ia_tenis','ia_shopee_cupom','ia_telegram','ia_whats_ofertas','ia_lojas','ai_chips_hidden','ai_chips_custom'].forEach(function(k){
                 try { var v = localStorage.getItem(k); if (v != null) payload[k] = v; } catch(e) {}
             });
 
@@ -13122,7 +13140,7 @@ Poderia me ajudar? 🙏"
                 'invictorEdicaoEmails', 'invictorEdicaoAtivos',
                 // === Configs novas: chat ao vivo / ntfy / paleta / conteúdo / IA ===
                 'notify_topic','chat_db_url','chat_sb_url','chat_sb_key','chat_sb_table','chat_pantry',
-                'invPalette','siteThemeColors','invictorStravaDefaultColor','catalog_layout','invictorEdicaoCodes','invictorMarketplaces','foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','foco_survey_visible','statsBar_visible','foco_steps_pos','foco_survey_pos','foco_price_pos','siteLandingTab','verif_steps','ai_pages','tbt_enabled','tbt_mode','tbt_picks','site_font','promo_scale','survey_scale','stats_cfg','ia_tenis','ia_shopee_cupom','ia_telegram','ia_whats_ofertas','ia_lojas','ai_chips_hidden',
+                'invPalette','siteThemeColors','invictorStravaDefaultColor','catalog_layout','invictorEdicaoCodes','invictorMarketplaces','foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','foco_survey_visible','statsBar_visible','foco_steps_pos','foco_survey_pos','foco_price_pos','siteLandingTab','verif_steps','ai_pages','tbt_enabled','tbt_mode','tbt_picks','site_font','promo_scale','survey_scale','stats_cfg','ia_tenis','ia_shopee_cupom','ia_telegram','ia_whats_ofertas','ia_lojas','ai_chips_hidden','ai_chips_custom',
                 // === Last update marker ===
                 '_lastUpdate'
             ];
@@ -25305,7 +25323,9 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
       var c=_invAICfg(k);
       var hidden=[]; try{ hidden=JSON.parse(localStorage.getItem('ai_chips_hidden')||'[]')||[]; }catch(e){}
       var sgVis=c.sg.filter(function(s){ return hidden.indexOf(s)<0; });
-      var chips=sgVis.map(function(s){return '<button onclick="invAIAsk(\''+k+'\',this.textContent)" style="font-size:11px;background:rgba(255,106,0,0.1);border:1px solid rgba(255,106,0,0.32);color:var(--primary);border-radius:20px;padding:6px 11px;cursor:pointer;font-weight:700;">'+s+'</button>';}).join('');
+      var custom=[]; try{ custom=(JSON.parse(localStorage.getItem('ai_chips_custom')||'[]')||[]).filter(function(x){return x.page===k && x.label;}).map(function(x){return x.label;}); }catch(e){}
+      var sgAll=sgVis.concat(custom);
+      var chips=sgAll.map(function(s){return '<button onclick="invAIAsk(\''+k+'\',this.textContent)" style="font-size:11px;background:rgba(255,106,0,0.1);border:1px solid rgba(255,106,0,0.32);color:var(--primary);border-radius:20px;padding:6px 11px;cursor:pointer;font-weight:700;">'+s.replace(/</g,'&lt;')+'</button>';}).join('');
       return _toolCard(_toolH(c.t,c.d)
         +(k==='foco'?'<div style="display:inline-flex;align-items:center;gap:5px;background:rgba(255,106,0,0.12);border:1px solid rgba(255,106,0,0.35);color:var(--primary);font-size:9.5px;font-weight:900;letter-spacing:.5px;text-transform:uppercase;padding:4px 10px;border-radius:20px;margin-bottom:10px;">✨ Exclusivo das suas fotos</div>':'')
         +'<input id="invAIContact_'+k+'" value="'+_invContactVal()+'" placeholder="📱 Seu @ ou WhatsApp (pro Victor te responder)" style="width:100%;padding:9px;margin-bottom:9px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,106,0,0.22);border-radius:9px;color:#fff;font-size:12px;box-sizing:border-box;outline:none;">'
@@ -25383,6 +25403,39 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
             return '<button onclick="toggleAiChip(\''+c.label.replace(/'/g,"\\'")+'\')" style="display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;text-align:left;padding:10px 12px;border-radius:10px;cursor:pointer;border:1.5px solid '+(on?'rgba(0,200,150,0.4)':'rgba(255,255,255,0.1)')+';background:'+(on?'rgba(0,200,150,0.08)':'rgba(255,255,255,0.02)')+';color:#fff;">'
               +'<span style="font-size:11.5px;font-weight:700;">'+c.label.replace(/</g,'&lt;')+'<span style="font-size:9px;color:#778;display:block;font-weight:600;">'+c.page+'</span></span>'
               +'<span style="font-size:11px;font-weight:900;color:'+(on?'#00e0a0':'#778')+';flex-shrink:0;">'+(on?'✅ visível':'⬜ oculto')+'</span></button>';
+        }).join('');
+        renderCustomChips();
+    };
+    // ── Opções PERSONALIZADAS (criadas por você) ──
+    window.getCustomChips = function(){ try{ var v=JSON.parse(localStorage.getItem('ai_chips_custom')||'[]'); return Array.isArray(v)?v:[]; }catch(e){ return []; } };
+    window.addCustomChip = function(){
+        var sel=document.getElementById('customChipPage'), inp=document.getElementById('customChipText');
+        var page=sel?sel.value:'ofertas', label=inp?inp.value.trim():'';
+        if(!label){ if(typeof showToast==='function') showToast('Escreva o texto da opção','⚠️'); return; }
+        var arr=getCustomChips(); arr.push({page:page,label:label});
+        try{ localStorage.setItem('ai_chips_custom', JSON.stringify(arr)); }catch(e){}
+        if(inp) inp.value='';
+        renderCustomChips();
+        try{ if(typeof saveData==='function') saveData(false); }catch(e){}
+        try{ var el=document.getElementById('invAICard_'+page); if(el){ el.remove(); if(typeof invAIInject==='function') invAIInject(page); } }catch(e){}
+        if(typeof showToast==='function') showToast('Opção criada! 🎛️','✅');
+    };
+    window.removeCustomChip = function(i){
+        var arr=getCustomChips(); if(i<0||i>=arr.length) return; var pg=arr[i].page; arr.splice(i,1);
+        try{ localStorage.setItem('ai_chips_custom', JSON.stringify(arr)); }catch(e){}
+        renderCustomChips();
+        try{ if(typeof saveData==='function') saveData(false); }catch(e){}
+        try{ var el=document.getElementById('invAICard_'+pg); if(el){ el.remove(); if(typeof invAIInject==='function') invAIInject(pg); } }catch(e){}
+    };
+    window.renderCustomChips = function(){
+        var box=document.getElementById('customChipsList'); if(!box) return;
+        var names={foco:'Suas Fotos',strava:'Corridas',edicao:'Edição IA',procure:'Tênis',verificar:'Verificar',preview:'Preview',ofertas:'Ofertas'};
+        var arr=getCustomChips();
+        if(!arr.length){ box.innerHTML='<div style="font-size:10px;color:#667;text-align:center;padding:8px;">Nenhuma opção sua ainda.</div>'; return; }
+        box.innerHTML=arr.map(function(c,i){
+            return '<div style="display:flex;align-items:center;gap:8px;background:rgba(167,139,250,0.07);border:1px solid rgba(167,139,250,0.25);border-radius:9px;padding:8px 10px;">'
+              +'<div style="flex:1;min-width:0;"><div style="font-size:11px;font-weight:800;color:#fff;">'+c.label.replace(/</g,'&lt;')+'</div><div style="font-size:9px;color:#a78bfa;">'+(names[c.page]||c.page)+'</div></div>'
+              +'<button onclick="removeCustomChip('+i+')" style="background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);color:#f88;border-radius:7px;padding:5px 8px;font-size:10px;font-weight:800;cursor:pointer;">🗑️</button></div>';
         }).join('');
     };
 
