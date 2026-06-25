@@ -5638,7 +5638,7 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v286.0001</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v287.0001</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -18165,7 +18165,7 @@ Poderia me ajudar? 🙏"
                         +'<div style="display:flex;justify-content:space-between;font-size:8px;color:#667;margin-bottom:13px;"><span>escuro</span><span>luz medida '+lvl+'%</span><span>claro</span></div>'
 
                         // ════ PASSO 1 — NA CÂMERA ════
-                        +'<div style="display:flex;align-items:center;gap:7px;margin-bottom:9px;"><span style="background:'+b.cor+';color:#111;font-weight:900;font-size:11px;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">1</span><span style="font-size:11.5px;font-weight:900;color:'+b.cor+';letter-spacing:.5px;">📷 NA CÂMERA — ajuste assim</span></div>'
+                        +'<div style="display:flex;align-items:center;gap:7px;margin-bottom:9px;"><span style="background:'+b.cor+';color:#111;font-weight:900;font-size:11px;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">1</span><span style="font-size:11.5px;font-weight:900;color:'+b.cor+';letter-spacing:.5px;">📷 PRESET DA CÂMERA — coloque assim</span></div>'
                         +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:8px;">'
                         +'<div style="background:rgba(0,0,0,0.28);border-radius:9px;padding:8px 10px;"><div style="font-size:8.5px;color:#8a93a3;font-weight:800;">📊 ISO</div><div style="font-size:14px;color:#fff;font-weight:900;">'+b.iso+'</div></div>'
                         +'<div style="background:rgba(0,0,0,0.28);border-radius:9px;padding:8px 10px;"><div style="font-size:8.5px;color:#8a93a3;font-weight:800;">⚡ Velocidade</div><div style="font-size:14px;color:#fff;font-weight:900;">'+b.vel+'</div></div>'
@@ -18313,25 +18313,38 @@ Poderia me ajudar? 🙏"
         };
 
         // 👁️ Roda a visão de IA e mostra a config perfeita vista na foto
+        // Leitura REAL e fiel da foto (sempre verdadeira, nunca aleatória) — feita pelos números medidos
+        window.cfgMeasuredVerdict = function(){
+            var c=window._cfgLast||{};
+            var avg=(c.avg!=null?c.avg:128), w=(c.warmth!=null?c.warmth:0), std=(c.std!=null?c.std:40), bp=(c.brightPct||0), dp=(c.darkPct||0);
+            var luz = avg>=190?'com muita luz (sol forte)': avg>=158?'bem iluminada': avg>=128?'com luz média': avg>=98?'com luz mais baixa': avg>=68?'com pouca luz (fim de tarde)':'numa cena escura';
+            var temp = w>30?'bem quente/dourada': w>14?'levemente quente': w<-12?'fria/azulada':'neutra';
+            var contr = std<22?'plana (pouco contraste)': std>62?'de alto contraste':'com contraste equilibrado';
+            var out = '📊 Medi sua foto: ela está <b>'+luz+'</b>, com cor <b>'+temp+'</b> e <b>'+contr+'</b>.';
+            if(bp>=14) out+=' Tem <b>'+bp+'% de área estourada</b> — cuidado com o branco.';
+            if(dp>=22) out+=' E <b>'+dp+'% de sombra</b> — suba o ISO ou busque um ponto de luz.';
+            out+='<br><br>✅ Por isso o <b>preset da câmera</b> acima foi calibrado exatamente pra essa luz.';
+            return out;
+        };
         window.cfgRunVision = async function(dataUrl, prompt){
             var box=document.getElementById('cfgVisionTxt'), dots=document.getElementById('cfgVisionDots');
+            // 1) SEMPRE mostra a leitura REAL medida (fiel, determinística)
+            var det = cfgMeasuredVerdict();
+            if(box) box.innerHTML = det;
+            var head=document.querySelector('#cfgVisionBox > div'); if(head) head.innerHTML='👁️ Leitura real da sua foto<span id="cfgVisionDots" style="color:#7c3aed;"></span>';
+            dots=document.getElementById('cfgVisionDots');
             var alive=true, n=0;
             var tmr=setInterval(function(){ if(!alive){clearInterval(tmr);return;} n=(n+1)%4; if(dots) dots.textContent='.'.repeat(n); },400);
             try{
                 var txt = (typeof invAIVision==='function') ? await invAIVision(dataUrl, prompt) : '';
                 alive=false; clearInterval(tmr); if(dots) dots.textContent='';
-                if(box){
-                    if(txt){
-                        var head=document.querySelector('#cfgVisionBox > div'); if(head) head.innerHTML='👁️ A IA viu sua foto · config perfeita';
-                        box.innerHTML = txt.replace(/\n/g,'<br>');
-                    } else {
-                        box.textContent='A IA não respondeu agora — mas a config calculada acima já está calibrada pela medição da sua foto.';
-                    }
+                // 2) só ENRIQUECE com a IA se ela trouxe algo coerente (não substitui a medição)
+                if(box && txt && txt.length>15 && txt.charAt(0)!=='<'){
+                    box.innerHTML = det + '<br><br><span style="color:#a78bfa;font-weight:800;">💡 Dica extra:</span> ' + txt.replace(/\n/g,'<br>');
                 }
             }catch(e){
                 alive=false; clearInterval(tmr); if(dots) dots.textContent='';
-                var head2=document.querySelector('#cfgVisionBox > div'); if(head2) head2.innerHTML='👁️ Visão da IA indisponível agora';
-                if(box) box.textContent='Sem conexão com a IA no momento — use a config calculada acima, que foi calibrada pela medição da sua foto. Tente de novo daqui a pouco.';
+                // mantém a leitura real medida (já está no box) — nunca fica sem nada
             }
         };
 
