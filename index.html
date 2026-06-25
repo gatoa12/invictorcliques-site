@@ -5624,7 +5624,7 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v276.0001</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v278.0001</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -6540,6 +6540,17 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                 <div class="admin-section" id="adminTab10" style="display:none;">
                     <h3 style="color:var(--primary);margin-bottom:6px;font-size:1.1em;">🔲 Botões & Seções do Site</h3>
                     <p style="color:#555;font-size:12px;margin-bottom:18px;">Tudo que aparece (ou não) pro visitante fica aqui. Ligou = aparece na hora. Desligou = some na hora.</p>
+
+                    <!-- 🔥 OFERTA COM CONTADOR (15h real) -->
+                    <div style="background:rgba(255,69,0,0.06);border:1px solid rgba(255,69,0,0.28);border-radius:13px;padding:14px;margin-bottom:20px;">
+                        <div style="font-size:12.5px;font-weight:900;color:#FF6A35;margin-bottom:3px;">🔥 Contador da oferta (real)</div>
+                        <div style="font-size:11px;color:#8a9;margin-bottom:11px;line-height:1.5;">Sem urgência falsa: o banner mostra "ATÉ 60% OFF" sempre. Quando você <strong>ativar</strong>, aparece um contador REAL que termina de verdade e <strong>some sozinho</strong> no fim. Só você reativa aqui.</div>
+                        <div id="promoCountStatus" style="font-size:11.5px;font-weight:800;margin-bottom:12px;padding:9px 11px;border-radius:9px;background:rgba(0,0,0,0.25);color:#888;">⚪ Verificando...</div>
+                        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                            <button onclick="ativarPromo15h(15)" style="flex:1;min-width:130px;padding:12px;background:linear-gradient(135deg,#FF4500,#FF6A35);color:#fff;border:none;border-radius:10px;font-weight:900;font-size:12.5px;cursor:pointer;">🔥 Ativar oferta (15h)</button>
+                            <button onclick="desativarPromoContador()" style="padding:12px 14px;background:rgba(255,255,255,0.06);color:#fff;border:1px solid rgba(255,255,255,0.15);border-radius:10px;font-weight:800;font-size:12px;cursor:pointer;">⏹️ Tirar contador</button>
+                        </div>
+                    </div>
 
                     <!-- 📐 TAMANHO DOS ELEMENTOS -->
                     <div style="background:rgba(96,165,250,0.06);border:1px solid rgba(96,165,250,0.25);border-radius:13px;padding:14px;margin-bottom:20px;">
@@ -8456,8 +8467,8 @@ Poderia me ajudar? 🙏"
         <div class="sneaker-promo-inner">
             <div class="sneaker-promo-icon" id="sneakerPromoIcon"><img id="sneakerPromoImg" src="" alt="" style="display:none;"><span id="sneakerPromoEmoji">👟</span></div>
             <div class="sneaker-promo-text">
-                <div class="sneaker-promo-tag">⚡ PROMOÇÃO RELÂMPAGO — EXPIRA EM <span id="sneakerPromoCountdown" style="font-variant-numeric:tabular-nums;">--:--:--</span></div>
-                <div class="sneaker-promo-title">Tênis com até 60% OFF — só hoje!</div>
+                <div class="sneaker-promo-tag"><span id="sneakerPromoTagText">🔥 OFERTAS ATÉ 60% OFF</span><span id="sneakerPromoCountWrap" style="display:none;"> · termina em <span id="sneakerPromoCountdown" style="font-variant-numeric:tabular-nums;">--:--:--</span></span></div>
+                <div class="sneaker-promo-title">Tênis com até 60% de desconto</div>
                 <div class="sneaker-promo-subtitle">Nike, Adidas, Puma, ASICS, HOKA e muito mais com desconto exclusivo</div>
             </div>
             <div class="sneaker-promo-discount">ATÉ<br>60% OFF</div>
@@ -12922,7 +12933,7 @@ Poderia me ajudar? 🙏"
             //    sincronizam pra TODOS os visitantes e entre aparelhos do admin
             ['notify_topic','chat_db_url','chat_sb_url','chat_sb_key','chat_sb_table','chat_pantry',
              'invPalette','siteThemeColors','invictorStravaDefaultColor','catalog_layout','invictorEdicaoCodes','invictorMarketplaces',
-             'foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','foco_survey_visible','statsBar_visible','foco_steps_pos','foco_survey_pos','foco_price_pos','siteLandingTab','verif_steps','ai_pages','tbt_enabled','tbt_mode','tbt_picks','site_font','promo_scale','survey_scale','stats_cfg','ia_tenis','ia_shopee_cupom','ia_telegram','ia_whats_ofertas','ia_lojas','ai_chips_hidden','ai_chips_custom'].forEach(function(k){
+             'foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','foco_survey_visible','statsBar_visible','foco_steps_pos','foco_survey_pos','foco_price_pos','siteLandingTab','verif_steps','ai_pages','tbt_enabled','tbt_mode','tbt_picks','site_font','promo_scale','survey_scale','stats_cfg','ia_tenis','ia_shopee_cupom','ia_telegram','ia_whats_ofertas','ia_lojas','ai_chips_hidden','ai_chips_custom','promo_deadline'].forEach(function(k){
                 try { var v = localStorage.getItem(k); if (v != null) payload[k] = v; } catch(e) {}
             });
 
@@ -13140,7 +13151,7 @@ Poderia me ajudar? 🙏"
                 'invictorEdicaoEmails', 'invictorEdicaoAtivos',
                 // === Configs novas: chat ao vivo / ntfy / paleta / conteúdo / IA ===
                 'notify_topic','chat_db_url','chat_sb_url','chat_sb_key','chat_sb_table','chat_pantry',
-                'invPalette','siteThemeColors','invictorStravaDefaultColor','catalog_layout','invictorEdicaoCodes','invictorMarketplaces','foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','foco_survey_visible','statsBar_visible','foco_steps_pos','foco_survey_pos','foco_price_pos','siteLandingTab','verif_steps','ai_pages','tbt_enabled','tbt_mode','tbt_picks','site_font','promo_scale','survey_scale','stats_cfg','ia_tenis','ia_shopee_cupom','ia_telegram','ia_whats_ofertas','ia_lojas','ai_chips_hidden','ai_chips_custom',
+                'invPalette','siteThemeColors','invictorStravaDefaultColor','catalog_layout','invictorEdicaoCodes','invictorMarketplaces','foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','foco_survey_visible','statsBar_visible','foco_steps_pos','foco_survey_pos','foco_price_pos','siteLandingTab','verif_steps','ai_pages','tbt_enabled','tbt_mode','tbt_picks','site_font','promo_scale','survey_scale','stats_cfg','ia_tenis','ia_shopee_cupom','ia_telegram','ia_whats_ofertas','ia_lojas','ai_chips_hidden','ai_chips_custom','promo_deadline',
                 // === Last update marker ===
                 '_lastUpdate'
             ];
@@ -13432,7 +13443,7 @@ Poderia me ajudar? 🙏"
             if(tabIndex===1)  { setTimeout(function(){ if(typeof renderTbtAdmin==='function') renderTbtAdmin(); }, 60); }
             if(tabIndex===7) { _catVisPending={foco:null,banlek:null}; loadCatalogVisibilityFromStorage(); }
             if(tabIndex===9) { loadThemeColorsIntoPanel(); setTimeout(function(){ if(typeof invPaletteRender==='function') invPaletteRender(); if(typeof renderFontAdmin==='function') renderFontAdmin(); }, 40); }
-            if(tabIndex===10) { renderBotoesAdmin(); if(typeof renderSeccoesAdmin==='function') renderSeccoesAdmin(); if(typeof syncLandingTabSelect==='function') syncLandingTabSelect(); if(typeof renderVerifStepsAdmin==='function') renderVerifStepsAdmin(); if(typeof renderElemScaleAdmin==='function') renderElemScaleAdmin(); if(typeof renderStatsCfgAdmin==='function') renderStatsCfgAdmin(); }
+            if(tabIndex===10) { renderBotoesAdmin(); if(typeof renderSeccoesAdmin==='function') renderSeccoesAdmin(); if(typeof syncLandingTabSelect==='function') syncLandingTabSelect(); if(typeof renderVerifStepsAdmin==='function') renderVerifStepsAdmin(); if(typeof renderElemScaleAdmin==='function') renderElemScaleAdmin(); if(typeof renderStatsCfgAdmin==='function') renderStatsCfgAdmin(); if(typeof renderPromoAdminStatus==='function') renderPromoAdminStatus(); }
             if(tabIndex===11) { renderGaleria(); }
             if(tabIndex===12) { initApisTab(); if(typeof renderIaTenisAdmin==='function') renderIaTenisAdmin(); if(typeof iaOfertaLinksLoad==='function') iaOfertaLinksLoad(); if(typeof renderIaLojasAdmin==='function') renderIaLojasAdmin(); if(typeof renderAiChipsAdmin==='function') renderAiChipsAdmin(); if(typeof shopeeStatus==='function') setTimeout(shopeeStatus, 60); }
             if(tabIndex===3)  { setTimeout(_refreshAdminCouponStock, 80); }
@@ -13929,6 +13940,37 @@ Poderia me ajudar? 🙏"
             window._promoCfgVisible = (cfg.visible !== false);
             var banner = document.querySelector('.sneaker-promo-banner');
             if (banner && cfg.visible === false) banner.style.display = 'none';
+            try { if (typeof renderPromoCountdown === 'function') renderPromoCountdown(); } catch(e) {}
+        };
+        // 🔥 Ativa o contador REAL de 15h (só pelo admin). Acaba sozinho e some.
+        window.ativarPromo15h = function(horas){
+            var H = (typeof horas === 'number' && horas > 0) ? horas : 15;
+            var dl = Date.now() + Math.round(H * 3600000);
+            try { localStorage.setItem('promo_deadline', String(dl)); } catch(e) {}
+            try { if (typeof renderPromoCountdown === 'function') renderPromoCountdown(); } catch(e) {}
+            try { if (typeof renderPromoAdminStatus === 'function') renderPromoAdminStatus(); } catch(e) {}
+            try { if (typeof saveData === 'function') saveData(false); } catch(e) {}
+            if (typeof showToast === 'function') showToast('Oferta ativada por '+H+'h! 🔥','✅');
+        };
+        window.desativarPromoContador = function(){
+            try { localStorage.removeItem('promo_deadline'); } catch(e) {}
+            try { if (typeof renderPromoCountdown === 'function') renderPromoCountdown(); } catch(e) {}
+            try { if (typeof renderPromoAdminStatus === 'function') renderPromoAdminStatus(); } catch(e) {}
+            try { if (typeof saveData === 'function') saveData(false); } catch(e) {}
+            if (typeof showToast === 'function') showToast('Contador desativado','⚪');
+        };
+        window.renderPromoAdminStatus = function(){
+            var el = document.getElementById('promoCountStatus'); if (!el) return;
+            var dl = 0; try { dl = parseInt(localStorage.getItem('promo_deadline') || '0', 10) || 0; } catch(e) {}
+            if (dl > Date.now()) {
+                var diff = dl - Date.now();
+                var h = Math.floor(diff / 3600000), m = Math.floor((diff % 3600000) / 60000);
+                el.style.color = '#51CF66';
+                el.innerHTML = '✅ Contador ATIVO · termina em <strong>' + h + 'h ' + m + 'min</strong>';
+            } else {
+                el.style.color = '#FFA726';
+                el.innerHTML = '⚪ Sem contador (banner mostra só "ATÉ 60% OFF"). Ative quando quiser.';
+            }
         };
         window.promoCfgPreview = function(){
             var url=(document.getElementById('promoCfgImg')||{}).value||'';
@@ -22075,25 +22117,29 @@ Responda sempre em português brasileiro.`;
             showToast('📲 Configure Telegram/WhatsApp no painel admin para receber mensagens!', '⚙️', 4000);
         }
         //  CONTADOR REGRESSIVO — Promoção Relâmpago de Tênis
-        (function initPromoCountdown() {
-            const endOfDay = new Date();
-            endOfDay.setHours(23, 59, 59, 999);
-
-            const countdownEl = document.getElementById('sneakerPromoCountdown');
-            if (!countdownEl) return;
-
+        var _promoTimer = null;
+        // ⏱️ Contador REAL: conta até o prazo salvo (promo_deadline). Quando acaba, SOME.
+        // Só reativa pelo painel admin (botão "Ativar oferta 15h").
+        window.renderPromoCountdown = function() {
+            var wrap = document.getElementById('sneakerPromoCountWrap');
+            var cd = document.getElementById('sneakerPromoCountdown');
+            if (!wrap || !cd) return;
+            var dl = 0; try { dl = parseInt(localStorage.getItem('promo_deadline') || '0', 10) || 0; } catch(e) {}
+            if (_promoTimer) { clearInterval(_promoTimer); _promoTimer = null; }
+            if (!dl || dl <= Date.now()) { wrap.style.display = 'none'; return; } // sem contador (acabou ou inativo)
+            wrap.style.display = 'inline';
             function tick() {
-                const now = new Date();
-                const diff = endOfDay - now;
-                if (diff <= 0) { countdownEl.textContent = '00:00:00'; return; }
-                const h = String(Math.floor(diff / 3600000)).padStart(2,'0');
-                const m = String(Math.floor((diff % 3600000) / 60000)).padStart(2,'0');
-                const s = String(Math.floor((diff % 60000) / 1000)).padStart(2,'0');
-                countdownEl.textContent = `${h}:${m}:${s}`;
+                var diff = dl - Date.now();
+                if (diff <= 0) { wrap.style.display = 'none'; if (_promoTimer) { clearInterval(_promoTimer); _promoTimer = null; } return; }
+                var h = String(Math.floor(diff / 3600000)).padStart(2,'0');
+                var m = String(Math.floor((diff % 3600000) / 60000)).padStart(2,'0');
+                var s = String(Math.floor((diff % 60000) / 1000)).padStart(2,'0');
+                cd.textContent = h + ':' + m + ':' + s;
             }
             tick();
-            setInterval(function(){ if(document.hidden) return; tick(); }, 1000);
-        })();
+            _promoTimer = setInterval(function() { if (document.hidden) return; tick(); }, 1000);
+        };
+        (function initPromoCountdown() { try { window.renderPromoCountdown(); } catch(e) {} })();
         //  AUTO-UPDATE — Foco Radical & Banlek
         //  Tenta buscar novos eventos/fotos em background a cada 5 min
         //  Sem bloquear UI. Usa os links configurados pelo admin.
@@ -25072,6 +25118,7 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
     };
     (function(){
       function showBar(){
+        return; // 🚫 barra removida a pedido do Victor (não atrapalha mais)
         if(!_invIsInApp()) return;
         try{ if(sessionStorage.getItem('inAppDismissed')==='1') return; }catch(e){}
         if(document.getElementById('inAppBar')) return;
@@ -32614,6 +32661,7 @@ const _P1_VICTOR_BUILTIN_PRESETS = [{"id": "p1_01_cross_processing_yellow_light"
       // Sugere abrir no navegador real, onde os links abrem direto.
       (function(){
         try {
+          return; // 🚫 barra "abrir no Chrome/Safari" removida a pedido do Victor
           var ua = navigator.userAgent || '';
           var inApp = /Instagram|FBAN|FBAV|FB_IAB|TikTok|musical_ly|Bytedance|Line\//i.test(ua);
           if (!inApp) return;

@@ -11,6 +11,15 @@ export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
     const path = url.pathname;
+
+    // ✅ UM SITE SÓ: redireciona www → sem-www (evita o efeito "dois sites").
+    // Tudo passa a viver em invictorcliques.com.br (canônico).
+    if (url.hostname.startsWith("www.")) {
+      const dest = new URL(request.url);
+      dest.hostname = url.hostname.replace(/^www\./, "");
+      return Response.redirect(dest.toString(), 301);
+    }
+
     try {
       if (path === "/api/data")         return await handleData(request, env);
       if (path === "/api/gist")         return await handleGist(request, env);
@@ -20,8 +29,22 @@ export default {
     } catch (e) {
       return json({ error: String((e && e.message) || e) }, 500);
     }
-    // Qualquer outra coisa = arquivos estáticos do site
-    return env.ASSETS.fetch(request);
+
+    // Qualquer outra coisa = arquivos estáticos do site.
+    // 🔄 Pra o site SEMPRE pegar a versão nova (sem ficar "preso" no cache),
+    // o HTML é servido com no-cache. Imagens/JS continuam com cache normal.
+    const res = await env.ASSETS.fetch(request);
+    try {
+      const ctype = res.headers.get("content-type") || "";
+      if (ctype.includes("text/html")) {
+        const h = new Headers(res.headers);
+        h.set("Cache-Control", "no-cache, no-store, must-revalidate");
+        h.set("Pragma", "no-cache");
+        h.set("Expires", "0");
+        return new Response(res.body, { status: res.status, statusText: res.statusText, headers: h });
+      }
+    } catch (e) {}
+    return res;
   },
 
   // ⏰ Roda automaticamente no horário definido no cron (wrangler.jsonc).
