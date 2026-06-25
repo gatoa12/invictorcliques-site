@@ -5621,7 +5621,7 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v268.0001</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v270.0001</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -11112,6 +11112,21 @@ Poderia me ajudar? 🙏"
             try {
                 const remote = await sharedGet();
                 if (remote) {
+                    // 🛡️ PROTEÇÃO (newest-wins): se o ADMIN deste aparelho tem mudança
+                    // mais nova que a nuvem (ex: oferta recém-adicionada que ainda não
+                    // sincronizou), NÃO deixa a nuvem velha apagar. Mantém o local e
+                    // re-publica pra nuvem.
+                    var _localTs = parseInt(localStorage.getItem('_invictorLastUpdate') || '0', 10) || 0;
+                    var _remoteTs = parseInt((remote['_publishedAt'] || 0), 10) || 0;
+                    var _isAdminHere = false;
+                    try { _isAdminHere = !!(typeof _kvAdminKey === 'function' && _kvAdminKey()); } catch(e) {}
+                    if (_isAdminHere && _localTs && _localTs > _remoteTs + 1500) {
+                        // local é mais novo → preserva e tenta re-sincronizar
+                        try { if (typeof saveData === 'function') setTimeout(function(){ saveData(false); }, 1200); } catch(e) {}
+                        try { renderPromos(); renderTodosEventos(); } catch(e) {}
+                        try { if (typeof updateAdminPanel === 'function') updateAdminPanel(); } catch(e) {}
+                        return; // não sobrescreve com a nuvem velha
+                    }
                     const keysToSync = [
                         'invictorAdminData', 'focoEvents', 'banlekProducts',
                         'v2_focoAlbuns', 'v2_banlekCats',
@@ -12785,6 +12800,7 @@ Poderia me ajudar? 🙏"
 
             // ── Config principal ──────────────────────────────────
             payload['invictorAdminData'] = JSON.stringify(currentData);
+            payload['_publishedAt'] = String(ts); // carimbo p/ proteção newest-wins no carregamento
 
             // ── Catálogos (eventos manuais + produtos banlek) ─────
             try {
@@ -17186,6 +17202,7 @@ Poderia me ajudar? 🙏"
 
                     let r=0,g=0,b=0,px=0,minL=255,maxL=0,rVar=0,gVar=0,bVar=0;
                     let hiPx=0, shPx=0, sumLum=0, sumSat=0;
+                    let sumSatCol=0, colN=0; // saturação só dos pixels COLORIDOS (ignora fundo branco/cinza)
                     const hist = new Array(16).fill(0);              // histograma de luminância
                     // tons por região tonal (sombra/meio/luz) p/ color grading
                     let shR=0,shG=0,shB=0,shN=0, miR=0,miG=0,miB=0,miN=0, hiR=0,hiG=0,hiB=0,hiN=0;
@@ -17210,6 +17227,7 @@ Poderia me ajudar? 🙏"
                         const sat = mx===0?0:dl/mx;
                         sumSat += sat;
                         if (dl > 12) { // pixel com cor relevante
+                            sumSatCol += sat; colN++;
                             let h=0;
                             if (mx===ri) h=((gi-bi)/dl)%6; else if (mx===gi) h=(bi-ri)/dl+2; else h=(ri-gi)/dl+4;
                             h*=60; if(h<0)h+=360;
@@ -17234,6 +17252,9 @@ Poderia me ajudar? 🙏"
                     const saturation=Math.max(r,g,b)-Math.min(r,g,b), variance=(rVar+gVar+bVar)/3;
                     const avgLum = sumLum/px;
                     const avgSat = (sumSat/px)*255;
+                    // 🎯 saturação dos pixels COLORIDOS (rótulo/roupa) — não zera por fundo branco
+                    const satVivid = colN ? (sumSatCol/colN)*255 : avgSat;
+                    const colorPct = (colN/px)*100;
                     const highlightPct = (hiPx/px)*100;
                     const shadowPct = (shPx/px)*100;
                     const blueRatio = b/(r+0.001);
@@ -17268,7 +17289,7 @@ Poderia me ajudar? 🙏"
                     for(let s=0;s<6;s++){const base=s*step*4;palette.push(`rgb(${d[base]},${d[base+1]},${d[base+2]})`);}
 
                     finish({ r,g,b, brightness, contrast, warmth, saturation, variance, palette,
-                             minL, maxL, avgLum, avgSat, highlightPct, shadowPct, blueRatio, greenTint,
+                             minL, maxL, avgLum, avgSat, satVivid, colorPct, highlightPct, shadowPct, blueRatio, greenTint,
                              hist, tShadow, tMid, tHigh, shadowTint, midTint, highlightTint,
                              hueSatAvg, vignette, wbTempBias, wbTintBias,
                              rStd:rVar, gStd:gVar, bStd:bVar });
@@ -17284,16 +17305,16 @@ Poderia me ajudar? 🙏"
             // CONTÍNUO E FIEL: cada foto gera valores próprios (sem degraus fixos)
             function _cl(v,a,b){ return Math.max(a,Math.min(b,v)); }
             var br = (px.brightness!=null?px.brightness:128);
-            var co = (px.contrast!=null?px.contrast:70);
-            var sa = (px.saturation!=null?px.saturation:70);
+            var va = (px.variance!=null?px.variance:45);          // contraste REAL (desvio padrão)
+            var sv = (px.satVivid!=null?px.satVivid:(px.avgSat!=null?px.avgSat:60)); // saturação dos pixels coloridos
             var wa = (px.warmth!=null?px.warmth:0);
-            let bMult = _cl(0.92 + (br-128)/520, 0.82, 1.22);   // foto clara → +leve, escura → -leve
-            let cMult = _cl(1.0  + (co-72)/240,  0.85, 1.45);   // pouco contraste → realça
-            let sMult = _cl(0.60 + sa/95,        0.62, 1.62);   // reflete a saturação REAL (piso 0.62)
-            let hue   = wa < -30 ? 6 : (wa > 55 ? -5 : 0);
-            let sep   = wa > 8 ? _cl(wa/260, 0, 0.34) : 0;      // calor → sépia proporcional
-            // foto REALMENTE preto&branco (sat quase zero) → leve dessaturação, nunca 0 cego
-            if (sa < 12){ sMult = _cl(sMult, 0.18, 0.45); sep = Math.max(sep, 0.08); }
+            let bMult = _cl(0.94 + (br-128)/620, 0.86, 1.16);   // exposição: ajuste leve
+            let cMult = _cl(0.96 + (va-45)/300,  0.9,  1.28);   // contraste suave pelo desvio real
+            let sMult = _cl(0.72 + sv/230,       0.72, 1.45);   // reflete a cor REAL (do rótulo/roupa)
+            let hue   = wa < -28 ? 6 : (wa > 55 ? -5 : 0);
+            let sep   = wa > 10 ? _cl(wa/280, 0, 0.30) : 0;     // calor → sépia proporcional
+            // só fica P&B se a imagem for MESMO sem cor nenhuma
+            if (sv < 10){ sMult = _cl(sMult, 0.20, 0.50); sep = Math.max(sep, 0.06); }
 
             // Apply AI adjustments if available
             if (ai) {
@@ -17314,29 +17335,32 @@ Poderia me ajudar? 🙏"
                 sep > 0 ? `sepia(${sep.toFixed(2)})` : '',
             ].filter(Boolean).join(' ');
 
-            // Determine name and style
+            // Determine name and style (usa saturação dos pixels coloridos + desvio real)
+            var _sv = (px.satVivid!=null?px.satVivid:(px.avgSat!=null?px.avgSat:60));
+            var _va = (px.variance!=null?px.variance:45);
             let styleName = ai?.estilo || (
-                px.saturation < 20 ? 'Mono Drama' :
+                _sv < 14 ? 'Mono Drama' :
                 px.warmth > 50 && px.brightness > 130 ? 'Golden Hour' :
                 px.warmth > 30 ? 'Quente Premium' :
-                px.warmth < -30 && px.contrast > 80 ? 'Cinema Frio' :
-                px.contrast > 120 ? 'Alto Contraste' :
+                px.warmth < -30 && _va > 55 ? 'Cinema Frio' :
+                _va > 70 ? 'Alto Contraste' :
                 px.brightness < 90 ? 'Dark Mood' :
-                px.saturation > 100 ? 'Vibrant Sport' : 'Editorial Clean'
+                _sv > 120 ? 'Vibrant Sport' : 'Editorial Clean'
             );
 
             const baseName = ai?.nome || ('Clone — ' + styleName);
             const name = baseName + ' #' + Math.floor(Math.random()*900+100);
 
-            // Pixel-based characteristic tags
+            // Pixel-based characteristic tags (fiéis ao que a foto realmente tem)
             const chars = [];
-            if (px.saturation < 20)    chars.push('Monocromático');
-            else if (px.saturation > 100) chars.push('Alta Saturação');
+            if (_sv < 14)        chars.push('Monocromático');
+            else if (_sv > 120)  chars.push('Cores Vivas');
+            else if (_sv > 80)   chars.push('Bem Colorido');
             if (px.warmth > 30)  chars.push('Tom Quente');
             if (px.warmth < -30) chars.push('Tom Frio');
             if (px.brightness < 90)  chars.push('Baixo Key');
-            if (px.brightness > 160) chars.push('Alto Key');
-            if (px.contrast > 120)   chars.push('Contraste Alto');
+            if (px.brightness > 170) chars.push('Alto Key');
+            if (_va > 70)   chars.push('Contraste Alto');
             if (px.variance > 60)    chars.push('Alta Textura');
 
             const aiTags = ai?.tags || [];
@@ -17367,7 +17391,7 @@ Poderia me ajudar? 🙏"
             px = px || {};
             const bright = px.brightness!=null?px.brightness:128;
             const contrast = px.contrast||0;
-            const sat = px.saturation||0;
+            const sat = (px.satVivid!=null?px.satVivid:(px.saturation||0));
             const avgSatN = (px.avgSat!=null?px.avgSat:sat)/255; // 0..1
 
             // ── Básicos ──
@@ -17542,7 +17566,7 @@ Poderia me ajudar? 🙏"
             const warmth = px.warmth || 0;
             const blueRatio = px.blueRatio != null ? px.blueRatio : 1;
             const contrast = px.contrast || 0;
-            const sat = px.saturation || 0;
+            const sat = (px.satVivid!=null?px.satVivid:(px.saturation||0));
             const hiPct = px.highlightPct || 0;
             if (lum < 50) return 'noite';
             if (lum < 95 && blueRatio > 1.05 && warmth < 5) return 'azul';
@@ -18229,7 +18253,7 @@ Poderia me ajudar? 🙏"
             const cam = ROUBAR_CAMERAS[_roubarCamera] || ROUBAR_CAMERAS['r7'];
             const warmth = px.warmth || 0;
             const contrast = px.contrast || 0;
-            const sat = px.saturation || 0;
+            const sat = (px.satVivid!=null?px.satVivid:(px.saturation||0));
             const style = (refData.style || '').toLowerCase();
             const autoKey = roubarDetectTimeOfDayKey(px);
             const key = (_roubarTodOverride && ROUBAR_TOD[_roubarTodOverride]) ? _roubarTodOverride : autoKey;
@@ -25368,12 +25392,20 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
     // ════ 🛒 SHOPEE — config segura via Worker ════
     window.shopeeStatus = async function(){
         var el=document.getElementById('shopeeStatus'); if(!el) return;
+        el.style.color='#888'; el.innerHTML='⏳ Verificando status...';
         try{
             var r=await fetch('/api/shopee?action=status&_='+Date.now(), {headers:{'Accept':'application/json'}});
+            var ct=(r.headers.get('content-type')||'');
+            if(!r.ok || ct.indexOf('json')<0){
+                // veio HTML (página) em vez de JSON = a rota /api/shopee ainda não existe no servidor
+                el.style.color='#FFA726';
+                el.innerHTML='🛠️ Falta publicar o servidor (Worker). Rode <code style="background:rgba(255,255,255,0.1);padding:1px 5px;border-radius:4px;">npx wrangler deploy</code> com o <strong>_worker.js</strong> novo. Depois é só colar as chaves aqui.';
+                return;
+            }
             var d=await r.json();
             if(d && d.configured){ el.style.color='#51CF66'; el.innerHTML='✅ Shopee conectada (App ID '+(d.appIdMasked||'•••')+')'+(d.affId?(' · afiliado: '+d.affId.replace(/</g,'&lt;')):'')+' — a IA já busca tênis na Shopee.'; var a=document.getElementById('shopeeAffId'); if(a&&!a.value&&d.affId) a.value=d.affId; }
-            else { el.style.color='#FFA726'; el.innerHTML='⚪ Ainda não configurada. Cole o App ID e o Secret abaixo quando a Shopee te aprovar.'; }
-        }catch(e){ el.style.color='#FF8787'; el.innerHTML='⚠️ Não consegui verificar agora (publique o Worker primeiro).'; }
+            else { el.style.color='#FFA726'; el.innerHTML='⚪ Servidor OK, mas as chaves ainda não foram salvas. Cole o App ID e o Secret abaixo e clique em 💾 Salvar.'; }
+        }catch(e){ el.style.color='#FFA726'; el.innerHTML='🛠️ Falta publicar o servidor (Worker). Rode <code style="background:rgba(255,255,255,0.1);padding:1px 5px;border-radius:4px;">npx wrangler deploy</code> com o <strong>_worker.js</strong> novo.'; }
     };
     window.shopeeSaveCfg = async function(){
         var out=document.getElementById('shopeeTestOut');
