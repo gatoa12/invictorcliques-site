@@ -5583,6 +5583,20 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
          Responsivo: Desktop | Tablet | Mobile | WebView | PWA
     ═══════════════════════════════════════════════════════════ -->
     <div class="admin-panel-overlay" id="adminPanelOverlay" style="display:none;">
+
+        <!-- ⚡ CENTRAL DE AÇÕES RÁPIDAS (flutuante, tudo a 1 toque) -->
+        <div id="apFabWrap" style="position:fixed;right:16px;bottom:18px;z-index:99990;display:flex;flex-direction:column;align-items:flex-end;gap:9px;">
+            <div id="apFabMenu" style="display:none;flex-direction:column;gap:8px;align-items:flex-end;">
+                <button onclick="apQuick('publicar')" style="display:flex;align-items:center;gap:8px;padding:11px 15px;background:linear-gradient(135deg,#51CF66,#2f9e44);color:#fff;border:none;border-radius:30px;font-weight:900;font-size:12.5px;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.35);white-space:nowrap;">🚀 Publicar tudo</button>
+                <button onclick="apQuick('oferta')" style="display:flex;align-items:center;gap:8px;padding:11px 15px;background:linear-gradient(135deg,#FF4500,#FF6A35);color:#fff;border:none;border-radius:30px;font-weight:900;font-size:12.5px;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.35);white-space:nowrap;">🔥 Ativar oferta 15h</button>
+                <button onclick="apQuick('eventos')" style="display:flex;align-items:center;gap:8px;padding:11px 15px;background:linear-gradient(135deg,#60a5fa,#3b82f6);color:#fff;border:none;border-radius:30px;font-weight:900;font-size:12.5px;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.35);white-space:nowrap;">🔄 Atualizar eventos</button>
+                <button onclick="apQuick('copiar')" style="display:flex;align-items:center;gap:8px;padding:11px 15px;background:linear-gradient(135deg,#a78bfa,#7c3aed);color:#fff;border:none;border-radius:30px;font-weight:900;font-size:12.5px;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.35);white-space:nowrap;">🔗 Copiar link</button>
+                <button onclick="apQuick('compartilhar')" style="display:flex;align-items:center;gap:8px;padding:11px 15px;background:linear-gradient(135deg,#25D366,#1da851);color:#fff;border:none;border-radius:30px;font-weight:900;font-size:12.5px;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.35);white-space:nowrap;">📤 Compartilhar</button>
+                <button onclick="apQuick('versite')" style="display:flex;align-items:center;gap:8px;padding:11px 15px;background:rgba(20,22,30,0.95);color:#fff;border:1px solid rgba(255,255,255,0.2);border-radius:30px;font-weight:900;font-size:12.5px;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.35);white-space:nowrap;">👁️ Ver site</button>
+            </div>
+            <button id="apFabBtn" onclick="apFabToggle()" style="width:58px;height:58px;border-radius:50%;background:linear-gradient(135deg,var(--primary,#FF6A00),#FF9A00);color:#fff;border:none;font-size:24px;cursor:pointer;box-shadow:0 8px 24px rgba(255,106,0,.5);display:flex;align-items:center;justify-content:center;transition:transform .2s;">⚡</button>
+        </div>
+
         <div class="admin-panel" id="adminPanelMain">
 
             <!-- IA ASSISTENTE -->
@@ -5624,7 +5638,7 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v278.0001</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v281.0001</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -5791,6 +5805,12 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                             <button onclick="renderSiteOverview()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#aaa;border-radius:7px;padding:4px 9px;font-size:10px;font-weight:700;cursor:pointer;">🔄 Atualizar</button>
                         </div>
                         <div id="siteOverviewGrid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:9px;"></div>
+                        <div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:12px;border-top:1px solid rgba(255,255,255,0.08);padding-top:12px;">
+                            <button onclick="forcePublishAll()" style="flex:1;min-width:100px;padding:10px;background:linear-gradient(135deg,#51CF66,#2f9e44);color:#fff;border:none;border-radius:9px;font-weight:900;font-size:11px;cursor:pointer;">🚀 Publicar</button>
+                            <button onclick="ativarPromo15h(15)" style="flex:1;min-width:100px;padding:10px;background:linear-gradient(135deg,#FF4500,#FF6A35);color:#fff;border:none;border-radius:9px;font-weight:900;font-size:11px;cursor:pointer;">🔥 Oferta 15h</button>
+                            <button onclick="if(typeof refreshFocoAgora==='function')refreshFocoAgora()" style="flex:1;min-width:100px;padding:10px;background:linear-gradient(135deg,#60a5fa,#3b82f6);color:#fff;border:none;border-radius:9px;font-weight:900;font-size:11px;cursor:pointer;">🔄 Eventos</button>
+                            <button onclick="closeAdminPanel()" style="flex:1;min-width:100px;padding:10px;background:rgba(255,255,255,0.06);color:#fff;border:1px solid rgba(255,255,255,0.15);border-radius:9px;font-weight:900;font-size:11px;cursor:pointer;">👁️ Ver site</button>
+                        </div>
                     </div>
                     <div style="display:grid;grid-template-columns:1fr 1fr;gap:30px;">
                         <div>
@@ -10689,6 +10709,31 @@ Poderia me ajudar? 🙏"
             }
         }
 
+        // ⚡ Central de ações rápidas (FAB) do admin
+        window.apFabToggle = function(){
+            var menu=document.getElementById('apFabMenu'), btn=document.getElementById('apFabBtn');
+            if(!menu) return;
+            var open = menu.style.display==='flex';
+            menu.style.display = open ? 'none' : 'flex';
+            if(btn) btn.style.transform = open ? 'rotate(0deg)' : 'rotate(180deg)';
+        };
+        window.apQuick = function(action){
+            try{
+                if(action==='publicar'){ if(typeof forcePublishAll==='function') forcePublishAll(); }
+                else if(action==='oferta'){ if(typeof ativarPromo15h==='function') ativarPromo15h(15); }
+                else if(action==='eventos'){ if(typeof refreshFocoAgora==='function') refreshFocoAgora(); else if(typeof showToast==='function') showToast('Atualização indisponível','⚠️'); }
+                else if(action==='copiar'){ if(typeof invCopySite==='function') invCopySite(); }
+                else if(action==='compartilhar'){
+                    var u='https://invictorcliques.com.br';
+                    if(navigator.share){ navigator.share({title:'@invictorcliques — Fotografia Esportiva', text:'Veja suas fotos das corridas de Natal/RN 📸🏃', url:u}).catch(function(){}); }
+                    else { try{ navigator.clipboard.writeText(u); if(typeof showToast==='function') showToast('Link copiado pra compartilhar!','📤'); }catch(e){} }
+                }
+                else if(action==='versite'){ if(typeof closeAdminPanel==='function') closeAdminPanel(); }
+            }catch(e){}
+            // fecha o menu depois de agir (menos no copiar, pra ver o toast)
+            if(action!=='copiar'){ var menu=document.getElementById('apFabMenu'); if(menu) menu.style.display='none'; var btn=document.getElementById('apFabBtn'); if(btn) btn.style.transform='rotate(0deg)'; }
+        };
+
         function closeAdminPanel() {
             const overlay = document.getElementById('adminPanelOverlay');
             if (overlay) { overlay.classList.remove('active'); overlay.style.display = 'none';
@@ -12933,7 +12978,7 @@ Poderia me ajudar? 🙏"
             //    sincronizam pra TODOS os visitantes e entre aparelhos do admin
             ['notify_topic','chat_db_url','chat_sb_url','chat_sb_key','chat_sb_table','chat_pantry',
              'invPalette','siteThemeColors','invictorStravaDefaultColor','catalog_layout','invictorEdicaoCodes','invictorMarketplaces',
-             'foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','foco_survey_visible','statsBar_visible','foco_steps_pos','foco_survey_pos','foco_price_pos','siteLandingTab','verif_steps','ai_pages','tbt_enabled','tbt_mode','tbt_picks','site_font','promo_scale','survey_scale','stats_cfg','ia_tenis','ia_shopee_cupom','ia_telegram','ia_whats_ofertas','ia_lojas','ai_chips_hidden','ai_chips_custom','promo_deadline'].forEach(function(k){
+             'foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','foco_survey_visible','statsBar_visible','foco_steps_pos','foco_survey_pos','foco_price_pos','siteLandingTab','verif_steps','ai_pages','tbt_enabled','tbt_mode','tbt_picks','site_font','promo_scale','survey_scale','stats_cfg','ia_tenis','ia_shopee_cupom','ia_telegram','ia_whats_ofertas','ia_lojas','ai_chips_hidden','ai_chips_custom','promo_deadline','ia_clicks'].forEach(function(k){
                 try { var v = localStorage.getItem(k); if (v != null) payload[k] = v; } catch(e) {}
             });
 
@@ -13151,7 +13196,7 @@ Poderia me ajudar? 🙏"
                 'invictorEdicaoEmails', 'invictorEdicaoAtivos',
                 // === Configs novas: chat ao vivo / ntfy / paleta / conteúdo / IA ===
                 'notify_topic','chat_db_url','chat_sb_url','chat_sb_key','chat_sb_table','chat_pantry',
-                'invPalette','siteThemeColors','invictorStravaDefaultColor','catalog_layout','invictorEdicaoCodes','invictorMarketplaces','foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','foco_survey_visible','statsBar_visible','foco_steps_pos','foco_survey_pos','foco_price_pos','siteLandingTab','verif_steps','ai_pages','tbt_enabled','tbt_mode','tbt_picks','site_font','promo_scale','survey_scale','stats_cfg','ia_tenis','ia_shopee_cupom','ia_telegram','ia_whats_ofertas','ia_lojas','ai_chips_hidden','ai_chips_custom','promo_deadline',
+                'invPalette','siteThemeColors','invictorStravaDefaultColor','catalog_layout','invictorEdicaoCodes','invictorMarketplaces','foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','foco_survey_visible','statsBar_visible','foco_steps_pos','foco_survey_pos','foco_price_pos','siteLandingTab','verif_steps','ai_pages','tbt_enabled','tbt_mode','tbt_picks','site_font','promo_scale','survey_scale','stats_cfg','ia_tenis','ia_shopee_cupom','ia_telegram','ia_whats_ofertas','ia_lojas','ai_chips_hidden','ai_chips_custom','promo_deadline','ia_clicks',
                 // === Last update marker ===
                 '_lastUpdate'
             ];
@@ -25424,6 +25469,23 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
       if(k==='verificar'){ var vm=document.getElementById('verifMount'); if(vm){ var dv=document.createElement('div'); dv.id=cardId; dv.style.cssText='padding:0;'; dv.innerHTML=_invAICardHtml(k); vm.appendChild(dv); return; } }
       if(k==='foco'){ var ft=document.getElementById('focoTopAI'); if(ft){ var df=document.createElement('div'); df.id=cardId; df.style.cssText='padding:0 16px;'; df.innerHTML=_invAICardHtml(k); ft.appendChild(df); return; } }
       if(typeof _toolMount==='function') _toolMount(secId, cardId, _invAICardHtml(k));
+      // 🤖 IA PROATIVA: nas páginas de Ofertas/Tênis já recebe o cliente com uma dica
+      if(k==='ofertas'||k==='procure'){
+        setTimeout(function(){
+          try{
+            var th=document.getElementById('invAIThread_'+k);
+            if(th && th.children.length===0){
+              var msg = (k==='ofertas')
+                ? '👟 Bora achar seu tênis ideal com desconto? Me diz seu <b>orçamento</b> e como você corre — ou toque numa opção acima 👆. Já te mostro <b>onde comprar mais barato</b>!'
+                : '👟 Quer a indicação certa pro seu pé? Me conta sua <b>pisada</b> e a distância que você corre (5k, 10k…) que eu acho o tênis ideal pra você!';
+              var b=document.createElement('div');
+              b.style.cssText='background:rgba(255,106,0,0.07);border:1px solid rgba(255,106,0,0.2);border-radius:12px;padding:11px 13px;margin-bottom:9px;font-size:12px;color:#cdd6e4;line-height:1.6;';
+              b.innerHTML='<div style="font-size:9px;font-weight:900;color:var(--primary);letter-spacing:.5px;margin-bottom:4px;">🤖 ASSISTENTE IA</div>'+msg;
+              th.appendChild(b);
+            }
+          }catch(e){}
+        }, 450);
+      }
     };
     // ════ 🎛️ VISIBILIDADE DAS OPÇÕES (chips) DA IA ════
     window.getAllAiChips = function(){
@@ -25486,6 +25548,12 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
         }).join('');
     };
 
+    // 📊 Conta cliques por loja (saber o que mais vende)
+    window.iaTrackClick = function(store){
+        try{ var c=JSON.parse(localStorage.getItem('ia_clicks')||'{}'); c[store]=(c[store]||0)+1; localStorage.setItem('ia_clicks',JSON.stringify(c)); if(typeof saveData==='function') saveData(false); if(typeof renderIaLojasAdmin==='function') renderIaLojasAdmin(); }catch(e){}
+    };
+    window.getIaClicks = function(){ try{ return JSON.parse(localStorage.getItem('ia_clicks')||'{}')||{}; }catch(e){ return {}; } };
+
     // ════ 🛒 LOJAS DE AFILIADO (seletor de onde comprar) ════
     // Cada loja tem: emoji, nome e o LINK de afiliado do Victor.
     // O link pode ter {q} → vira a busca do produto (ex: .../search?keyword={q}).
@@ -25518,11 +25586,12 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
     };
     window.renderIaLojasAdmin = function(){
         var box=document.getElementById('iaLojasList'); if(!box) return;
-        var arr=getIaLojas();
+        var arr=getIaLojas(); var clicks=getIaClicks();
         box.innerHTML=arr.map(function(s,i){
+            var cn=clicks[s.nome]||0;
             return '<div style="display:flex;align-items:center;gap:9px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:9px 11px;">'
               +'<span style="font-size:18px;">'+(s.emoji||'🛒')+'</span>'
-              +'<div style="flex:1;min-width:0;"><div style="font-size:12px;font-weight:900;color:#fff;">'+(s.nome||'').replace(/</g,'&lt;')+'</div>'
+              +'<div style="flex:1;min-width:0;"><div style="font-size:12px;font-weight:900;color:#fff;">'+(s.nome||'').replace(/</g,'&lt;')+(cn>0?(' <span style="font-size:9px;color:#00e0a0;background:rgba(0,200,150,0.12);border-radius:8px;padding:1px 6px;margin-left:3px;">👆 '+cn+' clique'+(cn>1?'s':'')+'</span>'):'')+'</div>'
               +(s.link?('<div style="font-size:9px;color:#60a5fa;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+(s.link.indexOf('{q}')>=0?'🔎 busca · ':'🔗 ')+s.link.replace(/</g,'&lt;')+'</div>'):'<div style="font-size:9px;color:#FF8787;">⚠️ sem link</div>')+'</div>'
               +'<button onclick="iaLojaRemove('+i+')" style="background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);color:#f88;border-radius:8px;padding:6px 9px;font-size:11px;font-weight:800;cursor:pointer;flex-shrink:0;">🗑️</button>'
               +'</div>';
@@ -25541,7 +25610,8 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
         lojas.forEach(function(s){
             if(!s.link) return; any=true;
             var href = s.link.indexOf('{q}')>=0 ? s.link.replace(/\{q\}/g,qenc) : s.link;
-            out+=btn(href,'linear-gradient(135deg,#ee4d2d,#ff6a3d)','rgba(238,77,45,0.45)',(s.emoji||'🛒')+' '+(s.nome||'Loja'));
+            var nm=(s.nome||'Loja');
+            out+='<a href="'+String(href).replace(/"/g,'&quot;')+'" target="_blank" rel="noopener sponsored" onclick="iaTrackClick(\''+nm.replace(/'/g,'').replace(/</g,'')+'\')" style="display:block;text-align:center;text-decoration:none;background:linear-gradient(135deg,#ee4d2d,#ff6a3d);border:1px solid rgba(238,77,45,0.45);color:#fff;border-radius:10px;padding:10px;font-size:11.5px;font-weight:900;margin-bottom:7px;">'+(s.emoji||'🛒')+' '+nm.replace(/</g,'&lt;')+'</a>';
         });
         if(!any) out+='<div style="font-size:10px;color:#999;margin-bottom:7px;">Configure suas lojas no painel admin.</div>';
         if(L.telegram) out+=btn(L.telegram,'linear-gradient(135deg,#2AABEE,#229ED9)','rgba(42,171,238,0.5)','📨 Ofertas no Telegram');
@@ -32687,6 +32757,7 @@ const _P1_VICTOR_BUILTIN_PRESETS = [{"id": "p1_01_cross_processing_yellow_light"
       })();
       // Aplica o banner de promoção (tênis girando) ao carregar
       try { if (typeof applyPromoBanner === 'function') applyPromoBanner(); } catch(e){}
+
       try { if (typeof window.applyStatsBarVisibility === 'function') window.applyStatsBarVisibility(); } catch(e){}
 
       // ── POLIMENTO GLOBAL DAS FOTOS (todas as páginas) ──────────────
