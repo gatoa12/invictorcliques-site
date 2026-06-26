@@ -5638,7 +5638,7 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v292.0001</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v294.0001</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -25622,8 +25622,12 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
         +'<div id="invAIChips_'+k+'" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;">'+chips+'</div>'
         +'<div id="invAIThread_'+k+'" style="display:none;flex-direction:column;gap:9px;max-height:340px;overflow-y:auto;margin-bottom:11px;padding:4px;"></div>'
         +'<div style="display:flex;gap:7px;"><input id="invAIIn_'+k+'" placeholder="Escreva sua mensagem..." onkeypress="if(event.key===\'Enter\')invAIAsk(\''+k+'\')" style="flex:1;padding:11px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.13);border-radius:10px;color:#fff;font-size:13px;outline:none;">'
+        +'<button onclick="invAIClear(\''+k+'\')" title="Limpar conversa" style="padding:11px 12px;border:1px solid rgba(255,255,255,0.13);border-radius:10px;background:rgba(255,255,255,0.05);color:#cdd6e4;font-size:13px;cursor:pointer;">🧹</button>'
         +'<button onclick="invAIAsk(\''+k+'\')" style="padding:11px 15px;border:none;border-radius:10px;background:linear-gradient(135deg,#FF6A00,#FF9540);color:#000;font-weight:900;font-size:13px;cursor:pointer;">➤</button></div>');
     }
+    window.invAICopy=function(b){ try{ navigator.clipboard.writeText(b.getAttribute('data-a')||''); if(typeof showToast==='function') showToast('Resposta copiada!','📋'); }catch(e){} };
+    window.invAIShare=function(b){ var t=b.getAttribute('data-a')||''; if(navigator.share){ navigator.share({text:t}).catch(function(){}); } else { try{ navigator.clipboard.writeText(t); if(typeof showToast==='function') showToast('Copiado pra compartilhar!','📤'); }catch(e){} } };
+    window.invAIClear=function(k){ try{ if(window.invAIHist) invAIHist[k]=[]; var th=document.getElementById('invAIThread_'+k); if(th) th.innerHTML=''; if(typeof invAIInject==='function'){ var el=document.getElementById('invAICard_'+k); } if(typeof showToast==='function') showToast('Conversa limpa','🧹'); }catch(e){} };
     function _invAIBubble(k, role, html, id){
       var th=document.getElementById('invAIThread_'+k); if(!th) return;
       th.style.display='flex';
@@ -26056,8 +26060,13 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
             if(typeof iaOfertaFooterHtml==='function') _tenisCards += iaOfertaFooterHtml(k, _prod); // botões de loja: sempre (afiliado garantido)
         } }catch(_){}
         var tb=document.getElementById(typingId);
-        if(tb){ tb.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span style="font-size:9px;font-weight:900;color:var(--primary);letter-spacing:.5px;">🤖 ASSISTENTE IA</span>'
-          +'<button onclick="(function(b){try{navigator.clipboard.writeText(b.getAttribute(\'data-a\'));if(typeof showToast===\'function\')showToast(\'Copiado!\',\'📋\');}catch(e){}})(this)" data-a="'+ans.replace(/"/g,'&quot;')+'" style="background:rgba(255,255,255,0.08);border:none;border-radius:6px;padding:3px 7px;color:#cdd6e4;font-size:9px;font-weight:700;cursor:pointer;">📋</button></div>'+fmt(ans)+_tenisCards; }
+        if(tb){ var _ea=ans.replace(/"/g,'&quot;'), _eq=String(q||'').replace(/"/g,'&quot;');
+          tb.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;"><span style="font-size:9px;font-weight:900;color:var(--primary);letter-spacing:.5px;">🤖 ASSISTENTE IA</span>'
+          +'<div style="display:flex;gap:4px;">'
+          +'<button onclick="invAICopy(this)" data-a="'+_ea+'" title="Copiar" style="background:rgba(255,255,255,0.08);border:none;border-radius:6px;padding:3px 7px;color:#cdd6e4;font-size:10px;cursor:pointer;">📋</button>'
+          +'<button onclick="invAIShare(this)" data-a="'+_ea+'" title="Compartilhar" style="background:rgba(255,255,255,0.08);border:none;border-radius:6px;padding:3px 7px;color:#cdd6e4;font-size:10px;cursor:pointer;">📤</button>'
+          +'<button onclick="invAIAsk(\''+k+'\',this.getAttribute(\'data-q\'))" data-q="'+_eq+'" title="Refazer" style="background:rgba(255,255,255,0.08);border:none;border-radius:6px;padding:3px 7px;color:#cdd6e4;font-size:10px;cursor:pointer;">🔄</button>'
+          +'</div></div>'+fmt(ans)+_tenisCards; }
         var th=document.getElementById('invAIThread_'+k); if(th)th.scrollTop=th.scrollHeight;
         // 🛒 PROCESSO 1 (automático): se a Shopee estiver ligada E o modo permitir, injeta PRODUTOS REAIS
         try{
@@ -31877,7 +31886,20 @@ const _P1_VICTOR_BUILTIN_PRESETS = [{"id": "p1_01_cross_processing_yellow_light"
             <div id="configIdealContent" style="display:none;">
                 <div style="background:linear-gradient(135deg,rgba(96,165,250,0.1),rgba(59,130,246,0.04));border:1.5px solid rgba(96,165,250,0.25);border-radius:14px;padding:15px 16px;margin-bottom:13px;">
                     <div style="font-size:13px;color:#60a5fa;font-weight:900;margin-bottom:4px;">📷 Configuração ideal pra fotografar</div>
-                    <div style="font-size:11px;color:#7a8aa0;line-height:1.6;">Toque no período e veja na hora os ajustes ideais — <strong style="color:#60a5fa;">sem precisar de foto</strong>. Ou envie/tire uma foto lá embaixo que o site detecta a luz sozinho.</div>
+                    <div style="font-size:11px;color:#7a8aa0;line-height:1.6;"><strong style="color:#60a5fa;">Tire a foto do momento</strong> (ou toque no período) → a IA lê a luz e te entrega o <strong style="color:#fff;">preset da câmera</strong>. Quer copiar o estilo de outra foto? Envie a referência e veja como a sua vai ficar.</div>
+                </div>
+
+                <!-- 🗺️ JORNADA — os passos do fluxo (fiel ao plano do Victor) -->
+                <div style="display:flex;gap:5px;align-items:stretch;margin-bottom:14px;overflow-x:auto;padding-bottom:2px;">
+                    <div style="flex:1;min-width:60px;text-align:center;background:rgba(96,165,250,0.08);border:1px solid rgba(96,165,250,0.3);border-radius:10px;padding:9px 5px;"><div style="font-size:18px;line-height:1;">📸</div><div style="font-size:8px;color:#cdd6e4;font-weight:800;margin-top:4px;line-height:1.2;">1. Foto do<br>momento</div></div>
+                    <div style="display:flex;align-items:center;color:#445;font-weight:900;">→</div>
+                    <div style="flex:1;min-width:60px;text-align:center;background:rgba(255,215,0,0.06);border:1px solid rgba(255,215,0,0.25);border-radius:10px;padding:9px 5px;"><div style="font-size:18px;line-height:1;">📷</div><div style="font-size:8px;color:#cdd6e4;font-weight:800;margin-top:4px;line-height:1.2;">2. Preset<br>da câmera</div></div>
+                    <div style="display:flex;align-items:center;color:#445;font-weight:900;">→</div>
+                    <div style="flex:1;min-width:60px;text-align:center;background:rgba(167,139,250,0.07);border:1px solid rgba(167,139,250,0.3);border-radius:10px;padding:9px 5px;"><div style="font-size:18px;line-height:1;">🎨</div><div style="font-size:8px;color:#cdd6e4;font-weight:800;margin-top:4px;line-height:1.2;">3. Foto de<br>referência</div></div>
+                    <div style="display:flex;align-items:center;color:#445;font-weight:900;">→</div>
+                    <div style="flex:1;min-width:60px;text-align:center;background:rgba(167,139,250,0.07);border:1px solid rgba(167,139,250,0.3);border-radius:10px;padding:9px 5px;"><div style="font-size:18px;line-height:1;">🎞️</div><div style="font-size:8px;color:#cdd6e4;font-weight:800;margin-top:4px;line-height:1.2;">4. Preset<br>Lightroom</div></div>
+                    <div style="display:flex;align-items:center;color:#445;font-weight:900;">→</div>
+                    <div style="flex:1;min-width:60px;text-align:center;background:rgba(81,207,102,0.07);border:1px solid rgba(81,207,102,0.3);border-radius:10px;padding:9px 5px;"><div style="font-size:18px;line-height:1;">🤖</div><div style="font-size:8px;color:#cdd6e4;font-weight:800;margin-top:4px;line-height:1.2;">5. Ajuda<br>da IA</div></div>
                 </div>
 
                 <!-- 🕐 RELÓGIO REAL — hora exata + período de verdade -->
@@ -31912,7 +31934,7 @@ const _P1_VICTOR_BUILTIN_PRESETS = [{"id": "p1_01_cross_processing_yellow_light"
 
                 <!-- 📸 FOTO DO MOMENTO EXATO — sempre visível e destacada -->
                 <div style="background:linear-gradient(135deg,rgba(96,165,250,0.12),rgba(59,130,246,0.04));border:1.5px solid rgba(96,165,250,0.4);border-radius:14px;padding:15px;margin-bottom:13px;">
-                    <div style="font-size:13px;color:#60a5fa;font-weight:900;margin-bottom:3px;display:flex;align-items:center;gap:7px;">📸 Foto do momento exato</div>
+                    <div style="font-size:13px;color:#60a5fa;font-weight:900;margin-bottom:3px;display:flex;align-items:center;gap:7px;"><span style="background:#60a5fa;color:#0a0e16;font-weight:900;font-size:11px;width:20px;height:20px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;">1</span> 📸 Foto do momento exato</div>
                     <div style="font-size:10.5px;color:#7a8aa0;margin-bottom:12px;line-height:1.55;">Aponte pra cena e tire a foto (ou envie uma). O site lê a luz e te dá a <strong style="color:#60a5fa;">solução completa</strong> — config, balanço de branco e o que melhorar.</div>
                     <div style="display:flex;gap:9px;flex-wrap:wrap;margin-bottom:11px;">
                         <label for="cfgCamInput" style="flex:1;min-width:130px;display:flex;flex-direction:column;align-items:center;gap:7px;padding:16px 10px;cursor:pointer;border-radius:12px;border:2px solid rgba(96,165,250,0.55);background:rgba(96,165,250,0.1);transition:all .2s;">
