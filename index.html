@@ -1698,18 +1698,19 @@
 
         .coupon-btn {
             display: inline-block;
-            margin-top: 15px;
-            padding: 12px 30px;
+            margin-top: 12px;
+            padding: 6px 16px;
             background: linear-gradient(135deg, var(--primary) 0%, #FF7A1A 100%);
             color: #000;
             border: none;
-            border-radius: 25px;
-            font-weight: 700;
-            font-size: 1em;
+            border-radius: 20px;
+            font-weight: 800;
+            font-size: 0.72em;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.3);
+            box-shadow: 0 4px 14px rgba(255, 215, 0, 0.25);
             text-decoration: none;
+            opacity: 0.92;
         }
 
         .coupon-btn:hover {
@@ -4022,7 +4023,7 @@
             .subtitle { font-size: 0.95em; }
             .header { padding: 20px 14px; }
             .profile-photo { width: 90px; height: 90px; font-size: 44px; }
-            .coupon-btn { font-size: 0.88em; padding: 10px 22px; }
+            .coupon-btn { font-size: 0.7em; padding: 5px 14px; }
             .main-menu { grid-template-columns: repeat(2, 1fr); padding: 18px 12px; gap: 10px; }
             .menu-btn { padding: 16px 10px; font-size: 0.9em; }
             .menu-btn i { font-size: 2em; margin-bottom: 7px; }
@@ -5638,7 +5639,7 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v294.0001</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v300.0001</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -5805,6 +5806,7 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                             <button onclick="renderSiteOverview()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#aaa;border-radius:7px;padding:4px 9px;font-size:10px;font-weight:700;cursor:pointer;">🔄 Atualizar</button>
                         </div>
                         <div id="siteOverviewGrid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:9px;"></div>
+                        <div id="invSmartTips" style="margin-top:12px;"></div>
                         <div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:12px;border-top:1px solid rgba(255,255,255,0.08);padding-top:12px;">
                             <button onclick="forcePublishAll()" style="flex:1;min-width:100px;padding:10px;background:linear-gradient(135deg,#51CF66,#2f9e44);color:#fff;border:none;border-radius:9px;font-weight:900;font-size:11px;cursor:pointer;">🚀 Publicar</button>
                             <button onclick="ativarPromo15h(15)" style="flex:1;min-width:100px;padding:10px;background:linear-gradient(135deg,#FF4500,#FF6A35);color:#fff;border:none;border-radius:9px;font-weight:900;font-size:11px;cursor:pointer;">🔥 Oferta 15h</button>
@@ -6560,6 +6562,30 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                 <div class="admin-section" id="adminTab10" style="display:none;">
                     <h3 style="color:var(--primary);margin-bottom:6px;font-size:1.1em;">🔲 Botões & Seções do Site</h3>
                     <p style="color:#555;font-size:12px;margin-bottom:18px;">Tudo que aparece (ou não) pro visitante fica aqui. Ligou = aparece na hora. Desligou = some na hora.</p>
+
+                    <!-- 🚪 TELA DE ENTRADA (Comprar Fotos / Tênis) -->
+                    <div style="background:rgba(255,215,0,0.05);border:1px solid rgba(255,215,0,0.25);border-radius:13px;padding:14px;margin-bottom:20px;">
+                        <div style="font-size:12.5px;font-weight:900;color:#FFD700;margin-bottom:3px;">🚪 Tela de entrada</div>
+                        <div style="font-size:11px;color:#8a9;margin-bottom:11px;line-height:1.5;">Ao abrir o site, mostra uma tela preta com <b>"Comprar Fotos"</b> ou <b>"Comprar Tênis"</b> que leva pra seção certa. Aparece 1x por visita.</div>
+                        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                            <button onclick="(function(){try{localStorage.setItem('gateway_on','1');if(typeof saveData==='function')saveData(false);if(typeof showToast==='function')showToast('Tela de entrada LIGADA','✅');}catch(e){}})()" style="flex:1;min-width:110px;padding:11px;background:linear-gradient(135deg,#51CF66,#2f9e44);color:#fff;border:none;border-radius:10px;font-weight:900;font-size:12px;cursor:pointer;">✅ Ligar</button>
+                            <button onclick="(function(){try{localStorage.setItem('gateway_on','0');if(typeof saveData==='function')saveData(false);if(typeof showToast==='function')showToast('Tela de entrada DESLIGADA','⚪');}catch(e){}})()" style="flex:1;min-width:110px;padding:11px;background:rgba(255,255,255,0.06);color:#fff;border:1px solid rgba(255,255,255,0.15);border-radius:10px;font-weight:800;font-size:12px;cursor:pointer;">⛔ Desligar</button>
+                            <button onclick="if(typeof invShowGateway==='function')invShowGateway(true)" style="flex:1;min-width:110px;padding:11px;background:linear-gradient(135deg,#FFD700,#FFA500);color:#111;border:none;border-radius:10px;font-weight:900;font-size:12px;cursor:pointer;">👁️ Testar</button>
+                        </div>
+                        <!-- fotos dos botões + fundo -->
+                        <div style="margin-top:13px;border-top:1px solid rgba(255,255,255,0.1);padding-top:12px;">
+                            <div style="font-size:10.5px;color:#cdd6e4;font-weight:800;margin-bottom:8px;">🖼️ Fotos (cole o link da imagem)</div>
+                            <label style="font-size:9px;color:#888;font-weight:700;">📸 Foto do botão "Comprar Fotos"</label>
+                            <input id="gwFotoImg" placeholder="https://.../foto.jpg" style="width:100%;margin:3px 0 8px;padding:9px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.12);border-radius:9px;color:#fff;font-size:11px;outline:none;box-sizing:border-box;">
+                            <label style="font-size:9px;color:#888;font-weight:700;">👟 Foto do botão "Comprar Tênis"</label>
+                            <input id="gwTenisImg" placeholder="https://.../tenis.jpg" style="width:100%;margin:3px 0 8px;padding:9px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.12);border-radius:9px;color:#fff;font-size:11px;outline:none;box-sizing:border-box;">
+                            <label style="font-size:9px;color:#888;font-weight:700;">🌌 Foto de FUNDO do site (transparente)</label>
+                            <input id="gwBgImg" placeholder="https://.../fundo.jpg" style="width:100%;margin:3px 0 6px;padding:9px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.12);border-radius:9px;color:#fff;font-size:11px;outline:none;box-sizing:border-box;">
+                            <label style="font-size:9px;color:#888;font-weight:700;">Transparência do fundo: <span id="gwBgOpVal">12%</span></label>
+                            <input id="gwBgOp" type="range" min="3" max="40" value="12" oninput="document.getElementById('gwBgOpVal').textContent=this.value+'%'" style="width:100%;margin:4px 0 10px;">
+                            <button onclick="gatewayImgsSave()" style="width:100%;padding:11px;background:linear-gradient(135deg,#FFD700,#FFA500);color:#111;border:none;border-radius:10px;font-weight:900;font-size:12px;cursor:pointer;">💾 Salvar fotos e fundo</button>
+                        </div>
+                    </div>
 
                     <!-- 🔥 OFERTA COM CONTADOR (15h real) -->
                     <div style="background:rgba(255,69,0,0.06);border:1px solid rgba(255,69,0,0.28);border-radius:13px;padding:14px;margin-bottom:20px;">
@@ -10727,6 +10753,146 @@ Poderia me ajudar? 🙏"
             }
         }
 
+        // ════ 🚪 TELA DE ENTRADA (Comprar Fotos / Comprar Tênis) ════
+        window.invGatewayOn = function(){ try{ var v=localStorage.getItem('gateway_on'); return v!=='0'; }catch(e){ return true; } };
+        window.invGatewayChoose = function(dest){
+            var ov=document.getElementById('invGateway');
+            if(ov){ ov.style.opacity='0'; setTimeout(function(){ try{ ov.remove(); }catch(e){} }, 350); }
+            try{ sessionStorage.setItem('inv_gateway_seen','1'); }catch(e){}
+            function _scroll(id, fb){ setTimeout(function(){ var el=document.getElementById(id)||(fb?document.getElementById(fb):null); if(el){ try{ el.scrollIntoView({behavior:'smooth',block:'start'}); }catch(e){ window.scrollTo(0,el.offsetTop-10); } } }, 420); }
+            try{
+                if(dest==='tenis'){ if(typeof switchTab==='function') switchTab('ofertas'); _scroll('ofertasSection'); }
+                else if(dest==='fotos'){ if(typeof switchTab==='function') switchTab('foco'); _scroll('focoRadicalResults','focoSection'); }
+                else { try{ window.scrollTo({top:0,behavior:'smooth'}); }catch(e){} }
+            }catch(e){}
+        };
+        window.invShowGateway = function(force){
+            if(!force){
+                if(!invGatewayOn()) return;
+                // 👉 SEMPRE aparece ao abrir/atualizar (sem "ver só 1x")
+                try{ var ap=document.getElementById('adminPanelOverlay'); if(ap && ap.style.display && ap.style.display!=='none') return; }catch(e){}
+            }
+            if(document.getElementById('invGateway')) return;
+            function _gw(k){ try{ return localStorage.getItem(k)||''; }catch(e){ return ''; } }
+            var fImg=_gw('gateway_foto_img'), tImg=_gw('gateway_tenis_img');
+            var fBg = fImg ? ('linear-gradient(135deg,rgba(0,0,0,0.55),rgba(0,0,0,0.3)),url('+fImg.replace(/"/g,'')+') center/cover') : 'linear-gradient(135deg,rgba(255,215,0,0.14),rgba(255,170,0,0.05))';
+            var tBg = tImg ? ('linear-gradient(135deg,rgba(0,0,0,0.55),rgba(0,0,0,0.3)),url('+tImg.replace(/"/g,'')+') center/cover') : 'linear-gradient(135deg,rgba(255,106,0,0.16),rgba(255,69,0,0.05))';
+            // 🖼️ fotos do catálogo transparentes ATRÁS da tela de entrada
+            var bgImg = _gw('site_bg_img') || fImg || tImg || '';
+            var ovBg = bgImg ? ('linear-gradient(rgba(5,6,8,0.82),rgba(5,6,8,0.92)),url('+bgImg.replace(/"/g,'')+') center/cover fixed') : 'radial-gradient(circle at 50% 30%, #16181f 0%, #050608 70%)';
+            var ov=document.createElement('div');
+            ov.id='invGateway';
+            ov.style.cssText='position:fixed;inset:0;z-index:99995;background:'+ovBg+';display:flex;flex-direction:column;align-items:center;justify-content:center;padding:26px 20px;opacity:0;transition:opacity .4s;overflow-y:auto;';
+            ov.innerHTML=''
+                +'<div style="text-align:center;margin-bottom:24px;">'
+                +'<div style="font-size:12px;letter-spacing:3px;color:#FF6A00;font-weight:900;text-transform:uppercase;margin-bottom:7px;">@invictorcliques</div>'
+                +'<div style="font-size:25px;font-weight:900;color:#fff;line-height:1.15;">O que você quer<br>fazer hoje?</div>'
+                +'<div style="font-size:11.5px;color:#9aa;margin-top:10px;line-height:1.5;">📸 Fotos das corridas de Natal/RN em alta resolução<br>👟 Ofertas de tênis com cupom de desconto</div>'
+                +'</div>'
+                +'<div style="display:flex;flex-direction:column;gap:15px;width:100%;max-width:340px;">'
+                +'<button onclick="invGatewayChoose(\'fotos\')" style="position:relative;overflow:hidden;border:1.5px solid rgba(255,215,0,0.4);background:'+fBg+';border-radius:18px;padding:24px 22px;cursor:pointer;text-align:left;transition:transform .2s;min-height:118px;">'
+                +'<div style="font-size:40px;line-height:1;margin-bottom:11px;">📸</div>'
+                +'<div style="font-size:19px;font-weight:900;color:#fff;margin-bottom:3px;">Comprar Fotos</div>'
+                +'<div style="font-size:12px;color:#e8e0c0;line-height:1.4;">Ache e baixe suas fotos das corridas em alta resolução</div>'
+                +'<div style="position:absolute;right:18px;top:50%;transform:translateY(-50%);font-size:22px;color:#FFD700;">→</div>'
+                +'</button>'
+                +'<button onclick="invGatewayChoose(\'tenis\')" style="position:relative;overflow:hidden;border:1.5px solid rgba(255,106,0,0.45);background:'+tBg+';border-radius:18px;padding:24px 22px;cursor:pointer;text-align:left;transition:transform .2s;min-height:118px;">'
+                +'<div style="font-size:40px;line-height:1;margin-bottom:11px;">👟</div>'
+                +'<div style="font-size:19px;font-weight:900;color:#fff;margin-bottom:3px;">Comprar Tênis</div>'
+                +'<div style="font-size:12px;color:#f0d0b0;line-height:1.4;">Ofertas de tênis de corrida com até 60% OFF + cupons</div>'
+                +'<div style="position:absolute;right:18px;top:50%;transform:translateY(-50%);font-size:22px;color:#FF6A00;">→</div>'
+                +'</button>'
+                +'<button onclick="invGwCupom()" style="align-self:center;margin-top:2px;background:linear-gradient(135deg,#FF6A00,#FF9540);color:#000;border:none;border-radius:20px;padding:8px 18px;font-size:12px;font-weight:900;cursor:pointer;display:inline-flex;align-items:center;gap:6px;box-shadow:0 4px 14px rgba(255,106,0,0.3);">🎟️ Resgatar cupom grátis</button>'
+                +'</div>'
+                +'<button onclick="invGatewayChoose(\'\')" style="margin-top:22px;background:none;border:none;color:#667;font-size:12px;cursor:pointer;text-decoration:underline;">Só quero ver o site →</button>';
+            document.body.appendChild(ov);
+            requestAnimationFrame(function(){ ov.style.opacity='1'; });
+        };
+        // 🎟️ cupom direto da tela de entrada
+        window.invGwCupom = function(){
+            var ov=document.getElementById('invGateway');
+            if(ov){ ov.style.opacity='0'; setTimeout(function(){ try{ ov.remove(); }catch(e){} }, 350); }
+            try{ sessionStorage.setItem('inv_gateway_seen','1'); }catch(e){}
+            setTimeout(function(){ try{ if(typeof openCouponModal==='function') openCouponModal(); }catch(e){} }, 420);
+        };
+        // 🖼️ Fotos transparentes no FUNDO do site
+        // 💡 Sugestões inteligentes do painel (inovação) — dicas contextuais pra vender mais
+        window.renderSmartTips = function(){
+            var box=document.getElementById('invSmartTips'); if(!box) return;
+            var tips=[];
+            function has(k){ try{ var v=localStorage.getItem(k); return v && v!=='' && v!=='[]' && v!=='{}'; }catch(e){ return false; } }
+            // Shopee
+            if(!has('ia_shopee_cupom') && true){}
+            try{ var lojas=(typeof getIaLojas==='function')?getIaLojas():[]; }catch(e){}
+            // contador de oferta
+            var dl=0; try{ dl=parseInt(localStorage.getItem('promo_deadline')||'0',10)||0; }catch(e){}
+            if(dl<=Date.now()) tips.push({i:'🔥',t:'Ative o contador de oferta (15h) pra criar urgência real',a:'ativarPromo15h(15)',b:'Ativar'});
+            // tela de entrada com fotos
+            if(!has('gateway_foto_img')) tips.push({i:'🖼️',t:'Coloque fotos nos botões da tela de entrada — fica muito mais profissional',a:"switchAdminTab&&switchAdminTab(10)",b:'Configurar'});
+            // fundo do site
+            if(!has('site_bg_img')) tips.push({i:'🌌',t:'Adicione uma foto de fundo transparente pra dar identidade ao site',a:"switchAdminTab&&switchAdminTab(10)",b:'Adicionar'});
+            // tênis afiliados
+            try{ var tn=(typeof getIaTenis==='function')?getIaTenis():[]; if(!tn||!tn.length) tips.push({i:'👟',t:'Cadastre tênis na curadoria pra IA recomendar e você ganhar comissão',a:"switchAdminTab&&switchAdminTab(12)",b:'Cadastrar'}); }catch(e){}
+            // edit recipes / engajamento (sempre uma dica boa)
+            tips.push({i:'📤',t:'Compartilhe seu site nos Stories hoje — toque no ⚡ e em Compartilhar',a:"apQuick&&apQuick('compartilhar')",b:'Compartilhar'});
+            if(!tips.length){ box.innerHTML=''; return; }
+            box.innerHTML='<div style="font-size:11px;font-weight:900;color:#a78bfa;margin:4px 0 8px;">💡 Sugestões pra vender mais</div>'
+              + tips.slice(0,3).map(function(t){
+                  return '<div style="display:flex;align-items:center;gap:10px;background:rgba(167,139,250,0.06);border:1px solid rgba(167,139,250,0.22);border-radius:11px;padding:10px 12px;margin-bottom:7px;">'
+                    +'<span style="font-size:18px;flex-shrink:0;">'+t.i+'</span>'
+                    +'<span style="flex:1;font-size:11px;color:#cdd6e4;line-height:1.4;">'+t.t+'</span>'
+                    +'<button onclick="try{'+t.a+'}catch(e){}" style="flex-shrink:0;background:linear-gradient(135deg,#a78bfa,#7c3aed);color:#fff;border:none;border-radius:8px;padding:7px 11px;font-size:10px;font-weight:900;cursor:pointer;">'+t.b+'</button></div>';
+                }).join('');
+        };
+        // 🖼️ Salva fotos dos botões + fundo do site
+        window.gatewayImgsSave = function(){
+            function v(id){ var el=document.getElementById(id); return el?el.value.trim():''; }
+            try{
+                localStorage.setItem('gateway_foto_img', v('gwFotoImg'));
+                localStorage.setItem('gateway_tenis_img', v('gwTenisImg'));
+                localStorage.setItem('site_bg_img', v('gwBgImg'));
+                var op=document.getElementById('gwBgOp'); localStorage.setItem('site_bg_op', String((op?parseInt(op.value,10):12)/100));
+            }catch(e){}
+            try{ if(typeof invApplySiteBg==='function') invApplySiteBg(); }catch(e){}
+            try{ if(typeof saveData==='function') saveData(false); }catch(e){}
+            if(typeof showToast==='function') showToast('Fotos e fundo salvos! 🖼️','✅');
+        };
+        window.gatewayImgsLoad = function(){
+            function g(k){ try{ return localStorage.getItem(k)||''; }catch(e){ return ''; } }
+            var f=document.getElementById('gwFotoImg'); if(f&&!f.value) f.value=g('gateway_foto_img');
+            var t=document.getElementById('gwTenisImg'); if(t&&!t.value) t.value=g('gateway_tenis_img');
+            var b=document.getElementById('gwBgImg'); if(b&&!b.value) b.value=g('site_bg_img');
+            var o=document.getElementById('gwBgOp'); var ov=document.getElementById('gwBgOpVal');
+            try{ var val=Math.round((parseFloat(g('site_bg_op'))||0.12)*100); if(o) o.value=val; if(ov) ov.textContent=val+'%'; }catch(e){}
+        };
+        window.invApplySiteBg = function(){
+            var url=''; try{ url=localStorage.getItem('site_bg_img')||''; }catch(e){}
+            var op=0.12; try{ var o=parseFloat(localStorage.getItem('site_bg_op')); if(!isNaN(o)) op=o; }catch(e){}
+            if(!url){ try{ document.body.style.backgroundImage=''; }catch(e){} return; }
+            var veil=(1-op).toFixed(2);
+            try{
+                document.body.style.backgroundImage='linear-gradient(rgba(7,8,12,'+veil+'),rgba(7,8,12,'+veil+')),url('+url.replace(/"/g,'')+')';
+                document.body.style.backgroundSize='cover';
+                document.body.style.backgroundPosition='center';
+                document.body.style.backgroundAttachment='fixed';
+                document.body.style.backgroundRepeat='no-repeat';
+            }catch(e){}
+        };
+
+        // 🚀 INICIALIZADOR ROBUSTO da tela de entrada — garante que SEMPRE apareça pro visitante
+        (function _invGatewayBoot(){
+            var done=false;
+            function _go(){
+                try{ if(typeof invApplySiteBg==='function') invApplySiteBg(); }catch(e){}
+                try{ if(typeof invShowGateway==='function' && !document.getElementById('invGateway')) invShowGateway(); }catch(e){}
+            }
+            function _trigger(){ if(done) return; done=true; setTimeout(_go, 250); }
+            if(document.readyState==='complete' || document.readyState==='interactive'){ _trigger(); }
+            else { document.addEventListener('DOMContentLoaded', _trigger); }
+            // reforço: tenta de novo no load (caso algo tenha atrasado)
+            window.addEventListener('load', function(){ setTimeout(function(){ try{ if(typeof invShowGateway==='function' && !document.getElementById('invGateway') && (typeof invGatewayOn!=='function'||invGatewayOn())){ var seen=false; invShowGateway(); } }catch(e){} }, 600); });
+        })();
+
         // ⚡ Central de ações rápidas (FAB) do admin
         window.apFabToggle = function(){
             var menu=document.getElementById('apFabMenu'), btn=document.getElementById('apFabBtn');
@@ -12996,7 +13162,7 @@ Poderia me ajudar? 🙏"
             //    sincronizam pra TODOS os visitantes e entre aparelhos do admin
             ['notify_topic','chat_db_url','chat_sb_url','chat_sb_key','chat_sb_table','chat_pantry',
              'invPalette','siteThemeColors','invictorStravaDefaultColor','catalog_layout','invictorEdicaoCodes','invictorMarketplaces',
-             'foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','foco_survey_visible','statsBar_visible','foco_steps_pos','foco_survey_pos','foco_price_pos','siteLandingTab','verif_steps','ai_pages','tbt_enabled','tbt_mode','tbt_picks','site_font','promo_scale','survey_scale','stats_cfg','ia_tenis','ia_shopee_cupom','ia_telegram','ia_whats_ofertas','ia_lojas','ai_chips_hidden','ai_chips_custom','promo_deadline','ia_clicks','ia_rec_mode'].forEach(function(k){
+             'foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','foco_survey_visible','statsBar_visible','foco_steps_pos','foco_survey_pos','foco_price_pos','siteLandingTab','verif_steps','ai_pages','tbt_enabled','tbt_mode','tbt_picks','site_font','promo_scale','survey_scale','stats_cfg','ia_tenis','ia_shopee_cupom','ia_telegram','ia_whats_ofertas','ia_lojas','ai_chips_hidden','ai_chips_custom','promo_deadline','ia_clicks','ia_rec_mode','edit_recipes','gateway_on','gateway_foto_img','gateway_tenis_img','site_bg_img','site_bg_op'].forEach(function(k){
                 try { var v = localStorage.getItem(k); if (v != null) payload[k] = v; } catch(e) {}
             });
 
@@ -13214,7 +13380,7 @@ Poderia me ajudar? 🙏"
                 'invictorEdicaoEmails', 'invictorEdicaoAtivos',
                 // === Configs novas: chat ao vivo / ntfy / paleta / conteúdo / IA ===
                 'notify_topic','chat_db_url','chat_sb_url','chat_sb_key','chat_sb_table','chat_pantry',
-                'invPalette','siteThemeColors','invictorStravaDefaultColor','catalog_layout','invictorEdicaoCodes','invictorMarketplaces','foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','foco_survey_visible','statsBar_visible','foco_steps_pos','foco_survey_pos','foco_price_pos','siteLandingTab','verif_steps','ai_pages','tbt_enabled','tbt_mode','tbt_picks','site_font','promo_scale','survey_scale','stats_cfg','ia_tenis','ia_shopee_cupom','ia_telegram','ia_whats_ofertas','ia_lojas','ai_chips_hidden','ai_chips_custom','promo_deadline','ia_clicks','ia_rec_mode',
+                'invPalette','siteThemeColors','invictorStravaDefaultColor','catalog_layout','invictorEdicaoCodes','invictorMarketplaces','foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','foco_survey_visible','statsBar_visible','foco_steps_pos','foco_survey_pos','foco_price_pos','siteLandingTab','verif_steps','ai_pages','tbt_enabled','tbt_mode','tbt_picks','site_font','promo_scale','survey_scale','stats_cfg','ia_tenis','ia_shopee_cupom','ia_telegram','ia_whats_ofertas','ia_lojas','ai_chips_hidden','ai_chips_custom','promo_deadline','ia_clicks','ia_rec_mode','edit_recipes','gateway_on','gateway_foto_img','gateway_tenis_img','site_bg_img','site_bg_op',
                 // === Last update marker ===
                 '_lastUpdate'
             ];
@@ -13502,11 +13668,11 @@ Poderia me ajudar? 🙏"
             }
 
             // 3. Callbacks por aba
-            if(tabIndex===0)  { setTimeout(function(){ if(typeof promoCfgLoadToPanel==='function') promoCfgLoadToPanel(); if(typeof renderSiteOverview==='function') renderSiteOverview(); }, 80); }
+            if(tabIndex===0)  { setTimeout(function(){ if(typeof promoCfgLoadToPanel==='function') promoCfgLoadToPanel(); if(typeof renderSiteOverview==='function') renderSiteOverview(); if(typeof renderSmartTips==='function') renderSmartTips(); }, 80); }
             if(tabIndex===1)  { setTimeout(function(){ if(typeof renderTbtAdmin==='function') renderTbtAdmin(); }, 60); }
             if(tabIndex===7) { _catVisPending={foco:null,banlek:null}; loadCatalogVisibilityFromStorage(); }
             if(tabIndex===9) { loadThemeColorsIntoPanel(); setTimeout(function(){ if(typeof invPaletteRender==='function') invPaletteRender(); if(typeof renderFontAdmin==='function') renderFontAdmin(); }, 40); }
-            if(tabIndex===10) { renderBotoesAdmin(); if(typeof renderSeccoesAdmin==='function') renderSeccoesAdmin(); if(typeof syncLandingTabSelect==='function') syncLandingTabSelect(); if(typeof renderVerifStepsAdmin==='function') renderVerifStepsAdmin(); if(typeof renderElemScaleAdmin==='function') renderElemScaleAdmin(); if(typeof renderStatsCfgAdmin==='function') renderStatsCfgAdmin(); if(typeof renderPromoAdminStatus==='function') renderPromoAdminStatus(); }
+            if(tabIndex===10) { renderBotoesAdmin(); if(typeof renderSeccoesAdmin==='function') renderSeccoesAdmin(); if(typeof syncLandingTabSelect==='function') syncLandingTabSelect(); if(typeof renderVerifStepsAdmin==='function') renderVerifStepsAdmin(); if(typeof renderElemScaleAdmin==='function') renderElemScaleAdmin(); if(typeof renderStatsCfgAdmin==='function') renderStatsCfgAdmin(); if(typeof renderPromoAdminStatus==='function') renderPromoAdminStatus(); if(typeof gatewayImgsLoad==='function') gatewayImgsLoad(); }
             if(tabIndex===11) { renderGaleria(); }
             if(tabIndex===12) { initApisTab(); if(typeof renderIaTenisAdmin==='function') renderIaTenisAdmin(); if(typeof iaOfertaLinksLoad==='function') iaOfertaLinksLoad(); if(typeof renderIaRecMode==='function') renderIaRecMode(); if(typeof renderIaLojasAdmin==='function') renderIaLojasAdmin(); if(typeof renderAiChipsAdmin==='function') renderAiChipsAdmin(); if(typeof shopeeStatus==='function') setTimeout(shopeeStatus, 60); }
             if(tabIndex===3)  { setTimeout(_refreshAdminCouponStock, 80); }
@@ -16413,11 +16579,19 @@ Poderia me ajudar? 🙏"
             const toast = document.getElementById('toastNotification');
             document.getElementById('toastMsg').textContent = msg;
             document.getElementById('toastIcon').textContent = icon;
-            toast.style.transform = 'translateX(-50%) translateY(0)';
+            // 🎨 cor da borda pelo tipo de feedback
+            try{
+                var accent = (icon==='⚠️'||icon==='⛔') ? '#FFA726' : (icon==='❌') ? '#FF5252' : (icon==='📋'||icon==='📤'||icon==='#️⃣') ? '#60a5fa' : '#51CF66';
+                toast.style.borderLeft = '4px solid '+accent;
+            }catch(e){}
+            // ✨ entrada com "pop" + 📳 vibração tátil (celular)
+            toast.style.transform = 'translateX(-50%) translateY(0) scale(1.06)';
             toast.style.opacity = '1';
+            setTimeout(function(){ try{ toast.style.transform='translateX(-50%) translateY(0) scale(1)'; }catch(e){} }, 150);
+            try{ if(navigator.vibrate){ navigator.vibrate(icon==='⚠️'||icon==='❌'?[20,40,20]:14); } }catch(e){}
             clearTimeout(window._toastTimer);
             window._toastTimer = setTimeout(() => {
-                toast.style.transform = 'translateX(-50%) translateY(100px)';
+                toast.style.transform = 'translateX(-50%) translateY(100px) scale(0.95)';
                 toast.style.opacity = '0';
             }, duration);
         }
@@ -25688,6 +25862,66 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
           }catch(e){}
         }, 450);
       }
+      // 🆕 FUNÇÕES NOVAS POR PÁGINA (banco de hashtags, receitas salvas)
+      setTimeout(function(){
+        try{
+          var card=document.getElementById(cardId); if(!card) return;
+          if(k==='preview' && !document.getElementById('invHashWrap') && typeof invHashtagBankHtml==='function') card.insertAdjacentHTML('beforeend', invHashtagBankHtml());
+          if(k==='edicao' && !document.getElementById('invRecipesWrap') && typeof invEditRecipesHtml==='function'){ card.insertAdjacentHTML('beforeend', invEditRecipesHtml()); if(typeof renderEditRecipes==='function') renderEditRecipes(); }
+        }catch(e){}
+      }, 520);
+    };
+    // 📱 BANCO DE HASHTAGS por tipo de prova (Legendas) — 1 toque pra copiar
+    window.invHashtagBankHtml = function(){
+      var packs=[
+        {n:'🏃 Corrida de rua', t:'#corrida #corridaderua #running #runner #correr #natalrn #fotografiaesportiva #corridanatal #run #runners #esporte #foco'},
+        {n:'🏅 Maratona', t:'#maratona #marathon #42k #maratonista #running #endurance #corrida #foco #superacao #natalrn #correr #run'},
+        {n:'⛰️ Trail / montanha', t:'#trailrun #trailrunning #trilha #montanha #aventura #corridademontanha #trail #correr #natureza #run #offroad'},
+        {n:'🎯 10K / prova', t:'#10k #prova #corrida #running #personalbest #foco #determinacao #correr #atleta #run #pace #recorde'},
+        {n:'💪 Treino', t:'#treino #training #foco #disciplina #running #rotina #evolucao #correr #atleta #run #vemprarua #bora'}
+      ];
+      var h='<div id="invHashWrap" style="margin-top:13px;border-top:1px solid rgba(255,255,255,0.1);padding-top:13px;">'
+        +'<div style="font-size:12px;font-weight:900;color:var(--primary);margin-bottom:3px;">#️⃣ Banco de hashtags por prova</div>'
+        +'<div style="font-size:10px;color:#8a9;margin-bottom:11px;">Toque pra copiar o pacote pronto e colar no seu post.</div>';
+      packs.forEach(function(p){
+        h+='<button onclick="(function(b){try{navigator.clipboard.writeText(b.getAttribute(\'data-t\'));if(typeof showToast===\'function\')showToast(\'Hashtags copiadas!\',\'#️⃣\');}catch(e){}})(this)" data-t="'+p.t.replace(/"/g,'&quot;')+'" style="display:block;width:100%;text-align:left;background:rgba(255,106,0,0.06);border:1px solid rgba(255,106,0,0.22);border-radius:10px;padding:9px 11px;margin-bottom:7px;cursor:pointer;color:#cdd6e4;">'
+          +'<div style="font-size:11.5px;font-weight:900;color:#fff;margin-bottom:2px;">'+p.n+' <span style="float:right;font-size:10px;color:var(--primary);">📋 copiar</span></div>'
+          +'<div style="font-size:9.5px;color:#8a9;line-height:1.4;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+p.t+'</div></button>';
+      });
+      h+='</div>';
+      return h;
+    };
+    // ✨ RECEITAS DE EDIÇÃO salvas (Edição IA) — salve e reuse suas dicas favoritas
+    window.getEditRecipes = function(){ try{ var v=JSON.parse(localStorage.getItem('edit_recipes')||'[]'); return Array.isArray(v)?v:[]; }catch(e){ return []; } };
+    window.saveLastEditRecipe = function(){
+      var hist=(window.invAIHist&&invAIHist.edicao)||[]; var last='';
+      for(var i=hist.length-1;i>=0;i--){ if(hist[i].role==='assistant'){ last=hist[i].content; break; } }
+      if(!last){ if(typeof showToast==='function') showToast('Faça uma pergunta de edição primeiro','⚠️'); return; }
+      var arr=getEditRecipes(); arr.unshift({t:Date.now(), txt:last.slice(0,600)});
+      try{ localStorage.setItem('edit_recipes', JSON.stringify(arr.slice(0,30))); }catch(e){}
+      renderEditRecipes(); if(typeof showToast==='function') showToast('Receita salva! ⭐','✅');
+    };
+    window.removeEditRecipe = function(i){ var arr=getEditRecipes(); arr.splice(i,1); try{ localStorage.setItem('edit_recipes', JSON.stringify(arr)); }catch(e){} renderEditRecipes(); };
+    window.copyEditRecipe = function(i){ var arr=getEditRecipes(); if(!arr[i])return; try{ navigator.clipboard.writeText(arr[i].txt); if(typeof showToast==='function') showToast('Receita copiada!','📋'); }catch(e){} };
+    window.invEditRecipesHtml = function(){
+      return '<div id="invRecipesWrap" style="margin-top:13px;border-top:1px solid rgba(255,255,255,0.1);padding-top:13px;">'
+        +'<div style="font-size:12px;font-weight:900;color:var(--primary);margin-bottom:3px;">⭐ Minhas receitas de edição</div>'
+        +'<div style="font-size:10px;color:#8a9;margin-bottom:10px;">Gostou de uma dica da IA? Salve e reuse depois.</div>'
+        +'<button onclick="saveLastEditRecipe()" style="width:100%;padding:10px;background:linear-gradient(135deg,#FF6A00,#FF9540);color:#000;border:none;border-radius:9px;font-weight:900;font-size:12px;cursor:pointer;margin-bottom:10px;">⭐ Salvar última dica da IA</button>'
+        +'<div id="invRecipesList" style="display:flex;flex-direction:column;gap:7px;"></div></div>';
+    };
+    window.renderEditRecipes = function(){
+      var box=document.getElementById('invRecipesList'); if(!box) return;
+      var arr=getEditRecipes();
+      if(!arr.length){ box.innerHTML='<div style="font-size:10px;color:#667;text-align:center;padding:6px;">Nenhuma receita salva ainda.</div>'; return; }
+      box.innerHTML=arr.map(function(r,i){
+        var d=new Date(r.t); var ds=('0'+d.getDate()).slice(-2)+'/'+('0'+(d.getMonth()+1)).slice(-2);
+        return '<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.1);border-radius:9px;padding:9px 11px;">'
+          +'<div style="font-size:10.5px;color:#cdd6e4;line-height:1.5;max-height:54px;overflow:hidden;margin-bottom:6px;">'+r.txt.replace(/</g,'&lt;').replace(/\n/g,'<br>')+'</div>'
+          +'<div style="display:flex;gap:6px;align-items:center;"><span style="font-size:8.5px;color:#667;flex:1;">'+ds+'</span>'
+          +'<button onclick="copyEditRecipe('+i+')" style="background:rgba(255,106,0,0.12);border:none;border-radius:6px;padding:4px 9px;color:var(--primary);font-size:10px;font-weight:800;cursor:pointer;">📋 Copiar</button>'
+          +'<button onclick="removeEditRecipe('+i+')" style="background:rgba(239,68,68,0.12);border:none;border-radius:6px;padding:4px 9px;color:#f88;font-size:10px;font-weight:800;cursor:pointer;">🗑️</button></div></div>';
+      }).join('');
     };
     // ════ 🎛️ VISIBILIDADE DAS OPÇÕES (chips) DA IA ════
     window.getAllAiChips = function(){
@@ -33035,6 +33269,11 @@ const _P1_VICTOR_BUILTIN_PRESETS = [{"id": "p1_01_cross_processing_yellow_light"
       })();
       // Aplica o banner de promoção (tênis girando) ao carregar
       try { if (typeof applyPromoBanner === 'function') applyPromoBanner(); } catch(e){}
+
+      // 🚪 TELA DE ENTRADA: Comprar Fotos ou Comprar Tênis
+      try { if (typeof invShowGateway === 'function') setTimeout(invShowGateway, 350); } catch(e){}
+      // 🖼️ fotos transparentes no fundo do site
+      try { if (typeof invApplySiteBg === 'function') invApplySiteBg(); } catch(e){}
 
       try { if (typeof window.applyStatsBarVisibility === 'function') window.applyStatsBarVisibility(); } catch(e){}
 
