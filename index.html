@@ -5639,7 +5639,7 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v311.0001</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v312.0001</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -6583,7 +6583,7 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                             <label style="font-size:9px;color:#888;font-weight:700;">👟 Foto do botão "Comprar Tênis"</label>
                             <input id="gwTenisImg" placeholder="https://.../tenis.jpg ou envie abaixo" style="width:100%;margin:3px 0 5px;padding:9px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.12);border-radius:9px;color:#fff;font-size:11px;outline:none;box-sizing:border-box;">
                             <div style="display:flex;gap:6px;margin-bottom:9px;"><label style="flex:1;text-align:center;padding:8px;background:rgba(96,165,250,0.14);border:1px solid rgba(96,165,250,0.3);border-radius:8px;color:#60a5fa;font-size:11px;font-weight:800;cursor:pointer;">📷 Enviar foto<input type="file" accept="image/*" onchange="gwPhotoUpload(this,'gwTenisImg')" style="display:none;"></label><button onclick="gwPhotoRemove('gwTenisImg')" style="padding:8px 14px;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);border-radius:8px;color:#f88;font-size:11px;font-weight:800;cursor:pointer;">🗑️ Remover</button></div>
-                            <label style="font-size:9px;color:#888;font-weight:700;">🌌 Foto de FUNDO do site (transparente)</label>
+                            <label style="font-size:9px;color:#888;font-weight:700;">🌌 Foto de fundo da TELA DE ENTRADA (só nela)</label>
                             <input id="gwBgImg" placeholder="https://.../fundo.jpg ou envie abaixo" style="width:100%;margin:3px 0 5px;padding:9px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.12);border-radius:9px;color:#fff;font-size:11px;outline:none;box-sizing:border-box;">
                             <div style="display:flex;gap:6px;margin-bottom:9px;"><label style="flex:1;text-align:center;padding:8px;background:rgba(96,165,250,0.14);border:1px solid rgba(96,165,250,0.3);border-radius:8px;color:#60a5fa;font-size:11px;font-weight:800;cursor:pointer;">📷 Enviar foto<input type="file" accept="image/*" onchange="gwPhotoUpload(this,'gwBgImg')" style="display:none;"></label><button onclick="gwPhotoRemove('gwBgImg')" style="padding:8px 14px;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);border-radius:8px;color:#f88;font-size:11px;font-weight:800;cursor:pointer;">🗑️ Remover</button></div>
                             <label style="font-size:9px;color:#888;font-weight:700;">Transparência do fundo: <span id="gwBgOpVal">12%</span></label>
@@ -10810,9 +10810,11 @@ Poderia me ajudar? 🙏"
             var fBg = fImg ? ('linear-gradient(135deg,rgba(0,0,0,0.55),rgba(0,0,0,0.3)),url('+fImg.replace(/"/g,'')+') center/cover') : 'linear-gradient(135deg,rgba(255,215,0,0.14),rgba(255,170,0,0.05))';
             var tBg = tImg ? ('linear-gradient(135deg,rgba(0,0,0,0.55),rgba(0,0,0,0.3)),url('+tImg.replace(/"/g,'')+') center/cover') : 'linear-gradient(135deg,rgba(255,106,0,0.16),rgba(255,69,0,0.05))';
             // 🖼️ fotos do catálogo transparentes ATRÁS da tela de entrada
-            // fundo da tela de entrada usa SÓ a foto de fundo do site (as fotos dos botões ficam só nos botões)
+            // fundo da tela de entrada usa SÓ a foto de fundo (as fotos dos botões ficam só nos botões)
             var bgImg = _gw('site_bg_img') || '';
-            var ovBg = bgImg ? ('linear-gradient(rgba(5,6,8,0.82),rgba(5,6,8,0.92)),url('+bgImg.replace(/"/g,'')+') center/cover fixed') : 'radial-gradient(circle at 50% 30%, #16181f 0%, #050608 70%)';
+            var _op=0.12; try{ var _o=parseFloat(_gw('site_bg_op')); if(!isNaN(_o)) _op=_o; }catch(e){}
+            var _vt=Math.max(0.45,(0.95-_op)).toFixed(2), _vb=Math.max(0.5,(0.99-_op)).toFixed(2);
+            var ovBg = bgImg ? ('linear-gradient(rgba(5,6,8,'+_vt+'),rgba(5,6,8,'+_vb+')),url('+bgImg.replace(/"/g,'')+') center/cover fixed') : 'radial-gradient(circle at 50% 30%, #16181f 0%, #050608 70%)';
             var ov=document.createElement('div');
             ov.id='invGateway';
             ov.style.cssText='position:fixed;inset:0;z-index:99995;background:'+ovBg+';display:flex;flex-direction:column;align-items:center;justify-content:center;padding:26px 20px;opacity:0;transition:opacity .4s;overflow-y:auto;';
@@ -10957,17 +10959,8 @@ Poderia me ajudar? 🙏"
             try{ var val=Math.round((parseFloat(g('site_bg_op'))||0.12)*100); if(o) o.value=val; if(ov) ov.textContent=val+'%'; }catch(e){}
         };
         window.invApplySiteBg = function(){
-            var url=''; try{ url=localStorage.getItem('site_bg_img')||''; }catch(e){}
-            var op=0.12; try{ var o=parseFloat(localStorage.getItem('site_bg_op')); if(!isNaN(o)) op=o; }catch(e){}
-            if(!url){ try{ document.body.style.backgroundImage=''; }catch(e){} return; }
-            var veil=(1-op).toFixed(2);
-            try{
-                document.body.style.backgroundImage='linear-gradient(rgba(7,8,12,'+veil+'),rgba(7,8,12,'+veil+')),url('+url.replace(/"/g,'')+')';
-                document.body.style.backgroundSize='cover';
-                document.body.style.backgroundPosition='center';
-                document.body.style.backgroundAttachment='fixed';
-                document.body.style.backgroundRepeat='no-repeat';
-            }catch(e){}
+            // A foto de fundo é usada SÓ na tela de entrada (gateway). O site fica normal depois.
+            try{ document.body.style.backgroundImage=''; }catch(e){}
         };
 
         // 🚀 INICIALIZADOR ROBUSTO da tela de entrada — garante que SEMPRE apareça pro visitante
@@ -12070,7 +12063,7 @@ Poderia me ajudar? 🙏"
         const _KV_API = '/api/data';
         // 🔄 Versão do site publicada. Se o visitante tiver uma versão ANTIGA em cache,
         // o site se atualiza sozinho (1x, sem loop) pra ele sempre ver o mais novo.
-        window.SITE_BUILD = 311;
+        window.SITE_BUILD = 312;
         // 🔎 selo de versão visível (canto) — pra CONFERIR qual versão está no ar
         (function _invBuildStamp(){
             function add(){ try{ if(document.getElementById('invBuildStamp'))return; var s=document.createElement('div'); s.id='invBuildStamp'; s.textContent='v'+(window.SITE_BUILD||'?'); s.style.cssText='position:fixed;bottom:4px;left:6px;z-index:3;font-size:9px;color:rgba(255,255,255,0.28);pointer-events:none;font-family:monospace;letter-spacing:.5px;'; document.body.appendChild(s); }catch(e){} }
