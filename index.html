@@ -5639,7 +5639,7 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v306.0001</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v311.0001</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -5749,6 +5749,7 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                             <button class="admin-tab-btn ap-tab-purple" id="sideTab9" onclick="switchAdminTab(9)"><span>🎨</span>Cores & Tema</button>
                             <button class="admin-tab-btn" id="sideTab5" onclick="switchAdminTab(5)"><span>👤</span>Perfil</button>
                             <button class="admin-tab-btn" id="sideTab10" onclick="switchAdminTab(10)"><span>🔲</span>Botões</button>
+                            <button class="admin-tab-btn ap-tab-gold" onclick="openGatewayAdmin()"><span>🎬</span>Tela de entrada</button>
                             <button class="admin-tab-btn" id="sideTab11" onclick="switchAdminTab(11)"><span>🖼️</span>Imagens</button>
                         </div>
 
@@ -5806,6 +5807,7 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                             <button onclick="renderSiteOverview()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#aaa;border-radius:7px;padding:4px 9px;font-size:10px;font-weight:700;cursor:pointer;">🔄 Atualizar</button>
                         </div>
                         <div id="siteOverviewGrid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:9px;"></div>
+                        <div id="invVisitsBox" style="margin-top:11px;"></div>
                         <div id="invSmartTips" style="margin-top:12px;"></div>
                         <div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:12px;border-top:1px solid rgba(255,255,255,0.08);padding-top:12px;">
                             <button onclick="forcePublishAll()" style="flex:1;min-width:100px;padding:10px;background:linear-gradient(135deg,#51CF66,#2f9e44);color:#fff;border:none;border-radius:9px;font-weight:900;font-size:11px;cursor:pointer;">🚀 Publicar</button>
@@ -6564,9 +6566,9 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                     <p style="color:#555;font-size:12px;margin-bottom:18px;">Tudo que aparece (ou não) pro visitante fica aqui. Ligou = aparece na hora. Desligou = some na hora.</p>
 
                     <!-- 🚪 TELA DE ENTRADA (Comprar Fotos / Tênis) -->
-                    <div style="background:rgba(255,215,0,0.05);border:1px solid rgba(255,215,0,0.25);border-radius:13px;padding:14px;margin-bottom:20px;">
+                    <div id="apGatewayBlock" style="background:rgba(255,215,0,0.05);border:1px solid rgba(255,215,0,0.25);border-radius:13px;padding:14px;margin-bottom:20px;scroll-margin-top:12px;">
                         <div style="font-size:12.5px;font-weight:900;color:#FFD700;margin-bottom:3px;">🚪 Tela de entrada</div>
-                        <div style="font-size:11px;color:#8a9;margin-bottom:11px;line-height:1.5;">Ao abrir o site, mostra uma tela preta com <b>"Comprar Fotos"</b> ou <b>"Comprar Tênis"</b> que leva pra seção certa. Aparece 1x por visita.</div>
+                        <div style="font-size:11px;color:#8a9;margin-bottom:11px;line-height:1.5;">Ao abrir o site, mostra uma tela preta com <b>"Comprar Fotos"</b> ou <b>"Comprar Tênis"</b> que leva pra seção certa. Aparece sempre que o visitante abre.</div>
                         <div style="display:flex;gap:8px;flex-wrap:wrap;">
                             <button onclick="(function(){try{localStorage.setItem('gateway_on','1');if(typeof saveData==='function')saveData(false);if(typeof showToast==='function')showToast('Tela de entrada LIGADA','✅');}catch(e){}})()" style="flex:1;min-width:110px;padding:11px;background:linear-gradient(135deg,#51CF66,#2f9e44);color:#fff;border:none;border-radius:10px;font-weight:900;font-size:12px;cursor:pointer;">✅ Ligar</button>
                             <button onclick="(function(){try{localStorage.setItem('gateway_on','0');if(typeof saveData==='function')saveData(false);if(typeof showToast==='function')showToast('Tela de entrada DESLIGADA','⚪');}catch(e){}})()" style="flex:1;min-width:110px;padding:11px;background:rgba(255,255,255,0.06);color:#fff;border:1px solid rgba(255,255,255,0.15);border-radius:10px;font-weight:800;font-size:12px;cursor:pointer;">⛔ Desligar</button>
@@ -8561,6 +8563,8 @@ Poderia me ajudar? 🙏"
 
     <!-- STATS BAR — v44 novo componente visual -->
     <div class="stats-bar" id="statsBar"></div>
+    <!-- 👁️ visualizações do site (visível pro visitante) -->
+    <div id="invViewsLine" style="text-align:center;margin-top:10px;font-size:11.5px;color:#8a93a3;"></div>
 
     <!-- 💬 DEPOIMENTOS / PROVA SOCIAL (agora ficam na tela de entrada, não na home) -->
     <div id="invDepoimentos" style="display:none;"></div>
@@ -8735,11 +8739,19 @@ Poderia me ajudar? 🙏"
         </div>
 
         <!-- O QUE VOCÊ PROCURA? — envio direto ao WhatsApp -->
-        <div style="margin-top:32px;background:linear-gradient(160deg,rgba(255,215,0,0.06),rgba(255,69,0,0.04));border:1.5px solid rgba(255,215,0,0.18);border-radius:20px;padding:24px 20px;max-width:700px;margin-left:auto;margin-right:auto;">
+        <style>
+        @keyframes procPulse { 0%,100%{transform:scale(1);box-shadow:0 4px 16px rgba(37,211,102,0.3);} 50%{transform:scale(1.09);box-shadow:0 7px 24px rgba(37,211,102,0.6);} }
+        @keyframes procGlow { 0%,100%{border-color:rgba(255,215,0,0.18);box-shadow:0 0 0 0 rgba(255,215,0,0);} 50%{border-color:rgba(255,215,0,0.5);box-shadow:0 0 26px 0 rgba(255,215,0,0.12);} }
+        @keyframes procFloat { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-3px);} }
+        .procIconLive{ animation:procPulse 2.1s ease-in-out infinite; }
+        .procCardLive{ animation:procGlow 3.4s ease-in-out infinite; }
+        .procTitleLive{ animation:procFloat 3s ease-in-out infinite; }
+        </style>
+        <div class="procCardLive" style="margin-top:32px;background:linear-gradient(160deg,rgba(255,215,0,0.06),rgba(255,69,0,0.04));border:1.5px solid rgba(255,215,0,0.18);border-radius:20px;padding:24px 20px;max-width:700px;margin-left:auto;margin-right:auto;">
             <!-- Header -->
             <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;">
-                <div style="width:46px;height:46px;background:linear-gradient(135deg,#25D366,#128C7E);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;box-shadow:0 4px 16px rgba(37,211,102,0.3);">💬</div>
-                <div>
+                <div class="procIconLive" style="width:46px;height:46px;background:linear-gradient(135deg,#25D366,#128C7E);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;box-shadow:0 4px 16px rgba(37,211,102,0.3);">💬</div>
+                <div class="procTitleLive">
                     <div style="font-family:'Bebas Neue','Montserrat',sans-serif;font-size:1.35em;color:#fff;letter-spacing:1px;line-height:1;">Não achou o que procura?</div>
                     <div style="color:#888;font-size:12px;margin-top:2px;">Descreva abaixo e enviaremos direto ao WhatsApp!</div>
                 </div>
@@ -10798,7 +10810,8 @@ Poderia me ajudar? 🙏"
             var fBg = fImg ? ('linear-gradient(135deg,rgba(0,0,0,0.55),rgba(0,0,0,0.3)),url('+fImg.replace(/"/g,'')+') center/cover') : 'linear-gradient(135deg,rgba(255,215,0,0.14),rgba(255,170,0,0.05))';
             var tBg = tImg ? ('linear-gradient(135deg,rgba(0,0,0,0.55),rgba(0,0,0,0.3)),url('+tImg.replace(/"/g,'')+') center/cover') : 'linear-gradient(135deg,rgba(255,106,0,0.16),rgba(255,69,0,0.05))';
             // 🖼️ fotos do catálogo transparentes ATRÁS da tela de entrada
-            var bgImg = _gw('site_bg_img') || fImg || tImg || '';
+            // fundo da tela de entrada usa SÓ a foto de fundo do site (as fotos dos botões ficam só nos botões)
+            var bgImg = _gw('site_bg_img') || '';
             var ovBg = bgImg ? ('linear-gradient(rgba(5,6,8,0.82),rgba(5,6,8,0.92)),url('+bgImg.replace(/"/g,'')+') center/cover fixed') : 'radial-gradient(circle at 50% 30%, #16181f 0%, #050608 70%)';
             var ov=document.createElement('div');
             ov.id='invGateway';
@@ -10837,6 +10850,20 @@ Poderia me ajudar? 🙏"
             setTimeout(function(){ try{ if(typeof openCouponModal==='function') openCouponModal(); }catch(e){} }, 420);
         };
         // 🖼️ Fotos transparentes no FUNDO do site
+        // 👁️ Visitantes vistos no site (painel admin)
+        window.renderVisitsBox = async function(){
+            var box=document.getElementById('invVisitsBox'); if(!box) return;
+            box.innerHTML='<div style="background:linear-gradient(135deg,rgba(81,207,102,0.08),rgba(255,255,255,0.02));border:1px solid rgba(81,207,102,0.25);border-radius:12px;padding:13px 15px;display:flex;align-items:center;gap:14px;"><span style="font-size:26px;">👁️</span><div style="flex:1;"><div style="font-size:11px;color:#8a9;font-weight:700;">Visitantes vistos no site</div><div style="font-size:13px;color:#9aa;">Carregando...</div></div></div>';
+            var v=await invGetVisits();
+            box.innerHTML='<div style="background:linear-gradient(135deg,rgba(81,207,102,0.08),rgba(255,255,255,0.02));border:1px solid rgba(81,207,102,0.25);border-radius:12px;padding:13px 15px;display:flex;align-items:center;gap:14px;">'
+                +'<span style="font-size:26px;">👁️</span>'
+                +'<div style="flex:1;"><div style="font-size:10.5px;color:#8a9;font-weight:700;text-transform:uppercase;letter-spacing:.5px;">Visitantes vistos no site</div>'
+                +'<div style="display:flex;gap:18px;margin-top:4px;">'
+                +'<div><span style="font-size:22px;font-weight:900;color:#51CF66;">'+(v.total||0)+'</span> <span style="font-size:10px;color:#8a9;">no total</span></div>'
+                +'<div><span style="font-size:22px;font-weight:900;color:#FFD700;">'+(v.today||0)+'</span> <span style="font-size:10px;color:#8a9;">hoje</span></div>'
+                +'</div></div>'
+                +'<button onclick="renderVisitsBox()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#aaa;border-radius:7px;padding:6px 10px;font-size:10px;font-weight:700;cursor:pointer;">🔄</button></div>';
+        };
         // 💡 Sugestões inteligentes do painel (inovação) — dicas contextuais pra vender mais
         window.renderSmartTips = function(){
             var box=document.getElementById('invSmartTips'); if(!box) return;
@@ -10897,6 +10924,15 @@ Poderia me ajudar? 🙏"
             var el=document.getElementById(fieldId); if(el) el.value='';
             if(typeof gatewayImgsSave==='function') gatewayImgsSave();
             if(typeof showToast==='function') showToast('Foto removida 🗑️','✅');
+        };
+
+        // 🎬 Atalho: abre a aba Botões e vai direto pros controles da Tela de entrada
+        window.openGatewayAdmin = function(){
+            try{ if(typeof switchAdminTab==='function') switchAdminTab(10); }catch(e){}
+            setTimeout(function(){
+                try{ var el=document.getElementById('apGatewayBlock'); if(el){ el.scrollIntoView({behavior:'smooth',block:'start'}); el.style.boxShadow='0 0 0 2px rgba(255,215,0,0.6)'; setTimeout(function(){ el.style.boxShadow=''; },1600); } }catch(e){}
+                try{ if(typeof gatewayImgsLoad==='function') gatewayImgsLoad(); if(typeof renderDepoimentosAdmin==='function') renderDepoimentosAdmin(); }catch(e){}
+            }, 180);
         };
 
         // 🖼️ Salva fotos dos botões + fundo do site
@@ -11009,8 +11045,8 @@ Poderia me ajudar? 🙏"
         // CONSTANTES
         const DEFAULT_ADMIN_PASSWORD = 'senha1234'; // legado (não mais usado p/ login)
         // 🔐 Senha admin agora por HASH (não aparece em texto no código-fonte).
-        // Padrão atual: "Foco-Inv7693-XZGG" — TROQUE no painel admin assim que entrar.
-        const ADMIN_PWD_HASH = '45c3f4d2b2d7d6172b971e5574c5704d02c49c67c0c1b51a70d383b95ae02b71';
+        // Senha atual: "PATATI12"
+        const ADMIN_PWD_HASH = 'b03ac8a639b5017b586ef14b9ae2cc3380fed750eff7a4a89df360b3cc2df9d1';
         async function _sha256Hex(str){
             try{
                 const buf=await crypto.subtle.digest('SHA-256', new TextEncoder().encode(String(str)));
@@ -11021,6 +11057,8 @@ Poderia me ajudar? 🙏"
         async function _checkAdminPwd(input){ var h=await _sha256Hex(input); return !!h && h===_adminPwdHash(); }
         // 🧹 Remove a senha antiga em texto (que antes vazava na sincronização) deste aparelho.
         try{ localStorage.removeItem('invictorAdminPwd'); }catch(e){}
+        // 🔑 Reset único: garante que a senha PATATI12 valha (limpa override antigo 1x; trocas futuras continuam funcionando)
+        try{ if(!localStorage.getItem('_pwdResetPatati')){ localStorage.removeItem('invictorAdminPwdHash'); localStorage.setItem('_pwdResetPatati','1'); } }catch(e){}
         let currentShoeCategory = 'todos';
         let currentProcureCategory = 'todos';
 
@@ -12032,25 +12070,31 @@ Poderia me ajudar? 🙏"
         const _KV_API = '/api/data';
         // 🔄 Versão do site publicada. Se o visitante tiver uma versão ANTIGA em cache,
         // o site se atualiza sozinho (1x, sem loop) pra ele sempre ver o mais novo.
-        window.SITE_BUILD = 306;
+        window.SITE_BUILD = 311;
         // 🔎 selo de versão visível (canto) — pra CONFERIR qual versão está no ar
         (function _invBuildStamp(){
             function add(){ try{ if(document.getElementById('invBuildStamp'))return; var s=document.createElement('div'); s.id='invBuildStamp'; s.textContent='v'+(window.SITE_BUILD||'?'); s.style.cssText='position:fixed;bottom:4px;left:6px;z-index:3;font-size:9px;color:rgba(255,255,255,0.28);pointer-events:none;font-family:monospace;letter-spacing:.5px;'; document.body.appendChild(s); }catch(e){} }
             if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', add); else add();
         })();
-        (function _invAutoFresh(){
+        // 👁️ conta o visitante (1x por sessão) e guarda o total pro admin ver
+        (function _invCountVisit(){
             try{
-                if(sessionStorage.getItem('inv_fresh_reload')) return;
-                fetch('/api/data?_=' + Date.now(), { cache:'no-store' }).then(function(r){ return r.ok?r.json():null; }).then(function(d){
-                    var kvB = parseInt((d && d._siteBuild) || 0, 10) || 0;
-                    var myB = parseInt(window.SITE_BUILD || 0, 10) || 0;
-                    if(kvB && myB && kvB > myB){
-                        sessionStorage.setItem('inv_fresh_reload','1');
-                        try{ location.reload(true); }catch(e){ location.reload(); }
-                    }
-                }).catch(function(){});
+                if(sessionStorage.getItem('inv_counted')){ if(typeof renderViewsLine==='function') setTimeout(renderViewsLine,600); return; }
+                sessionStorage.setItem('inv_counted','1');
+                fetch('/api/visit?_=' + Date.now(), { cache:'no-store' }).then(function(r){ return r.ok?r.json():null; }).then(function(d){ if(d){ window._invVisits=d; if(typeof renderViewsLine==='function') renderViewsLine(); } }).catch(function(){});
             }catch(e){}
         })();
+        window.renderViewsLine = function(){
+            var el=document.getElementById('invViewsLine'); if(!el) return;
+            function show(d){ if(!d || !d.total){ el.innerHTML=''; return; } el.innerHTML='👁️ <b style="color:#FF6A00;">'+Number(d.total).toLocaleString('pt-BR')+'</b> visualizações no site'; }
+            if(window._invVisits){ show(window._invVisits); }
+            else { try{ invGetVisits().then(show).catch(function(){}); }catch(e){} }
+        };
+        try{ if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', function(){ setTimeout(function(){ try{renderViewsLine();}catch(e){} },700); }); else setTimeout(function(){ try{renderViewsLine();}catch(e){} },700); }catch(e){}
+        window.invGetVisits = async function(){
+            try{ var r=await fetch('/api/visit?peek=1&_='+Date.now(),{cache:'no-store'}); if(r.ok) return await r.json(); }catch(e){}
+            return window._invVisits||{total:0,today:0};
+        };
         function _kvAdminKey() { try { return localStorage.getItem('_cfg_kvAdminKey') || ''; } catch(e) { return ''; } }
         function _kvEnabled() { try { return localStorage.getItem('_cfg_kvDisabled') !== '1'; } catch(e) { return true; } }
         async function _kvGet() {
@@ -13745,7 +13789,7 @@ Poderia me ajudar? 🙏"
             }
 
             // 3. Callbacks por aba
-            if(tabIndex===0)  { setTimeout(function(){ if(typeof promoCfgLoadToPanel==='function') promoCfgLoadToPanel(); if(typeof renderSiteOverview==='function') renderSiteOverview(); if(typeof renderSmartTips==='function') renderSmartTips(); }, 80); }
+            if(tabIndex===0)  { setTimeout(function(){ if(typeof promoCfgLoadToPanel==='function') promoCfgLoadToPanel(); if(typeof renderSiteOverview==='function') renderSiteOverview(); if(typeof renderSmartTips==='function') renderSmartTips(); if(typeof renderVisitsBox==='function') renderVisitsBox(); }, 80); }
             if(tabIndex===1)  { setTimeout(function(){ if(typeof renderTbtAdmin==='function') renderTbtAdmin(); }, 60); }
             if(tabIndex===7) { _catVisPending={foco:null,banlek:null}; loadCatalogVisibilityFromStorage(); }
             if(tabIndex===9) { loadThemeColorsIntoPanel(); setTimeout(function(){ if(typeof invPaletteRender==='function') invPaletteRender(); if(typeof renderFontAdmin==='function') renderFontAdmin(); }, 40); }
