@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Cache-Control" content="no-cache">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 
@@ -10,7 +10,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <!-- Anti-cache: garante que o browser sempre busca a versão mais recente do site -->
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Cache-Control" content="no-cache">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <meta name="description" content="@invictorcliques - Fotografia Esportiva Premium em Natal RN. Veja seus álbuns, encontre suas fotos e aproveite ofertas exclusivas.">
@@ -5639,7 +5639,7 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v314.0001</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v316.0001</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -6584,6 +6584,11 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                             <input id="gwTenisImg" oninput="if(typeof renderGatewayPreview==='function')renderGatewayPreview()" placeholder="https://.../tenis.jpg ou envie abaixo" style="width:100%;margin:3px 0 5px;padding:9px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.12);border-radius:9px;color:#fff;font-size:11px;outline:none;box-sizing:border-box;">
                             <div style="display:flex;gap:6px;margin-bottom:9px;"><label style="flex:1;text-align:center;padding:8px;background:rgba(96,165,250,0.14);border:1px solid rgba(96,165,250,0.3);border-radius:8px;color:#60a5fa;font-size:11px;font-weight:800;cursor:pointer;">📷 Enviar foto<input type="file" accept="image/*" onchange="gwPhotoUpload(this,'gwTenisImg')" style="display:none;"></label><button onclick="gwPhotoRemove('gwTenisImg')" style="padding:8px 14px;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);border-radius:8px;color:#f88;font-size:11px;font-weight:800;cursor:pointer;">🗑️ Remover</button></div>
                             <label style="font-size:9px;color:#888;font-weight:700;">🌌 Foto de fundo da TELA DE ENTRADA (só nela)</label>
+                            <div style="display:flex;gap:6px;margin:5px 0 8px;">
+                                <button onclick="gwSetBgMode('none')" id="gwModeNone" style="flex:1;padding:8px 4px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.13);border-radius:8px;color:#ccc;font-size:10px;font-weight:800;cursor:pointer;">⬛ Sem foto</button>
+                                <button onclick="gwSetBgMode('photo')" id="gwModePhoto" style="flex:1;padding:8px 4px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.13);border-radius:8px;color:#ccc;font-size:10px;font-weight:800;cursor:pointer;">🖼️ Com foto</button>
+                                <button onclick="gwSetBgMode('creative')" id="gwModeCreative" style="flex:1;padding:8px 4px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.13);border-radius:8px;color:#ccc;font-size:10px;font-weight:800;cursor:pointer;">✨ Criativo</button>
+                            </div>
                             <input id="gwBgImg" oninput="if(typeof renderGatewayPreview==='function')renderGatewayPreview()" placeholder="https://.../fundo.jpg ou envie abaixo" style="width:100%;margin:3px 0 5px;padding:9px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.12);border-radius:9px;color:#fff;font-size:11px;outline:none;box-sizing:border-box;">
                             <div style="display:flex;gap:6px;margin-bottom:9px;"><label style="flex:1;text-align:center;padding:8px;background:rgba(96,165,250,0.14);border:1px solid rgba(96,165,250,0.3);border-radius:8px;color:#60a5fa;font-size:11px;font-weight:800;cursor:pointer;">📷 Enviar foto<input type="file" accept="image/*" onchange="gwPhotoUpload(this,'gwBgImg')" style="display:none;"></label><button onclick="gwPhotoRemove('gwBgImg')" style="padding:8px 14px;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);border-radius:8px;color:#f88;font-size:11px;font-weight:800;cursor:pointer;">🗑️ Remover</button></div>
                             <label style="font-size:9px;color:#888;font-weight:700;">Transparência do fundo: <span id="gwBgOpVal">12%</span></label>
@@ -10820,9 +10825,19 @@ Poderia me ajudar? 🙏"
             var bgImg = _gw('site_bg_img') || '';
             var _op=0.12; try{ var _o=parseFloat(_gw('site_bg_op')); if(!isNaN(_o)) _op=_o; }catch(e){}
             var _vt=Math.max(0.45,(0.95-_op)).toFixed(2), _vb=Math.max(0.5,(0.99-_op)).toFixed(2);
-            var ovBg = bgImg ? ('linear-gradient(rgba(5,6,8,'+_vt+'),rgba(5,6,8,'+_vb+')),url('+bgImg.replace(/"/g,'')+') center/cover fixed') : 'radial-gradient(circle at 50% 30%, #16181f 0%, #050608 70%)';
+            var bgMode = _gw('gateway_bg_mode') || (bgImg?'photo':'none');
+            // injeta o estilo do fundo criativo (1x)
+            if(!document.getElementById('gwCreativeStyle')){
+                var st=document.createElement('style'); st.id='gwCreativeStyle';
+                st.textContent='@keyframes gwCreativeMove{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}@keyframes gwOrb{0%,100%{transform:translate(0,0)}50%{transform:translate(20px,-24px)}}.gwCreativeBg{background:linear-gradient(125deg,#0a0e16,#1c1206,#160f0a,#0b0f18,#1a1408);background-size:320% 320%;animation:gwCreativeMove 16s ease infinite;}.gwCreativeBg::before{content:"";position:absolute;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(255,106,0,0.16),transparent 70%);top:8%;left:-60px;animation:gwOrb 9s ease-in-out infinite;pointer-events:none;}.gwCreativeBg::after{content:"";position:absolute;width:340px;height:340px;border-radius:50%;background:radial-gradient(circle,rgba(255,215,0,0.12),transparent 70%);bottom:6%;right:-70px;animation:gwOrb 11s ease-in-out infinite reverse;pointer-events:none;}';
+                document.head.appendChild(st);
+            }
+            var ovClass='', ovBg='radial-gradient(circle at 50% 30%, #16181f 0%, #050608 70%)';
+            if(bgMode==='photo' && bgImg){ ovBg='linear-gradient(rgba(5,6,8,'+_vt+'),rgba(5,6,8,'+_vb+')),url('+bgImg.replace(/"/g,'')+') center/cover fixed'; }
+            else if(bgMode==='creative'){ ovClass='gwCreativeBg'; ovBg='#0a0e16'; }
             var ov=document.createElement('div');
             ov.id='invGateway';
+            if(ovClass) ov.className=ovClass;
             ov.style.cssText='position:fixed;inset:0;z-index:99995;background:'+ovBg+';display:flex;flex-direction:column;align-items:center;justify-content:center;padding:26px 20px;opacity:0;transition:opacity .4s;overflow-y:auto;';
             ov.innerHTML=''
                 +'<div style="text-align:center;margin-bottom:24px;">'
@@ -10907,11 +10922,11 @@ Poderia me ajudar? 🙏"
                 reader.onload=function(e){
                     var img=new Image();
                     img.onload=function(){
-                        var max=1280, w=img.width, h=img.height;
+                        var max=900, w=img.width, h=img.height;
                         if(w>max||h>max){ if(w>h){ h=Math.round(h*max/w); w=max; } else { w=Math.round(w*max/h); h=max; } }
                         var c=document.createElement('canvas'); c.width=w; c.height=h;
                         c.getContext('2d').drawImage(img,0,0,w,h);
-                        try{ cb(c.toDataURL('image/jpeg',0.72)); }catch(err){ cb(e.target.result); }
+                        try{ cb(c.toDataURL('image/jpeg',0.6)); }catch(err){ cb(e.target.result); }
                     };
                     img.onerror=function(){ cb(e.target.result); };
                     img.src=e.target.result;
@@ -10953,7 +10968,11 @@ Poderia me ajudar? 🙏"
             var opEl=document.getElementById('gwBgOp'); var op=opEl?(parseInt(opEl.value,10)||12)/100:0.12;
             var vt=Math.max(0.45,(0.95-op)).toFixed(2), vb=Math.max(0.5,(0.99-op)).toFixed(2);
             function esc(u){ return (u||'').replace(/"/g,''); }
-            var ovBg = bg ? ('linear-gradient(rgba(5,6,8,'+vt+'),rgba(5,6,8,'+vb+')),url('+esc(bg)+') center/cover') : 'radial-gradient(circle at 50% 30%, #16181f, #050608)';
+            var mode=(typeof gwGetBgMode==='function')?gwGetBgMode():'none';
+            var ovBg;
+            if(mode==='creative'){ ovBg='linear-gradient(125deg,#0a0e16,#1c1206,#160f0a,#0b0f18)'; }
+            else if(mode==='photo' && bg){ ovBg='linear-gradient(rgba(5,6,8,'+vt+'),rgba(5,6,8,'+vb+')),url('+esc(bg)+') center/cover'; }
+            else { ovBg='radial-gradient(circle at 50% 30%, #16181f, #050608)'; }
             var fBg = f ? ('linear-gradient(135deg,rgba(0,0,0,0.5),rgba(0,0,0,0.3)),url('+esc(f)+') center/cover') : 'linear-gradient(135deg,rgba(255,215,0,0.14),rgba(255,170,0,0.05))';
             var tBg = t ? ('linear-gradient(135deg,rgba(0,0,0,0.5),rgba(0,0,0,0.3)),url('+esc(t)+') center/cover') : 'linear-gradient(135deg,rgba(255,106,0,0.16),rgba(255,69,0,0.05))';
             box.innerHTML='<div style="background:'+ovBg+';padding:14px 12px;text-align:center;">'
@@ -10963,6 +10982,20 @@ Poderia me ajudar? 🙏"
                 +'<div style="background:'+tBg+';border:1px solid rgba(255,106,0,0.45);border-radius:9px;padding:9px 10px;text-align:left;position:relative;"><div style="font-size:17px;line-height:1;">👟</div><div style="font-size:11px;font-weight:900;color:#fff;margin-top:3px;">Comprar Tênis</div><span style="position:absolute;right:9px;top:50%;transform:translateY(-50%);color:#FF6A00;">→</span></div>'
                 +'<div style="margin-top:9px;display:inline-block;background:linear-gradient(135deg,#FF6A00,#FF9540);color:#000;font-size:8px;font-weight:900;padding:4px 10px;border-radius:12px;">🎟️ Resgatar cupom grátis</div>'
                 +'</div>';
+        };
+
+        // 🌌 Modo de fundo da tela de entrada: none / photo / creative
+        window.gwGetBgMode = function(){ try{ return localStorage.getItem('gateway_bg_mode')||'none'; }catch(e){ return 'none'; } };
+        window.gwSetBgMode = function(m){
+            try{ localStorage.setItem('gateway_bg_mode', m); }catch(e){}
+            gwHighlightBgMode();
+            try{ if(typeof renderGatewayPreview==='function') renderGatewayPreview(); }catch(e){}
+            try{ if(typeof saveData==='function') saveData(false); }catch(e){}
+            if(typeof showToast==='function') showToast(m==='creative'?'Fundo criativo ✨':(m==='photo'?'Fundo com foto 🖼️':'Fundo escuro ⬛'),'✅');
+        };
+        window.gwHighlightBgMode = function(){
+            var m=gwGetBgMode(); var ids={none:'gwModeNone',photo:'gwModePhoto',creative:'gwModeCreative'};
+            Object.keys(ids).forEach(function(k){ var el=document.getElementById(ids[k]); if(!el)return; if(k===m){ el.style.background='linear-gradient(135deg,#FFD700,#FFA500)'; el.style.color='#111'; el.style.borderColor='transparent'; } else { el.style.background='rgba(255,255,255,0.06)'; el.style.color='#ccc'; el.style.borderColor='rgba(255,255,255,0.13)'; } });
         };
 
         // 🖼️ Salva fotos dos botões + fundo do site
@@ -10986,6 +11019,7 @@ Poderia me ajudar? 🙏"
             var o=document.getElementById('gwBgOp'); var ov=document.getElementById('gwBgOpVal');
             try{ var val=Math.round((parseFloat(g('site_bg_op'))||0.12)*100); if(o) o.value=val; if(ov) ov.textContent=val+'%'; }catch(e){}
             try{ if(typeof renderGatewayPreview==='function') renderGatewayPreview(); }catch(e){}
+            try{ if(typeof gwHighlightBgMode==='function') gwHighlightBgMode(); }catch(e){}
         };
         window.invApplySiteBg = function(){
             // A foto de fundo é usada SÓ na tela de entrada (gateway). O site fica normal depois.
@@ -12092,7 +12126,7 @@ Poderia me ajudar? 🙏"
         const _KV_API = '/api/data';
         // 🔄 Versão do site publicada. Se o visitante tiver uma versão ANTIGA em cache,
         // o site se atualiza sozinho (1x, sem loop) pra ele sempre ver o mais novo.
-        window.SITE_BUILD = 314;
+        window.SITE_BUILD = 316;
         // 🔎 selo de versão visível (canto) — pra CONFERIR qual versão está no ar
         (function _invBuildStamp(){
             function add(){ try{ if(document.getElementById('invBuildStamp'))return; var s=document.createElement('div'); s.id='invBuildStamp'; s.textContent='v'+(window.SITE_BUILD||'?'); s.style.cssText='position:fixed;bottom:4px;left:6px;z-index:3;font-size:9px;color:rgba(255,255,255,0.28);pointer-events:none;font-family:monospace;letter-spacing:.5px;'; document.body.appendChild(s); }catch(e){} }
@@ -13305,7 +13339,7 @@ Poderia me ajudar? 🙏"
             //    sincronizam pra TODOS os visitantes e entre aparelhos do admin
             ['notify_topic','chat_db_url','chat_sb_url','chat_sb_key','chat_sb_table','chat_pantry',
              'invPalette','siteThemeColors','invictorStravaDefaultColor','catalog_layout','invictorEdicaoCodes','invictorMarketplaces',
-             'foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','foco_survey_visible','statsBar_visible','foco_steps_pos','foco_survey_pos','foco_price_pos','siteLandingTab','verif_steps','ai_pages','tbt_enabled','tbt_mode','tbt_picks','site_font','promo_scale','survey_scale','stats_cfg','ia_tenis','ia_shopee_cupom','ia_telegram','ia_whats_ofertas','ia_lojas','ai_chips_hidden','ai_chips_custom','promo_deadline','ia_clicks','ia_rec_mode','edit_recipes','gateway_on','gateway_foto_img','gateway_tenis_img','site_bg_img','site_bg_op','depoimentos','depoimentos_visible'].forEach(function(k){
+             'foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','foco_survey_visible','statsBar_visible','foco_steps_pos','foco_survey_pos','foco_price_pos','siteLandingTab','verif_steps','ai_pages','tbt_enabled','tbt_mode','tbt_picks','site_font','promo_scale','survey_scale','stats_cfg','ia_tenis','ia_shopee_cupom','ia_telegram','ia_whats_ofertas','ia_lojas','ai_chips_hidden','ai_chips_custom','promo_deadline','ia_clicks','ia_rec_mode','edit_recipes','gateway_on','gateway_foto_img','gateway_tenis_img','site_bg_img','site_bg_op','gateway_bg_mode','depoimentos','depoimentos_visible'].forEach(function(k){
                 try { var v = localStorage.getItem(k); if (v != null) payload[k] = v; } catch(e) {}
             });
 
@@ -13523,7 +13557,7 @@ Poderia me ajudar? 🙏"
                 'invictorEdicaoEmails', 'invictorEdicaoAtivos',
                 // === Configs novas: chat ao vivo / ntfy / paleta / conteúdo / IA ===
                 'notify_topic','chat_db_url','chat_sb_url','chat_sb_key','chat_sb_table','chat_pantry',
-                'invPalette','siteThemeColors','invictorStravaDefaultColor','catalog_layout','invictorEdicaoCodes','invictorMarketplaces','foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','foco_survey_visible','statsBar_visible','foco_steps_pos','foco_survey_pos','foco_price_pos','siteLandingTab','verif_steps','ai_pages','tbt_enabled','tbt_mode','tbt_picks','site_font','promo_scale','survey_scale','stats_cfg','ia_tenis','ia_shopee_cupom','ia_telegram','ia_whats_ofertas','ia_lojas','ai_chips_hidden','ai_chips_custom','promo_deadline','ia_clicks','ia_rec_mode','edit_recipes','gateway_on','gateway_foto_img','gateway_tenis_img','site_bg_img','site_bg_op','depoimentos','depoimentos_visible',
+                'invPalette','siteThemeColors','invictorStravaDefaultColor','catalog_layout','invictorEdicaoCodes','invictorMarketplaces','foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','foco_survey_visible','statsBar_visible','foco_steps_pos','foco_survey_pos','foco_price_pos','siteLandingTab','verif_steps','ai_pages','tbt_enabled','tbt_mode','tbt_picks','site_font','promo_scale','survey_scale','stats_cfg','ia_tenis','ia_shopee_cupom','ia_telegram','ia_whats_ofertas','ia_lojas','ai_chips_hidden','ai_chips_custom','promo_deadline','ia_clicks','ia_rec_mode','edit_recipes','gateway_on','gateway_foto_img','gateway_tenis_img','site_bg_img','site_bg_op','gateway_bg_mode','depoimentos','depoimentos_visible',
                 // === Last update marker ===
                 '_lastUpdate'
             ];

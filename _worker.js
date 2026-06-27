@@ -35,6 +35,7 @@ export default {
       if (path === "/api/marketplace")  return await handleMarketplace(request, env);
       if (path === "/api/shopee")       return await handleShopee(request, env, url);
       if (path === "/api/ai")           return await handleAI(request, env);
+      if (path === "/api/visit")        return await handleVisit(request, env);
       if (path === "/api/refresh-foco") return await handleRefreshFoco(request, env);
     } catch (e) {
       return json({ error: String((e && e.message) || e) }, 500);
@@ -48,11 +49,12 @@ export default {
       const ctype = res.headers.get("content-type") || "";
       if (ctype.includes("text/html")) {
         const h = new Headers(res.headers);
-        h.set("Cache-Control", "no-cache, no-store, must-revalidate, max-age=0");
-        h.set("CDN-Cache-Control", "no-store");
-        h.set("Cloudflare-CDN-Cache-Control", "no-store");
+        // no-cache = o navegador GUARDA o site mas revalida sempre (304 = rápido quando nada mudou,
+        // e baixa de novo só quando você publica algo). Rápido E sempre atualizado.
+        h.set("Cache-Control", "no-cache, must-revalidate");
+        h.set("CDN-Cache-Control", "no-cache");
+        h.set("Cloudflare-CDN-Cache-Control", "no-cache");
         h.set("Pragma", "no-cache");
-        h.set("Expires", "0");
         return new Response(res.body, { status: res.status, statusText: res.statusText, headers: h });
       }
     } catch (e) {}
@@ -72,6 +74,33 @@ const CORS = {
 };
 function json(obj, status = 200) {
   return new Response(JSON.stringify(obj), { status, headers: { "content-type": "application/json", ...CORS } });
+}
+
+// ── /api/visit — conta visitantes do site (total + hoje) ──
+async function handleVisit(request, env) {
+  try {
+    const KV = env.INV_KV;
+    if (!KV) return json({ total: 0, today: 0 }, 200);
+    const today = new Date().toISOString().slice(0, 10); // AAAA-MM-DD
+    let raw = await KV.get("inv_visits");
+    let v = {};
+    try { v = raw ? JSON.parse(raw) : {}; } catch (e) { v = {}; }
+    if (typeof v.total !== "number") v.total = 0;
+    if (v.day !== today) { v.day = today; v.today = 0; }
+    // só conta de verdade num GET sem ?peek (peek = só leitura, pro admin)
+    var peek = false;
+    try { peek = new URL(request.url).searchParams.get("peek") === "1"; } catch (e) {}
+    if (request.method === "GET" && !peek) {
+      v.total += 1;
+      v.today = (v.today || 0) + 1;
+      try { await KV.put("inv_visits", JSON.stringify(v)); } catch (e) {}
+    }
+    return new Response(JSON.stringify({ total: v.total, today: v.today, day: v.day }), {
+      headers: { "content-type": "application/json", "cache-control": "no-store", "CDN-Cache-Control": "no-store", ...CORS }
+    });
+  } catch (e) {
+    return json({ total: 0, today: 0, error: String((e && e.message) || e) }, 200);
+  }
 }
 
 // ── /api/ai — IA estável pelo servidor (Pollinations + Anthropic de reserva) ──
