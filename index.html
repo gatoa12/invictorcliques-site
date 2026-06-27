@@ -5654,7 +5654,7 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v327.0001</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v328.0001</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -12182,7 +12182,7 @@ Poderia me ajudar? 🙏"
         const _KV_API = '/api/data';
         // 🔄 Versão do site publicada. Se o visitante tiver uma versão ANTIGA em cache,
         // o site se atualiza sozinho (1x, sem loop) pra ele sempre ver o mais novo.
-        window.SITE_BUILD = 327;
+        window.SITE_BUILD = 328;
         // 🔎 selo de versão visível (canto) — pra CONFERIR qual versão está no ar
         (function _invBuildStamp(){
             function add(){ try{ if(document.getElementById('invBuildStamp'))return; var s=document.createElement('div'); s.id='invBuildStamp'; s.textContent='v'+(window.SITE_BUILD||'?'); s.style.cssText='position:fixed;bottom:4px;left:6px;z-index:3;font-size:9px;color:rgba(255,255,255,0.28);pointer-events:none;font-family:monospace;letter-spacing:.5px;'; document.body.appendChild(s); }catch(e){} }
@@ -25644,7 +25644,7 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
     var AI_PAGES=[['foco','📸 Suas Fotos'],['strava','🏃 Minhas Corridas'],['edicao','✨ Edição IA'],['procure','👟 Tênis'],['ofertas','🔥 Ofertas'],['preview','📱 Preview Insta'],['verificar','🔍 Verificar']];
     function _aiLeads(){ try{ return JSON.parse(localStorage.getItem('ai_leads')||'[]'); }catch(e){ return []; } }
     window.aiUpdateBadge=function(){ var n=_aiLeads().filter(function(x){return !x.seen;}).length; var b=document.getElementById('aiBadge'); if(b){ b.textContent=n; b.style.display=n>0?'inline-block':'none'; } };
-    window.aiTogglePage=function(k){ var m={}; try{ m=JSON.parse(localStorage.getItem('ai_pages')||'{}'); }catch(e){} m[k]=(m[k]===false)?true:false; try{ localStorage.setItem('ai_pages',JSON.stringify(m)); }catch(e){} aiAdminRender(); if(typeof _invPublish==='function')_invPublish(); if(typeof showToast==='function')showToast('IA '+(m[k]===false?'desligada':'ligada')+' nessa página','🤖'); };
+    window.aiTogglePage=function(k){ var m={}; try{ m=JSON.parse(localStorage.getItem('ai_pages')||'{}'); }catch(e){} m[k]=(m[k]===false)?true:false; try{ localStorage.setItem('ai_pages',JSON.stringify(m)); }catch(e){} aiAdminRender(); try{ if(typeof saveData==='function') saveData(false); else if(typeof _invPublish==='function')_invPublish(); }catch(e){} if(typeof showToast==='function')showToast('IA '+(m[k]===false?'desligada':'ligada')+' nessa página','🤖'); };
     window.invLeadReply=function(contact){
       contact=(contact||'').trim(); if(!contact){ if(typeof showToast==='function')showToast('Esse contato não deixou @ nem WhatsApp','⚠️'); return; }
       var digits=contact.replace(/\D/g,'');
@@ -26158,7 +26158,7 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
         procure:{t:'👟 IA de Tênis',d:'Diga seu perfil e a IA recomenda o tênis ideal.',sys:'Você é um especialista (curador) em tênis de corrida, com domínio de pisada (neutra/pronada/supinada), drop, amortecimento e uso (treino, prova, trail). Recomende categorias e modelos populares por perfil, com autoridade e sem enrolação, em português do Brasil. NUNCA escreva links ou URLs de lojas (Netshoes, Amazon, Centauro etc) — o ÚNICO link válido aparece nos botões automáticos abaixo da sua resposta.',sg:['👟 Recomendações do Victor IA','Tênis pra iniciante','Pisada neutra, 10k','Melhor custo-benefício']},
         verificar:{t:'🔍 IA — Verificação',d:'Dúvidas sobre conferir e garantir suas fotos.',sys:'Você é o assistente de atendimento do Victor para verificação de fotos. Explique com clareza e segurança como conferir, identificar e comprar as fotos, e que ao verificar a pessoa ganha um cupom exclusivo de desconto para as próximas compras. Tranquilize sobre privacidade e o uso da selfie (apenas para identificação). Tom acolhedor e confiável, em português do Brasil, curto.',sg:['Como acho minhas fotos?','É seguro enviar a selfie?','Como funciona o cupom exclusivo?']},
         preview:{t:'📱 IA de Legendas',d:'A IA cria legendas e hashtags pro seu post.',sys:'Você é social media especialista em conteúdo de corrida para Instagram. Crie legendas curtas, marcantes e originais + exatamente 5 hashtags relevantes (mix de nicho e alcance). Tom motivador e autoral, em português do Brasil.',sg:['Legenda pra foto de prova','Legenda de treino matinal','Algo motivacional']},
-        ofertas:{t:'🔥 IA de Ofertas',d:'Diga seu perfil e a IA acha o tênis em oferta ideal pra você.',sys:'Você é um consultor especialista em tênis de corrida que encontra a melhor oferta por perfil (orçamento, pisada, distância, objetivo). Seja direto, confiável e empolgante, em português do Brasil. Justifique a escolha e crie senso de oportunidade sem enganar. NUNCA escreva links ou URLs de lojas (Netshoes, Amazon, Centauro etc) — o ÚNICO link válido pra comprar aparece nos botões automáticos logo abaixo da sua resposta. Só diga a dica + o nome do modelo + o preço, e mande conferir o botão de cupons abaixo.',sg:['👟 Recomendações do Victor IA','Melhor oferta até R$400','Tênis em promoção pra 10k','Custo-benefício pra iniciante']}
+        ofertas:{t:'🔥 IA de Ofertas',d:'Diga seu perfil e a IA acha o tênis em oferta ideal pra você.',sys:'Você é um consultor especialista em tênis de corrida que encontra a melhor oferta por perfil (orçamento, pisada, distância, objetivo). Seja direto, confiável e empolgante, em português do Brasil. Justifique a escolha e crie senso de oportunidade sem enganar. NUNCA escreva links ou URLs de lojas (Netshoes, Amazon, Centauro etc) — o ÚNICO link válido pra comprar aparece nos botões automáticos logo abaixo da sua resposta. Só diga a dica + o nome do modelo + o preço, e mande conferir o botão de cupons abaixo.',sg:['👟 Recomendações do Victor IA','💰 Custo-benefício pra iniciante']}
       };
       return C[k]||C.foco;
     }
@@ -26541,6 +26541,30 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
         if(typeof showToast==='function') showToast('Loja atualizada! ✅','✅');
     };
 
+    // 💰 Sempre devolve o link com SEUS dados de afiliado atuais (corrige links antigos salvos)
+    window.iaAffLink = function(s){
+        if(!s) return '';
+        var nm=(s.nome||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+        var link=s.link||'';
+        try{
+            if(nm.indexOf('magazine')>=0 || nm.indexOf('magalu')>=0){
+                var mode=localStorage.getItem('magalu_mode')||'busca';
+                var prom=localStorage.getItem('magalu_promoter')||'';
+                var part=localStorage.getItem('magalu_partner')||'';
+                var custom=localStorage.getItem('magalu_link')||'';
+                if(mode==='loja' && custom) return custom;
+                if(prom && part) return 'https://www.magazineluiza.com.br/busca/{q}/?promoter_id='+encodeURIComponent(prom)+'&partner_id='+encodeURIComponent(part);
+                // tem link salvo com os ids? mantém
+                if(link.indexOf('promoter_id=')>=0) return link;
+            }
+            if(nm.indexOf('amazon')>=0){
+                var tag=localStorage.getItem('amazon_tag')||'';
+                if(tag){ if(link.indexOf('{q}')>=0 && link.indexOf('tag=')<0) return link+(link.indexOf('?')>=0?'&':'?')+'tag='+encodeURIComponent(tag); if(link.indexOf('tag=')<0) return 'https://www.amazon.com.br/s?k={q}&tag='+encodeURIComponent(tag); }
+            }
+        }catch(e){}
+        return link;
+    };
+
     // 🎯 Detecta LOJA + PRODUTO na mensagem do cliente (ex: "magazine luiza tenis adidas")
     // e monta o LINK DE AFILIADO direto do Victor pra aquele produto naquela loja.
     window.iaDirectStoreMatch = function(q){
@@ -26574,7 +26598,8 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
         rmList.forEach(function(a){ try{ prod=prod.replace(new RegExp(a.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi'),' '); }catch(e){} });
         prod=prod.replace(/\b(quero|queria|gostaria|o|a|os|as|um|uma|uns|link|links|na|no|nas|nos|de|do|da|dos|das|me|manda|mande|envia|enviar|mostra|mostre|por\s*favor|pra|para|achar|encontrar|comprar|compra|preco|preco|mais|barato|barata|loja|tem|tenha|qual|onde)\b/gi,' ');
         prod=prod.replace(/\s+/g,' ').trim();
-        var href = found.link.indexOf('{q}')>=0 ? found.link.replace(/\{q\}/g, encodeURIComponent(prod||'tênis de corrida')) : found.link;
+        var baseLink = (typeof iaAffLink==='function') ? iaAffLink(found) : found.link;
+        var href = baseLink.indexOf('{q}')>=0 ? baseLink.replace(/\{q\}/g, encodeURIComponent(prod||'tênis de corrida')) : baseLink;
         return { loja:found, prod:prod, href:href };
     };
     // card bonito de compra direta (loja + produto) com o link de afiliado
@@ -26600,8 +26625,9 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
         out+='<div style="font-size:10px;font-weight:900;color:#00e0a0;margin-bottom:8px;">🛒 Escolha onde comprar'+(prod?(' <span style="color:#fff;">'+String(prod).replace(/</g,'&lt;')+'</span>'):'')+' (com meu cupom/afiliado):</div>';
         var any=false;
         lojas.forEach(function(s){
-            if(!s.link) return; any=true;
-            var href = s.link.indexOf('{q}')>=0 ? s.link.replace(/\{q\}/g,qenc) : s.link;
+            var _ln = (typeof iaAffLink==='function') ? iaAffLink(s) : s.link;
+            if(!_ln) return; any=true;
+            var href = _ln.indexOf('{q}')>=0 ? _ln.replace(/\{q\}/g,qenc) : _ln;
             var nm=(s.nome||'Loja');
             out+='<a href="'+String(href).replace(/"/g,'&quot;')+'" target="_blank" rel="noopener sponsored" onclick="iaTrackClick(\''+nm.replace(/'/g,'').replace(/</g,'')+'\')" style="display:block;text-align:center;text-decoration:none;background:linear-gradient(135deg,#ee4d2d,#ff6a3d);border:1px solid rgba(238,77,45,0.45);color:#fff;border-radius:10px;padding:10px;font-size:11.5px;font-weight:900;margin-bottom:7px;">'+(s.emoji||'🛒')+' '+nm.replace(/</g,'&lt;')+'</a>';
         });
@@ -26814,8 +26840,18 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
             var _recM = (typeof getIaRecMode==='function') ? getIaRecMode() : 'both';
             // tenta pegar o 1º modelo citado (pra montar a busca na loja)
             var _prod=''; try{ var pm=ans.match(/\*\*([^*]{3,46})\*\*/)||ans.match(/[-•]\s*([A-Za-zÀ-ÿ0-9 ]{4,40})\s*[-–:]/); if(pm) _prod=pm[1].replace(/\s+/g,' ').trim(); }catch(_p){}
-            if(_recM!=='auto' && typeof iaTenisCardsHtml==='function') _tenisCards += iaTenisCardsHtml(); // curadoria some no modo automático
-            if(typeof iaOfertaFooterHtml==='function') _tenisCards += iaOfertaFooterHtml(k, _prod); // botões de loja: sempre (afiliado garantido)
+            // se o cliente nomeou o produto na pergunta, usa ele na busca
+            if(_dm && _dm.prod) _prod=_dm.prod;
+            var _cur = (_recM!=='auto' && typeof iaTenisCardsHtml==='function') ? iaTenisCardsHtml() : '';
+            var _footer = (typeof iaOfertaFooterHtml==='function') ? iaOfertaFooterHtml(k, _prod) : '';
+            if(_dm){
+                // 🎯 Cliente pediu UMA loja → mostra SÓ o link dela; as outras ficam escondidas
+                var _oid='iaOutras_'+Math.random().toString(36).slice(2,8);
+                _tenisCards += '<button onclick="var e=document.getElementById(\''+_oid+'\');if(e){e.style.display=(e.style.display===\'none\'?\'block\':\'none\');}this.style.display=\'none\';" style="width:100%;margin-top:9px;padding:10px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.15);color:#cdd6e4;border-radius:9px;font-size:11px;font-weight:800;cursor:pointer;">🔁 Quero ver outras lojas</button>';
+                _tenisCards += '<div id="'+_oid+'" style="display:none;">'+_cur+_footer+'</div>';
+            } else {
+                _tenisCards += _cur + _footer;
+            }
         } }catch(_){}
         var tb=document.getElementById(typingId);
         if(tb){ var _ea=ans.replace(/"/g,'&quot;'), _eq=String(q||'').replace(/"/g,'&quot;');
