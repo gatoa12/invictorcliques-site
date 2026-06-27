@@ -39,7 +39,9 @@ export default {
       const ctype = res.headers.get("content-type") || "";
       if (ctype.includes("text/html")) {
         const h = new Headers(res.headers);
-        h.set("Cache-Control", "no-cache, no-store, must-revalidate");
+        h.set("Cache-Control", "no-cache, no-store, must-revalidate, max-age=0");
+        h.set("CDN-Cache-Control", "no-store");
+        h.set("Cloudflare-CDN-Cache-Control", "no-store");
         h.set("Pragma", "no-cache");
         h.set("Expires", "0");
         return new Response(res.body, { status: res.status, statusText: res.statusText, headers: h });
@@ -203,7 +205,7 @@ async function handleData(request, env) {
   const KEY = "site_data";
   if (request.method === "GET") {
     const val = await env.INV_KV.get(KEY);
-    return new Response(val || "{}", { headers: { "content-type": "application/json; charset=utf-8", "cache-control": "no-store", ...CORS } });
+    return new Response(val || "{}", { headers: { "content-type": "application/json; charset=utf-8", "cache-control": "no-store", "CDN-Cache-Control": "no-store", "Cloudflare-CDN-Cache-Control": "no-store", ...CORS } });
   }
   if (request.method === "POST") {
     const provided = request.headers.get("x-admin-key") || "";

@@ -5639,7 +5639,7 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v303.0001</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v304.0001</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -12030,6 +12030,22 @@ Poderia me ajudar? 🙏"
         //  A chave de escrita fica SÓ no navegador do admin (nunca publicada).
         // ══════════════════════════════════════════════════════════════
         const _KV_API = '/api/data';
+        // 🔄 Versão do site publicada. Se o visitante tiver uma versão ANTIGA em cache,
+        // o site se atualiza sozinho (1x, sem loop) pra ele sempre ver o mais novo.
+        window.SITE_BUILD = 304;
+        (function _invAutoFresh(){
+            try{
+                if(sessionStorage.getItem('inv_fresh_reload')) return;
+                fetch('/api/data?_=' + Date.now(), { cache:'no-store' }).then(function(r){ return r.ok?r.json():null; }).then(function(d){
+                    var kvB = parseInt((d && d._siteBuild) || 0, 10) || 0;
+                    var myB = parseInt(window.SITE_BUILD || 0, 10) || 0;
+                    if(kvB && myB && kvB > myB){
+                        sessionStorage.setItem('inv_fresh_reload','1');
+                        try{ location.reload(true); }catch(e){ location.reload(); }
+                    }
+                }).catch(function(){});
+            }catch(e){}
+        })();
         function _kvAdminKey() { try { return localStorage.getItem('_cfg_kvAdminKey') || ''; } catch(e) { return ''; } }
         function _kvEnabled() { try { return localStorage.getItem('_cfg_kvDisabled') !== '1'; } catch(e) { return true; } }
         async function _kvGet() {
@@ -12037,7 +12053,7 @@ Poderia me ajudar? 🙏"
             const controller = new AbortController();
             const t = setTimeout(() => controller.abort(), 5000);
             try {
-                const r = await fetch(_KV_API + '?_=' + Date.now(), { signal: controller.signal, headers: { 'Accept': 'application/json' } });
+                const r = await fetch(_KV_API + '?_=' + Date.now(), { signal: controller.signal, cache: 'no-store', headers: { 'Accept': 'application/json' } });
                 clearTimeout(t);
                 if (!r.ok) return null;
                 const d = await r.json();
@@ -13147,6 +13163,7 @@ Poderia me ajudar? 🙏"
             // ── Config principal ──────────────────────────────────
             payload['invictorAdminData'] = JSON.stringify(currentData);
             payload['_publishedAt'] = String(ts); // carimbo p/ proteção newest-wins no carregamento
+            try{ payload['_siteBuild'] = String(window.SITE_BUILD||0); }catch(e){}
 
             // ── Catálogos (eventos manuais + produtos banlek) ─────
             try {
