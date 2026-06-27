@@ -5654,7 +5654,7 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v324.0001</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v327.0001</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -12182,7 +12182,7 @@ Poderia me ajudar? 🙏"
         const _KV_API = '/api/data';
         // 🔄 Versão do site publicada. Se o visitante tiver uma versão ANTIGA em cache,
         // o site se atualiza sozinho (1x, sem loop) pra ele sempre ver o mais novo.
-        window.SITE_BUILD = 324;
+        window.SITE_BUILD = 327;
         // 🔎 selo de versão visível (canto) — pra CONFERIR qual versão está no ar
         (function _invBuildStamp(){
             function add(){ try{ if(document.getElementById('invBuildStamp'))return; var s=document.createElement('div'); s.id='invBuildStamp'; s.textContent='v'+(window.SITE_BUILD||'?'); s.style.cssText='position:fixed;bottom:4px;left:6px;z-index:3;font-size:9px;color:rgba(255,255,255,0.28);pointer-events:none;font-family:monospace;letter-spacing:.5px;'; document.body.appendChild(s); }catch(e){} }
@@ -26175,7 +26175,8 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
         +'<input id="invAIContact_'+k+'" value="'+_invContactVal()+'" placeholder="📱 Seu @ ou WhatsApp (pro Victor te responder)" style="width:100%;padding:9px;margin-bottom:9px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,106,0,0.22);border-radius:9px;color:#fff;font-size:12px;box-sizing:border-box;outline:none;">'
         +'<div id="invAIChips_'+k+'" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;">'+chips+'</div>'
         +'<div id="invAIThread_'+k+'" style="display:none;flex-direction:column;gap:9px;max-height:340px;overflow-y:auto;margin-bottom:11px;padding:4px;"></div>'
-        +'<div style="display:flex;gap:7px;"><input id="invAIIn_'+k+'" placeholder="Escreva sua mensagem..." onkeypress="if(event.key===\'Enter\')invAIAsk(\''+k+'\')" style="flex:1;padding:11px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.13);border-radius:10px;color:#fff;font-size:13px;outline:none;">'
+        +((k==='ofertas'||k==='procure')?'<div style="font-size:10px;color:#00e0a0;background:rgba(0,224,160,0.08);border:1px solid rgba(0,224,160,0.25);border-radius:9px;padding:8px 10px;margin-bottom:9px;line-height:1.5;">🔎 <b>Dica:</b> mande a <b>loja + o produto</b> que eu acho o link no melhor preço.<br>Ex: <i>"Magazine Luiza tênis adidas"</i> · <i>"Amazon meia de corrida"</i></div>':'')
+        +'<div style="display:flex;gap:7px;"><input id="invAIIn_'+k+'" placeholder="'+((k==='ofertas'||k==='procure')?'Ex: Magazine Luiza tênis adidas':'Escreva sua mensagem...')+'" onkeypress="if(event.key===\'Enter\')invAIAsk(\''+k+'\')" style="flex:1;padding:11px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.13);border-radius:10px;color:#fff;font-size:13px;outline:none;">'
         +'<button onclick="invAIClear(\''+k+'\')" title="Limpar conversa" style="padding:11px 12px;border:1px solid rgba(255,255,255,0.13);border-radius:10px;background:rgba(255,255,255,0.05);color:#cdd6e4;font-size:13px;cursor:pointer;">🧹</button>'
         +'<button onclick="invAIAsk(\''+k+'\')" style="padding:11px 15px;border:none;border-radius:10px;background:linear-gradient(135deg,#FF6A00,#FF9540);color:#000;font-weight:900;font-size:13px;cursor:pointer;">➤</button></div>');
     }
@@ -26413,8 +26414,8 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
     window.getIaLojas = function(){
         try{ var v=JSON.parse(localStorage.getItem('ia_lojas')); if(Array.isArray(v)&&v.length) return v; }catch(e){}
         return [
-            {emoji:'🛒',nome:'Shopee',link:'https://s.shopee.com.br/3LOjetdnW8'},
-            {emoji:'🟡',nome:'Mercado Livre',link:'https://meli.la/1aqQUtQ'},
+            {emoji:'🛒',nome:'Shopee',link:'https://shopee.com.br/search?keyword={q}'},
+            {emoji:'🟡',nome:'Mercado Livre',link:'https://lista.mercadolivre.com.br/{q}'},
             {emoji:'✔️',nome:'Nike',link:'https://tidd.ly/4f1RZY3'},
             {emoji:'👟',nome:'Netshoes',link:'https://click.linksynergy.com/deeplink?id=ygHYQtO3gCY&mid=43984&murl=https%3A%2F%2Fwww.netshoes.com.br%2Fbusca%3Fq%3D{q}'},
             {emoji:'🔵',nome:'Olympikus',link:'https://tidd.ly/3Sou2l2'},
@@ -26538,6 +26539,55 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
         if(typeof saveData==='function') saveData(false);
         renderIaLojasAdmin();
         if(typeof showToast==='function') showToast('Loja atualizada! ✅','✅');
+    };
+
+    // 🎯 Detecta LOJA + PRODUTO na mensagem do cliente (ex: "magazine luiza tenis adidas")
+    // e monta o LINK DE AFILIADO direto do Victor pra aquele produto naquela loja.
+    window.iaDirectStoreMatch = function(q){
+        if(!q) return null;
+        var lojas=(typeof getIaLojas==='function')?getIaLojas():[];
+        function norm(s){ return (s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,''); }
+        var qn=norm(q);
+        var aliases={
+            'magazine luiza':['magazine luiza','magazineluiza','magalu','magazine'],
+            'mercado livre':['mercado livre','mercadolivre','meli','mercado'],
+            'shopee':['shopee','xopi'],
+            'amazon':['amazon','amazom'],
+            'nike':['nike'],
+            'netshoes':['netshoes','net shoes'],
+            'olympikus':['olympikus','olimpikus','olimpicos']
+        };
+        var found=null;
+        for(var i=0;i<lojas.length;i++){
+            var nm=norm(lojas[i].nome);
+            // monta a lista de "apelidos" pra ESTA loja: os conhecidos + o próprio nome (com e sem espaço) + 1ª palavra
+            var al=(aliases[nm]?aliases[nm].slice():[]);
+            al.push(nm); al.push(nm.replace(/\s+/g,''));
+            var fw=nm.split(' ')[0]; if(fw && fw.length>=4 && al.indexOf(fw)<0) al.push(fw);
+            for(var j=0;j<al.length;j++){ if(al[j] && qn.indexOf(norm(al[j]))>=0){ found=lojas[i]; break; } }
+            if(found) break;
+        }
+        if(!found || !found.link) return null;
+        // tira o nome da loja + palavras de ligação → sobra o produto
+        var prod=q; var nmKey=norm(found.nome);
+        var rmList=(aliases[nmKey]?aliases[nmKey].slice():[]); rmList.push(nmKey); rmList.push(nmKey.replace(/\s+/g,'')); var _fw=nmKey.split(' ')[0]; if(_fw&&_fw.length>=4) rmList.push(_fw);
+        rmList.forEach(function(a){ try{ prod=prod.replace(new RegExp(a.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi'),' '); }catch(e){} });
+        prod=prod.replace(/\b(quero|queria|gostaria|o|a|os|as|um|uma|uns|link|links|na|no|nas|nos|de|do|da|dos|das|me|manda|mande|envia|enviar|mostra|mostre|por\s*favor|pra|para|achar|encontrar|comprar|compra|preco|preco|mais|barato|barata|loja|tem|tenha|qual|onde)\b/gi,' ');
+        prod=prod.replace(/\s+/g,' ').trim();
+        var href = found.link.indexOf('{q}')>=0 ? found.link.replace(/\{q\}/g, encodeURIComponent(prod||'tênis de corrida')) : found.link;
+        return { loja:found, prod:prod, href:href };
+    };
+    // card bonito de compra direta (loja + produto) com o link de afiliado
+    window.iaDirectStoreCard = function(m){
+        if(!m) return '';
+        var nm=(m.loja.nome||'Loja').replace(/</g,'&lt;');
+        var pr=(m.prod||'').replace(/</g,'&lt;');
+        var href=String(m.href).replace(/"/g,'&quot;');
+        return '<div style="margin-top:9px;background:linear-gradient(135deg,rgba(0,224,160,0.12),rgba(0,134,255,0.06));border:1.5px solid rgba(0,224,160,0.4);border-radius:13px;padding:13px;">'
+          +'<div style="font-size:10px;font-weight:900;color:#00e0a0;margin-bottom:7px;">🎯 Achei na '+(m.loja.emoji||'🛒')+' '+nm+(pr?(' — <span style="color:#fff;">'+pr+'</span>'):'')+'</div>'
+          +'<a href="'+href+'" target="_blank" rel="noopener sponsored" onclick="if(typeof iaTrackClick===\'function\')iaTrackClick(\''+nm.replace(/'/g,'')+'\')" style="display:block;text-align:center;text-decoration:none;background:linear-gradient(135deg,#00e0a0,#00b894);color:#022;border-radius:11px;padding:13px;font-size:13px;font-weight:900;">🛒 Ver '+(pr||'produtos')+' na '+nm+' (meu link)</a>'
+          +'<div style="font-size:8.5px;color:#667;text-align:center;margin-top:6px;">Busca o melhor preço na loja · link patrocinado #publicidade</div>'
+          +'</div>';
     };
 
     // Footer da recomendação: SELETOR DE LOJA (onde comprar) + grupos + finalizar
@@ -26753,8 +26803,13 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
         }
         invAIHist[k].push({role:'assistant',content:ans});
         try{ var L=JSON.parse(localStorage.getItem('ai_leads')||'[]'); L.unshift({t:Date.now(),page:k,q:q,a:ans,contact:contact}); localStorage.setItem('ai_leads',JSON.stringify(L.slice(0,120))); if(typeof aiUpdateBadge==='function')aiUpdateBadge(); }catch(_){}
+        // 🎯 Cliente pediu LOJA + PRODUTO direto (ex: "magazine luiza tenis adidas") → link de afiliado na hora
+        var _directCard='', _dm=null;
+        try{ _dm=(typeof iaDirectStoreMatch==='function')?iaDirectStoreMatch(q):null; if(_dm){ _directCard=iaDirectStoreCard(_dm); } }catch(_d){}
+        // se achou a loja, a IA para de pedir desculpa e responde útil
+        if(_dm){ ans='Achei pra você! 👇 Aqui está o caminho direto na **'+(_dm.loja.nome||'loja')+'**'+(_dm.prod?(' pro **'+_dm.prod+'**'):'')+' — já busca o melhor preço. É só tocar no botão verde abaixo:'; }
         // PROCESSO 2 (curadoria): lista do Victor + botões de loja (sempre confiável)
-        var _tenisCards = '';
+        var _tenisCards = _directCard;
         try{ if(_isOfferPage || (typeof _isTenisQuery==='function' && (_isTenisQuery(q)||_isTenisQuery(ans)))){
             var _recM = (typeof getIaRecMode==='function') ? getIaRecMode() : 'both';
             // tenta pegar o 1º modelo citado (pra montar a busca na loja)
