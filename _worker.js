@@ -13,11 +13,20 @@ export default {
     const path = url.pathname;
 
     // ✅ UM SITE SÓ: redireciona www → sem-www (evita o efeito "dois sites").
-    // Tudo passa a viver em invictorcliques.com.br (canônico).
+    // Tudo passa a viver em invictorcliques.com.br (canônico). Redirect SEM cache,
+    // pra nunca ficar preso numa versão antiga.
     if (url.hostname.startsWith("www.")) {
       const dest = new URL(request.url);
       dest.hostname = url.hostname.replace(/^www\./, "");
-      return Response.redirect(dest.toString(), 301);
+      return new Response(null, {
+        status: 301,
+        headers: {
+          "Location": dest.toString(),
+          "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+          "CDN-Cache-Control": "no-store",
+          "Cloudflare-CDN-Cache-Control": "no-store"
+        }
+      });
     }
 
     try {
