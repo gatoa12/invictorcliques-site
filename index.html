@@ -5639,7 +5639,7 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v312.0001</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v314.0001</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -6578,17 +6578,23 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                         <div style="margin-top:13px;border-top:1px solid rgba(255,255,255,0.1);padding-top:12px;">
                             <div style="font-size:10.5px;color:#cdd6e4;font-weight:800;margin-bottom:8px;">🖼️ Fotos — envie do celular ou cole o link</div>
                             <label style="font-size:9px;color:#888;font-weight:700;">📸 Foto do botão "Comprar Fotos"</label>
-                            <input id="gwFotoImg" placeholder="https://.../foto.jpg ou envie abaixo" style="width:100%;margin:3px 0 5px;padding:9px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.12);border-radius:9px;color:#fff;font-size:11px;outline:none;box-sizing:border-box;">
+                            <input id="gwFotoImg" oninput="if(typeof renderGatewayPreview==='function')renderGatewayPreview()" placeholder="https://.../foto.jpg ou envie abaixo" style="width:100%;margin:3px 0 5px;padding:9px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.12);border-radius:9px;color:#fff;font-size:11px;outline:none;box-sizing:border-box;">
                             <div style="display:flex;gap:6px;margin-bottom:9px;"><label style="flex:1;text-align:center;padding:8px;background:rgba(96,165,250,0.14);border:1px solid rgba(96,165,250,0.3);border-radius:8px;color:#60a5fa;font-size:11px;font-weight:800;cursor:pointer;">📷 Enviar foto<input type="file" accept="image/*" onchange="gwPhotoUpload(this,'gwFotoImg')" style="display:none;"></label><button onclick="gwPhotoRemove('gwFotoImg')" style="padding:8px 14px;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);border-radius:8px;color:#f88;font-size:11px;font-weight:800;cursor:pointer;">🗑️ Remover</button></div>
                             <label style="font-size:9px;color:#888;font-weight:700;">👟 Foto do botão "Comprar Tênis"</label>
-                            <input id="gwTenisImg" placeholder="https://.../tenis.jpg ou envie abaixo" style="width:100%;margin:3px 0 5px;padding:9px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.12);border-radius:9px;color:#fff;font-size:11px;outline:none;box-sizing:border-box;">
+                            <input id="gwTenisImg" oninput="if(typeof renderGatewayPreview==='function')renderGatewayPreview()" placeholder="https://.../tenis.jpg ou envie abaixo" style="width:100%;margin:3px 0 5px;padding:9px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.12);border-radius:9px;color:#fff;font-size:11px;outline:none;box-sizing:border-box;">
                             <div style="display:flex;gap:6px;margin-bottom:9px;"><label style="flex:1;text-align:center;padding:8px;background:rgba(96,165,250,0.14);border:1px solid rgba(96,165,250,0.3);border-radius:8px;color:#60a5fa;font-size:11px;font-weight:800;cursor:pointer;">📷 Enviar foto<input type="file" accept="image/*" onchange="gwPhotoUpload(this,'gwTenisImg')" style="display:none;"></label><button onclick="gwPhotoRemove('gwTenisImg')" style="padding:8px 14px;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);border-radius:8px;color:#f88;font-size:11px;font-weight:800;cursor:pointer;">🗑️ Remover</button></div>
                             <label style="font-size:9px;color:#888;font-weight:700;">🌌 Foto de fundo da TELA DE ENTRADA (só nela)</label>
-                            <input id="gwBgImg" placeholder="https://.../fundo.jpg ou envie abaixo" style="width:100%;margin:3px 0 5px;padding:9px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.12);border-radius:9px;color:#fff;font-size:11px;outline:none;box-sizing:border-box;">
+                            <input id="gwBgImg" oninput="if(typeof renderGatewayPreview==='function')renderGatewayPreview()" placeholder="https://.../fundo.jpg ou envie abaixo" style="width:100%;margin:3px 0 5px;padding:9px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.12);border-radius:9px;color:#fff;font-size:11px;outline:none;box-sizing:border-box;">
                             <div style="display:flex;gap:6px;margin-bottom:9px;"><label style="flex:1;text-align:center;padding:8px;background:rgba(96,165,250,0.14);border:1px solid rgba(96,165,250,0.3);border-radius:8px;color:#60a5fa;font-size:11px;font-weight:800;cursor:pointer;">📷 Enviar foto<input type="file" accept="image/*" onchange="gwPhotoUpload(this,'gwBgImg')" style="display:none;"></label><button onclick="gwPhotoRemove('gwBgImg')" style="padding:8px 14px;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);border-radius:8px;color:#f88;font-size:11px;font-weight:800;cursor:pointer;">🗑️ Remover</button></div>
                             <label style="font-size:9px;color:#888;font-weight:700;">Transparência do fundo: <span id="gwBgOpVal">12%</span></label>
-                            <input id="gwBgOp" type="range" min="3" max="40" value="12" oninput="document.getElementById('gwBgOpVal').textContent=this.value+'%'" style="width:100%;margin:4px 0 10px;">
+                            <input id="gwBgOp" type="range" min="3" max="40" value="12" oninput="document.getElementById('gwBgOpVal').textContent=this.value+'%';if(typeof renderGatewayPreview==='function')renderGatewayPreview();" style="width:100%;margin:4px 0 10px;">
                             <button onclick="gatewayImgsSave()" style="width:100%;padding:11px;background:linear-gradient(135deg,#FFD700,#FFA500);color:#111;border:none;border-radius:10px;font-weight:900;font-size:12px;cursor:pointer;">💾 Salvar fotos e fundo</button>
+                            <!-- 👁️ mini-preview ao vivo de como a tela de entrada vai ficar -->
+                            <div style="margin-top:13px;">
+                                <div style="font-size:10px;color:#FFD700;font-weight:800;margin-bottom:6px;">👁️ Prévia ao vivo (como vai ficar)</div>
+                                <div id="gwPreview" style="max-width:230px;margin:0 auto;border:1px solid rgba(255,255,255,0.12);border-radius:14px;overflow:hidden;"></div>
+                                <div style="font-size:9px;color:#778;text-align:center;margin-top:6px;">Mexa nos campos e na transparência — a prévia muda na hora.</div>
+                            </div>
                         </div>
                     </div>
 
@@ -10918,12 +10924,14 @@ Poderia me ajudar? 🙏"
             if(typeof showToast==='function') showToast('Carregando foto...','⏳');
             gwCompressImage(f, function(dataUrl){
                 var el=document.getElementById(fieldId); if(el) el.value=dataUrl;
+                if(typeof renderGatewayPreview==='function') renderGatewayPreview();
                 if(typeof gatewayImgsSave==='function') gatewayImgsSave();
             });
             try{ input.value=''; }catch(e){}
         };
         window.gwPhotoRemove = function(fieldId){
             var el=document.getElementById(fieldId); if(el) el.value='';
+            if(typeof renderGatewayPreview==='function') renderGatewayPreview();
             if(typeof gatewayImgsSave==='function') gatewayImgsSave();
             if(typeof showToast==='function') showToast('Foto removida 🗑️','✅');
         };
@@ -10935,6 +10943,26 @@ Poderia me ajudar? 🙏"
                 try{ var el=document.getElementById('apGatewayBlock'); if(el){ el.scrollIntoView({behavior:'smooth',block:'start'}); el.style.boxShadow='0 0 0 2px rgba(255,215,0,0.6)'; setTimeout(function(){ el.style.boxShadow=''; },1600); } }catch(e){}
                 try{ if(typeof gatewayImgsLoad==='function') gatewayImgsLoad(); if(typeof renderDepoimentosAdmin==='function') renderDepoimentosAdmin(); }catch(e){}
             }, 180);
+        };
+
+        // 👁️ Prévia ao vivo de como a tela de entrada vai ficar
+        window.renderGatewayPreview = function(){
+            var box=document.getElementById('gwPreview'); if(!box) return;
+            function v(id){ var e=document.getElementById(id); return e?e.value.trim():''; }
+            var f=v('gwFotoImg'), t=v('gwTenisImg'), bg=v('gwBgImg');
+            var opEl=document.getElementById('gwBgOp'); var op=opEl?(parseInt(opEl.value,10)||12)/100:0.12;
+            var vt=Math.max(0.45,(0.95-op)).toFixed(2), vb=Math.max(0.5,(0.99-op)).toFixed(2);
+            function esc(u){ return (u||'').replace(/"/g,''); }
+            var ovBg = bg ? ('linear-gradient(rgba(5,6,8,'+vt+'),rgba(5,6,8,'+vb+')),url('+esc(bg)+') center/cover') : 'radial-gradient(circle at 50% 30%, #16181f, #050608)';
+            var fBg = f ? ('linear-gradient(135deg,rgba(0,0,0,0.5),rgba(0,0,0,0.3)),url('+esc(f)+') center/cover') : 'linear-gradient(135deg,rgba(255,215,0,0.14),rgba(255,170,0,0.05))';
+            var tBg = t ? ('linear-gradient(135deg,rgba(0,0,0,0.5),rgba(0,0,0,0.3)),url('+esc(t)+') center/cover') : 'linear-gradient(135deg,rgba(255,106,0,0.16),rgba(255,69,0,0.05))';
+            box.innerHTML='<div style="background:'+ovBg+';padding:14px 12px;text-align:center;">'
+                +'<div style="font-size:7px;letter-spacing:2px;color:#FF6A00;font-weight:900;">@INVICTORCLIQUES</div>'
+                +'<div style="font-size:12px;font-weight:900;color:#fff;margin:3px 0 9px;">O que você quer fazer hoje?</div>'
+                +'<div style="background:'+fBg+';border:1px solid rgba(255,215,0,0.4);border-radius:9px;padding:9px 10px;margin-bottom:7px;text-align:left;position:relative;"><div style="font-size:17px;line-height:1;">📸</div><div style="font-size:11px;font-weight:900;color:#fff;margin-top:3px;">Comprar Fotos</div><span style="position:absolute;right:9px;top:50%;transform:translateY(-50%);color:#FFD700;">→</span></div>'
+                +'<div style="background:'+tBg+';border:1px solid rgba(255,106,0,0.45);border-radius:9px;padding:9px 10px;text-align:left;position:relative;"><div style="font-size:17px;line-height:1;">👟</div><div style="font-size:11px;font-weight:900;color:#fff;margin-top:3px;">Comprar Tênis</div><span style="position:absolute;right:9px;top:50%;transform:translateY(-50%);color:#FF6A00;">→</span></div>'
+                +'<div style="margin-top:9px;display:inline-block;background:linear-gradient(135deg,#FF6A00,#FF9540);color:#000;font-size:8px;font-weight:900;padding:4px 10px;border-radius:12px;">🎟️ Resgatar cupom grátis</div>'
+                +'</div>';
         };
 
         // 🖼️ Salva fotos dos botões + fundo do site
@@ -10957,6 +10985,7 @@ Poderia me ajudar? 🙏"
             var b=document.getElementById('gwBgImg'); if(b&&!b.value) b.value=g('site_bg_img');
             var o=document.getElementById('gwBgOp'); var ov=document.getElementById('gwBgOpVal');
             try{ var val=Math.round((parseFloat(g('site_bg_op'))||0.12)*100); if(o) o.value=val; if(ov) ov.textContent=val+'%'; }catch(e){}
+            try{ if(typeof renderGatewayPreview==='function') renderGatewayPreview(); }catch(e){}
         };
         window.invApplySiteBg = function(){
             // A foto de fundo é usada SÓ na tela de entrada (gateway). O site fica normal depois.
@@ -12063,7 +12092,7 @@ Poderia me ajudar? 🙏"
         const _KV_API = '/api/data';
         // 🔄 Versão do site publicada. Se o visitante tiver uma versão ANTIGA em cache,
         // o site se atualiza sozinho (1x, sem loop) pra ele sempre ver o mais novo.
-        window.SITE_BUILD = 312;
+        window.SITE_BUILD = 314;
         // 🔎 selo de versão visível (canto) — pra CONFERIR qual versão está no ar
         (function _invBuildStamp(){
             function add(){ try{ if(document.getElementById('invBuildStamp'))return; var s=document.createElement('div'); s.id='invBuildStamp'; s.textContent='v'+(window.SITE_BUILD||'?'); s.style.cssText='position:fixed;bottom:4px;left:6px;z-index:3;font-size:9px;color:rgba(255,255,255,0.28);pointer-events:none;font-family:monospace;letter-spacing:.5px;'; document.body.appendChild(s); }catch(e){} }
@@ -14053,8 +14082,8 @@ Poderia me ajudar? 🙏"
             }
 
             container.innerHTML = currentData.ofertas.map((oferta, index) => `
-                <div class="oferta-item">
-                    <img loading="lazy" decoding="async" src="${oferta.imagem}" class="oferta-image" alt="${oferta.nome}">
+                <div class="oferta-item" style="flex-wrap:wrap;">
+                    <img loading="lazy" decoding="async" src="${oferta.imagem}" class="oferta-image" alt="${(oferta.nome||'').replace(/"/g,'&quot;')}">
                     <div class="oferta-info">
                         <h4>👟 ${oferta.nome} ${oferta.bestseller ? '⭐' : ''}</h4>
                         <div class="oferta-prices">
@@ -14065,11 +14094,47 @@ Poderia me ajudar? 🙏"
                             <label style="color: #888; font-size: 0.8em;">Estoque:</label>
                             <input type="number" value="${oferta.stock}" min="0" onchange="updateStock(${index}, this.value)">
                         </div>
+                        <div style="font-size:9px;margin-top:3px;${oferta.link?'color:#5ad18a;':'color:#f88;'}">${oferta.link?'🔗 link de compra ok':'⚠️ sem link de compra'}</div>
                     </div>
-                    <button class="oferta-btn-delete" onclick="deleteOferta(${index})">🗑️</button>
+                    <div style="display:flex;flex-direction:column;gap:5px;">
+                        <button onclick="toggleEditOferta(${index})" title="Editar" style="background:rgba(96,165,250,0.15);border:none;border-radius:7px;padding:7px 11px;color:#60a5fa;font-size:14px;cursor:pointer;">✏️</button>
+                        <button class="oferta-btn-delete" onclick="deleteOferta(${index})">🗑️</button>
+                    </div>
+                    <div id="ofEdit${index}" style="display:none;flex-basis:100%;width:100%;margin-top:11px;background:rgba(0,0,0,0.25);border:1px solid rgba(96,165,250,0.25);border-radius:11px;padding:12px;box-sizing:border-box;">
+                        <div style="font-size:10.5px;color:#60a5fa;font-weight:900;margin-bottom:9px;">✏️ Editar esta oferta</div>
+                        <input id="ofE_nome${index}" value="${(oferta.nome||'').replace(/"/g,'&quot;')}" placeholder="Nome do produto" style="width:100%;margin-bottom:7px;padding:9px;background:rgba(0,0,0,0.35);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:#fff;font-size:12px;outline:none;box-sizing:border-box;">
+                        <div style="display:flex;gap:6px;margin-bottom:7px;">
+                            <input id="ofE_orig${index}" value="${(oferta.original||'').replace(/"/g,'&quot;')}" placeholder="Preço original" style="flex:1;padding:9px;background:rgba(0,0,0,0.35);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:#fff;font-size:12px;outline:none;min-width:0;">
+                            <input id="ofE_sale${index}" value="${(oferta.sale||'').replace(/"/g,'&quot;')}" placeholder="Preço promo" style="flex:1;padding:9px;background:rgba(0,0,0,0.35);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:#fff;font-size:12px;outline:none;min-width:0;">
+                        </div>
+                        <input id="ofE_link${index}" value="${(oferta.link||'').replace(/"/g,'&quot;')}" placeholder="🔗 Link de afiliado (pra onde o Comprar leva)" style="width:100%;margin-bottom:7px;padding:9px;background:rgba(0,0,0,0.35);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:#fff;font-size:12px;outline:none;box-sizing:border-box;">
+                        <input id="ofE_img${index}" value="${(oferta.imagem||'').replace(/"/g,'&quot;')}" placeholder="URL da imagem (opcional)" style="width:100%;margin-bottom:9px;padding:9px;background:rgba(0,0,0,0.35);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:#fff;font-size:12px;outline:none;box-sizing:border-box;">
+                        <div style="display:flex;gap:7px;">
+                            <button onclick="saveOfertaEdit(${index})" style="flex:1;padding:10px;background:linear-gradient(135deg,#51CF66,#2f9e44);color:#fff;border:none;border-radius:9px;font-weight:900;font-size:12px;cursor:pointer;">💾 Salvar alterações</button>
+                            <button onclick="toggleEditOferta(${index})" style="padding:10px 14px;background:rgba(255,255,255,0.07);color:#ccc;border:1px solid rgba(255,255,255,0.15);border-radius:9px;font-weight:700;font-size:12px;cursor:pointer;">Cancelar</button>
+                        </div>
+                    </div>
                 </div>
             `).join('');
         }
+
+        // ✏️ Abrir/fechar edição de uma oferta
+        window.toggleEditOferta = function(i){ var el=document.getElementById('ofEdit'+i); if(el) el.style.display = (el.style.display==='none'||!el.style.display)?'block':'none'; };
+        // 💾 Salvar a edição (nome, preços, link, imagem) e publicar pros visitantes
+        window.saveOfertaEdit = function(i){
+            var g=function(id){ var e=document.getElementById(id); return e?e.value.trim():''; };
+            var o=currentData.ofertas[i]; if(!o) return;
+            var nome=g('ofE_nome'+i); if(nome) o.nome=nome;
+            o.original=g('ofE_orig'+i)||o.original;
+            o.sale=g('ofE_sale'+i)||o.sale;
+            o.link=g('ofE_link'+i);
+            var img=g('ofE_img'+i); if(img) o.imagem=img;
+            try{ _sharedCache=null; _sharedCacheTs=0; }catch(e){}
+            saveData();
+            renderOfertasList();
+            try{ renderPromos(); }catch(e){}
+            if(typeof showToast==='function') showToast('Oferta atualizada e publicada! ✅','✅');
+        };
 
         // ATUALIZAR ESTOQUE
         function updateStock(index, newStock) {
