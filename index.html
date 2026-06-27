@@ -5639,7 +5639,7 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v319.0001</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v320.0001</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -6809,6 +6809,22 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                                     2️⃣ Crie sua <b>loja Magazine Você</b> — você ganha um endereço tipo <code style="color:#0086FF;">magazinevoce.com.br/<b>SEU-ID</b></code>.<br>
                                     3️⃣ Copie só o <b>SEU-ID</b> e cole no campo acima → <b>Salvar</b>.<br>
                                     ✅ Pronto! No modo <b>Busca</b>, a IA já leva o cliente pro produto na sua loja Magalu (você ganha comissão).
+                                </div>
+                            </div>
+
+                            <!-- 📦 AMAZON (Associados) -->
+                            <div style="margin-top:11px;background:rgba(255,153,0,0.06);border:1px solid rgba(255,153,0,0.28);border-radius:12px;padding:13px;">
+                                <div style="font-size:12px;font-weight:900;color:#FF9900;margin-bottom:3px;">📦 Amazon (Associados)</div>
+                                <div style="font-size:10px;color:#8a9;margin-bottom:10px;line-height:1.5;">Ganhe comissão indicando produtos da Amazon. A IA busca o produto na Amazon com a <b>sua tag</b>.</div>
+                                <label style="font-size:9px;color:#888;font-weight:700;">Sua tag de associado (ex: victor-20)</label>
+                                <input id="amazonTag" placeholder="ex: invictorcliques-20" style="width:100%;margin:3px 0 9px;padding:9px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.12);border-radius:9px;color:#fff;font-size:11px;outline:none;box-sizing:border-box;">
+                                <button onclick="amazonSave()" style="width:100%;padding:10px;background:linear-gradient(135deg,#FF9900,#e07b00);color:#111;border:none;border-radius:9px;font-weight:900;font-size:12px;cursor:pointer;margin-bottom:9px;">💾 Salvar Amazon</button>
+                                <div style="font-size:9px;color:#7a8aa0;line-height:1.6;background:rgba(0,0,0,0.2);border-radius:8px;padding:9px 10px;">
+                                    <b style="color:#FF9900;">Passo a passo (1x):</b><br>
+                                    1️⃣ Entre em <b>associados.amazon.com.br</b> e cadastre-se grátis.<br>
+                                    2️⃣ Após aprovado, você recebe sua <b>tag de associado</b> (algo como <code style="color:#FF9900;">seunome-20</code>).<br>
+                                    3️⃣ Cole a <b>tag</b> no campo acima → <b>Salvar</b>.<br>
+                                    ✅ Pronto! A IA passa a buscar os produtos na Amazon com a sua tag — comissão garantida.
                                 </div>
                             </div>
                         </div>
@@ -12148,7 +12164,7 @@ Poderia me ajudar? 🙏"
         const _KV_API = '/api/data';
         // 🔄 Versão do site publicada. Se o visitante tiver uma versão ANTIGA em cache,
         // o site se atualiza sozinho (1x, sem loop) pra ele sempre ver o mais novo.
-        window.SITE_BUILD = 319;
+        window.SITE_BUILD = 320;
         // 🔎 selo de versão visível (canto) — pra CONFERIR qual versão está no ar
         (function _invBuildStamp(){
             function add(){ try{ if(document.getElementById('invBuildStamp'))return; var s=document.createElement('div'); s.id='invBuildStamp'; s.textContent='v'+(window.SITE_BUILD||'?'); s.style.cssText='position:fixed;bottom:4px;left:6px;z-index:3;font-size:9px;color:rgba(255,255,255,0.28);pointer-events:none;font-family:monospace;letter-spacing:.5px;'; document.body.appendChild(s); }catch(e){} }
@@ -13359,7 +13375,7 @@ Poderia me ajudar? 🙏"
             //    sincronizam pra TODOS os visitantes e entre aparelhos do admin
             ['notify_topic','chat_db_url','chat_sb_url','chat_sb_key','chat_sb_table','chat_pantry',
              'invPalette','siteThemeColors','invictorStravaDefaultColor','catalog_layout','invictorEdicaoCodes','invictorMarketplaces',
-             'foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','foco_survey_visible','statsBar_visible','foco_steps_pos','foco_survey_pos','foco_price_pos','siteLandingTab','verif_steps','ai_pages','tbt_enabled','tbt_mode','tbt_picks','site_font','promo_scale','survey_scale','stats_cfg','ia_tenis','ia_shopee_cupom','ia_telegram','ia_whats_ofertas','ia_lojas','magalu_id','magalu_link','magalu_mode','ai_chips_hidden','ai_chips_custom','promo_deadline','ia_clicks','ia_rec_mode','edit_recipes','gateway_on','gateway_foto_img','gateway_tenis_img','site_bg_img','site_bg_op','gateway_bg_mode','depoimentos','depoimentos_visible'].forEach(function(k){
+             'foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','foco_survey_visible','statsBar_visible','foco_steps_pos','foco_survey_pos','foco_price_pos','siteLandingTab','verif_steps','ai_pages','tbt_enabled','tbt_mode','tbt_picks','site_font','promo_scale','survey_scale','stats_cfg','ia_tenis','ia_shopee_cupom','ia_telegram','ia_whats_ofertas','ia_lojas','magalu_id','magalu_link','magalu_mode','amazon_tag','ai_chips_hidden','ai_chips_custom','promo_deadline','ia_clicks','ia_rec_mode','edit_recipes','gateway_on','gateway_foto_img','gateway_tenis_img','site_bg_img','site_bg_op','gateway_bg_mode','depoimentos','depoimentos_visible'].forEach(function(k){
                 try { var v = localStorage.getItem(k); if (v != null) payload[k] = v; } catch(e) {}
             });
 
@@ -13577,7 +13593,7 @@ Poderia me ajudar? 🙏"
                 'invictorEdicaoEmails', 'invictorEdicaoAtivos',
                 // === Configs novas: chat ao vivo / ntfy / paleta / conteúdo / IA ===
                 'notify_topic','chat_db_url','chat_sb_url','chat_sb_key','chat_sb_table','chat_pantry',
-                'invPalette','siteThemeColors','invictorStravaDefaultColor','catalog_layout','invictorEdicaoCodes','invictorMarketplaces','foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','foco_survey_visible','statsBar_visible','foco_steps_pos','foco_survey_pos','foco_price_pos','siteLandingTab','verif_steps','ai_pages','tbt_enabled','tbt_mode','tbt_picks','site_font','promo_scale','survey_scale','stats_cfg','ia_tenis','ia_shopee_cupom','ia_telegram','ia_whats_ofertas','ia_lojas','magalu_id','magalu_link','magalu_mode','ai_chips_hidden','ai_chips_custom','promo_deadline','ia_clicks','ia_rec_mode','edit_recipes','gateway_on','gateway_foto_img','gateway_tenis_img','site_bg_img','site_bg_op','gateway_bg_mode','depoimentos','depoimentos_visible',
+                'invPalette','siteThemeColors','invictorStravaDefaultColor','catalog_layout','invictorEdicaoCodes','invictorMarketplaces','foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','foco_survey_visible','statsBar_visible','foco_steps_pos','foco_survey_pos','foco_price_pos','siteLandingTab','verif_steps','ai_pages','tbt_enabled','tbt_mode','tbt_picks','site_font','promo_scale','survey_scale','stats_cfg','ia_tenis','ia_shopee_cupom','ia_telegram','ia_whats_ofertas','ia_lojas','magalu_id','magalu_link','magalu_mode','amazon_tag','ai_chips_hidden','ai_chips_custom','promo_deadline','ia_clicks','ia_rec_mode','edit_recipes','gateway_on','gateway_foto_img','gateway_tenis_img','site_bg_img','site_bg_op','gateway_bg_mode','depoimentos','depoimentos_visible',
                 // === Last update marker ===
                 '_lastUpdate'
             ];
@@ -13871,7 +13887,7 @@ Poderia me ajudar? 🙏"
             if(tabIndex===9) { loadThemeColorsIntoPanel(); setTimeout(function(){ if(typeof invPaletteRender==='function') invPaletteRender(); if(typeof renderFontAdmin==='function') renderFontAdmin(); }, 40); }
             if(tabIndex===10) { renderBotoesAdmin(); if(typeof renderSeccoesAdmin==='function') renderSeccoesAdmin(); if(typeof syncLandingTabSelect==='function') syncLandingTabSelect(); if(typeof renderVerifStepsAdmin==='function') renderVerifStepsAdmin(); if(typeof renderElemScaleAdmin==='function') renderElemScaleAdmin(); if(typeof renderStatsCfgAdmin==='function') renderStatsCfgAdmin(); if(typeof renderPromoAdminStatus==='function') renderPromoAdminStatus(); if(typeof gatewayImgsLoad==='function') gatewayImgsLoad(); if(typeof renderDepoimentosAdmin==='function') renderDepoimentosAdmin(); }
             if(tabIndex===11) { renderGaleria(); }
-            if(tabIndex===12) { initApisTab(); if(typeof renderIaTenisAdmin==='function') renderIaTenisAdmin(); if(typeof iaOfertaLinksLoad==='function') iaOfertaLinksLoad(); if(typeof renderIaRecMode==='function') renderIaRecMode(); if(typeof renderIaLojasAdmin==='function') renderIaLojasAdmin(); if(typeof magaluLoad==='function') magaluLoad(); if(typeof renderAiChipsAdmin==='function') renderAiChipsAdmin(); if(typeof shopeeStatus==='function') setTimeout(shopeeStatus, 60); }
+            if(tabIndex===12) { initApisTab(); if(typeof renderIaTenisAdmin==='function') renderIaTenisAdmin(); if(typeof iaOfertaLinksLoad==='function') iaOfertaLinksLoad(); if(typeof renderIaRecMode==='function') renderIaRecMode(); if(typeof renderIaLojasAdmin==='function') renderIaLojasAdmin(); if(typeof magaluLoad==='function') magaluLoad(); if(typeof amazonLoad==='function') amazonLoad(); if(typeof renderAiChipsAdmin==='function') renderAiChipsAdmin(); if(typeof shopeeStatus==='function') setTimeout(shopeeStatus, 60); }
             if(tabIndex===3)  { setTimeout(_refreshAdminCouponStock, 80); }
             if(tabIndex===13) {
                 setTimeout(() => {
@@ -26384,9 +26400,22 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
             {emoji:'✔️',nome:'Nike',link:'https://tidd.ly/4f1RZY3'},
             {emoji:'👟',nome:'Netshoes',link:'https://click.linksynergy.com/deeplink?id=ygHYQtO3gCY&mid=43984&murl=https%3A%2F%2Fwww.netshoes.com.br%2Fbusca%3Fq%3D{q}'},
             {emoji:'🔵',nome:'Olympikus',link:'https://tidd.ly/3Sou2l2'},
-            {emoji:'🅼',nome:'Magazine Luiza',link:(function(){ try{ var mode=localStorage.getItem('magalu_mode')||'busca'; var id=localStorage.getItem('magalu_id')||''; var custom=localStorage.getItem('magalu_link')||''; if(mode==='loja' && custom) return custom; if(id) return 'https://www.magazinevoce.com.br/'+id+'/busca/{q}/'; if(custom) return custom; }catch(e){} return 'https://www.magazinevoce.com.br/magazinevictor/busca/{q}/'; })()}
+            {emoji:'🅼',nome:'Magazine Luiza',link:(function(){ try{ var mode=localStorage.getItem('magalu_mode')||'busca'; var id=localStorage.getItem('magalu_id')||''; var custom=localStorage.getItem('magalu_link')||''; if(mode==='loja' && custom) return custom; if(id) return 'https://www.magazinevoce.com.br/'+id+'/busca/{q}/'; if(custom) return custom; }catch(e){} return 'https://www.magazinevoce.com.br/magazinevictor/busca/{q}/'; })()},
+            {emoji:'📦',nome:'Amazon',link:(function(){ try{ var tag=localStorage.getItem('amazon_tag')||''; if(tag) return 'https://www.amazon.com.br/s?k={q}&tag='+encodeURIComponent(tag); }catch(e){} return 'https://www.amazon.com.br/s?k={q}'; })()}
         ];
     };
+    // 📦 Amazon (Associados) — busca de produto com sua tag de afiliado
+    window.amazonSave = function(){
+        var tEl=document.getElementById('amazonTag');
+        var tag=(tEl?tEl.value.trim():'');
+        if(tag.indexOf('tag=')>=0){ var mt=tag.match(/tag=([^&\s]+)/i); if(mt) tag=mt[1]; }
+        try{ localStorage.setItem('amazon_tag', tag); }catch(e){}
+        if(typeof saveData==='function') saveData(false);
+        if(typeof renderIaLojasAdmin==='function') renderIaLojasAdmin();
+        if(typeof showToast==='function') showToast('Amazon salva! 📦','✅');
+    };
+    window.amazonLoad = function(){ try{ var t=document.getElementById('amazonTag'); if(t && !t.value) t.value=localStorage.getItem('amazon_tag')||''; }catch(e){} };
+
     // 🅼 Magazine Luiza (Magalu) — 2 modos: busca de produto / loja direta
     window.getMagaluMode = function(){ try{ return localStorage.getItem('magalu_mode')||'busca'; }catch(e){ return 'busca'; } };
     window.magaluSetMode = function(m){ try{ localStorage.setItem('magalu_mode', m); }catch(e){} magaluHighlight(); if(typeof renderIaLojasAdmin==='function') renderIaLojasAdmin(); if(typeof saveData==='function') saveData(false); if(typeof showToast==='function') showToast(m==='loja'?'Modo: Loja direta':'Modo: Busca de produto','🅼'); };
