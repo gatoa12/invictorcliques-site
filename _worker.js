@@ -36,6 +36,7 @@ export default {
       if (path === "/api/shopee")       return await handleShopee(request, env, url);
       if (path === "/api/ai")           return await handleAI(request, env);
       if (path === "/api/visit")        return await handleVisit(request, env);
+      if (path === "/api/magalu-resolve") return await handleMagaluResolve(request, url);
       if (path === "/api/refresh-foco") return await handleRefreshFoco(request, env);
     } catch (e) {
       return json({ error: String((e && e.message) || e) }, 500);
@@ -100,6 +101,37 @@ async function handleVisit(request, env) {
     });
   } catch (e) {
     return json({ total: 0, today: 0, error: String((e && e.message) || e) }, 200);
+  }
+}
+
+// ── /api/magalu-resolve — abre o link encurtado do divulgador e pega promoter_id/partner_id ──
+async function handleMagaluResolve(request, url) {
+  try {
+    const u = url.searchParams.get("u") || "";
+    if (!u || !/^https?:\/\//i.test(u)) return json({ error: "link inválido" }, 400);
+    let promoter = "", partner = "", finalUrl = "";
+    try {
+      const r = await fetch(u, { redirect: "follow", headers: { "User-Agent": "Mozilla/5.0 (compatible; InvBot/1.0)" } });
+      finalUrl = r.url || "";
+      let m1 = finalUrl.match(/promoter_id=([^&\s]+)/i); if (m1) promoter = m1[1];
+      let m2 = finalUrl.match(/partner_id=([^&\s]+)/i); if (m2) partner = m2[1];
+      if (!promoter || !partner) {
+        let txt = "";
+        try { txt = await r.text(); } catch (e) {}
+        if (!promoter) { const a = txt.match(/promoter_id["'=:\s]*?(\d{3,})/i); if (a) promoter = a[1]; }
+        if (!partner)  { const b = txt.match(/partner_id["'=:\s]*?(\d{2,})/i);  if (b) partner = b[1]; }
+        // procura também a URL completa dentro do HTML (meta refresh / canonical)
+        if (!promoter || !partner) {
+          const fm = txt.match(/magazineluiza\.com\.br[^"'\s]*promoter_id=\d+[^"'\s]*/i);
+          if (fm) { const f = fm[0]; const p = f.match(/promoter_id=([^&\s"']+)/i); const q = f.match(/partner_id=([^&\s"']+)/i); if (p && !promoter) promoter = p[1]; if (q && !partner) partner = q[1]; if (!finalUrl) finalUrl = "https://www." + f; }
+        }
+      }
+    } catch (e) {
+      return json({ error: "não consegui abrir o link: " + String((e && e.message) || e) }, 200);
+    }
+    return json({ promoter, partner, finalUrl, ok: !!(promoter && partner) }, 200);
+  } catch (e) {
+    return json({ error: String((e && e.message) || e) }, 200);
   }
 }
 
