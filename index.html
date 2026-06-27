@@ -5639,7 +5639,7 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v316.0001</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v318.0001</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -8574,8 +8574,8 @@ Poderia me ajudar? 🙏"
 
     <!-- STATS BAR — v44 novo componente visual -->
     <div class="stats-bar" id="statsBar"></div>
-    <!-- 👁️ visualizações do site (visível pro visitante) -->
-    <div id="invViewsLine" style="text-align:center;margin-top:10px;font-size:11.5px;color:#8a93a3;"></div>
+    <!-- 👁️ visualizações: contadas, mas mostradas SÓ no painel admin (não no site público) -->
+    <div id="invViewsLine" style="display:none;"></div>
 
     <!-- 💬 DEPOIMENTOS / PROVA SOCIAL (agora ficam na tela de entrada, não na home) -->
     <div id="invDepoimentos" style="display:none;"></div>
@@ -12126,7 +12126,7 @@ Poderia me ajudar? 🙏"
         const _KV_API = '/api/data';
         // 🔄 Versão do site publicada. Se o visitante tiver uma versão ANTIGA em cache,
         // o site se atualiza sozinho (1x, sem loop) pra ele sempre ver o mais novo.
-        window.SITE_BUILD = 316;
+        window.SITE_BUILD = 318;
         // 🔎 selo de versão visível (canto) — pra CONFERIR qual versão está no ar
         (function _invBuildStamp(){
             function add(){ try{ if(document.getElementById('invBuildStamp'))return; var s=document.createElement('div'); s.id='invBuildStamp'; s.textContent='v'+(window.SITE_BUILD||'?'); s.style.cssText='position:fixed;bottom:4px;left:6px;z-index:3;font-size:9px;color:rgba(255,255,255,0.28);pointer-events:none;font-family:monospace;letter-spacing:.5px;'; document.body.appendChild(s); }catch(e){} }
@@ -12141,10 +12141,8 @@ Poderia me ajudar? 🙏"
             }catch(e){}
         })();
         window.renderViewsLine = function(){
-            var el=document.getElementById('invViewsLine'); if(!el) return;
-            function show(d){ if(!d || !d.total){ el.innerHTML=''; return; } el.innerHTML='👁️ <b style="color:#FF6A00;">'+Number(d.total).toLocaleString('pt-BR')+'</b> visualizações no site'; }
-            if(window._invVisits){ show(window._invVisits); }
-            else { try{ invGetVisits().then(show).catch(function(){}); }catch(e){} }
+            // visualizações são vistas SÓ no painel admin — não exibe no site público
+            var el=document.getElementById('invViewsLine'); if(el){ el.style.display='none'; el.innerHTML=''; }
         };
         try{ if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', function(){ setTimeout(function(){ try{renderViewsLine();}catch(e){} },700); }); else setTimeout(function(){ try{renderViewsLine();}catch(e){} },700); }catch(e){}
         window.invGetVisits = async function(){
@@ -18603,6 +18601,7 @@ Poderia me ajudar? 🙏"
                         vcv.getContext('2d').drawImage(img,0,0,vw,vh);
                         var dataUrl=vcv.toDataURL('image/jpeg',0.7);
                         try{ if(window._cfgLast) window._cfgLast.dataUrl=dataUrl; }catch(e){}
+                        try{ if(typeof cfgGeniusPreview==='function') cfgGeniusPreview(); }catch(e){}
                         try{ var rmw=document.getElementById('cfgRefMatchWrap'); if(rmw) rmw.style.display='block'; }catch(e){}
                         var horaNow; try{ horaNow=new Date().getHours()+'h'; }catch(e){ horaNow=''; }
                         var vprompt='Você é fotógrafo esportivo profissional. VEJA esta foto da cena onde o Victor (@invictorcliques) vai fotografar CORREDORES na pista da Alexandrino em Natal/RN (horário atual ~'+horaNow+'). '
@@ -18657,6 +18656,42 @@ Poderia me ajudar? 🙏"
                 if(w){ w.document.open(); w.document.write(html); w.document.close(); }
                 else if(typeof showToast==='function') showToast('Permita pop-ups pra abrir o PDF','⚠️');
             }catch(e){ if(typeof showToast==='function') showToast('Não consegui abrir o PDF','⚠️'); }
+        };
+
+        // ✨ NÍVEL GÊNIO: diagnóstico + nota + antes/depois fiel (com o preset aplicado)
+        window.cfgGeniusPreview = function(){
+            var box=document.getElementById('cfgGeniusPreview'); if(!box) return;
+            var L=window._cfgLast; if(!L || !L.dataUrl){ box.style.display='none'; return; }
+            var avg=(L.avg!=null?L.avg:128), std=(L.std!=null?L.std:40), w=(L.warmth!=null?L.warmth:0), dp=(L.darkPct||0), bp=(L.brightPct||0);
+            // filtro FIEL derivado da medição (mesma doutrina dos presets: clareia o escuro, dá contraste no plano, cor real viva)
+            var dark=(avg<70||dp>=25);
+            var bright=dark?1.16:(avg<110?1.08:(avg>195?0.96:1.02));
+            var contr=(std<25)?1.14:(std>62?1.03:1.08);
+            var sat=1.2;
+            var warmCss = (w<-12?'sepia(0.12) ':'');
+            var filter='brightness('+bright+') contrast('+contr+') saturate('+sat+') '+warmCss;
+            // nota de qualidade (0-100) + diagnóstico
+            var score=100, probs=[];
+            if(dark){ score-=22; probs.push('🌑 pouca luz → suba o ISO e clareie'); }
+            if(bp>=14){ score-=14; probs.push('⚪ áreas estouradas → feche um pouco a exposição'); }
+            if(std<25){ score-=12; probs.push('🌫️ foto plana → +contraste e +clareza'); }
+            if(std>70){ score-=8; probs.push('⚫ contraste muito duro → suavize'); }
+            if(score>100)score=100; if(score<35)score=35;
+            var nota = score>=85?'Excelente':score>=70?'Boa':score>=55?'Dá pra salvar':'Difícil (mas dá um jeito)';
+            var cor = score>=85?'#51CF66':score>=70?'#FFD700':'#FFA726';
+            box.style.display='block';
+            box.innerHTML=''
+                +'<div style="display:flex;align-items:center;gap:12px;margin-bottom:11px;">'
+                +'<div style="width:54px;height:54px;border-radius:50%;border:3px solid '+cor+';display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span style="font-size:17px;font-weight:900;color:'+cor+';">'+score+'</span></div>'
+                +'<div><div style="font-size:9px;color:#a78bfa;font-weight:900;letter-spacing:1px;">✨ DIAGNÓSTICO DA IA</div><div style="font-size:15px;font-weight:900;color:#fff;">'+nota+'</div><div style="font-size:9.5px;color:#8a93a3;">qualidade pra trabalhar a foto</div></div></div>'
+                +(probs.length?'<div style="font-size:10.5px;color:#cdd6e4;line-height:1.7;background:rgba(0,0,0,0.2);border-radius:9px;padding:9px 11px;margin-bottom:12px;">'+probs.map(function(p){return '• '+p;}).join('<br>')+'</div>':'<div style="font-size:10.5px;color:#51CF66;background:rgba(81,207,102,0.08);border-radius:9px;padding:9px 11px;margin-bottom:12px;">✅ Foto bem equilibrada — só aplicar o preset e arrasar.</div>')
+                +'<div style="font-size:9px;color:#a78bfa;font-weight:900;letter-spacing:1px;margin-bottom:7px;">👁️ VEJA O RESULTADO (preset aplicado)</div>'
+                +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">'
+                +'<div><img src="'+L.dataUrl+'" style="width:100%;height:130px;object-fit:cover;border-radius:10px;"><div style="text-align:center;font-size:9px;color:#888;margin-top:3px;">📷 Sua foto agora</div></div>'
+                +'<div><img src="'+L.dataUrl+'" style="width:100%;height:130px;object-fit:cover;border-radius:10px;filter:'+filter+';"><div style="text-align:center;font-size:9px;color:#a78bfa;font-weight:800;margin-top:3px;">✨ Com o preset</div></div>'
+                +'</div>'
+                +'<div style="font-size:8.5px;color:#667;text-align:center;margin-top:7px;">Prévia aproximada — o preset .xmp do Passo 2 entrega o resultado final no Lightroom.</div>';
+            try{ box.scrollIntoView({behavior:'smooth',block:'nearest'}); }catch(e){}
         };
 
         // 🎯 COPIAR ESTILO: compara a referência com o SEU momento, mostra viabilidade + preview + .xmp
@@ -32480,6 +32515,9 @@ const _P1_VICTOR_BUILTIN_PRESETS = [{"id": "p1_01_cross_processing_yellow_light"
                     <div id="cfgResult" style="display:none;margin-top:12px;"></div>
 
                     <!-- 🎯 COPIAR ESTILO DE OUTRA FOTO (referência) — aparece após analisar o momento -->
+                    <!-- ✨ NÍVEL GÊNIO: veja o resultado com o preset aplicado -->
+                    <div id="cfgGeniusPreview" style="display:none;margin-top:13px;background:linear-gradient(135deg,rgba(167,139,250,0.08),rgba(255,255,255,0.02));border:1px solid rgba(167,139,250,0.28);border-radius:14px;padding:14px;"></div>
+
                     <div id="cfgRefMatchWrap" style="display:none;margin-top:13px;background:linear-gradient(135deg,rgba(167,139,250,0.1),rgba(124,58,237,0.04));border:1.5px solid rgba(167,139,250,0.35);border-radius:14px;padding:15px;">
                         <div style="font-size:12.5px;color:#a78bfa;font-weight:900;margin-bottom:3px;">🎯 Copiar o estilo de outra foto</div>
                         <div style="font-size:10.5px;color:#7a8aa0;margin-bottom:11px;line-height:1.55;">Envie a foto de <b>referência</b> (o visual que você quer). A IA vê se dá pra chegar nesse estilo com a luz do <b>seu momento</b> na Canon R7 — e mostra como sua foto pode ficar.</div>
