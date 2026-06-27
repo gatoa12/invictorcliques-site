@@ -5639,7 +5639,7 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v300.0001</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v303.0001</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -6574,17 +6574,34 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                         </div>
                         <!-- fotos dos botões + fundo -->
                         <div style="margin-top:13px;border-top:1px solid rgba(255,255,255,0.1);padding-top:12px;">
-                            <div style="font-size:10.5px;color:#cdd6e4;font-weight:800;margin-bottom:8px;">🖼️ Fotos (cole o link da imagem)</div>
+                            <div style="font-size:10.5px;color:#cdd6e4;font-weight:800;margin-bottom:8px;">🖼️ Fotos — envie do celular ou cole o link</div>
                             <label style="font-size:9px;color:#888;font-weight:700;">📸 Foto do botão "Comprar Fotos"</label>
-                            <input id="gwFotoImg" placeholder="https://.../foto.jpg" style="width:100%;margin:3px 0 8px;padding:9px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.12);border-radius:9px;color:#fff;font-size:11px;outline:none;box-sizing:border-box;">
+                            <input id="gwFotoImg" placeholder="https://.../foto.jpg ou envie abaixo" style="width:100%;margin:3px 0 5px;padding:9px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.12);border-radius:9px;color:#fff;font-size:11px;outline:none;box-sizing:border-box;">
+                            <div style="display:flex;gap:6px;margin-bottom:9px;"><label style="flex:1;text-align:center;padding:8px;background:rgba(96,165,250,0.14);border:1px solid rgba(96,165,250,0.3);border-radius:8px;color:#60a5fa;font-size:11px;font-weight:800;cursor:pointer;">📷 Enviar foto<input type="file" accept="image/*" onchange="gwPhotoUpload(this,'gwFotoImg')" style="display:none;"></label><button onclick="gwPhotoRemove('gwFotoImg')" style="padding:8px 14px;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);border-radius:8px;color:#f88;font-size:11px;font-weight:800;cursor:pointer;">🗑️ Remover</button></div>
                             <label style="font-size:9px;color:#888;font-weight:700;">👟 Foto do botão "Comprar Tênis"</label>
-                            <input id="gwTenisImg" placeholder="https://.../tenis.jpg" style="width:100%;margin:3px 0 8px;padding:9px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.12);border-radius:9px;color:#fff;font-size:11px;outline:none;box-sizing:border-box;">
+                            <input id="gwTenisImg" placeholder="https://.../tenis.jpg ou envie abaixo" style="width:100%;margin:3px 0 5px;padding:9px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.12);border-radius:9px;color:#fff;font-size:11px;outline:none;box-sizing:border-box;">
+                            <div style="display:flex;gap:6px;margin-bottom:9px;"><label style="flex:1;text-align:center;padding:8px;background:rgba(96,165,250,0.14);border:1px solid rgba(96,165,250,0.3);border-radius:8px;color:#60a5fa;font-size:11px;font-weight:800;cursor:pointer;">📷 Enviar foto<input type="file" accept="image/*" onchange="gwPhotoUpload(this,'gwTenisImg')" style="display:none;"></label><button onclick="gwPhotoRemove('gwTenisImg')" style="padding:8px 14px;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);border-radius:8px;color:#f88;font-size:11px;font-weight:800;cursor:pointer;">🗑️ Remover</button></div>
                             <label style="font-size:9px;color:#888;font-weight:700;">🌌 Foto de FUNDO do site (transparente)</label>
-                            <input id="gwBgImg" placeholder="https://.../fundo.jpg" style="width:100%;margin:3px 0 6px;padding:9px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.12);border-radius:9px;color:#fff;font-size:11px;outline:none;box-sizing:border-box;">
+                            <input id="gwBgImg" placeholder="https://.../fundo.jpg ou envie abaixo" style="width:100%;margin:3px 0 5px;padding:9px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.12);border-radius:9px;color:#fff;font-size:11px;outline:none;box-sizing:border-box;">
+                            <div style="display:flex;gap:6px;margin-bottom:9px;"><label style="flex:1;text-align:center;padding:8px;background:rgba(96,165,250,0.14);border:1px solid rgba(96,165,250,0.3);border-radius:8px;color:#60a5fa;font-size:11px;font-weight:800;cursor:pointer;">📷 Enviar foto<input type="file" accept="image/*" onchange="gwPhotoUpload(this,'gwBgImg')" style="display:none;"></label><button onclick="gwPhotoRemove('gwBgImg')" style="padding:8px 14px;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);border-radius:8px;color:#f88;font-size:11px;font-weight:800;cursor:pointer;">🗑️ Remover</button></div>
                             <label style="font-size:9px;color:#888;font-weight:700;">Transparência do fundo: <span id="gwBgOpVal">12%</span></label>
                             <input id="gwBgOp" type="range" min="3" max="40" value="12" oninput="document.getElementById('gwBgOpVal').textContent=this.value+'%'" style="width:100%;margin:4px 0 10px;">
                             <button onclick="gatewayImgsSave()" style="width:100%;padding:11px;background:linear-gradient(135deg,#FFD700,#FFA500);color:#111;border:none;border-radius:10px;font-weight:900;font-size:12px;cursor:pointer;">💾 Salvar fotos e fundo</button>
                         </div>
+                    </div>
+
+                    <!-- 💬 DEPOIMENTOS (prova social) -->
+                    <div style="background:rgba(255,106,0,0.05);border:1px solid rgba(255,106,0,0.22);border-radius:13px;padding:14px;margin-bottom:20px;">
+                        <div style="font-size:12.5px;font-weight:900;color:#FF6A00;margin-bottom:3px;">💬 Depoimentos (prova social)</div>
+                        <div style="font-size:11px;color:#8a9;margin-bottom:11px;line-height:1.5;">Aparecem girando na página principal. Prova social vende muito — coloca o que seus clientes falam de você.</div>
+                        <input id="depoNome" placeholder="Nome do cliente (ex: Mariana S.)" style="width:100%;margin-bottom:7px;padding:9px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.12);border-radius:9px;color:#fff;font-size:11px;outline:none;box-sizing:border-box;">
+                        <textarea id="depoTexto" placeholder="O que o cliente falou..." rows="2" style="width:100%;margin-bottom:7px;padding:9px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.12);border-radius:9px;color:#fff;font-size:11px;outline:none;box-sizing:border-box;resize:vertical;"></textarea>
+                        <div style="display:flex;gap:8px;align-items:center;margin-bottom:9px;">
+                            <label style="font-size:10px;color:#888;">Estrelas:</label>
+                            <select id="depoNota" style="flex:1;padding:8px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:#fff;font-size:11px;outline:none;"><option value="5">⭐⭐⭐⭐⭐ (5)</option><option value="4">⭐⭐⭐⭐ (4)</option><option value="3">⭐⭐⭐ (3)</option></select>
+                            <button onclick="addDepoimento()" style="padding:9px 14px;background:linear-gradient(135deg,#FF6A00,#FF9540);color:#000;border:none;border-radius:9px;font-weight:900;font-size:12px;cursor:pointer;">➕ Add</button>
+                        </div>
+                        <div id="depoListAdmin"></div>
                     </div>
 
                     <!-- 🔥 OFERTA COM CONTADOR (15h real) -->
@@ -8544,6 +8561,9 @@ Poderia me ajudar? 🙏"
 
     <!-- STATS BAR — v44 novo componente visual -->
     <div class="stats-bar" id="statsBar"></div>
+
+    <!-- 💬 DEPOIMENTOS / PROVA SOCIAL (agora ficam na tela de entrada, não na home) -->
+    <div id="invDepoimentos" style="display:none;"></div>
 
     <!-- SCROLL TO TOP BUTTON — v44 -->
     <button id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Voltar ao topo">↑</button>
@@ -10803,6 +10823,7 @@ Poderia me ajudar? 🙏"
                 +'<div style="position:absolute;right:18px;top:50%;transform:translateY(-50%);font-size:22px;color:#FF6A00;">→</div>'
                 +'</button>'
                 +'<button onclick="invGwCupom()" style="align-self:center;margin-top:2px;background:linear-gradient(135deg,#FF6A00,#FF9540);color:#000;border:none;border-radius:20px;padding:8px 18px;font-size:12px;font-weight:900;cursor:pointer;display:inline-flex;align-items:center;gap:6px;box-shadow:0 4px 14px rgba(255,106,0,0.3);">🎟️ Resgatar cupom grátis</button>'
+                +'<button onclick="invShowFeedbacks()" style="align-self:center;margin-top:2px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.18);color:#cdd6e4;border-radius:20px;padding:7px 18px;font-size:12px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:6px;">💬 Ver feedbacks</button>'
                 +'</div>'
                 +'<button onclick="invGatewayChoose(\'\')" style="margin-top:22px;background:none;border:none;color:#667;font-size:12px;cursor:pointer;text-decoration:underline;">Só quero ver o site →</button>';
             document.body.appendChild(ov);
@@ -10844,6 +10865,40 @@ Poderia me ajudar? 🙏"
                     +'<button onclick="try{'+t.a+'}catch(e){}" style="flex-shrink:0;background:linear-gradient(135deg,#a78bfa,#7c3aed);color:#fff;border:none;border-radius:8px;padding:7px 11px;font-size:10px;font-weight:900;cursor:pointer;">'+t.b+'</button></div>';
                 }).join('');
         };
+        // 📷 Enviar foto (comprime) e remover — pros slots da tela de entrada
+        window.gwCompressImage = function(file, cb){
+            try{
+                var reader=new FileReader();
+                reader.onload=function(e){
+                    var img=new Image();
+                    img.onload=function(){
+                        var max=1280, w=img.width, h=img.height;
+                        if(w>max||h>max){ if(w>h){ h=Math.round(h*max/w); w=max; } else { w=Math.round(w*max/h); h=max; } }
+                        var c=document.createElement('canvas'); c.width=w; c.height=h;
+                        c.getContext('2d').drawImage(img,0,0,w,h);
+                        try{ cb(c.toDataURL('image/jpeg',0.72)); }catch(err){ cb(e.target.result); }
+                    };
+                    img.onerror=function(){ cb(e.target.result); };
+                    img.src=e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }catch(e){}
+        };
+        window.gwPhotoUpload = function(input, fieldId){
+            var f=input&&input.files&&input.files[0]; if(!f) return;
+            if(typeof showToast==='function') showToast('Carregando foto...','⏳');
+            gwCompressImage(f, function(dataUrl){
+                var el=document.getElementById(fieldId); if(el) el.value=dataUrl;
+                if(typeof gatewayImgsSave==='function') gatewayImgsSave();
+            });
+            try{ input.value=''; }catch(e){}
+        };
+        window.gwPhotoRemove = function(fieldId){
+            var el=document.getElementById(fieldId); if(el) el.value='';
+            if(typeof gatewayImgsSave==='function') gatewayImgsSave();
+            if(typeof showToast==='function') showToast('Foto removida 🗑️','✅');
+        };
+
         // 🖼️ Salva fotos dos botões + fundo do site
         window.gatewayImgsSave = function(){
             function v(id){ var el=document.getElementById(id); return el?el.value.trim():''; }
@@ -13162,7 +13217,7 @@ Poderia me ajudar? 🙏"
             //    sincronizam pra TODOS os visitantes e entre aparelhos do admin
             ['notify_topic','chat_db_url','chat_sb_url','chat_sb_key','chat_sb_table','chat_pantry',
              'invPalette','siteThemeColors','invictorStravaDefaultColor','catalog_layout','invictorEdicaoCodes','invictorMarketplaces',
-             'foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','foco_survey_visible','statsBar_visible','foco_steps_pos','foco_survey_pos','foco_price_pos','siteLandingTab','verif_steps','ai_pages','tbt_enabled','tbt_mode','tbt_picks','site_font','promo_scale','survey_scale','stats_cfg','ia_tenis','ia_shopee_cupom','ia_telegram','ia_whats_ofertas','ia_lojas','ai_chips_hidden','ai_chips_custom','promo_deadline','ia_clicks','ia_rec_mode','edit_recipes','gateway_on','gateway_foto_img','gateway_tenis_img','site_bg_img','site_bg_op'].forEach(function(k){
+             'foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','foco_survey_visible','statsBar_visible','foco_steps_pos','foco_survey_pos','foco_price_pos','siteLandingTab','verif_steps','ai_pages','tbt_enabled','tbt_mode','tbt_picks','site_font','promo_scale','survey_scale','stats_cfg','ia_tenis','ia_shopee_cupom','ia_telegram','ia_whats_ofertas','ia_lojas','ai_chips_hidden','ai_chips_custom','promo_deadline','ia_clicks','ia_rec_mode','edit_recipes','gateway_on','gateway_foto_img','gateway_tenis_img','site_bg_img','site_bg_op','depoimentos','depoimentos_visible'].forEach(function(k){
                 try { var v = localStorage.getItem(k); if (v != null) payload[k] = v; } catch(e) {}
             });
 
@@ -13380,7 +13435,7 @@ Poderia me ajudar? 🙏"
                 'invictorEdicaoEmails', 'invictorEdicaoAtivos',
                 // === Configs novas: chat ao vivo / ntfy / paleta / conteúdo / IA ===
                 'notify_topic','chat_db_url','chat_sb_url','chat_sb_key','chat_sb_table','chat_pantry',
-                'invPalette','siteThemeColors','invictorStravaDefaultColor','catalog_layout','invictorEdicaoCodes','invictorMarketplaces','foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','foco_survey_visible','statsBar_visible','foco_steps_pos','foco_survey_pos','foco_price_pos','siteLandingTab','verif_steps','ai_pages','tbt_enabled','tbt_mode','tbt_picks','site_font','promo_scale','survey_scale','stats_cfg','ia_tenis','ia_shopee_cupom','ia_telegram','ia_whats_ofertas','ia_lojas','ai_chips_hidden','ai_chips_custom','promo_deadline','ia_clicks','ia_rec_mode','edit_recipes','gateway_on','gateway_foto_img','gateway_tenis_img','site_bg_img','site_bg_op',
+                'invPalette','siteThemeColors','invictorStravaDefaultColor','catalog_layout','invictorEdicaoCodes','invictorMarketplaces','foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','foco_survey_visible','statsBar_visible','foco_steps_pos','foco_survey_pos','foco_price_pos','siteLandingTab','verif_steps','ai_pages','tbt_enabled','tbt_mode','tbt_picks','site_font','promo_scale','survey_scale','stats_cfg','ia_tenis','ia_shopee_cupom','ia_telegram','ia_whats_ofertas','ia_lojas','ai_chips_hidden','ai_chips_custom','promo_deadline','ia_clicks','ia_rec_mode','edit_recipes','gateway_on','gateway_foto_img','gateway_tenis_img','site_bg_img','site_bg_op','depoimentos','depoimentos_visible',
                 // === Last update marker ===
                 '_lastUpdate'
             ];
@@ -13672,7 +13727,7 @@ Poderia me ajudar? 🙏"
             if(tabIndex===1)  { setTimeout(function(){ if(typeof renderTbtAdmin==='function') renderTbtAdmin(); }, 60); }
             if(tabIndex===7) { _catVisPending={foco:null,banlek:null}; loadCatalogVisibilityFromStorage(); }
             if(tabIndex===9) { loadThemeColorsIntoPanel(); setTimeout(function(){ if(typeof invPaletteRender==='function') invPaletteRender(); if(typeof renderFontAdmin==='function') renderFontAdmin(); }, 40); }
-            if(tabIndex===10) { renderBotoesAdmin(); if(typeof renderSeccoesAdmin==='function') renderSeccoesAdmin(); if(typeof syncLandingTabSelect==='function') syncLandingTabSelect(); if(typeof renderVerifStepsAdmin==='function') renderVerifStepsAdmin(); if(typeof renderElemScaleAdmin==='function') renderElemScaleAdmin(); if(typeof renderStatsCfgAdmin==='function') renderStatsCfgAdmin(); if(typeof renderPromoAdminStatus==='function') renderPromoAdminStatus(); if(typeof gatewayImgsLoad==='function') gatewayImgsLoad(); }
+            if(tabIndex===10) { renderBotoesAdmin(); if(typeof renderSeccoesAdmin==='function') renderSeccoesAdmin(); if(typeof syncLandingTabSelect==='function') syncLandingTabSelect(); if(typeof renderVerifStepsAdmin==='function') renderVerifStepsAdmin(); if(typeof renderElemScaleAdmin==='function') renderElemScaleAdmin(); if(typeof renderStatsCfgAdmin==='function') renderStatsCfgAdmin(); if(typeof renderPromoAdminStatus==='function') renderPromoAdminStatus(); if(typeof gatewayImgsLoad==='function') gatewayImgsLoad(); if(typeof renderDepoimentosAdmin==='function') renderDepoimentosAdmin(); }
             if(tabIndex===11) { renderGaleria(); }
             if(tabIndex===12) { initApisTab(); if(typeof renderIaTenisAdmin==='function') renderIaTenisAdmin(); if(typeof iaOfertaLinksLoad==='function') iaOfertaLinksLoad(); if(typeof renderIaRecMode==='function') renderIaRecMode(); if(typeof renderIaLojasAdmin==='function') renderIaLojasAdmin(); if(typeof renderAiChipsAdmin==='function') renderAiChipsAdmin(); if(typeof shopeeStatus==='function') setTimeout(shopeeStatus, 60); }
             if(tabIndex===3)  { setTimeout(_refreshAdminCouponStock, 80); }
@@ -23026,6 +23081,82 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
             }).join('');
         };
         function updateStatsBar(){ try{ renderStatsBar(); }catch(e){} }
+        // 💬 DEPOIMENTOS (prova social) — giram na página principal, editáveis no admin
+        window.INV_DEPO_DEFAULT = [
+            { n:'Mariana S.', t:'Achei minhas fotos da corrida na hora e a qualidade tá surreal! 📸', e:'⭐⭐⭐⭐⭐' },
+            { n:'Rafael C.', t:'As fotos do Victor são as melhores de Natal. Nitidez absurda!', e:'⭐⭐⭐⭐⭐' },
+            { n:'Juliana M.', t:'Comprei meu tênis pela indicação e ainda usei o cupom. Top demais!', e:'⭐⭐⭐⭐⭐' }
+        ];
+        window.getDepoimentos = function(){
+            try{ var v=JSON.parse(localStorage.getItem('depoimentos')); if(Array.isArray(v)) return v; }catch(e){}
+            return []; // começa VAZIO — Victor adiciona os reais
+        };
+        window._depoIdx = 0;
+        window.renderDepoimentos = function(){
+            var box=document.getElementById('invDepoimentos'); if(!box) return;
+            var arr=getDepoimentos();
+            try{ var vis=localStorage.getItem('depoimentos_visible'); if(vis==='0'){ box.style.display='none'; return; } box.style.display=''; }catch(e){}
+            if(!arr.length){ box.innerHTML=''; return; }
+            if(window._depoIdx>=arr.length) window._depoIdx=0;
+            var d=arr[window._depoIdx]||arr[0];
+            box.innerHTML='<div style="background:linear-gradient(135deg,rgba(255,106,0,0.08),rgba(255,255,255,0.02));border:1px solid rgba(255,106,0,0.2);border-radius:16px;padding:16px 18px;text-align:center;transition:opacity .4s;" id="invDepoCard">'
+                +'<div style="font-size:13px;color:#ffd28a;margin-bottom:7px;">'+(d.e||'⭐⭐⭐⭐⭐')+'</div>'
+                +'<div style="font-size:13px;color:#e8edf5;line-height:1.55;font-style:italic;">“'+(d.t||'').replace(/</g,'&lt;')+'”</div>'
+                +'<div style="font-size:11px;color:#FF6A00;font-weight:900;margin-top:9px;">— '+(d.n||'Cliente').replace(/</g,'&lt;')+'</div>'
+                +(arr.length>1?'<div style="display:flex;gap:5px;justify-content:center;margin-top:11px;">'+arr.map(function(_,i){return '<span style="width:6px;height:6px;border-radius:50%;background:'+(i===window._depoIdx?'#FF6A00':'rgba(255,255,255,0.25)')+';display:inline-block;"></span>';}).join('')+'</div>':'')
+                +'</div>';
+        };
+        // gira a cada 5s
+        try{ setInterval(function(){ var b=document.getElementById('invDepoimentos'); if(b&&b.offsetParent!==null&&b.style.display!=='none'){ var arr=getDepoimentos(); if(arr.length>1){ window._depoIdx=(window._depoIdx+1)%arr.length; var c=document.getElementById('invDepoCard'); if(c){ c.style.opacity='0'; setTimeout(function(){ renderDepoimentos(); }, 400); } else renderDepoimentos(); } } }, 5000); }catch(e){}
+        // admin
+        window.addDepoimento = function(){
+            var n=document.getElementById('depoNome'), t=document.getElementById('depoTexto'), s=document.getElementById('depoNota');
+            if(!t||!t.value.trim()){ if(typeof showToast==='function') showToast('Escreva o depoimento','⚠️'); return; }
+            var nota=parseInt((s&&s.value)||'5',10)||5; var stars=''; for(var i=0;i<nota;i++) stars+='⭐';
+            var arr=getDepoimentos();
+            arr.unshift({ n:(n&&n.value.trim())||'Cliente', t:t.value.trim(), e:stars });
+            try{ localStorage.setItem('depoimentos', JSON.stringify(arr.slice(0,20))); }catch(e){}
+            if(n)n.value=''; if(t)t.value='';
+            renderDepoimentos(); renderDepoimentosAdmin();
+            if(typeof saveData==='function') saveData(false);
+            if(typeof showToast==='function') showToast('Depoimento adicionado! 💬','✅');
+        };
+        window.removeDepoimento = function(i){ var arr=getDepoimentos(); arr.splice(i,1); try{ localStorage.setItem('depoimentos', JSON.stringify(arr)); }catch(e){} window._depoIdx=0; renderDepoimentos(); renderDepoimentosAdmin(); if(typeof saveData==='function') saveData(false); };
+        // 💬 ABA DE FEEDBACKS (abre por cima da tela de entrada — não é uma página)
+        window.invShowFeedbacks = function(){
+            if(document.getElementById('invFeedbacksOv')) return;
+            var arr=getDepoimentos();
+            var cards=arr.length?arr.map(function(d){
+                return '<div style="background:linear-gradient(135deg,rgba(255,106,0,0.08),rgba(255,255,255,0.02));border:1px solid rgba(255,106,0,0.2);border-radius:14px;padding:15px 16px;margin-bottom:11px;">'
+                    +'<div style="font-size:13px;color:#ffd28a;margin-bottom:6px;">'+(d.e||'⭐⭐⭐⭐⭐')+'</div>'
+                    +'<div style="font-size:13px;color:#e8edf5;line-height:1.55;font-style:italic;">“'+(d.t||'').replace(/</g,'&lt;')+'”</div>'
+                    +'<div style="font-size:11px;color:#FF6A00;font-weight:900;margin-top:8px;">— '+(d.n||'Cliente').replace(/</g,'&lt;')+'</div></div>';
+            }).join(''):'<div style="text-align:center;color:#667;font-size:13px;padding:30px 0;">Ainda não há feedbacks por aqui.</div>';
+            var ov=document.createElement('div');
+            ov.id='invFeedbacksOv';
+            ov.style.cssText='position:fixed;inset:0;z-index:99996;background:radial-gradient(circle at 50% 18%, #16181f 0%, #050608 78%);display:flex;flex-direction:column;padding:26px 20px;opacity:0;transition:opacity .35s;overflow-y:auto;';
+            ov.innerHTML='<div style="max-width:480px;width:100%;margin:0 auto;">'
+                +'<div style="text-align:center;margin-bottom:20px;">'
+                +'<div style="font-size:12px;letter-spacing:3px;color:#FF6A00;font-weight:900;text-transform:uppercase;margin-bottom:6px;">@invictorcliques</div>'
+                +'<div style="font-size:23px;font-weight:900;color:#fff;">💬 O que falam da gente</div>'
+                +'<div style="font-size:11.5px;color:#9aa;margin-top:6px;">Quem já viveu uma corrida com a gente</div>'
+                +'</div>'+cards
+                +'<button onclick="invCloseFeedbacks()" style="display:block;margin:14px auto 6px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);color:#cdd6e4;border-radius:22px;padding:11px 26px;font-size:13px;font-weight:800;cursor:pointer;">← Voltar</button>'
+                +'</div>';
+            document.body.appendChild(ov);
+            requestAnimationFrame(function(){ ov.style.opacity='1'; });
+        };
+        window.invCloseFeedbacks = function(){ var ov=document.getElementById('invFeedbacksOv'); if(ov){ ov.style.opacity='0'; setTimeout(function(){ try{ ov.remove(); }catch(e){} }, 350); } };
+        window.renderDepoimentosAdmin = function(){
+            var box=document.getElementById('depoListAdmin'); if(!box) return;
+            var arr=getDepoimentos();
+            box.innerHTML=arr.length?arr.map(function(d,i){
+                return '<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.1);border-radius:9px;padding:9px 11px;margin-bottom:7px;">'
+                    +'<div style="font-size:11px;color:#cdd6e4;line-height:1.4;">“'+(d.t||'').replace(/</g,'&lt;')+'”</div>'
+                    +'<div style="display:flex;justify-content:space-between;align-items:center;margin-top:5px;"><span style="font-size:10px;color:#FF6A00;font-weight:800;">— '+(d.n||'').replace(/</g,'&lt;')+' '+(d.e||'')+'</span>'
+                    +'<button onclick="removeDepoimento('+i+')" style="background:rgba(239,68,68,0.12);border:none;border-radius:6px;padding:4px 9px;color:#f88;font-size:10px;font-weight:800;cursor:pointer;">🗑️</button></div></div>';
+            }).join(''):'<div style="font-size:10px;color:#667;text-align:center;padding:6px;">Nenhum depoimento — usando os de exemplo.</div>';
+        };
         // re-render online a cada 25s (efeito "vivo")
         try{ setInterval(function(){ var b=document.getElementById('statsBar'); if(b&&b.offsetParent!==null) renderStatsBar(); }, 25000); }catch(e){}
 
