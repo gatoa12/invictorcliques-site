@@ -5660,7 +5660,7 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v343.0001</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v344.0001</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -12239,7 +12239,7 @@ Poderia me ajudar? 🙏"
         const _KV_API = '/api/data';
         // 🔄 Versão do site publicada. Se o visitante tiver uma versão ANTIGA em cache,
         // o site se atualiza sozinho (1x, sem loop) pra ele sempre ver o mais novo.
-        window.SITE_BUILD = 343;
+        window.SITE_BUILD = 344;
         // 🔎 selo de versão visível (canto) — pra CONFERIR qual versão está no ar
         (function _invBuildStamp(){
             function add(){ try{ if(document.getElementById('invBuildStamp'))return; var s=document.createElement('div'); s.id='invBuildStamp'; s.textContent='v'+(window.SITE_BUILD||'?'); s.style.cssText='position:fixed;bottom:4px;left:6px;z-index:3;font-size:9px;color:rgba(255,255,255,0.28);pointer-events:none;font-family:monospace;letter-spacing:.5px;'; document.body.appendChild(s); }catch(e){} }
@@ -26648,6 +26648,18 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
         return false;
     };
 
+    // 🔁 Preenche o {q} no link. Pro Mercado Livre usa HÍFENS (senão o ML redireciona e perde a comissão).
+    window.iaFillQ = function(url, prod){
+        if(!url) return url;
+        var clean=(prod||'tênis de corrida').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,' ').trim().slice(0,60);
+        if(url.indexOf('{q}')<0) return url;
+        if(url.indexOf('mercadolivre.com.br')>=0){
+            var hyph=clean.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+            return url.replace(/\{q\}/g, hyph);
+        }
+        return url.replace(/\{q\}/g, encodeURIComponent(clean));
+    };
+
     // 💰 Sempre devolve o link com SEUS dados de afiliado atuais (corrige links antigos salvos)
     window.iaAffLink = function(s){
         if(!s) return '';
@@ -26756,8 +26768,7 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
         prod=prod.replace(/\b(quero|queria|gostaria|o|a|os|as|um|uma|uns|link|links|na|no|nas|nos|de|do|da|dos|das|me|manda|mande|envia|enviar|mostra|mostre|por\s*favor|pra|para|achar|encontrar|comprar|compra|preco|preco|mais|barato|barata|loja|tem|tenha|qual|onde)\b/gi,' ');
         prod=prod.replace(/\s+/g,' ').trim();
         var baseLink = (typeof iaAffLink==='function') ? iaAffLink(found) : found.link;
-        var qClean = encodeURIComponent((prod||'tênis de corrida').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,' ').trim());
-        var href = baseLink.indexOf('{q}')>=0 ? baseLink.replace(/\{q\}/g, qClean) : baseLink;
+        var href = (typeof iaFillQ==='function') ? iaFillQ(baseLink, prod) : baseLink.replace(/\{q\}/g, encodeURIComponent(prod||'tênis'));
         return { loja:found, prod:prod, href:href };
     };
     // card bonito de compra direta (loja + produto) com o link de afiliado
@@ -26802,7 +26813,7 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
                 out+='<a href="#" onclick="iaTrackClick(\'Shopee\');return shopeeAffSearch(\''+kwS+'\');" style="display:block;text-align:center;text-decoration:none;background:linear-gradient(135deg,#ee4d2d,#ff6a3d);border:1px solid rgba(238,77,45,0.45);color:#fff;border-radius:10px;padding:10px;font-size:11.5px;font-weight:900;margin-bottom:7px;">'+(s.emoji||'🛒')+' '+nm.replace(/</g,'&lt;')+'</a>';
                 return;
             }
-            var href = _ln.indexOf('{q}')>=0 ? _ln.replace(/\{q\}/g,qenc) : _ln;
+            var href = (typeof iaFillQ==='function') ? iaFillQ(_ln, prod) : (_ln.indexOf('{q}')>=0 ? _ln.replace(/\{q\}/g,qenc) : _ln);
             out+='<a href="'+String(href).replace(/"/g,'&quot;')+'" target="_blank" rel="noopener sponsored" onclick="iaTrackClick(\''+nm.replace(/'/g,'').replace(/</g,'')+'\')" style="display:block;text-align:center;text-decoration:none;background:linear-gradient(135deg,#ee4d2d,#ff6a3d);border:1px solid rgba(238,77,45,0.45);color:#fff;border-radius:10px;padding:10px;font-size:11.5px;font-weight:900;margin-bottom:7px;">'+(s.emoji||'🛒')+' '+nm.replace(/</g,'&lt;')+'</a>';
         });
         if(!any) out+='<div style="font-size:10px;color:#999;margin-bottom:7px;">Configure suas lojas no painel admin.</div>';
