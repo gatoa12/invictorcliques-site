@@ -5660,7 +5660,7 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v333.0001</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v335.0001</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -12190,7 +12190,7 @@ Poderia me ajudar? 🙏"
         const _KV_API = '/api/data';
         // 🔄 Versão do site publicada. Se o visitante tiver uma versão ANTIGA em cache,
         // o site se atualiza sozinho (1x, sem loop) pra ele sempre ver o mais novo.
-        window.SITE_BUILD = 333;
+        window.SITE_BUILD = 335;
         // 🔎 selo de versão visível (canto) — pra CONFERIR qual versão está no ar
         (function _invBuildStamp(){
             function add(){ try{ if(document.getElementById('invBuildStamp'))return; var s=document.createElement('div'); s.id='invBuildStamp'; s.textContent='v'+(window.SITE_BUILD||'?'); s.style.cssText='position:fixed;bottom:4px;left:6px;z-index:3;font-size:9px;color:rgba(255,255,255,0.28);pointer-events:none;font-family:monospace;letter-spacing:.5px;'; document.body.appendChild(s); }catch(e){} }
@@ -26447,7 +26447,7 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
         if(typeof renderIaLojasAdmin==='function') renderIaLojasAdmin();
         if(typeof showToast==='function') showToast('Amazon salva! 📦','✅');
     };
-    window.amazonLoad = function(){ try{ var t=document.getElementById('amazonTag'); if(t && !t.value) t.value=localStorage.getItem('amazon_tag')||''; }catch(e){} };
+    window.amazonLoad = function(){ try{ var t=document.getElementById('amazonTag'); if(t && !t.value) t.value=localStorage.getItem('amazon_tag')||'gatoa-20'; }catch(e){} };
 
     // 🅼 Magazine Luiza (Magalu) — 2 modos: busca de produto / loja direta
     window.getMagaluMode = function(){ try{ return localStorage.getItem('magalu_mode')||'busca'; }catch(e){ return 'busca'; } };
@@ -26467,7 +26467,7 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
         if(typeof showToast==='function') showToast(prom&&part?'Magalu Divulgador salvo! 🅼':'Salvo (faltam os IDs)','✅');
     };
     window.magaluLoad = function(){
-        try{ var p=document.getElementById('magaluPromoter'); if(p && !p.value) p.value=localStorage.getItem('magalu_promoter')||''; var pa=document.getElementById('magaluPartner'); if(pa && !pa.value) pa.value=localStorage.getItem('magalu_partner')||''; var l=document.getElementById('magaluLink'); if(l && !l.value) l.value=localStorage.getItem('magalu_link')||''; }catch(e){}
+        try{ var p=document.getElementById('magaluPromoter'); if(p && !p.value) p.value=localStorage.getItem('magalu_promoter')||'4092779'; var pa=document.getElementById('magaluPartner'); if(pa && !pa.value) pa.value=localStorage.getItem('magalu_partner')||'3440'; var l=document.getElementById('magaluLink'); if(l && !l.value) l.value=localStorage.getItem('magalu_link')||''; }catch(e){}
         magaluHighlight();
     };
     // 🔍 Abre o link encurtado do divulgador (pelo servidor) e pega promoter_id/partner_id
@@ -26564,27 +26564,34 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
         try{
             if(nm.indexOf('magazine')>=0 || nm.indexOf('magalu')>=0){
                 var mode=ls('magalu_mode')||'busca';
-                var prom=ls('magalu_promoter'), part=ls('magalu_partner');
+                // SEUS dados de afiliado (divulgador) — usados SEMPRE; o painel pode sobrescrever
+                var prom=ls('magalu_promoter')||'4092779', part=ls('magalu_partner')||'3440';
                 var custom=ls('magalu_link');
-                // nome da loja Magazine Você (ex: "oloucoportech") — da config OU extraído do link salvo
+                if(mode==='loja' && custom) return custom;
+                // 💰 SEMPRE o link do divulgador com SEUS ids (promoter+partner) — comissão garantida e visível
+                if(prom && part) return 'https://www.magazineluiza.com.br/busca/{q}/?promoter_id='+encodeURIComponent(prom)+'&partner_id='+encodeURIComponent(part);
+                if(link.indexOf('promoter_id=')>=0 && link.indexOf('{q}')>=0) return link;
                 var vc=ls('magalu_id')||ls('magalu_store')||ls('magalu_loja')||ls('magalu_nome')||ls('magaluStore');
                 if(!vc){ var lm=(link||'').match(/magazinevoce\.com\.br\/([^\/?#]+)/i); if(lm) vc=lm[1]; }
                 if(vc){ vc=String(vc).replace(/^.*magazinevoce\.com\.br\//i,'').replace(/[\/?#].*$/,'').trim(); }
-                // 1) Divulgador (promoter+partner) → busca do produto com comissão
-                if(mode==='loja' && custom) return custom;
-                if(prom && part) return 'https://www.magazineluiza.com.br/busca/{q}/?promoter_id='+encodeURIComponent(prom)+'&partner_id='+encodeURIComponent(part);
-                // 2) link salvo que JÁ é uma busca do divulgador (com promoter_id)? mantém
-                if(link.indexOf('promoter_id=')>=0 && link.indexOf('{q}')>=0) return link;
-                // 3) Magazine Você → SEMPRE no formato de BUSCA pelo produto (nunca a home da loja)
                 if(vc) return 'https://www.magazinevoce.com.br/'+encodeURIComponent(vc)+'/busca/{q}/';
             }
             if(nm.indexOf('amazon')>=0){
-                var tag=ls('amazon_tag');
+                // SUA tag de associado — usada SEMPRE; o painel pode sobrescrever
+                var tag=ls('amazon_tag')||'gatoa-20';
                 if(tag){
                     if(link.indexOf('tag=')>=0) return link;
                     if(link.indexOf('{q}')>=0) return link+(link.indexOf('?')>=0?'&':'?')+'tag='+encodeURIComponent(tag);
                     return 'https://www.amazon.com.br/s?k={q}&tag='+encodeURIComponent(tag);
                 }
+            }
+        }catch(e){}
+        // 🛟 REDE DE SEGURANÇA: se ainda for a HOME da Magalu (magazinevoce.com.br/loja), vira busca do produto
+        try{
+            if((nm.indexOf('magazine')>=0 || nm.indexOf('magalu')>=0)){
+                var stm=(link||'').match(/magazinevoce\.com\.br\/([^\/?#]+)/i);
+                if(stm && link.indexOf('/busca/')<0) return 'https://www.magazinevoce.com.br/'+stm[1]+'/busca/{q}/';
+                if(link && link.indexOf('magazineluiza.com.br')>=0 && link.indexOf('/busca/')<0 && link.indexOf('{q}')<0) return 'https://www.magazineluiza.com.br/busca/{q}/';
             }
         }catch(e){}
         return link;
@@ -26624,7 +26631,8 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
         prod=prod.replace(/\b(quero|queria|gostaria|o|a|os|as|um|uma|uns|link|links|na|no|nas|nos|de|do|da|dos|das|me|manda|mande|envia|enviar|mostra|mostre|por\s*favor|pra|para|achar|encontrar|comprar|compra|preco|preco|mais|barato|barata|loja|tem|tenha|qual|onde)\b/gi,' ');
         prod=prod.replace(/\s+/g,' ').trim();
         var baseLink = (typeof iaAffLink==='function') ? iaAffLink(found) : found.link;
-        var href = baseLink.indexOf('{q}')>=0 ? baseLink.replace(/\{q\}/g, encodeURIComponent(prod||'tênis de corrida')) : baseLink;
+        var qClean = encodeURIComponent((prod||'tênis de corrida').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,' ').trim());
+        var href = baseLink.indexOf('{q}')>=0 ? baseLink.replace(/\{q\}/g, qClean) : baseLink;
         return { loja:found, prod:prod, href:href };
     };
     // card bonito de compra direta (loja + produto) com o link de afiliado
@@ -26644,7 +26652,7 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
     window.iaOfertaFooterHtml = function(k, prod){
         var lojas=getIaLojas();
         var L=getIaOfertaLinks();
-        var qenc=encodeURIComponent((prod||'tênis de corrida').slice(0,60));
+        var qenc=encodeURIComponent((prod||'tênis de corrida').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,' ').trim().slice(0,60));
         function btn(href,bg,bd,txt){ return '<a href="'+String(href).replace(/"/g,'&quot;')+'" target="_blank" rel="noopener sponsored" style="display:block;text-align:center;text-decoration:none;background:'+bg+';border:1px solid '+bd+';color:#fff;border-radius:10px;padding:10px;font-size:11.5px;font-weight:900;margin-bottom:7px;">'+txt+'</a>'; }
         var out='<div style="margin-top:9px;border-top:1px dashed rgba(255,255,255,0.14);padding-top:10px;">';
         out+='<div style="font-size:10px;font-weight:900;color:#00e0a0;margin-bottom:8px;">🛒 Escolha onde comprar'+(prod?(' <span style="color:#fff;">'+String(prod).replace(/</g,'&lt;')+'</span>'):'')+' (com meu cupom/afiliado):</div>';
