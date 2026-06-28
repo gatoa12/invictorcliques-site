@@ -5660,7 +5660,7 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v335.0001</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v337.0001</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -12190,7 +12190,7 @@ Poderia me ajudar? 🙏"
         const _KV_API = '/api/data';
         // 🔄 Versão do site publicada. Se o visitante tiver uma versão ANTIGA em cache,
         // o site se atualiza sozinho (1x, sem loop) pra ele sempre ver o mais novo.
-        window.SITE_BUILD = 335;
+        window.SITE_BUILD = 337;
         // 🔎 selo de versão visível (canto) — pra CONFERIR qual versão está no ar
         (function _invBuildStamp(){
             function add(){ try{ if(document.getElementById('invBuildStamp'))return; var s=document.createElement('div'); s.id='invBuildStamp'; s.textContent='v'+(window.SITE_BUILD||'?'); s.style.cssText='position:fixed;bottom:4px;left:6px;z-index:3;font-size:9px;color:rgba(255,255,255,0.28);pointer-events:none;font-family:monospace;letter-spacing:.5px;'; document.body.appendChild(s); }catch(e){} }
@@ -26564,17 +26564,15 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
         try{
             if(nm.indexOf('magazine')>=0 || nm.indexOf('magalu')>=0){
                 var mode=ls('magalu_mode')||'busca';
-                // SEUS dados de afiliado (divulgador) — usados SEMPRE; o painel pode sobrescrever
-                var prom=ls('magalu_promoter')||'4092779', part=ls('magalu_partner')||'3440';
                 var custom=ls('magalu_link');
-                if(mode==='loja' && custom) return custom;
-                // 💰 SEMPRE o link do divulgador com SEUS ids (promoter+partner) — comissão garantida e visível
-                if(prom && part) return 'https://www.magazineluiza.com.br/busca/{q}/?promoter_id='+encodeURIComponent(prom)+'&partner_id='+encodeURIComponent(part);
-                if(link.indexOf('promoter_id=')>=0 && link.indexOf('{q}')>=0) return link;
+                // SEU link de comissão REAL = Magazine Você (loja "oloucoportech")
                 var vc=ls('magalu_id')||ls('magalu_store')||ls('magalu_loja')||ls('magalu_nome')||ls('magaluStore');
                 if(!vc){ var lm=(link||'').match(/magazinevoce\.com\.br\/([^\/?#]+)/i); if(lm) vc=lm[1]; }
                 if(vc){ vc=String(vc).replace(/^.*magazinevoce\.com\.br\//i,'').replace(/[\/?#].*$/,'').trim(); }
-                if(vc) return 'https://www.magazinevoce.com.br/'+encodeURIComponent(vc)+'/busca/{q}/';
+                if(!vc) vc='oloucoportech'; // padrão = sua loja Magazine Você
+                if(mode==='loja' && custom) return custom;
+                // 💰 SEMPRE Magazine Você (sua loja) → busca do produto, comissão GARANTIDA
+                return 'https://www.magazinevoce.com.br/'+encodeURIComponent(vc)+'/busca/{q}/';
             }
             if(nm.indexOf('amazon')>=0){
                 // SUA tag de associado — usada SEMPRE; o painel pode sobrescrever
@@ -26583,6 +26581,22 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
                     if(link.indexOf('tag=')>=0) return link;
                     if(link.indexOf('{q}')>=0) return link+(link.indexOf('?')>=0?'&':'?')+'tag='+encodeURIComponent(tag);
                     return 'https://www.amazon.com.br/s?k={q}&tag='+encodeURIComponent(tag);
+                }
+            }
+            // 💰 DEMAIS LOJAS: garante SEMPRE o link de afiliado do Victor (mesmo que o salvo esteja sem afiliado)
+            var KNOWN_AFF={
+                'shopee':'https://s.shopee.com.br/3LOjetdnW8',
+                'mercado livre':'https://meli.la/1aqQUtQ',
+                'nike':'https://tidd.ly/4f1RZY3',
+                'netshoes':'https://click.linksynergy.com/deeplink?id=ygHYQtO3gCY&mid=43984&murl=https%3A%2F%2Fwww.netshoes.com.br%2Fbusca%3Fq%3D{q}',
+                'olympikus':'https://tidd.ly/3Sou2l2'
+            };
+            for(var key in KNOWN_AFF){
+                if(nm.indexOf(key)>=0){
+                    // se o link salvo JÁ é um afiliado dele, mantém (preserva customizações)
+                    if(/tidd\.ly|s\.shopee\.com|shope\.ee|meli\.la|mercadolivre\.com\/sec\/|linksynergy|awin1|tidd/i.test(link)) return link;
+                    // senão (busca pura ou vazio), usa o afiliado dele
+                    return KNOWN_AFF[key];
                 }
             }
         }catch(e){}
