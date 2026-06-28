@@ -5660,7 +5660,7 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v337.0001</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v338.0001</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -6849,6 +6849,53 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                                     2️⃣ Após aprovado, você recebe sua <b>tag de associado</b> (algo como <code style="color:#FF9900;">seunome-20</code>).<br>
                                     3️⃣ Cole a <b>tag</b> no campo acima → <b>Salvar</b>.<br>
                                     ✅ Pronto! A IA passa a buscar os produtos na Amazon com a sua tag — comissão garantida.
+                                </div>
+                            </div>
+
+                            <!-- 🛒 SHOPEE -->
+                            <div style="margin-top:11px;background:rgba(238,77,45,0.06);border:1px solid rgba(238,77,45,0.3);border-radius:12px;padding:13px;">
+                                <div style="font-size:12px;font-weight:900;color:#ee4d2d;margin-bottom:3px;">🛒 Shopee (afiliado)</div>
+                                <div style="font-size:10px;color:#8a9;margin-bottom:10px;line-height:1.5;">Cole seu <b>link de afiliado</b> da Shopee (do app Shopee Afiliados). Pode ser o link curto <code style="color:#ee4d2d;">s.shopee.com.br/xxxx</code>.</div>
+                                <label style="font-size:9px;color:#888;font-weight:700;">Seu link de afiliado Shopee</label>
+                                <input id="shopeeAff" placeholder="https://s.shopee.com.br/xxxxxxxx" style="width:100%;margin:3px 0 9px;padding:9px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.12);border-radius:9px;color:#fff;font-size:11px;outline:none;box-sizing:border-box;">
+                                <button onclick="affExtraSave('shopee')" style="width:100%;padding:10px;background:linear-gradient(135deg,#ee4d2d,#ff6a3d);color:#fff;border:none;border-radius:9px;font-weight:900;font-size:12px;cursor:pointer;margin-bottom:9px;">💾 Salvar Shopee</button>
+                                <div style="font-size:9px;color:#7a8aa0;line-height:1.6;background:rgba(0,0,0,0.2);border-radius:8px;padding:9px 10px;">
+                                    <b style="color:#ee4d2d;">Passo a passo:</b><br>
+                                    1️⃣ Baixe o app <b>Shopee Afiliados</b> (ou shopee.com.br/affiliate) e cadastre-se.<br>
+                                    2️⃣ Gere um <b>link de afiliado</b> (qualquer produto ou da loja).<br>
+                                    3️⃣ Cole aqui → <b>Salvar</b>. ✅ A IA passa a usar o SEU link.
+                                </div>
+                            </div>
+
+                            <!-- 🟡 MERCADO LIVRE -->
+                            <div style="margin-top:11px;background:rgba(255,229,0,0.06);border:1px solid rgba(255,229,0,0.3);border-radius:12px;padding:13px;">
+                                <div style="font-size:12px;font-weight:900;color:#e6b800;margin-bottom:3px;">🟡 Mercado Livre (afiliado)</div>
+                                <div style="font-size:10px;color:#8a9;margin-bottom:10px;line-height:1.5;">Cole seu <b>link de afiliado</b> do Mercado Livre (do programa Mercado Livre Afiliados). Ex: <code style="color:#e6b800;">meli.la/xxxx</code> ou <code style="color:#e6b800;">mercadolivre.com/sec/xxxx</code>.</div>
+                                <label style="font-size:9px;color:#888;font-weight:700;">Seu link de afiliado Mercado Livre</label>
+                                <input id="meliAff" placeholder="https://meli.la/xxxxx" style="width:100%;margin:3px 0 9px;padding:9px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.12);border-radius:9px;color:#fff;font-size:11px;outline:none;box-sizing:border-box;">
+                                <button onclick="affExtraSave('meli')" style="width:100%;padding:10px;background:linear-gradient(135deg,#FFE600,#e6b800);color:#111;border:none;border-radius:9px;font-weight:900;font-size:12px;cursor:pointer;margin-bottom:9px;">💾 Salvar Mercado Livre</button>
+                                <div style="font-size:9px;color:#7a8aa0;line-height:1.6;background:rgba(0,0,0,0.2);border-radius:8px;padding:9px 10px;">
+                                    <b style="color:#e6b800;">Passo a passo:</b><br>
+                                    1️⃣ Entre em <b>mercadolivre.com.br/afiliados</b> e cadastre-se.<br>
+                                    2️⃣ Gere um <b>link de afiliado</b> (com sua tag de rastreio).<br>
+                                    3️⃣ Cole aqui → <b>Salvar</b>. ✅ Comissão garantida.
+                                </div>
+                            </div>
+
+                            <!-- 🔷 AWIN -->
+                            <div style="margin-top:11px;background:rgba(124,58,237,0.06);border:1px solid rgba(124,58,237,0.3);border-radius:12px;padding:13px;">
+                                <div style="font-size:12px;font-weight:900;color:#a78bfa;margin-bottom:3px;">🔷 Awin (afiliado)</div>
+                                <div style="font-size:10px;color:#8a9;margin-bottom:10px;line-height:1.5;">A Awin gera link de afiliado pra QUALQUER loja parceira (Netshoes, Centauro, etc). Coloque seu <b>Awin ID</b> e (opcional) sua <b>API token</b>.</div>
+                                <label style="font-size:9px;color:#888;font-weight:700;">Seu Awin ID (awinaffid)</label>
+                                <input id="awinId" placeholder="ex: 123456" style="width:100%;margin:3px 0 7px;padding:9px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.12);border-radius:9px;color:#fff;font-size:11px;outline:none;box-sizing:border-box;">
+                                <label style="font-size:9px;color:#888;font-weight:700;">API Token da Awin (opcional)</label>
+                                <input id="awinToken" placeholder="cole sua API token (opcional)" style="width:100%;margin:3px 0 9px;padding:9px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.12);border-radius:9px;color:#fff;font-size:11px;outline:none;box-sizing:border-box;">
+                                <button onclick="affExtraSave('awin')" style="width:100%;padding:10px;background:linear-gradient(135deg,#7c3aed,#5b21b6);color:#fff;border:none;border-radius:9px;font-weight:900;font-size:12px;cursor:pointer;margin-bottom:9px;">💾 Salvar Awin</button>
+                                <div style="font-size:9px;color:#7a8aa0;line-height:1.6;background:rgba(0,0,0,0.2);border-radius:8px;padding:9px 10px;">
+                                    <b style="color:#a78bfa;">Passo a passo:</b><br>
+                                    1️⃣ Entre em <b>awin.com</b> e cadastre-se (Publisher).<br>
+                                    2️⃣ Seu <b>Publisher ID</b> aparece no painel (canto superior).<br>
+                                    3️⃣ Cole o ID aqui → <b>Salvar</b>. ✅ A Awin vincula suas vendas.
                                 </div>
                             </div>
                         </div>
@@ -12190,7 +12237,7 @@ Poderia me ajudar? 🙏"
         const _KV_API = '/api/data';
         // 🔄 Versão do site publicada. Se o visitante tiver uma versão ANTIGA em cache,
         // o site se atualiza sozinho (1x, sem loop) pra ele sempre ver o mais novo.
-        window.SITE_BUILD = 337;
+        window.SITE_BUILD = 338;
         // 🔎 selo de versão visível (canto) — pra CONFERIR qual versão está no ar
         (function _invBuildStamp(){
             function add(){ try{ if(document.getElementById('invBuildStamp'))return; var s=document.createElement('div'); s.id='invBuildStamp'; s.textContent='v'+(window.SITE_BUILD||'?'); s.style.cssText='position:fixed;bottom:4px;left:6px;z-index:3;font-size:9px;color:rgba(255,255,255,0.28);pointer-events:none;font-family:monospace;letter-spacing:.5px;'; document.body.appendChild(s); }catch(e){} }
@@ -13401,7 +13448,7 @@ Poderia me ajudar? 🙏"
             //    sincronizam pra TODOS os visitantes e entre aparelhos do admin
             ['notify_topic','chat_db_url','chat_sb_url','chat_sb_key','chat_sb_table','chat_pantry',
              'invPalette','siteThemeColors','invictorStravaDefaultColor','catalog_layout','invictorEdicaoCodes','invictorMarketplaces',
-             'foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','foco_survey_visible','statsBar_visible','foco_steps_pos','foco_survey_pos','foco_price_pos','siteLandingTab','verif_steps','ai_pages','tbt_enabled','tbt_mode','tbt_picks','site_font','promo_scale','survey_scale','stats_cfg','ia_tenis','ia_shopee_cupom','ia_telegram','ia_whats_ofertas','ia_lojas','magalu_promoter','magalu_partner','magalu_link','magalu_mode','amazon_tag','ai_chips_hidden','ai_chips_custom','promo_deadline','ia_clicks','ia_rec_mode','edit_recipes','gateway_on','gateway_foto_img','gateway_tenis_img','site_bg_img','site_bg_op','gateway_bg_mode','depoimentos','depoimentos_visible'].forEach(function(k){
+             'foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','foco_survey_visible','statsBar_visible','foco_steps_pos','foco_survey_pos','foco_price_pos','siteLandingTab','verif_steps','ai_pages','tbt_enabled','tbt_mode','tbt_picks','site_font','promo_scale','survey_scale','stats_cfg','ia_tenis','ia_shopee_cupom','ia_telegram','ia_whats_ofertas','ia_lojas','magalu_promoter','magalu_partner','magalu_link','magalu_mode','amazon_tag','shopee_aff','meli_aff','awin_id','awin_token','ai_chips_hidden','ai_chips_custom','promo_deadline','ia_clicks','ia_rec_mode','edit_recipes','gateway_on','gateway_foto_img','gateway_tenis_img','site_bg_img','site_bg_op','gateway_bg_mode','depoimentos','depoimentos_visible'].forEach(function(k){
                 try { var v = localStorage.getItem(k); if (v != null) payload[k] = v; } catch(e) {}
             });
 
@@ -13619,7 +13666,7 @@ Poderia me ajudar? 🙏"
                 'invictorEdicaoEmails', 'invictorEdicaoAtivos',
                 // === Configs novas: chat ao vivo / ntfy / paleta / conteúdo / IA ===
                 'notify_topic','chat_db_url','chat_sb_url','chat_sb_key','chat_sb_table','chat_pantry',
-                'invPalette','siteThemeColors','invictorStravaDefaultColor','catalog_layout','invictorEdicaoCodes','invictorMarketplaces','foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','foco_survey_visible','statsBar_visible','foco_steps_pos','foco_survey_pos','foco_price_pos','siteLandingTab','verif_steps','ai_pages','tbt_enabled','tbt_mode','tbt_picks','site_font','promo_scale','survey_scale','stats_cfg','ia_tenis','ia_shopee_cupom','ia_telegram','ia_whats_ofertas','ia_lojas','magalu_promoter','magalu_partner','magalu_link','magalu_mode','amazon_tag','ai_chips_hidden','ai_chips_custom','promo_deadline','ia_clicks','ia_rec_mode','edit_recipes','gateway_on','gateway_foto_img','gateway_tenis_img','site_bg_img','site_bg_op','gateway_bg_mode','depoimentos','depoimentos_visible',
+                'invPalette','siteThemeColors','invictorStravaDefaultColor','catalog_layout','invictorEdicaoCodes','invictorMarketplaces','foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','foco_survey_visible','statsBar_visible','foco_steps_pos','foco_survey_pos','foco_price_pos','siteLandingTab','verif_steps','ai_pages','tbt_enabled','tbt_mode','tbt_picks','site_font','promo_scale','survey_scale','stats_cfg','ia_tenis','ia_shopee_cupom','ia_telegram','ia_whats_ofertas','ia_lojas','magalu_promoter','magalu_partner','magalu_link','magalu_mode','amazon_tag','shopee_aff','meli_aff','awin_id','awin_token','ai_chips_hidden','ai_chips_custom','promo_deadline','ia_clicks','ia_rec_mode','edit_recipes','gateway_on','gateway_foto_img','gateway_tenis_img','site_bg_img','site_bg_op','gateway_bg_mode','depoimentos','depoimentos_visible',
                 // === Last update marker ===
                 '_lastUpdate'
             ];
@@ -13913,7 +13960,7 @@ Poderia me ajudar? 🙏"
             if(tabIndex===9) { loadThemeColorsIntoPanel(); setTimeout(function(){ if(typeof invPaletteRender==='function') invPaletteRender(); if(typeof renderFontAdmin==='function') renderFontAdmin(); }, 40); }
             if(tabIndex===10) { renderBotoesAdmin(); if(typeof renderSeccoesAdmin==='function') renderSeccoesAdmin(); if(typeof syncLandingTabSelect==='function') syncLandingTabSelect(); if(typeof renderVerifStepsAdmin==='function') renderVerifStepsAdmin(); if(typeof renderElemScaleAdmin==='function') renderElemScaleAdmin(); if(typeof renderStatsCfgAdmin==='function') renderStatsCfgAdmin(); if(typeof renderPromoAdminStatus==='function') renderPromoAdminStatus(); if(typeof gatewayImgsLoad==='function') gatewayImgsLoad(); if(typeof renderDepoimentosAdmin==='function') renderDepoimentosAdmin(); }
             if(tabIndex===11) { renderGaleria(); }
-            if(tabIndex===12) { initApisTab(); if(typeof renderIaTenisAdmin==='function') renderIaTenisAdmin(); if(typeof iaOfertaLinksLoad==='function') iaOfertaLinksLoad(); if(typeof renderIaRecMode==='function') renderIaRecMode(); if(typeof renderIaLojasAdmin==='function') renderIaLojasAdmin(); if(typeof magaluLoad==='function') magaluLoad(); if(typeof amazonLoad==='function') amazonLoad(); if(typeof renderAiChipsAdmin==='function') renderAiChipsAdmin(); if(typeof shopeeStatus==='function') setTimeout(shopeeStatus, 60); }
+            if(tabIndex===12) { initApisTab(); if(typeof renderIaTenisAdmin==='function') renderIaTenisAdmin(); if(typeof iaOfertaLinksLoad==='function') iaOfertaLinksLoad(); if(typeof renderIaRecMode==='function') renderIaRecMode(); if(typeof renderIaLojasAdmin==='function') renderIaLojasAdmin(); if(typeof magaluLoad==='function') magaluLoad(); if(typeof amazonLoad==='function') amazonLoad(); if(typeof affExtraLoad==='function') affExtraLoad(); if(typeof renderAiChipsAdmin==='function') renderAiChipsAdmin(); if(typeof shopeeStatus==='function') setTimeout(shopeeStatus, 60); }
             if(tabIndex===3)  { setTimeout(_refreshAdminCouponStock, 80); }
             if(tabIndex===13) {
                 setTimeout(() => {
@@ -26449,6 +26496,27 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
     };
     window.amazonLoad = function(){ try{ var t=document.getElementById('amazonTag'); if(t && !t.value) t.value=localStorage.getItem('amazon_tag')||'gatoa-20'; }catch(e){} };
 
+    // 🔗 Afiliados extras: Shopee / Mercado Livre / Awin
+    window.affExtraSave = function(which){
+        function g(id){ var e=document.getElementById(id); return e?e.value.trim():''; }
+        try{
+            if(which==='shopee'){ localStorage.setItem('shopee_aff', g('shopeeAff')); }
+            if(which==='meli'){ localStorage.setItem('meli_aff', g('meliAff')); }
+            if(which==='awin'){ localStorage.setItem('awin_id', g('awinId')); localStorage.setItem('awin_token', g('awinToken')); }
+        }catch(e){}
+        if(typeof saveData==='function') saveData(false);
+        if(typeof renderIaLojasAdmin==='function') renderIaLojasAdmin();
+        if(typeof showToast==='function') showToast('Afiliado salvo! ✅','✅');
+    };
+    window.affExtraLoad = function(){
+        try{
+            var s=document.getElementById('shopeeAff'); if(s && !s.value) s.value=localStorage.getItem('shopee_aff')||'';
+            var m=document.getElementById('meliAff'); if(m && !m.value) m.value=localStorage.getItem('meli_aff')||'';
+            var a=document.getElementById('awinId'); if(a && !a.value) a.value=localStorage.getItem('awin_id')||'';
+            var t=document.getElementById('awinToken'); if(t && !t.value) t.value=localStorage.getItem('awin_token')||'';
+        }catch(e){}
+    };
+
     // 🅼 Magazine Luiza (Magalu) — 2 modos: busca de produto / loja direta
     window.getMagaluMode = function(){ try{ return localStorage.getItem('magalu_mode')||'busca'; }catch(e){ return 'busca'; } };
     window.magaluSetMode = function(m){ try{ localStorage.setItem('magalu_mode', m); }catch(e){} magaluHighlight(); if(typeof renderIaLojasAdmin==='function') renderIaLojasAdmin(); if(typeof saveData==='function') saveData(false); if(typeof showToast==='function') showToast(m==='loja'?'Modo: Loja direta':'Modo: Busca de produto','🅼'); };
@@ -26584,6 +26652,10 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
                 }
             }
             // 💰 DEMAIS LOJAS: garante SEMPRE o link de afiliado do Victor (mesmo que o salvo esteja sem afiliado)
+            // primeiro, os links que VOCÊ salvou no painel (Shopee/Mercado Livre) têm prioridade
+            var savedShopee=ls('shopee_aff'), savedMeli=ls('meli_aff');
+            if(nm.indexOf('shopee')>=0 && savedShopee) return savedShopee;
+            if((nm.indexOf('mercado')>=0||nm.indexOf('meli')>=0) && savedMeli) return savedMeli;
             var KNOWN_AFF={
                 'shopee':'https://s.shopee.com.br/3LOjetdnW8',
                 'mercado livre':'https://meli.la/1aqQUtQ',
