@@ -3053,6 +3053,21 @@
             transition: transform 0.08s ease;
         }
 
+        /* ✨ MODERNIZAÇÃO v346 — polimento seguro site-wide (só visual) */
+        .promo-card, .oferta-item { transition: transform .22s cubic-bezier(.2,.7,.3,1), box-shadow .22s ease, border-color .22s ease !important; will-change: transform; }
+        .promo-card:hover { transform: translateY(-5px) !important; box-shadow: 0 14px 34px rgba(0,0,0,0.4) !important; }
+        .promo-card:active { transform: scale(0.98) !important; }
+        .ofertaCatBtn:active { transform: scale(0.95); }
+        /* barra de rolagem fina e moderna no site todo */
+        *::-webkit-scrollbar { width: 10px; height: 10px; }
+        *::-webkit-scrollbar-track { background: transparent; }
+        *::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 8px; }
+        *::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.22); }
+        /* foco moderno (acessível) nos campos */
+        input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid rgba(255,106,0,0.4); outline-offset: 1px; }
+        /* botões com leve resposta ao toque (mobile) */
+        button:active { transform: translateY(0.5px); }
+
         .menu-btn i {
             display: none; /* replaced by .menu-icon emoji */
         }
@@ -5660,7 +5675,7 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v344.0001</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v346.0001</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -5841,6 +5856,7 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                         <div>
                             <h3 style="color:var(--primary);margin-bottom:20px;font-size:1.1em;">➕ Nova Oferta</h3>
                             <div class="form-group"><label>👟 Nome do Produto</label><input type="text" id="ofertaNome" placeholder="Ex: Nike Air Max 270"></div>
+                            <div class="form-group"><label>🏷️ Categoria da oferta</label><select id="ofertaCat" style="width:100%;padding:10px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.13);border-radius:9px;color:#fff;font-size:13px;outline:none;"><option value="tenis">👟 Tênis</option><option value="corrida">👕 Roupas & Corrida</option></select></div>
                             <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
                                 <div class="form-group"><label>💵 Preço Original</label><input type="text" id="ofertaOriginal" placeholder="R$ 299,90"></div>
                                 <div class="form-group"><label>🔥 Preço Promo</label><input type="text" id="ofertaSale" placeholder="R$ 199,90"></div>
@@ -8854,6 +8870,13 @@ Poderia me ajudar? 🙏"
                 title="Limpar busca">✕</button>
         </div>
         <div id="ofertaSearchCount" style="display:none;font-size:11px;color:#888;margin:-12px 0 14px;font-weight:700;"></div>
+
+        <!-- 🏷️ Filtro de categoria: Tudo / Tênis / Roupas & Corrida -->
+        <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:16px;">
+            <button class="ofertaCatBtn" id="ofCatAll" onclick="setOfertaCat('all')" style="padding:9px 18px;border-radius:20px;border:1px solid var(--primary);background:var(--primary);color:#111;font-weight:900;font-size:12px;cursor:pointer;transition:all .18s;">🔥 Tudo</button>
+            <button class="ofertaCatBtn" id="ofCatTenis" onclick="setOfertaCat('tenis')" style="padding:9px 18px;border-radius:20px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.05);color:#ccc;font-weight:900;font-size:12px;cursor:pointer;transition:all .18s;">👟 Tênis</button>
+            <button class="ofertaCatBtn" id="ofCatCorrida" onclick="setOfertaCat('corrida')" style="padding:9px 18px;border-radius:20px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.05);color:#ccc;font-weight:900;font-size:12px;cursor:pointer;transition:all .18s;">👕 Roupas & Corrida</button>
+        </div>
 
         <!-- CONTAINER DE OFERTAS RELÂMPAGO -->
         <div class="promos-container" id="promosContainer">
@@ -12239,7 +12262,7 @@ Poderia me ajudar? 🙏"
         const _KV_API = '/api/data';
         // 🔄 Versão do site publicada. Se o visitante tiver uma versão ANTIGA em cache,
         // o site se atualiza sozinho (1x, sem loop) pra ele sempre ver o mais novo.
-        window.SITE_BUILD = 344;
+        window.SITE_BUILD = 346;
         // 🔎 selo de versão visível (canto) — pra CONFERIR qual versão está no ar
         (function _invBuildStamp(){
             function add(){ try{ if(document.getElementById('invBuildStamp'))return; var s=document.createElement('div'); s.id='invBuildStamp'; s.textContent='v'+(window.SITE_BUILD||'?'); s.style.cssText='position:fixed;bottom:4px;left:6px;z-index:3;font-size:9px;color:rgba(255,255,255,0.28);pointer-events:none;font-family:monospace;letter-spacing:.5px;'; document.body.appendChild(s); }catch(e){} }
@@ -14122,7 +14145,8 @@ Poderia me ajudar? 🙏"
             let imagem = imageInput.dataset.image || urlInput || generateAutoImage(nome);
             const link = document.getElementById('ofertaLink') ? document.getElementById('ofertaLink').value.trim() : '';
 
-            currentData.ofertas.push({ nome, original, sale, imagem, stock, bestseller, link, id: Date.now() });
+            const cat = document.getElementById('ofertaCat') ? document.getElementById('ofertaCat').value : 'tenis';
+            currentData.ofertas.push({ nome, original, sale, imagem, stock, bestseller, link, cat, id: Date.now() });
             saveData();
             
             document.getElementById('ofertaNome').value = '';
@@ -14253,6 +14277,7 @@ Poderia me ajudar? 🙏"
                             <input id="ofE_sale${index}" value="${(oferta.sale||'').replace(/"/g,'&quot;')}" placeholder="Preço promo" style="flex:1;padding:9px;background:rgba(0,0,0,0.35);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:#fff;font-size:12px;outline:none;min-width:0;">
                         </div>
                         <input id="ofE_link${index}" value="${(oferta.link||'').replace(/"/g,'&quot;')}" placeholder="🔗 Link de afiliado (pra onde o Comprar leva)" style="width:100%;margin-bottom:7px;padding:9px;background:rgba(0,0,0,0.35);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:#fff;font-size:12px;outline:none;box-sizing:border-box;">
+                        <select id="ofE_cat${index}" style="width:100%;margin-bottom:7px;padding:9px;background:rgba(0,0,0,0.35);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:#fff;font-size:12px;outline:none;"><option value="tenis"${(oferta.cat||'tenis')==='tenis'?' selected':''}>👟 Tênis</option><option value="corrida"${oferta.cat==='corrida'?' selected':''}>👕 Roupas & Corrida</option></select>
                         <input id="ofE_img${index}" value="${(oferta.imagem||'').replace(/"/g,'&quot;')}" placeholder="URL da imagem (opcional)" style="width:100%;margin-bottom:9px;padding:9px;background:rgba(0,0,0,0.35);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:#fff;font-size:12px;outline:none;box-sizing:border-box;">
                         <div style="display:flex;gap:7px;">
                             <button onclick="saveOfertaEdit(${index})" style="flex:1;padding:10px;background:linear-gradient(135deg,#51CF66,#2f9e44);color:#fff;border:none;border-radius:9px;font-weight:900;font-size:12px;cursor:pointer;">💾 Salvar alterações</button>
@@ -14273,6 +14298,7 @@ Poderia me ajudar? 🙏"
             o.original=g('ofE_orig'+i)||o.original;
             o.sale=g('ofE_sale'+i)||o.sale;
             o.link=g('ofE_link'+i);
+            var _ec=document.getElementById('ofE_cat'+i); if(_ec) o.cat=_ec.value;
             var img=g('ofE_img'+i); if(img) o.imagem=img;
             try{ _sharedCache=null; _sharedCacheTs=0; }catch(e){}
             saveData();
@@ -14770,9 +14796,10 @@ Poderia me ajudar? 🙏"
                 return;
             }
 
-            const filtered = query
+            const filtered = (query
                 ? currentData.ofertas.map((o, i) => ({...o, _idx: i})).filter(o => (o.nome || '').toLowerCase().includes(query))
-                : currentData.ofertas.map((o, i) => ({...o, _idx: i}));
+                : currentData.ofertas.map((o, i) => ({...o, _idx: i})))
+                .filter(o => { var f=window._ofertaCatFilter||'all'; if(f==='all') return true; return (o.cat||'tenis')===f; });
 
             if (countEl) {
                 if (query) {
@@ -14826,6 +14853,15 @@ Poderia me ajudar? 🙏"
             }
             openPromoModal(o.nome, currentData.telegram || '');
         }
+
+        // 🏷️ Filtro de categoria das ofertas (Tudo / Tênis / Roupas & Corrida)
+        window._ofertaCatFilter = 'all';
+        window.setOfertaCat = function(cat){
+            window._ofertaCatFilter = cat;
+            var map={all:'ofCatAll',tenis:'ofCatTenis',corrida:'ofCatCorrida'};
+            Object.keys(map).forEach(function(k){ var el=document.getElementById(map[k]); if(!el)return; if(k===cat){ el.style.background='var(--primary)'; el.style.color='#111'; el.style.borderColor='var(--primary)'; } else { el.style.background='rgba(255,255,255,0.05)'; el.style.color='#ccc'; el.style.borderColor='rgba(255,255,255,0.15)'; } });
+            try{ var q=document.getElementById('ofertaSearchInput'); filterOfertas(q?q.value:''); }catch(e){}
+        };
 
         function renderPromos() {
             // Re-apply current search filter (if any) when re-rendering
