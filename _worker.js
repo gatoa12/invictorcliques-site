@@ -38,6 +38,9 @@ export default {
       if (path === "/api/visit")        return await handleVisit(request, env);
       if (path === "/api/magalu-resolve") return await handleMagaluResolve(request, url);
       if (path === "/api/refresh-foco") return await handleRefreshFoco(request, env);
+      if (path === "/api/tg/webhook")   return await handleTgWebhook(request, env, url);
+      if (path === "/api/tg/offers")    return await handleTgOffers(request, env);
+      if (path === "/api/tg/img")       return await handleTgImg(request, env, url);
     } catch (e) {
       return json({ error: String((e && e.message) || e) }, 500);
     }
@@ -73,6 +76,85 @@ const CORS = {
   "access-control-allow-methods": "GET,POST,OPTIONS",
   "access-control-allow-headers": "content-type,x-admin-key",
 };
+
+// ── /api/tg/webhook — recebe ofertas postadas no grupo/canal do Telegram ──
+async function handleTgWebhook(request, env, url) {
+  // segurança: secret via ?s= ou header do Telegram
+  const secret = url.searchParams.get("s") || request.headers.get("x-telegram-bot-api-secret-token") || "";
+  const expected = env.TG_SECRET || "invcliques-tg-7693";
+  if (secret !== expected) return json({ ok: false, error: "unauthorized" }, 401);
+  if (request.method !== "POST") return json({ ok: true, note: "webhook ativo" });
+  let update;
+  try { update = await request.json(); } catch (e) { return json({ ok: true }); }
+  const msg = update.message || update.channel_post || update.edited_message || update.edited_channel_post;
+  if (!msg) return json({ ok: true });
+  const text = (msg.text || msg.caption || "").trim();
+  const hasPhoto = !!(msg.photo && msg.photo.length);
+  if (!text && !hasPhoto) return json({ ok: true });
+
+  // link (do texto ou das entities)
+  let link = "";
+  const um = text.match(/https?:\/\/[^\s)]+/);
+  if (um) link = um[0];
+  const ents = msg.entities || msg.caption_entities || [];
+  if (!link) { for (const e of ents) { if (e.type === "text_link" && e.url) { link = e.url; break; } } }
+
+  // cupom (ex: "cupom: BEM10" ou "código FRETEGRATIS")
+  let cupom = "";
+  const cm = text.match(/(?:cupom|c[oó]digo|coupon)[:\s]+([A-Z0-9][A-Z0-9\-]{2,24})/i);
+  if (cm) cupom = cm[1].toUpperCase();
+
+  // imagem: guarda o file_id (a imagem é servida pelo proxy /api/tg/img, sem expor o token)
+  let imgId = "";
+  if (hasPhoto) { imgId = msg.photo[msg.photo.length - 1].file_id || ""; }
+
+  const title = (text.split("\n")[0] || "Oferta").slice(0, 120);
+  const offer = { id: msg.message_id || Date.now(), title, text: text.slice(0, 700), link, cupom, imgId, ts: Date.now() };
+
+  let list = [];
+  try { const raw = await env.INV_KV.get("tg_offers"); if (raw) list = JSON.parse(raw); } catch (e) {}
+  list = list.filter((o) => o.id !== offer.id);
+  list.unshift(offer);
+  if (list.length > 40) list = list.slice(0, 40);
+  try { await env.INV_KV.put("tg_offers", JSON.stringify(list)); } catch (e) {}
+  return json({ ok: true });
+}
+
+// ── /api/tg/offers — devolve as ofertas guardadas do Telegram ──
+async function handleTgOffers(request, env) {
+  let list = [];
+  try { const raw = await env.INV_KV.get("tg_offers"); if (raw) list = JSON.parse(raw); } catch (e) {}
+  const TTL = 10 * 60 * 60 * 1000; // 10 horas
+  const now = Date.now();
+  // remove as expiradas (mais de 10h)
+  const vivas = list.filter((o) => (now - (o.ts || 0)) < TTL);
+  // se limpou alguma, regrava a lista enxuta
+  if (vivas.length !== list.length) { try { await env.INV_KV.put("tg_offers", JSON.stringify(vivas)); } catch (e) {} }
+  const out = vivas.map((o) => ({
+    id: o.id, title: o.title, text: o.text, link: o.link || "", cupom: o.cupom || "",
+    img: o.imgId ? ("/api/tg/img?id=" + encodeURIComponent(o.imgId)) : "",
+    ts: o.ts, expires: (o.ts || now) + TTL
+  }));
+  return json({ offers: out });
+}
+
+// ── /api/tg/img — proxy seguro da imagem (não expõe o token do bot) ──
+async function handleTgImg(request, env, url) {
+  const id = url.searchParams.get("id") || "";
+  const token = env.TG_BOT_TOKEN || "";
+  if (!id || !token) return new Response("", { status: 404 });
+  try {
+    const r = await fetch("https://api.telegram.org/bot" + token + "/getFile?file_id=" + encodeURIComponent(id));
+    const d = await r.json();
+    if (!d.ok || !d.result || !d.result.file_path) return new Response("", { status: 404 });
+    const img = await fetch("https://api.telegram.org/file/bot" + token + "/" + d.result.file_path);
+    const h = new Headers();
+    h.set("content-type", img.headers.get("content-type") || "image/jpeg");
+    h.set("cache-control", "public, max-age=86400");
+    return new Response(img.body, { status: 200, headers: h });
+  } catch (e) { return new Response("", { status: 404 }); }
+}
+
 function json(obj, status = 200) {
   return new Response(JSON.stringify(obj), { status, headers: { "content-type": "application/json", ...CORS } });
 }
