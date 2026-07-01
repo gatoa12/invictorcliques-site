@@ -99,12 +99,28 @@ async function handleTgWebhook(request, env, url) {
   const ents = msg.entities || msg.caption_entities || [];
   if (!link) { for (const e of ents) { if (e.type === "text_link" && e.url) { link = e.url; break; } } }
 
-  // cupom (ex: "cupom: BEM10" ou "código FRETEGRATIS")
-  let cupom = "";
-  const cm = text.match(/(?:cupom|c[oó]digo|coupon)[:\s]+([A-Z0-9][A-Z0-9\-]{2,24})/i);
-  if (cm) cupom = cm[1].toUpperCase();
+  // é um post de CUPOM? (você sempre começa com "CUPOM" → diferencia das ofertas)
+  const primeiraLinha = (text.split("\n").find((l) => l.trim()) || "").trim();
+  const isCupom = /\bcupom\b/i.test(primeiraLinha);
 
-  // preço (ex: "Por: R$159", "R$ 159,90", "R$159")
+  // cupom/código: "cupom: X", "código X", "OFF: X" ou palavra em CAIXA ALTA
+  let cupom = "";
+  let cm = text.match(/(?:cupom|c[oó]digo|coupon)[:\s]+([A-Z0-9][A-Z0-9\-]{2,24})/i);
+  if (!cm) cm = text.match(/OFF[:\s]+([A-Z][A-Z0-9\-]{3,24})\b/);
+  if (cm) cupom = cm[1].toUpperCase();
+  if (!cupom && isCupom) {
+    // pega a palavra em CAIXA ALTA mais provável de ser o código (ignora comuns)
+    const ignora = ["CUPOM","AMAZON","SHOPEE","MAGALU","OFF","APP","NO","NA","DE","EM","LIMITE","AME","MERCADO","LIVRE","PIX"];
+    const cands = (text.match(/\b[A-Z][A-Z0-9]{3,24}\b/g) || []).filter((w) => ignora.indexOf(w) < 0);
+    if (cands.length) cupom = cands.sort((a, b) => b.length - a.length)[0];
+  }
+
+  // loja (alternância de lojas): 1ª palavra "conhecida" que aparecer
+  let loja = "";
+  const lojaM = text.match(/\b(amazon|shopee|magalu|magazine|mercado\s?livre|meli|netshoes|centauro|nike|adidas|olympikus|ame)\b/i);
+  if (lojaM) loja = lojaM[1].replace(/\s+/g, " ").toUpperCase();
+
+  // preço (ex: "Por: R$159", "R$ 159,90")
   let preco = "";
   const pm = text.match(/R\$\s?(\d{1,3}(?:\.\d{3})*(?:,\d{2})?|\d+(?:[.,]\d{2})?)/i);
   if (pm) preco = "R$ " + pm[1];
@@ -113,20 +129,25 @@ async function handleTgWebhook(request, env, url) {
   let imgId = "";
   if (hasPhoto) { imgId = msg.photo[msg.photo.length - 1].file_id || ""; }
 
-  // título limpo = 1ª linha "de verdade" (pula #hashtag, link, "Por:", "Cupom:", etc.)
+  // título limpo = a linha com 🔥 (você sempre marca o produto com fogo); senão 1ª linha real
   let title = "";
   const linhas = text.split("\n").map((s) => s.trim()).filter(Boolean);
   for (const ln of linhas) {
-    if (/^#/.test(ln)) continue;
-    if (/^https?:\/\//i.test(ln)) continue;
-    const c = ln.replace(/^[^0-9A-Za-zÀ-ÿ]+/, "").trim();
-    if (/^(por|cupom|c[oó]digo|compre aqui|assine|encontre|link)/i.test(c)) continue;
-    if (c.length < 4) continue;
-    title = c.slice(0, 120); break;
+    if (/🔥/.test(ln)) { title = ln.replace(/🔥/g, "").replace(/^[^0-9A-Za-zÀ-ÿ]+/, "").trim().slice(0, 120); break; }
+  }
+  if (!title) {
+    for (const ln of linhas) {
+      if (/^#/.test(ln)) continue;
+      if (/^https?:\/\//i.test(ln)) continue;
+      const c = ln.replace(/^[^0-9A-Za-zÀ-ÿ]+/, "").trim();
+      if (/^(por|cupom|c[oó]digo|compre aqui|assine|encontre|link|p[aá]gina)/i.test(c)) continue;
+      if (c.length < 4) continue;
+      title = c.slice(0, 120); break;
+    }
   }
   if (!title) title = (linhas[0] || "Oferta").slice(0, 120);
 
-  const offer = { id: msg.message_id || Date.now(), title, text: text.slice(0, 700), link, cupom, preco, imgId, ts: Date.now() };
+  const offer = { id: msg.message_id || Date.now(), title, text: text.slice(0, 700), link, cupom, preco, loja, isCupom, imgId, ts: Date.now() };
 
   let list = [];
   try { const raw = await env.INV_KV.get("tg_offers"); if (raw) list = JSON.parse(raw); } catch (e) {}
@@ -149,6 +170,7 @@ async function handleTgOffers(request, env) {
   if (vivas.length !== list.length) { try { await env.INV_KV.put("tg_offers", JSON.stringify(vivas)); } catch (e) {} }
   const out = vivas.map((o) => ({
     id: o.id, title: o.title, text: o.text, link: o.link || "", cupom: o.cupom || "", preco: o.preco || "",
+    loja: o.loja || "", isCupom: !!o.isCupom,
     img: o.imgId ? ("/api/tg/img?id=" + encodeURIComponent(o.imgId)) : "",
     ts: o.ts, expires: (o.ts || now) + TTL
   }));
