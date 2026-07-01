@@ -104,12 +104,29 @@ async function handleTgWebhook(request, env, url) {
   const cm = text.match(/(?:cupom|c[oó]digo|coupon)[:\s]+([A-Z0-9][A-Z0-9\-]{2,24})/i);
   if (cm) cupom = cm[1].toUpperCase();
 
+  // preço (ex: "Por: R$159", "R$ 159,90", "R$159")
+  let preco = "";
+  const pm = text.match(/R\$\s?(\d{1,3}(?:\.\d{3})*(?:,\d{2})?|\d+(?:[.,]\d{2})?)/i);
+  if (pm) preco = "R$ " + pm[1];
+
   // imagem: guarda o file_id (a imagem é servida pelo proxy /api/tg/img, sem expor o token)
   let imgId = "";
   if (hasPhoto) { imgId = msg.photo[msg.photo.length - 1].file_id || ""; }
 
-  const title = (text.split("\n")[0] || "Oferta").slice(0, 120);
-  const offer = { id: msg.message_id || Date.now(), title, text: text.slice(0, 700), link, cupom, imgId, ts: Date.now() };
+  // título limpo = 1ª linha "de verdade" (pula #hashtag, link, "Por:", "Cupom:", etc.)
+  let title = "";
+  const linhas = text.split("\n").map((s) => s.trim()).filter(Boolean);
+  for (const ln of linhas) {
+    if (/^#/.test(ln)) continue;
+    if (/^https?:\/\//i.test(ln)) continue;
+    const c = ln.replace(/^[^0-9A-Za-zÀ-ÿ]+/, "").trim();
+    if (/^(por|cupom|c[oó]digo|compre aqui|assine|encontre|link)/i.test(c)) continue;
+    if (c.length < 4) continue;
+    title = c.slice(0, 120); break;
+  }
+  if (!title) title = (linhas[0] || "Oferta").slice(0, 120);
+
+  const offer = { id: msg.message_id || Date.now(), title, text: text.slice(0, 700), link, cupom, preco, imgId, ts: Date.now() };
 
   let list = [];
   try { const raw = await env.INV_KV.get("tg_offers"); if (raw) list = JSON.parse(raw); } catch (e) {}
@@ -131,7 +148,7 @@ async function handleTgOffers(request, env) {
   // se limpou alguma, regrava a lista enxuta
   if (vivas.length !== list.length) { try { await env.INV_KV.put("tg_offers", JSON.stringify(vivas)); } catch (e) {} }
   const out = vivas.map((o) => ({
-    id: o.id, title: o.title, text: o.text, link: o.link || "", cupom: o.cupom || "",
+    id: o.id, title: o.title, text: o.text, link: o.link || "", cupom: o.cupom || "", preco: o.preco || "",
     img: o.imgId ? ("/api/tg/img?id=" + encodeURIComponent(o.imgId)) : "",
     ts: o.ts, expires: (o.ts || now) + TTL
   }));

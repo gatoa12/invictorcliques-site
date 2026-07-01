@@ -5729,7 +5729,7 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v360.0001</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v362.0001</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -6702,6 +6702,11 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                                 <div style="display:flex;gap:6px;margin-bottom:10px;"><label style="flex:1;text-align:center;padding:8px;background:rgba(0,224,160,0.14);border:1px solid rgba(0,224,160,0.3);border-radius:8px;color:#00e0a0;font-size:11px;font-weight:800;cursor:pointer;">📷 Enviar foto<input type="file" accept="image/*" onchange="gwPhotoUpload(this,'corrBgImg')" style="display:none;"></label><button onclick="gwPhotoRemove('corrBgImg')" style="padding:8px 14px;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);border-radius:8px;color:#f88;font-size:11px;font-weight:800;cursor:pointer;">🗑️ Remover</button></div>
                                 <label style="font-size:9px;color:#888;font-weight:700;">📢 Link/@ do seu canal ou grupo do Telegram (botão "Veja tudo no canal")</label>
                                 <input id="corrTgChannel" placeholder="@meucanal ou https://t.me/meucanal" style="width:100%;margin:3px 0 10px;padding:9px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.12);border-radius:9px;color:#fff;font-size:11px;outline:none;box-sizing:border-box;">
+                                <label style="font-size:9px;color:#888;font-weight:700;">🎞️ Como as ofertas aparecem</label>
+                                <div style="display:flex;gap:6px;margin:5px 0 11px;">
+                                    <button onclick="corrSetLayout('lista')" id="corrLayLista" style="flex:1;padding:9px 4px;background:rgba(0,224,160,0.14);border:1px solid rgba(0,224,160,0.35);border-radius:8px;color:#00e0a0;font-size:11px;font-weight:800;cursor:pointer;">⬇️ Descendo (lista)</button>
+                                    <button onclick="corrSetLayout('slider')" id="corrLaySlider" style="flex:1;padding:9px 4px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.13);border-radius:8px;color:#ccc;font-size:11px;font-weight:800;cursor:pointer;">↔️ Deslizando</button>
+                                </div>
                                 <button onclick="corrBgSave()" style="width:100%;padding:11px;background:linear-gradient(135deg,#00e0a0,#00b894);color:#022;border:none;border-radius:10px;font-weight:900;font-size:12px;cursor:pointer;margin-bottom:8px;">💾 Salvar fundo da tela</button>
                                 <button onclick="openCorredores()" style="width:100%;padding:9px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);color:#cdd6e4;border-radius:10px;font-weight:800;font-size:11px;cursor:pointer;">👁️ Ver a tela agora</button>
                             </div>
@@ -10903,12 +10908,14 @@ Poderia me ajudar? 🙏"
             mount.innerHTML='<div style="text-align:center;color:#889;padding:34px;font-size:13px;">⏳ Carregando ofertas ativas…</div>';
             // junta: ofertas cadastradas no site + ofertas do grupo (Telegram)
             var regis=(currentData.ofertas||[]).filter(function(o){ return o.ativo!==false && (o.nome||o.imagem); }).map(function(o){
-                return { title:o.nome||'Oferta', text:o.nome||'', link:(typeof iaAffLink==='function'&&o.link? o.link : (o.link||'')), img:o.imagem||'', cupom:'', orig:o.original||'', sale:o.sale||'', fonte:'site' };
+                return { title:o.nome||'Oferta', text:o.nome||'', link:(typeof iaAffLink==='function'&&o.link? o.link : (o.link||'')), img:o.imagem||'', cupom:'', orig:o.original||'', sale:o.sale||'', fonte:'site', ts:0, id:o.id||0 };
             });
             fetch('/api/tg/offers').then(function(r){return r.json();}).then(function(d){ finish((d&&d.offers)||[]); }).catch(function(){ finish([]); });
             function finish(tg){
-                var tgo=tg.map(function(o){ return { title:o.title||'Oferta', text:o.text||'', link:o.link||'', img:o.img||'', cupom:o.cupom||'', orig:'', sale:'', fonte:'grupo', expires:o.expires||0 }; });
+                var tgo=tg.map(function(o){ return { title:o.title||'Oferta', text:o.text||'', link:o.link||'', img:o.img||'', cupom:o.cupom||'', preco:o.preco||'', orig:'', sale:'', fonte:'grupo', expires:o.expires||0, ts:o.ts||0 }; });
                 var all=regis.concat(tgo);
+                // 🆕 mais novas primeiro (por data de postagem)
+                all.sort(function(a,b){ return (b.ts||b.id||0)-(a.ts||a.id||0); });
                 if(!all.length){ mount.innerHTML='<div style="text-align:center;color:#889;padding:40px 20px;font-size:13px;line-height:1.6;background:rgba(255,255,255,0.03);border:1px dashed rgba(255,255,255,0.1);border-radius:16px;">📭 Nenhuma oferta ativa no momento.<br><span style="font-size:11px;color:#667;">Cadastre ofertas ou poste no grupo do Telegram que elas aparecem aqui.</span></div>'; return; }
                 var ofertas=all.filter(function(o){ return o.link || o.img || o.sale; });
                 var cupons=all.filter(function(o){ return o.cupom; });
@@ -10920,21 +10927,23 @@ Poderia me ajudar? 🙏"
                 ofertas.forEach(function(o){
                     // 📷 foto IGUAL ao post do grupo (inteira, não cortada)
                     var img=o.img?('<img src="'+String(o.img).replace(/"/g,'&quot;')+'" alt="" loading="lazy" style="width:100%;height:auto;display:block;border-radius:12px 12px 0 0;background:#0a0a12;">'):'';
+                    // 💰 preço: do grupo (o.preco) ou do site (orig/sale)
                     var preco='';
-                    if(o.orig&&o.sale){ preco='<div style="margin:6px 0;"><span style="text-decoration:line-through;color:#889;font-size:12px;margin-right:6px;">R$ '+o.orig+'</span><span style="color:#00e0a0;font-weight:900;font-size:16px;">R$ '+o.sale+'</span></div>'; }
-                    // ⏱️ timer de expiração (10h) — some sozinha depois
-                    var timer=(o.fonte==='grupo'&&o.expires)?('<div class="corrTimer" data-exp="'+o.expires+'" style="margin:8px 0 2px;font-size:11px;font-weight:800;color:#ff9a3d;display:flex;align-items:center;gap:6px;"><span>⏳</span><span class="corrTimerTxt">calculando…</span></div>'):'';
-                    // texto do post (quando vem do grupo, mostra a legenda inteira)
-                    var corpo=(o.fonte==='grupo'&&o.text)?('<div style="font-size:12px;color:#cdd6e2;line-height:1.55;margin-top:4px;white-space:pre-wrap;">'+String(o.text).replace(/</g,'&lt;').slice(0,500)+'</div>'):'';
-                    var verBtn=o.link?('<a href="'+String(o.link).replace(/"/g,'&quot;')+'" target="_blank" rel="noopener sponsored" onclick="if(typeof iaTrackClick===\'function\')iaTrackClick(\'corredores\')" style="flex:1;text-align:center;text-decoration:none;background:linear-gradient(135deg,#00e0a0,#00b894);color:#022;border-radius:9px;padding:10px;font-size:12px;font-weight:900;">🛒 Ver oferta →</a>'):'';
-                    htmlOf+='<div style="background:linear-gradient(160deg,rgba(0,224,160,0.05),rgba(0,0,0,0.02));border:1px solid rgba(0,224,160,0.2);border-radius:14px;overflow:hidden;margin-bottom:13px;box-shadow:0 5px 16px rgba(0,0,0,0.2);">'
+                    if(o.preco){ preco='<div style="margin:7px 0 2px;"><span style="color:#00e0a0;font-weight:900;font-size:20px;">'+String(o.preco).replace(/</g,'')+'</span></div>'; }
+                    else if(o.orig&&o.sale){ var _org=String(o.orig).replace(/R\$\s*/gi,'').trim(); var _sal=String(o.sale).replace(/R\$\s*/gi,'').trim(); preco='<div style="margin:7px 0 2px;"><span style="text-decoration:line-through;color:#889;font-size:12px;margin-right:6px;">R$ '+_org+'</span><span style="color:#00e0a0;font-weight:900;font-size:20px;">R$ '+_sal+'</span></div>'; }
+                    // ⏱️ timer de expiração (10h)
+                    var timer=(o.fonte==='grupo'&&o.expires)?('<div class="corrTimer" data-exp="'+o.expires+'" style="margin:6px 0 2px;font-size:11px;font-weight:800;color:#ff9a3d;display:flex;align-items:center;gap:6px;"><span>⏳</span><span class="corrTimerTxt">calculando…</span></div>'):'';
+                    // 🗓️ data e hora da postagem
+                    var quando=''; if(o.ts){ try{ var dt=new Date(o.ts); quando='<div style="font-size:10px;color:#7a8494;margin-top:3px;">🗓️ Postado em '+dt.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'})+' às '+dt.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})+'</div>'; }catch(e){} }
+                    var verBtn=o.link?('<a href="'+String(o.link).replace(/"/g,'&quot;')+'" target="_blank" rel="noopener sponsored" onclick="if(typeof iaTrackClick===\'function\')iaTrackClick(\'corredores\')" style="flex:1;text-align:center;text-decoration:none;background:linear-gradient(135deg,#00e0a0,#00b894);color:#022;border-radius:9px;padding:11px;font-size:12px;font-weight:900;">🛒 Ver oferta →</a>'):'';
+                    htmlOf+='<div class="corrCard" style="background:linear-gradient(160deg,rgba(0,224,160,0.05),rgba(0,0,0,0.02));border:1px solid rgba(0,224,160,0.2);border-radius:14px;overflow:hidden;margin-bottom:13px;box-shadow:0 5px 16px rgba(0,0,0,0.2);">'
                         +img
                         +'<div style="padding:13px;">'
                           +'<div style="font-size:13px;font-weight:800;color:#fff;line-height:1.4;">'+String(o.title).replace(/</g,'&lt;')+'</div>'
-                          +corpo
                           +preco
                           +timer
-                          +'<div style="display:flex;gap:7px;margin-top:9px;">'+verBtn+shareBtn(o)+'</div>'
+                          +quando
+                          +'<div style="display:flex;gap:7px;margin-top:10px;">'+verBtn+shareBtn(o)+'</div>'
                         +'</div>'
                       +'</div>';
                 });
@@ -10950,13 +10959,31 @@ Poderia me ajudar? 🙏"
                         +(o.link?('<a href="'+String(o.link).replace(/"/g,'&quot;')+'" target="_blank" rel="noopener sponsored" style="display:block;text-align:center;text-decoration:none;background:rgba(255,106,0,0.15);color:var(--primary);border-radius:9px;padding:9px;font-size:12px;font-weight:900;margin-top:9px;">Usar cupom na loja →</a>'):'')
                       +'</div>';
                 });
+                // layout das ofertas: 'slider' (deslizar) ou 'lista' (descer) — escolhido no admin
+                var layout=''; try{ layout=localStorage.getItem('corr_layout')||'lista'; }catch(e){ layout='lista'; }
+                var ofWrap;
+                if(layout==='slider'){
+                    ofWrap='<div class="corrSlider" style="display:flex;gap:13px;overflow-x:auto;padding:2px 2px 12px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;">'+(htmlOf||'<div style="color:#889;font-size:12px;padding:16px;">Nenhuma oferta ativa agora.</div>')+'</div>';
+                } else {
+                    ofWrap='<div>'+(htmlOf||'<div style="color:#889;font-size:12px;padding:16px;text-align:center;">Nenhuma oferta ativa agora.</div>')+'</div>';
+                }
                 mount.innerHTML=
-                  '<div style="display:grid;grid-template-columns:1fr;gap:22px;" id="corrGrid">'
-                    +'<div><div style="font-size:15px;font-weight:900;color:#00e0a0;margin-bottom:4px;display:flex;align-items:center;gap:8px;">🔥 Ofertas ativas <span style="background:rgba(0,224,160,0.15);font-size:11px;padding:2px 9px;border-radius:20px;">'+ofertas.length+'</span></div><div style="height:2px;background:linear-gradient(90deg,rgba(0,224,160,0.5),transparent);border-radius:2px;margin-bottom:13px;"></div>'+(htmlOf||'<div style="color:#889;font-size:12px;padding:16px;text-align:center;">Nenhuma oferta ativa agora.</div>')+'</div>'
-                    +'<div><div style="font-size:15px;font-weight:900;color:var(--primary);margin-bottom:4px;display:flex;align-items:center;gap:8px;">🎟️ Cupons ativos <span style="background:rgba(255,106,0,0.15);font-size:11px;padding:2px 9px;border-radius:20px;">'+cupons.length+'</span></div><div style="height:2px;background:linear-gradient(90deg,rgba(255,106,0,0.5),transparent);border-radius:2px;margin-bottom:13px;"></div>'+(htmlCup||'<div style="color:#889;font-size:12px;padding:16px;text-align:center;">Nenhum cupom ativo agora.</div>')+'</div>'
+                  // 🔥 OFERTAS (área própria, em cima)
+                  '<div style="margin-bottom:26px;">'
+                    +'<div style="font-size:16px;font-weight:900;color:#00e0a0;margin-bottom:4px;display:flex;align-items:center;gap:8px;">🔥 Ofertas ativas <span style="background:rgba(0,224,160,0.15);font-size:11px;padding:2px 9px;border-radius:20px;">'+ofertas.length+'</span></div>'
+                    +'<div style="height:2px;background:linear-gradient(90deg,rgba(0,224,160,0.5),transparent);border-radius:2px;margin-bottom:14px;"></div>'
+                    +ofWrap
+                  +'</div>'
+                  // 🎟️ CUPONS (área SÓ deles, embaixo)
+                  +'<div style="background:rgba(255,106,0,0.03);border:1px solid rgba(255,106,0,0.18);border-radius:16px;padding:16px;">'
+                    +'<div style="font-size:16px;font-weight:900;color:var(--primary);margin-bottom:4px;display:flex;align-items:center;gap:8px;">🎟️ Cupons ativos <span style="background:rgba(255,106,0,0.15);font-size:11px;padding:2px 9px;border-radius:20px;">'+cupons.length+'</span></div>'
+                    +'<div style="height:2px;background:linear-gradient(90deg,rgba(255,106,0,0.5),transparent);border-radius:2px;margin-bottom:14px;"></div>'
+                    +'<div style="display:grid;grid-template-columns:1fr;gap:0;" id="corrCupGrid">'+(htmlCup||'<div style="color:#889;font-size:12px;padding:10px 4px;">Nenhum cupom ativo agora.</div>')+'</div>'
                   +'</div>';
-                // 2 colunas no desktop
-                try{ if(window.innerWidth>=760){ var g=document.getElementById('corrGrid'); if(g) g.style.gridTemplateColumns='1fr 1fr'; } }catch(e){}
+                // cupons em 2 colunas no desktop
+                try{ if(window.innerWidth>=760){ var cg=document.getElementById('corrCupGrid'); if(cg){ cg.style.gridTemplateColumns='1fr 1fr'; cg.style.gap='13px'; } var sc=mount.querySelectorAll('.corrCard'); if(layout==='slider'){ sc.forEach(function(c){ c.style.minWidth='300px'; c.style.scrollSnapAlign='start'; }); } } }catch(e){}
+                // no mobile, slider: cards com largura fixa
+                try{ if(window.innerWidth<760 && layout==='slider'){ mount.querySelectorAll('.corrCard').forEach(function(c){ c.style.minWidth='82%'; c.style.scrollSnapAlign='start'; }); } }catch(e){}
                 // ⏱️ liga os timers regressivos (10h)
                 try{ if(window._corrTimerInt) clearInterval(window._corrTimerInt); corrTickTimers(); window._corrTimerInt=setInterval(corrTickTimers,1000); }catch(e){}
             }
@@ -11008,6 +11035,13 @@ Poderia me ajudar? 🙏"
             try{ document.body.style.overflow=''; }catch(e){}
         };
         // salvar/carregar fundo da tela de corredores
+        window.corrSetLayout = function(v){
+            try{ localStorage.setItem('corr_layout', v); }catch(e){}
+            var a=document.getElementById('corrLayLista'), b=document.getElementById('corrLaySlider');
+            if(a&&b){ if(v==='slider'){ b.style.background='rgba(0,224,160,0.14)'; b.style.borderColor='rgba(0,224,160,0.35)'; b.style.color='#00e0a0'; a.style.background='rgba(255,255,255,0.06)'; a.style.borderColor='rgba(255,255,255,0.13)'; a.style.color='#ccc'; } else { a.style.background='rgba(0,224,160,0.14)'; a.style.borderColor='rgba(0,224,160,0.35)'; a.style.color='#00e0a0'; b.style.background='rgba(255,255,255,0.06)'; b.style.borderColor='rgba(255,255,255,0.13)'; b.style.color='#ccc'; } }
+            if(typeof saveData==='function') saveData(false);
+            if(typeof showToast==='function') showToast('Estilo das ofertas salvo!','🎞️');
+        };
         window.corrBgSave = function(){
             function v(id){ var e=document.getElementById(id); return e?e.value.trim():''; }
             try{ localStorage.setItem('corredores_bg', v('corrBgImg')); localStorage.setItem('corredores_bg_cor', v('corrBgCor')||'#0a0d12'); localStorage.setItem('tg_channel', v('corrTgChannel')); }catch(e){}
@@ -11015,7 +11049,7 @@ Poderia me ajudar? 🙏"
             if(typeof showToast==='function') showToast('Fundo da tela salvo! ✅','🏃');
         };
         window.corrBgLoad = function(){
-            try{ var i=document.getElementById('corrBgImg'); if(i&&!i.value) i.value=localStorage.getItem('corredores_bg')||''; var c=document.getElementById('corrBgCor'); if(c) c.value=localStorage.getItem('corredores_bg_cor')||'#0a0d12'; var tg=document.getElementById('corrTgChannel'); if(tg&&!tg.value) tg.value=localStorage.getItem('tg_channel')||''; }catch(e){}
+            try{ var i=document.getElementById('corrBgImg'); if(i&&!i.value) i.value=localStorage.getItem('corredores_bg')||''; var c=document.getElementById('corrBgCor'); if(c) c.value=localStorage.getItem('corredores_bg_cor')||'#0a0d12'; var tg=document.getElementById('corrTgChannel'); if(tg&&!tg.value) tg.value=localStorage.getItem('tg_channel')||''; if(typeof corrSetLayout==='function'){ var _l=localStorage.getItem('corr_layout')||'lista'; var a=document.getElementById('corrLayLista'); if(a){ /*reflete botão sem salvar*/ var b=document.getElementById('corrLaySlider'); if(_l==='slider'&&b){ b.style.background='rgba(0,224,160,0.14)';b.style.borderColor='rgba(0,224,160,0.35)';b.style.color='#00e0a0';a.style.background='rgba(255,255,255,0.06)';a.style.borderColor='rgba(255,255,255,0.13)';a.style.color='#ccc'; } } } }catch(e){}
         };
 
         // ── ABA INICIAL DO VISITANTE (escolhida no admin) ───────────────
@@ -12517,7 +12551,7 @@ Poderia me ajudar? 🙏"
         const _KV_API = '/api/data';
         // 🔄 Versão do site publicada. Se o visitante tiver uma versão ANTIGA em cache,
         // o site se atualiza sozinho (1x, sem loop) pra ele sempre ver o mais novo.
-        window.SITE_BUILD = 360;
+        window.SITE_BUILD = 362;
         // 🔎 selo de versão visível (canto) — pra CONFERIR qual versão está no ar
         (function _invBuildStamp(){
             function add(){ try{ if(document.getElementById('invBuildStamp'))return; var s=document.createElement('div'); s.id='invBuildStamp'; s.textContent='v'+(window.SITE_BUILD||'?'); s.style.cssText='position:fixed;bottom:4px;left:6px;z-index:3;font-size:9px;color:rgba(255,255,255,0.28);pointer-events:none;font-family:monospace;letter-spacing:.5px;'; document.body.appendChild(s); }catch(e){} }
@@ -13728,7 +13762,7 @@ Poderia me ajudar? 🙏"
             //    sincronizam pra TODOS os visitantes e entre aparelhos do admin
             ['notify_topic','chat_db_url','chat_sb_url','chat_sb_key','chat_sb_table','chat_pantry',
              'invPalette','siteThemeColors','invictorStravaDefaultColor','catalog_layout','invictorEdicaoCodes','invictorMarketplaces',
-             'foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','foco_survey_visible','statsBar_visible','foco_steps_pos','foco_survey_pos','foco_price_pos','siteLandingTab','verif_steps','ai_pages','tbt_enabled','tbt_mode','tbt_picks','site_font','promo_scale','survey_scale','stats_cfg','ia_tenis','ia_shopee_cupom','ia_telegram','ia_whats_ofertas','ia_lojas','magalu_promoter','magalu_partner','magalu_link','magalu_mode','amazon_tag','shopee_aff','meli_aff','meli_word','meli_tool','awin_id','awin_token','awin_mid_meli','ai_chips_hidden','ai_chips_custom','promo_deadline','ia_clicks','ia_rec_mode','edit_recipes','gateway_on','gateway_foto_img','gateway_tenis_img','site_bg_img','site_bg_op','gateway_bg_mode','corredores_bg','corredores_bg_cor','tg_channel','depoimentos','depoimentos_visible'].forEach(function(k){
+             'foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','foco_survey_visible','statsBar_visible','foco_steps_pos','foco_survey_pos','foco_price_pos','siteLandingTab','verif_steps','ai_pages','tbt_enabled','tbt_mode','tbt_picks','site_font','promo_scale','survey_scale','stats_cfg','ia_tenis','ia_shopee_cupom','ia_telegram','ia_whats_ofertas','ia_lojas','magalu_promoter','magalu_partner','magalu_link','magalu_mode','amazon_tag','shopee_aff','meli_aff','meli_word','meli_tool','awin_id','awin_token','awin_mid_meli','ai_chips_hidden','ai_chips_custom','promo_deadline','ia_clicks','ia_rec_mode','edit_recipes','gateway_on','gateway_foto_img','gateway_tenis_img','site_bg_img','site_bg_op','gateway_bg_mode','corredores_bg','corredores_bg_cor','tg_channel','corr_layout','depoimentos','depoimentos_visible'].forEach(function(k){
                 try { var v = localStorage.getItem(k); if (v != null) payload[k] = v; } catch(e) {}
             });
 
@@ -13946,7 +13980,7 @@ Poderia me ajudar? 🙏"
                 'invictorEdicaoEmails', 'invictorEdicaoAtivos',
                 // === Configs novas: chat ao vivo / ntfy / paleta / conteúdo / IA ===
                 'notify_topic','chat_db_url','chat_sb_url','chat_sb_key','chat_sb_table','chat_pantry',
-                'invPalette','siteThemeColors','invictorStravaDefaultColor','catalog_layout','invictorEdicaoCodes','invictorMarketplaces','foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','foco_survey_visible','statsBar_visible','foco_steps_pos','foco_survey_pos','foco_price_pos','siteLandingTab','verif_steps','ai_pages','tbt_enabled','tbt_mode','tbt_picks','site_font','promo_scale','survey_scale','stats_cfg','ia_tenis','ia_shopee_cupom','ia_telegram','ia_whats_ofertas','ia_lojas','magalu_promoter','magalu_partner','magalu_link','magalu_mode','amazon_tag','shopee_aff','meli_aff','meli_word','meli_tool','awin_id','awin_token','awin_mid_meli','ai_chips_hidden','ai_chips_custom','promo_deadline','ia_clicks','ia_rec_mode','edit_recipes','gateway_on','gateway_foto_img','gateway_tenis_img','site_bg_img','site_bg_op','gateway_bg_mode','corredores_bg','corredores_bg_cor','tg_channel','depoimentos','depoimentos_visible',
+                'invPalette','siteThemeColors','invictorStravaDefaultColor','catalog_layout','invictorEdicaoCodes','invictorMarketplaces','foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','foco_survey_visible','statsBar_visible','foco_steps_pos','foco_survey_pos','foco_price_pos','siteLandingTab','verif_steps','ai_pages','tbt_enabled','tbt_mode','tbt_picks','site_font','promo_scale','survey_scale','stats_cfg','ia_tenis','ia_shopee_cupom','ia_telegram','ia_whats_ofertas','ia_lojas','magalu_promoter','magalu_partner','magalu_link','magalu_mode','amazon_tag','shopee_aff','meli_aff','meli_word','meli_tool','awin_id','awin_token','awin_mid_meli','ai_chips_hidden','ai_chips_custom','promo_deadline','ia_clicks','ia_rec_mode','edit_recipes','gateway_on','gateway_foto_img','gateway_tenis_img','site_bg_img','site_bg_op','gateway_bg_mode','corredores_bg','corredores_bg_cor','tg_channel','corr_layout','depoimentos','depoimentos_visible',
                 // === Last update marker ===
                 '_lastUpdate'
             ];
