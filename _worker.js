@@ -103,15 +103,16 @@ async function handleTgWebhook(request, env, url) {
   const primeiraLinha = (text.split("\n").find((l) => l.trim()) || "").trim();
   const isCupom = /\bcupom\b/i.test(primeiraLinha);
 
-  // cupom/código: "cupom: X", "código X", "OFF: X" ou palavra em CAIXA ALTA
-  let cupom = "";
-  let cm = text.match(/(?:cupom|c[oó]digo|coupon)[:\s]+([A-Z0-9][A-Z0-9\-]{2,24})/i);
-  if (!cm) cm = text.match(/OFF[:\s]+([A-Z][A-Z0-9\-]{3,24})\b/);
-  if (cm) cupom = cm[1].toUpperCase();
-  if (!cupom && isCupom) {
-    // pega a palavra em CAIXA ALTA mais provável de ser o código (ignora comuns)
-    const ignora = ["CUPOM","AMAZON","SHOPEE","MAGALU","OFF","APP","NO","NA","DE","EM","LIMITE","AME","MERCADO","LIVRE","PIX"];
-    const cands = (text.match(/\b[A-Z][A-Z0-9]{3,24}\b/g) || []).filter((w) => ignora.indexOf(w) < 0);
+  // cupom/código — REGRA: vem depois de "cupom:", ou depois do "-", "–" ou ":" (ex: "R$299 - SAIUNOPRIME")
+  const ignoraCod = ["CUPOM","AMAZON","SHOPEE","MAGALU","MAGAZINE","OFF","APP","NOAPP","NO","NA","DE","EM","LIMITE","AME","MERCADO","LIVRE","MELI","PIX","NETSHOSE","NETSHOES","CENTAURO","NIKE","ADIDAS","OLYMPIKUS","COM","POR","ATÉ","ATE"];
+  function _tryCod(re){ var m = text.match(re); if (m && m[1] && ignoraCod.indexOf(m[1].toUpperCase()) < 0) return m[1].toUpperCase(); return ""; }
+  let cupom =
+        _tryCod(/(?:cupom|c[oó]digo|coupon)[:\s]+([A-Za-z][A-Za-z0-9\-]{2,24})/i)   // "cupom: X"
+     || _tryCod(/[-–—:]\s*([A-Z][A-Z0-9]{3,24})\b/)                                 // "...R$299 - SAIUNOPRIME"
+     || _tryCod(/OFF[:\s]+([A-Z][A-Z0-9\-]{3,24})\b/);                              // "OFF: X"
+  const isCupom0 = /\bcupom\b/i.test((text.split("\n").find((l) => l.trim()) || ""));
+  if (!cupom && isCupom0) {
+    var cands = (text.match(/\b[A-Z][A-Z0-9]{4,24}\b/g) || []).filter((w) => ignoraCod.indexOf(w) < 0);
     if (cands.length) cupom = cands.sort((a, b) => b.length - a.length)[0];
   }
 

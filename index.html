@@ -5723,7 +5723,7 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v364.0001</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v367.0001</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -10915,14 +10915,19 @@ Poderia me ajudar? 🙏"
                 return m?('R$ '+m[1]):'';
             }
             function _derivaCupom(o){
-                if(o.cupom) return o.cupom;
-                var m=(o.text||'').match(/(?:cupom|c[oó]digo|coupon|OFF)[:\s]+([A-Z][A-Z0-9\-]{3,24})/); return m?m[1].toUpperCase():'';
+                var ig=['CUPOM','AMAZON','SHOPEE','MAGALU','MAGAZINE','OFF','APP','NOAPP','NO','NA','DE','EM','LIMITE','AME','MERCADO','LIVRE','MELI','PIX','CENTAURO','NIKE','ADIDAS','OLYMPIKUS','COM','POR','ATE'];
+                if(o.cupom && ig.indexOf(String(o.cupom).toUpperCase())<0) return o.cupom; // cupom já válido
+                var text=o.text||'';
+                function t(re){ var m=text.match(re); if(m&&m[1]&&ig.indexOf(m[1].toUpperCase())<0) return m[1].toUpperCase(); return ''; }
+                return t(/(?:cupom|c[oó]digo|coupon)[:\s]+([A-Za-z][A-Za-z0-9\-]{2,24})/i)||t(/[-–—:]\s*([A-Z][A-Z0-9]{3,24})\b/)||t(/OFF[:\s]+([A-Z][A-Z0-9\-]{3,24})\b/)||'';
             }
             var regis=(currentData.ofertas||[]).filter(function(o){ return o.ativo!==false && (o.nome||o.imagem); }).map(function(o){
                 return { title:o.nome||'Oferta', text:o.nome||'', link:(typeof iaAffLink==='function'&&o.link? o.link : (o.link||'')), img:o.imagem||'', cupom:'', orig:o.original||'', sale:o.sale||'', fonte:'site', ts:0, id:o.id||0 };
             });
             fetch('/api/tg/offers').then(function(r){return r.json();}).then(function(d){ finish((d&&d.offers)||[]); }).catch(function(){ finish([]); });
             function finish(tg){
+                // assinatura pra saber quando mudou (auto-atualização)
+                try{ window._corrLastSig = tg.map(function(o){return o.id+'_'+(o.ts||'');}).join('|')+'#'+((currentData.ofertas||[]).length); }catch(e){}
                 var tgo=tg.map(function(o){ return { title:_derivaTitulo(o), text:o.text||'', link:o.link||'', img:o.img||'', cupom:_derivaCupom(o), preco:_derivaPreco(o), loja:o.loja||'', isCupom:!!o.isCupom, orig:'', sale:'', fonte:'grupo', expires:o.expires||0, ts:o.ts||0 }; });
                 var all=regis.concat(tgo);
                 // 🆕 mais novas primeiro (por data de postagem)
@@ -10991,7 +10996,7 @@ Poderia me ajudar? 🙏"
                     +ofWrap
                   +'</div>'
                   // 🎟️ CUPONS (área SÓ deles, embaixo)
-                  +'<div style="background:rgba(255,106,0,0.03);border:1px solid rgba(255,106,0,0.18);border-radius:16px;padding:16px;">'
+                  +'<div id="corrCupSection" style="background:rgba(255,106,0,0.03);border:1px solid rgba(255,106,0,0.18);border-radius:16px;padding:16px;">'
                     +'<div style="font-size:16px;font-weight:900;color:var(--primary);margin-bottom:4px;display:flex;align-items:center;gap:8px;">🎟️ Cupons ativos <span style="background:rgba(255,106,0,0.15);font-size:11px;padding:2px 9px;border-radius:20px;">'+cupons.length+'</span></div>'
                     +'<div style="height:2px;background:linear-gradient(90deg,rgba(255,106,0,0.5),transparent);border-radius:2px;margin-bottom:14px;"></div>'
                     +'<div style="display:grid;grid-template-columns:1fr;gap:0;" id="corrCupGrid">'+(htmlCup||'<div style="color:#889;font-size:12px;padding:10px 4px;">Nenhum cupom ativo agora.</div>')+'</div>'
@@ -11031,9 +11036,11 @@ Poderia me ajudar? 🙏"
             ov.id='corrOverlay';
             ov.style.cssText='position:fixed;inset:0;z-index:99990;background:'+bg+';overflow-y:auto;animation:promoFadeIn .35s ease;';
             ov.innerHTML=
-              '<div style="position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:12px;padding:14px 16px;background:linear-gradient(180deg,rgba(6,8,12,0.9),rgba(6,8,12,0));backdrop-filter:blur(6px);">'
+              '<div style="position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:14px 16px;background:linear-gradient(180deg,rgba(6,8,12,0.9),rgba(6,8,12,0));backdrop-filter:blur(6px);">'
                 +'<button onclick="closeCorredores()" style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:#fff;border-radius:12px;padding:10px 15px;font-size:13px;font-weight:800;cursor:pointer;">← Voltar</button>'
-                +'<div style="font-size:15px;font-weight:900;color:#fff;display:flex;align-items:center;gap:7px;">🏃 Ofertas ativas</div>'
+                +'<div style="font-size:15px;font-weight:900;color:#fff;display:flex;align-items:center;gap:7px;flex:1;">🏃 Ofertas ativas</div>'
+                +'<button onclick="invShareLink(\'ofertas\')" title="Copiar link das ofertas" style="background:rgba(0,224,160,0.12);border:1px solid rgba(0,224,160,0.35);color:#00e0a0;border-radius:10px;padding:9px 12px;font-size:11px;font-weight:800;cursor:pointer;">🔗 Ofertas</button>'
+                +'<button onclick="invShareLink(\'cupons\')" title="Copiar link dos cupons" style="background:rgba(255,106,0,0.12);border:1px solid rgba(255,106,0,0.35);color:var(--primary);border-radius:10px;padding:9px 12px;font-size:11px;font-weight:800;cursor:pointer;">🔗 Cupons</button>'
               +'</div>'
               +'<div style="max-width:940px;margin:0 auto;padding:6px 16px 40px;">'
                 +(function(){ var tg=_g('tg_channel'); if(!tg) return ''; var u=tg.indexOf('http')===0?tg:('https://t.me/'+tg.replace(/^@/,'')); return '<a href="'+u.replace(/"/g,'&quot;')+'" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:11px;text-decoration:none;background:linear-gradient(135deg,rgba(41,171,226,0.15),rgba(41,171,226,0.05));border:1.5px solid rgba(41,171,226,0.4);border-radius:14px;padding:13px 15px;margin-bottom:18px;"><span style="font-size:26px;">📢</span><div style="flex:1;"><div style="font-size:13px;font-weight:900;color:#fff;">Veja TUDO no canal do Telegram</div><div style="font-size:11px;color:#8fc4e0;">Ofertas e cupons em primeira mão, o dia todo</div></div><span style="background:#29abe2;color:#fff;font-weight:900;font-size:12px;padding:9px 14px;border-radius:10px;white-space:nowrap;">Entrar →</span></a>'; })()
@@ -11043,9 +11050,25 @@ Poderia me ajudar? 🙏"
             document.body.appendChild(ov);
             try{ document.body.style.overflow='hidden'; }catch(e){}
             try{ corredoresInit('corrOvMount'); }catch(e){}
+            // 🔄 atualiza sozinho: quando você posta no Telegram, aparece na hora (sem F5)
+            try{ if(window._corrPoll) clearInterval(window._corrPoll); window._corrPoll=setInterval(corrPollRefresh, 10000); }catch(e){}
+        };
+        window.corrPollRefresh = function(){
+            if(!document.getElementById('corrOverlay')){ try{ if(window._corrPoll){ clearInterval(window._corrPoll); window._corrPoll=null; } }catch(e){} return; }
+            fetch('/api/tg/offers').then(function(r){return r.json();}).then(function(d){
+                var offers=(d&&d.offers)||[];
+                var sig=offers.map(function(o){return o.id+'_'+(o.ts||'');}).join('|')+'#'+((currentData.ofertas||[]).length);
+                if(sig!==window._corrLastSig){
+                    window._corrLastSig=sig;
+                    var mnt=document.getElementById('corrOvMount'); if(mnt){ try{ corredoresInit('corrOvMount'); }catch(e){} }
+                    // aviso discreto de nova oferta
+                    try{ if(typeof showToast==='function') showToast('Novas ofertas! 🔥','🔄'); }catch(e){}
+                }
+            }).catch(function(){});
         };
         window.closeCorredores = function(){
             try{ if(window._corrTimerInt){ clearInterval(window._corrTimerInt); window._corrTimerInt=null; } }catch(e){}
+            try{ if(window._corrPoll){ clearInterval(window._corrPoll); window._corrPoll=null; } }catch(e){}
             var ov=document.getElementById('corrOverlay');
             if(ov){ ov.style.opacity='0'; setTimeout(function(){ try{ov.remove();}catch(e){} },300); }
             try{ document.body.style.overflow=''; }catch(e){}
@@ -11067,6 +11090,37 @@ Poderia me ajudar? 🙏"
         window.corrBgLoad = function(){
             try{ var i=document.getElementById('corrBgImg'); if(i&&!i.value) i.value=localStorage.getItem('corredores_bg')||''; var c=document.getElementById('corrBgCor'); if(c) c.value=localStorage.getItem('corredores_bg_cor')||'#0a0d12'; var tg=document.getElementById('corrTgChannel'); if(tg&&!tg.value) tg.value=localStorage.getItem('tg_channel')||''; if(typeof corrSetLayout==='function'){ var _l=localStorage.getItem('corr_layout')||'lista'; var a=document.getElementById('corrLayLista'); if(a){ /*reflete botão sem salvar*/ var b=document.getElementById('corrLaySlider'); if(_l==='slider'&&b){ b.style.background='rgba(0,224,160,0.14)';b.style.borderColor='rgba(0,224,160,0.35)';b.style.color='#00e0a0';a.style.background='rgba(255,255,255,0.06)';a.style.borderColor='rgba(255,255,255,0.13)';a.style.color='#ccc'; } } } }catch(e){}
         };
+
+        // 🔗 ROTEADOR DE LINKS DIRETOS (#cupons, #ofertas, #inicio, #fotos, #edicao, #procuratenis)
+        window.invRoute = function(){
+            var h=(location.hash||'').replace(/^#/,'').toLowerCase().trim();
+            if(!h) return false;
+            function closeGw(){ try{ var gw=document.getElementById('invGateway'); if(gw){ gw.remove(); } sessionStorage.setItem('inv_gateway_seen','1'); }catch(e){} }
+            if(h==='cupons' || h==='ofertas'){
+                closeGw();
+                if(typeof openCorredores==='function'){
+                    openCorredores();
+                    if(h==='cupons'){ setTimeout(function(){ try{ var s=document.getElementById('corrCupSection'); if(s) s.scrollIntoView({behavior:'smooth',block:'start'}); }catch(e){} }, 700); }
+                }
+                return true;
+            }
+            if(typeof closeCorredores==='function') closeCorredores();
+            closeGw();
+            if(h==='inicio'){ if(typeof switchTab==='function') switchTab('foco'); try{ window.scrollTo({top:0,behavior:'smooth'}); }catch(e){} return true; }
+            var map={ fotos:'foco', edicao:'edicao', procuratenis:'procure', procura:'procure', tenis:'procure' };
+            if(map[h] && typeof switchTab==='function'){ switchTab(map[h]); try{ window.scrollTo({top:0}); }catch(e){} return true; }
+            return false;
+        };
+        // 🔗 copia o link direto de uma tela (pra você divulgar)
+        window.invShareLink = function(rota){
+            var base=(location.origin+location.pathname).replace(/#.*$/,'');
+            var url=base+'#'+rota;
+            try{ if(navigator.clipboard){ navigator.clipboard.writeText(url); } }catch(e){}
+            if(typeof showToast==='function') showToast('Link copiado! 🔗','🔗');
+            return url;
+        };
+        window.addEventListener('hashchange', function(){ try{ invRoute(); }catch(e){} });
+        try{ if(location.hash){ setTimeout(function(){ try{ invRoute(); }catch(e){} }, 650); } }catch(e){}
 
         // ── ABA INICIAL DO VISITANTE (escolhida no admin) ───────────────
         // Garante que o visitante caia na seção que o Victor escolheu. Se essa
@@ -12567,7 +12621,7 @@ Poderia me ajudar? 🙏"
         const _KV_API = '/api/data';
         // 🔄 Versão do site publicada. Se o visitante tiver uma versão ANTIGA em cache,
         // o site se atualiza sozinho (1x, sem loop) pra ele sempre ver o mais novo.
-        window.SITE_BUILD = 364;
+        window.SITE_BUILD = 367;
         // 🔎 selo de versão visível (canto) — pra CONFERIR qual versão está no ar
         (function _invBuildStamp(){
             function add(){ try{ if(document.getElementById('invBuildStamp'))return; var s=document.createElement('div'); s.id='invBuildStamp'; s.textContent='v'+(window.SITE_BUILD||'?'); s.style.cssText='position:fixed;bottom:4px;left:6px;z-index:3;font-size:9px;color:rgba(255,255,255,0.28);pointer-events:none;font-family:monospace;letter-spacing:.5px;'; document.body.appendChild(s); }catch(e){} }
