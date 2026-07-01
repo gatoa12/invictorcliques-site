@@ -3091,7 +3091,18 @@
             .menu-btn .btn-sub { font-size: 10px !important; }
         }
 
-        /* ✨ MODERNIZAÇÃO v354 — ar de novidade: entrada animada + brilhos sutis */
+        /* ✨ MODERNIZAÇÃO v368 — banner de tênis responsivo + barra de números opcional */
+        @media (max-width: 640px){
+            .sneaker-promo-inner { flex-wrap: wrap !important; row-gap: 8px; }
+            .sneaker-promo-discount { display:none !important; }
+            .sneaker-promo-cta { width:100% !important; margin-top:6px !important; justify-content:center; }
+            .sneaker-promo-text { min-width: 60% !important; }
+        }
+        /* barra de números escondida por padrão (Victor ativa no admin quando quiser) */
+        body.stats-off #statsBar { display:none !important; }
+        /* selo de eventos ativos no botão Foco Radical */
+        .foco-ev-badge { display:inline-block; margin-left:6px; background:#4CD964; color:#04210f; font-size:10px; font-weight:900; padding:1px 7px; border-radius:20px; vertical-align:middle; }
+
         @keyframes menuEnter { from { opacity:0; transform:translateY(14px) scale(0.96); } to { opacity:1; transform:translateY(0) scale(1); } }
         .main-menu .menu-btn { animation: menuEnter .5s cubic-bezier(.2,.8,.3,1) backwards; }
         .main-menu .menu-btn:nth-child(1){animation-delay:.04s}
@@ -5723,7 +5734,7 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v367.0001</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v368.0001</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -6755,6 +6766,7 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                     <!-- 📊 BARRA DE NÚMEROS (editável) -->
                     <div style="background:rgba(255,106,0,0.06);border:1px solid rgba(255,106,0,0.25);border-radius:13px;padding:14px;margin-bottom:20px;">
                         <div style="font-size:12.5px;font-weight:900;color:var(--primary);margin-bottom:3px;">📊 Barra de números (Eventos · Ofertas · Local · Região)</div>
+                        <button id="statsToggleBtn" onclick="statsToggle()" style="width:100%;margin:6px 0 10px;padding:10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);border-radius:9px;color:#cdd6e4;font-size:12px;font-weight:800;cursor:pointer;">🚫 Barra de números: DESLIGADA</button>
                         <div style="font-size:11px;color:#8a9;margin-bottom:13px;line-height:1.5;">Edite os 4 números e textos. Use <code style="color:#FF8A3D;">auto-ev</code> (conta eventos), <code style="color:#FF8A3D;">auto-of</code> (conta ofertas), ou digite um texto/emoji livre — ex: <code style="color:#FF8A3D;">📍 Natal · RN</code>, e no 4º campo você pode listar <strong style="color:#FF8A3D;">outros municípios</strong> que atende (ex: <code style="color:#FF8A3D;">Parnamirim, Macaíba</code>).</div>
                         <div style="display:flex;flex-direction:column;gap:9px;">
                             <div style="display:flex;gap:8px;align-items:center;"><span style="font-size:11px;color:#888;width:18px;font-weight:900;">1</span><input id="statCfgNum0" placeholder="auto-ev" style="width:90px;padding:9px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.12);border-radius:9px;color:#fff;font-size:12px;outline:none;"><input id="statCfgLbl0" placeholder="Eventos" style="flex:1;padding:9px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.12);border-radius:9px;color:#fff;font-size:12px;outline:none;"></div>
@@ -10999,10 +11011,10 @@ Poderia me ajudar? 🙏"
                   +'<div id="corrCupSection" style="background:rgba(255,106,0,0.03);border:1px solid rgba(255,106,0,0.18);border-radius:16px;padding:16px;">'
                     +'<div style="font-size:16px;font-weight:900;color:var(--primary);margin-bottom:4px;display:flex;align-items:center;gap:8px;">🎟️ Cupons ativos <span style="background:rgba(255,106,0,0.15);font-size:11px;padding:2px 9px;border-radius:20px;">'+cupons.length+'</span></div>'
                     +'<div style="height:2px;background:linear-gradient(90deg,rgba(255,106,0,0.5),transparent);border-radius:2px;margin-bottom:14px;"></div>'
-                    +'<div style="display:grid;grid-template-columns:1fr;gap:0;" id="corrCupGrid">'+(htmlCup||'<div style="color:#889;font-size:12px;padding:10px 4px;">Nenhum cupom ativo agora.</div>')+'</div>'
+                    +'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));gap:13px;" id="corrCupGrid">'+(htmlCup||'<div style="color:#889;font-size:12px;padding:10px 4px;">Nenhum cupom ativo agora.</div>')+'</div>'
                   +'</div>';
-                // cupons em 2 colunas no desktop
-                try{ if(window.innerWidth>=760){ var cg=document.getElementById('corrCupGrid'); if(cg){ cg.style.gridTemplateColumns='1fr 1fr'; cg.style.gap='13px'; } var sc=mount.querySelectorAll('.corrCard'); if(layout==='slider'){ sc.forEach(function(c){ c.style.minWidth='300px'; c.style.scrollSnapAlign='start'; }); } } }catch(e){}
+                // ofertas: slider fixa largura; cupons já são responsivos (auto-fill)
+                try{ if(window.innerWidth>=760){ var sc=mount.querySelectorAll('.corrCard'); if(layout==='slider'){ sc.forEach(function(c){ c.style.minWidth='300px'; c.style.scrollSnapAlign='start'; }); } } }catch(e){}
                 // no mobile, slider: cards com largura fixa
                 try{ if(window.innerWidth<760 && layout==='slider'){ mount.querySelectorAll('.corrCard').forEach(function(c){ c.style.minWidth='82%'; c.style.scrollSnapAlign='start'; }); } }catch(e){}
                 // ⏱️ liga os timers regressivos (10h)
@@ -11120,7 +11132,8 @@ Poderia me ajudar? 🙏"
             return url;
         };
         window.addEventListener('hashchange', function(){ try{ invRoute(); }catch(e){} });
-        try{ if(location.hash){ setTimeout(function(){ try{ invRoute(); }catch(e){} }, 650); } }catch(e){}
+        try{ if(location.hash){ setTimeout(function(){ try{ invRoute(); }catch(e){} }, 300); setTimeout(function(){ try{ invRoute(); }catch(e){} }, 900); setTimeout(function(){ try{ invRoute(); }catch(e){} }, 1600); } }catch(e){}
+        window.addEventListener('load', function(){ try{ if(location.hash) invRoute(); }catch(e){} });
 
         // ── ABA INICIAL DO VISITANTE (escolhida no admin) ───────────────
         // Garante que o visitante caia na seção que o Victor escolheu. Se essa
@@ -12621,7 +12634,7 @@ Poderia me ajudar? 🙏"
         const _KV_API = '/api/data';
         // 🔄 Versão do site publicada. Se o visitante tiver uma versão ANTIGA em cache,
         // o site se atualiza sozinho (1x, sem loop) pra ele sempre ver o mais novo.
-        window.SITE_BUILD = 367;
+        window.SITE_BUILD = 368;
         // 🔎 selo de versão visível (canto) — pra CONFERIR qual versão está no ar
         (function _invBuildStamp(){
             function add(){ try{ if(document.getElementById('invBuildStamp'))return; var s=document.createElement('div'); s.id='invBuildStamp'; s.textContent='v'+(window.SITE_BUILD||'?'); s.style.cssText='position:fixed;bottom:4px;left:6px;z-index:3;font-size:9px;color:rgba(255,255,255,0.28);pointer-events:none;font-family:monospace;letter-spacing:.5px;'; document.body.appendChild(s); }catch(e){} }
@@ -13832,7 +13845,7 @@ Poderia me ajudar? 🙏"
             //    sincronizam pra TODOS os visitantes e entre aparelhos do admin
             ['notify_topic','chat_db_url','chat_sb_url','chat_sb_key','chat_sb_table','chat_pantry',
              'invPalette','siteThemeColors','invictorStravaDefaultColor','catalog_layout','invictorEdicaoCodes','invictorMarketplaces',
-             'foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','foco_survey_visible','statsBar_visible','foco_steps_pos','foco_survey_pos','foco_price_pos','siteLandingTab','verif_steps','ai_pages','tbt_enabled','tbt_mode','tbt_picks','site_font','promo_scale','survey_scale','stats_cfg','ia_tenis','ia_shopee_cupom','ia_telegram','ia_whats_ofertas','ia_lojas','magalu_promoter','magalu_partner','magalu_link','magalu_mode','amazon_tag','shopee_aff','meli_aff','meli_word','meli_tool','awin_id','awin_token','awin_mid_meli','ai_chips_hidden','ai_chips_custom','promo_deadline','ia_clicks','ia_rec_mode','edit_recipes','gateway_on','gateway_foto_img','gateway_tenis_img','site_bg_img','site_bg_op','gateway_bg_mode','corredores_bg','corredores_bg_cor','tg_channel','corr_layout','depoimentos','depoimentos_visible'].forEach(function(k){
+             'foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','foco_survey_visible','statsBar_visible','foco_steps_pos','foco_survey_pos','foco_price_pos','siteLandingTab','verif_steps','ai_pages','tbt_enabled','tbt_mode','tbt_picks','site_font','promo_scale','survey_scale','stats_cfg','ia_tenis','ia_shopee_cupom','ia_telegram','ia_whats_ofertas','ia_lojas','magalu_promoter','magalu_partner','magalu_link','magalu_mode','amazon_tag','shopee_aff','meli_aff','meli_word','meli_tool','awin_id','awin_token','awin_mid_meli','ai_chips_hidden','ai_chips_custom','promo_deadline','ia_clicks','ia_rec_mode','edit_recipes','gateway_on','gateway_foto_img','gateway_tenis_img','site_bg_img','site_bg_op','gateway_bg_mode','corredores_bg','corredores_bg_cor','tg_channel','corr_layout','stats_visible','depoimentos','depoimentos_visible'].forEach(function(k){
                 try { var v = localStorage.getItem(k); if (v != null) payload[k] = v; } catch(e) {}
             });
 
@@ -14050,7 +14063,7 @@ Poderia me ajudar? 🙏"
                 'invictorEdicaoEmails', 'invictorEdicaoAtivos',
                 // === Configs novas: chat ao vivo / ntfy / paleta / conteúdo / IA ===
                 'notify_topic','chat_db_url','chat_sb_url','chat_sb_key','chat_sb_table','chat_pantry',
-                'invPalette','siteThemeColors','invictorStravaDefaultColor','catalog_layout','invictorEdicaoCodes','invictorMarketplaces','foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','foco_survey_visible','statsBar_visible','foco_steps_pos','foco_survey_pos','foco_price_pos','siteLandingTab','verif_steps','ai_pages','tbt_enabled','tbt_mode','tbt_picks','site_font','promo_scale','survey_scale','stats_cfg','ia_tenis','ia_shopee_cupom','ia_telegram','ia_whats_ofertas','ia_lojas','magalu_promoter','magalu_partner','magalu_link','magalu_mode','amazon_tag','shopee_aff','meli_aff','meli_word','meli_tool','awin_id','awin_token','awin_mid_meli','ai_chips_hidden','ai_chips_custom','promo_deadline','ia_clicks','ia_rec_mode','edit_recipes','gateway_on','gateway_foto_img','gateway_tenis_img','site_bg_img','site_bg_op','gateway_bg_mode','corredores_bg','corredores_bg_cor','tg_channel','corr_layout','depoimentos','depoimentos_visible',
+                'invPalette','siteThemeColors','invictorStravaDefaultColor','catalog_layout','invictorEdicaoCodes','invictorMarketplaces','foco_steps','foco_survey_cfg','foco_prices','foco_price_visible','foco_steps_visible','foco_cta_visible','foco_survey_visible','statsBar_visible','foco_steps_pos','foco_survey_pos','foco_price_pos','siteLandingTab','verif_steps','ai_pages','tbt_enabled','tbt_mode','tbt_picks','site_font','promo_scale','survey_scale','stats_cfg','ia_tenis','ia_shopee_cupom','ia_telegram','ia_whats_ofertas','ia_lojas','magalu_promoter','magalu_partner','magalu_link','magalu_mode','amazon_tag','shopee_aff','meli_aff','meli_word','meli_tool','awin_id','awin_token','awin_mid_meli','ai_chips_hidden','ai_chips_custom','promo_deadline','ia_clicks','ia_rec_mode','edit_recipes','gateway_on','gateway_foto_img','gateway_tenis_img','site_bg_img','site_bg_op','gateway_bg_mode','corredores_bg','corredores_bg_cor','tg_channel','corr_layout','stats_visible','depoimentos','depoimentos_visible',
                 // === Last update marker ===
                 '_lastUpdate'
             ];
@@ -14344,7 +14357,7 @@ Poderia me ajudar? 🙏"
             if(tabIndex===9) { loadThemeColorsIntoPanel(); setTimeout(function(){ if(typeof invPaletteRender==='function') invPaletteRender(); if(typeof renderFontAdmin==='function') renderFontAdmin(); }, 40); }
             if(tabIndex===10) { renderBotoesAdmin(); if(typeof renderSeccoesAdmin==='function') renderSeccoesAdmin(); if(typeof syncLandingTabSelect==='function') syncLandingTabSelect(); if(typeof renderVerifStepsAdmin==='function') renderVerifStepsAdmin(); if(typeof renderElemScaleAdmin==='function') renderElemScaleAdmin(); if(typeof renderStatsCfgAdmin==='function') renderStatsCfgAdmin(); if(typeof renderPromoAdminStatus==='function') renderPromoAdminStatus(); if(typeof gatewayImgsLoad==='function') gatewayImgsLoad(); if(typeof renderDepoimentosAdmin==='function') renderDepoimentosAdmin(); }
             if(tabIndex===11) { renderGaleria(); }
-            if(tabIndex===12) { initApisTab(); if(typeof renderIaTenisAdmin==='function') renderIaTenisAdmin(); if(typeof iaOfertaLinksLoad==='function') iaOfertaLinksLoad(); if(typeof renderIaRecMode==='function') renderIaRecMode(); if(typeof renderIaLojasAdmin==='function') renderIaLojasAdmin(); if(typeof magaluLoad==='function') magaluLoad(); if(typeof amazonLoad==='function') amazonLoad(); if(typeof affExtraLoad==="function") affExtraLoad(); if(typeof corrBgLoad==="function") corrBgLoad(); if(typeof renderAiChipsAdmin==='function') renderAiChipsAdmin(); if(typeof shopeeStatus==='function') setTimeout(shopeeStatus, 60); }
+            if(tabIndex===12) { initApisTab(); if(typeof renderIaTenisAdmin==='function') renderIaTenisAdmin(); if(typeof iaOfertaLinksLoad==='function') iaOfertaLinksLoad(); if(typeof renderIaRecMode==='function') renderIaRecMode(); if(typeof renderIaLojasAdmin==='function') renderIaLojasAdmin(); if(typeof magaluLoad==='function') magaluLoad(); if(typeof amazonLoad==='function') amazonLoad(); if(typeof affExtraLoad==="function") affExtraLoad(); if(typeof corrBgLoad==="function") corrBgLoad(); try{var _sb=document.getElementById("statsToggleBtn"); if(_sb) _sb.textContent=(localStorage.getItem("stats_visible")==="1")?"👁️ Barra de números: LIGADA":"🚫 Barra de números: DESLIGADA";}catch(e){} if(typeof renderAiChipsAdmin==='function') renderAiChipsAdmin(); if(typeof shopeeStatus==='function') setTimeout(shopeeStatus, 60); }
             if(tabIndex===3)  { setTimeout(_refreshAdminCouponStock, 80); }
             if(tabIndex===13) {
                 setTimeout(() => {
@@ -23938,7 +23951,31 @@ Exemplo: [{"title":"TREINO ALEXANDRINO","url":"https://invictorcliques.focoradic
                 if(nv) nv.value=cfg[i].num; if(lv) lv.value=cfg[i].label;
             }
         };
-        try{ if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', function(){ setTimeout(function(){ try{renderStatsBar();}catch(e){} try{startPromoRotator();}catch(e){} },500); }); } else { setTimeout(function(){ try{renderStatsBar();}catch(e){} try{startPromoRotator();}catch(e){} },500); } }catch(e){}
+        try{ if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', function(){ setTimeout(function(){ try{renderStatsBar();}catch(e){} try{startPromoRotator();}catch(e){} try{invStatsInit();}catch(e){} },500); }); } else { setTimeout(function(){ try{renderStatsBar();}catch(e){} try{startPromoRotator();}catch(e){} try{invStatsInit();}catch(e){} },500); } }catch(e){}
+
+        // 📊 barra de números escondida por padrão + selo de eventos no Foco Radical
+        window.invStatsInit = function(){
+            try{ if(localStorage.getItem('stats_visible')==='1'){ document.body.classList.remove('stats-off'); } else { document.body.classList.add('stats-off'); } }catch(e){}
+            updateFocoEventBadge();
+        };
+        window.updateFocoEventBadge = function(){
+            try{
+                var n=(currentData.eventos||[]).length + (typeof FOCO_EVENTOS_REAIS!=='undefined'?FOCO_EVENTOS_REAIS.length:0);
+                var btn=document.getElementById('menuBtn_foco'); if(!btn) return;
+                var sub=btn.querySelector('.btn-sub'); if(!sub) return;
+                var old=sub.querySelector('.foco-ev-badge'); if(old) old.remove();
+                if(n>0){ var b=document.createElement('span'); b.className='foco-ev-badge'; b.textContent=n+(n===1?' evento':' eventos'); sub.appendChild(document.createTextNode(' ')); sub.appendChild(b); }
+            }catch(e){}
+        };
+        window.statsToggle = function(){
+            var on=false; try{ on=localStorage.getItem('stats_visible')==='1'; }catch(e){}
+            on=!on;
+            try{ localStorage.setItem('stats_visible', on?'1':'0'); }catch(e){}
+            document.body.classList.toggle('stats-off', !on);
+            var el=document.getElementById('statsToggleBtn'); if(el) el.textContent = on?'👁️ Barra de números: LIGADA':'🚫 Barra de números: DESLIGADA';
+            if(typeof saveData==='function') saveData(false);
+            if(typeof showToast==='function') showToast(on?'Barra ligada':'Barra desligada','📊');
+        };
         setInterval(function(){ if(document.hidden) return; updateStatsBar(); }, 5000);
         setTimeout(updateStatsBar, 1000);
 
