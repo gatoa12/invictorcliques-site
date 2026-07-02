@@ -5734,7 +5734,7 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v369.0003</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v370.0001</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -5828,6 +5828,7 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                         <div class="ap-nav-group">
                             <div class="admin-section-label">📦 Conteúdo</div>
                             <button class="admin-tab-btn active" id="sideTab0" onclick="switchAdminTab(0)"><span>📋</span>Ofertas</button>
+                            <button class="admin-tab-btn ap-tab-blue" id="sideTab26" onclick="switchAdminTab(26)"><span>✈️</span>Ofertas Telegram</button>
                             <button class="admin-tab-btn" id="sideTab1" onclick="switchAdminTab(1)"><span>📸</span>Eventos Foco <span id="focoCountBadge" class="focoCountBadge" style="background:rgba(255,215,0,0.18);color:var(--ap-gold,#FFD24D);border-radius:9px;padding:0 6px;font-size:10px;font-weight:900;margin-left:auto;">0</span></button>
                             <button class="admin-tab-btn ap-tab-orange" id="sideTab22" onclick="switchAdminTab(22)"><span>🔍</span>Verificações <span id="verifBadge" style="background:#FF6A00;color:#000;border-radius:9px;padding:0 6px;font-size:10px;font-weight:900;margin-left:2px;display:none;">0</span></button>
                             <button class="admin-tab-btn ap-tab-green" id="sideTab23" onclick="switchAdminTab(23)"><span>🤖</span>IA & Bot <span id="aiBadge" style="background:#00E676;color:#000;border-radius:9px;padding:0 6px;font-size:10px;font-weight:900;margin-left:2px;display:none;">0</span></button>
@@ -10925,10 +10926,27 @@ Poderia me ajudar? 🙏"
             var open = box.style.display!=='none';
             box.style.display = open ? 'none' : 'block';
             if(arrow) arrow.textContent = open ? '▾' : '▴';
-            if(!open) tgOffersAdminRender();
+            if(!open) tgOffersAdminRender('tgOffersAdminBox');
         };
-        window.tgOffersAdminRender = async function(){
-            var box=document.getElementById('tgOffersAdminBox'); if(!box) return;
+        window.tgOffersAdminRender = async function(containerId){
+            var box, isFullPanel=false;
+            if(containerId==='tgOffersAdminBox2' || !containerId){
+                // aba própria (📋 Ofertas Telegram) — cria o painel sozinha, do mesmo jeito que as outras abas dinâmicas
+                var anchor=document.getElementById('adminTab0'); var panel=document.getElementById('adminTab26');
+                if(!panel && anchor && anchor.parentNode){ panel=document.createElement('div'); panel.className='admin-section'; panel.id='adminTab26'; anchor.parentNode.appendChild(panel); }
+                if(!panel) return;
+                panel.style.display='block'; panel.classList.add('active');
+                if(!document.getElementById('tgOffersAdminBox2')){
+                    panel.innerHTML='<div style="margin-bottom:14px;"><div style="font-size:21px;font-weight:900;color:#fff;">✈️ Ofertas do Telegram</div><div style="font-size:12px;color:#9aa;margin-top:3px;">Todas as ofertas que vieram automaticamente do seu canal. Edite ou apague direto daqui — some do site na hora.</div></div>'
+                        +'<div style="display:flex;justify-content:flex-end;margin-bottom:10px;"><button onclick="tgOffersAdminRender(\'tgOffersAdminBox2\')" style="font-size:10px;color:#9aa;background:rgba(255,255,255,0.06);border:none;border-radius:8px;padding:5px 10px;cursor:pointer;">🔄 Atualizar</button></div>'
+                        +'<div id="tgOffersAdminBox2"></div>';
+                }
+                box=document.getElementById('tgOffersAdminBox2');
+                isFullPanel=true;
+            } else {
+                box=document.getElementById(containerId);
+            }
+            if(!box) return;
             box.innerHTML='<div style="text-align:center;color:#889;padding:16px;font-size:12px;">⏳ Carregando ofertas do Telegram…</div>';
             var offers=[];
             try{ var r=await fetch('/api/tg/offers'); var d=await r.json(); offers=(d&&d.offers)||[]; }catch(e){}
@@ -10974,7 +10992,7 @@ Poderia me ajudar? 🙏"
             try{
                 var r=await fetch('/api/tg/offer?id='+encodeURIComponent(id), { method:'DELETE', headers:{'x-admin-key':key} });
                 var d=await r.json();
-                if(r.ok && d.ok){ if(typeof showToast==='function') showToast('Oferta apagada! 🗑️','✅'); tgOffersAdminRender(); if(typeof corredoresInit==='function'){ corredoresInit(document.getElementById('corrOverlay')?'corrOvMount':undefined); } }
+                if(r.ok && d.ok){ if(typeof showToast==='function') showToast('Oferta apagada! 🗑️','✅'); if(document.getElementById('tgOffersAdminBox')) tgOffersAdminRender('tgOffersAdminBox'); if(document.getElementById('tgOffersAdminBox2')) tgOffersAdminRender('tgOffersAdminBox2'); if(typeof corredoresInit==='function'){ corredoresInit(document.getElementById('corrOverlay')?'corrOvMount':undefined); } }
                 else { if(typeof showToast==='function') showToast('Não consegui apagar: '+(d.error||'erro'),'❌'); }
             }catch(e){ if(typeof showToast==='function') showToast('Erro de conexão ao apagar','❌'); }
         };
@@ -14457,12 +14475,13 @@ Poderia me ajudar? 🙏"
 
         // ALTERNAR ABA ADMIN — usa ID direto, não índice posicional
         const _ADMIN_TAB_LABELS = ['Ofertas','Eventos','Links & Redes','Geral','Segurança','Perfil','Integração','Catálogo','Histórico','🎨 Cores & Tema','🔲 Botões','🖼️ Imagens','🤖 APIs & IAs','🔧 Storage','🎟️ Cupons','📸 Instagram','💬 WhatsApp','🌐 Redes Sociais','👟 FOTOS TÊNIS BANCO','🏃 Strava','✨ Edição IA'];
+        _ADMIN_TAB_LABELS[26] = '✈️ Ofertas Telegram';
         function switchAdminTab(tabIndex) {
             // 1. Botões da sidebar
-            for(let i=0;i<=25;i++){const b=document.getElementById('sideTab'+i);if(b)b.classList.toggle('active',i===tabIndex);}
+            for(let i=0;i<=26;i++){const b=document.getElementById('sideTab'+i);if(b)b.classList.toggle('active',i===tabIndex);}
 
             // 2. Esconde todas as abas por ID — robusto, não depende de posição no DOM
-            for(let i=0;i<=25;i++){
+            for(let i=0;i<=26;i++){
                 const s=document.getElementById('adminTab'+i);
                 if(!s) continue;
                 if(i===tabIndex){
@@ -14511,6 +14530,7 @@ Poderia me ajudar? 🙏"
             if(tabIndex===23) { setTimeout(function(){ if(typeof aiAdminRender==='function') aiAdminRender(); }, 60); }
             if(tabIndex===24) { setTimeout(function(){ if(typeof contentAdminRender==='function') contentAdminRender(); }, 60); }
             if(tabIndex===25) { setTimeout(function(){ if(typeof chatAdminRender==='function') chatAdminRender(); }, 60); }
+            if(tabIndex===26) { setTimeout(function(){ if(typeof tgOffersAdminRender==='function') tgOffersAdminRender('tgOffersAdminBox2'); }, 60); }
             setTimeout(adminUpdateKPIs, 120);
 
             // 4. Breadcrumb
