@@ -10886,6 +10886,7 @@ Poderia me ajudar? 🙏"
         window._tgPostLink = function(o){
             var ch = (o && o.chatUsername) || '';
             if(!ch){ try{ ch = localStorage.getItem('tg_channel') || ''; }catch(e){ ch=''; } }
+            if(!ch) ch = 'corridacomdescontos'; // canal padrão de onde as ofertas são postadas
             ch = String(ch).replace(/^https?:\/\/t\.me\//i,'').replace(/^@/,'').replace(/\/+$/,'').trim();
             if(!ch || !(o && o.id)) return '';
             return 'https://t.me/'+ch+'/'+o.id;
@@ -12104,6 +12105,7 @@ Poderia me ajudar? 🙏"
                         // local é mais novo → preserva e tenta re-sincronizar
                         try { if (typeof saveData === 'function') setTimeout(function(){ saveData(false); }, 1200); } catch(e) {}
                         try { renderPromos(); renderTodosEventos(); } catch(e) {}
+                        try { if(location.hash && typeof invRoute==='function') invRoute(); } catch(e){}
                         try { if (typeof updateAdminPanel === 'function') updateAdminPanel(); } catch(e) {}
                         return; // não sobrescreve com a nuvem velha
                     }
@@ -12156,6 +12158,11 @@ Poderia me ajudar? 🙏"
                     if (currentData.bgColor) document.documentElement.style.setProperty('--bg-custom', currentData.bgColor);
                     renderPromos();
                     renderTodosEventos();
+                    // 🔗 se a pessoa entrou por um link direto (#fotos, #ofertas, #cupons...),
+                    // roda o roteador de novo agora que os dados de verdade chegaram — assim a
+                    // página não fica "vazia" esperando o próximo clique.
+                    try { if (location.hash && typeof invRoute === 'function') invRoute(); } catch(e){}
+                    try { if ((document.getElementById('corrOverlay')||document.querySelector('#corredoresSection.active')) && typeof corredoresInit === 'function') corredoresInit(document.getElementById('corrOverlay')?'corrOvMount':undefined); } catch(e){}
                     // Apply siteButtons from remote (labels + visibility for all visitors)
                     try {
                         const sbRaw = localStorage.getItem('siteButtons');
