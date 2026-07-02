@@ -148,7 +148,10 @@ async function handleTgWebhook(request, env, url) {
   }
   if (!title) title = (linhas[0] || "Oferta").slice(0, 120);
 
-  const offer = { id: msg.message_id || Date.now(), title, text: text.slice(0, 700), link, cupom, preco, loja, isCupom, imgId, ts: Date.now() };
+  // 👉 canal/usuário de origem do post (pra montar o link "Ver no Telegram" certinho, direto pro post)
+  const chatUsername = (msg.chat && msg.chat.username) || "";
+
+  const offer = { id: msg.message_id || Date.now(), title, text: text.slice(0, 700), link, cupom, preco, loja, isCupom, imgId, chatUsername, ts: Date.now() };
 
   let list = [];
   try { const raw = await env.INV_KV.get("tg_offers"); if (raw) list = JSON.parse(raw); } catch (e) {}
@@ -171,7 +174,7 @@ async function handleTgOffers(request, env) {
   if (vivas.length !== list.length) { try { await env.INV_KV.put("tg_offers", JSON.stringify(vivas)); } catch (e) {} }
   const out = vivas.map((o) => ({
     id: o.id, title: o.title, text: o.text, link: o.link || "", cupom: o.cupom || "", preco: o.preco || "",
-    loja: o.loja || "", isCupom: !!o.isCupom,
+    loja: o.loja || "", isCupom: !!o.isCupom, chatUsername: o.chatUsername || "",
     img: o.imgId ? ("/api/tg/img?id=" + encodeURIComponent(o.imgId)) : "",
     ts: o.ts, expires: (o.ts || now) + TTL
   }));

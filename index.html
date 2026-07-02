@@ -10880,6 +10880,22 @@ Poderia me ajudar? 🙏"
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
+        // ✈️ monta o link direto pro POST no Telegram (não a oferta/afiliado — o post em si)
+        // usa o canal de onde o post veio (chatUsername, vindo do webhook) e, se não tiver,
+        // cai pro canal configurado no admin (tg_channel)
+        window._tgPostLink = function(o){
+            var ch = (o && o.chatUsername) || '';
+            if(!ch){ try{ ch = localStorage.getItem('tg_channel') || ''; }catch(e){ ch=''; } }
+            ch = String(ch).replace(/^https?:\/\/t\.me\//i,'').replace(/^@/,'').replace(/\/+$/,'').trim();
+            if(!ch || !(o && o.id)) return '';
+            return 'https://t.me/'+ch+'/'+o.id;
+        };
+        function _tgViewBtn(o, flex){
+            var link=window._tgPostLink(o);
+            if(!link) return '';
+            return '<a href="'+link+'" target="_blank" rel="noopener" onclick="event.stopPropagation()" style="'+(flex?'flex:1;text-align:center;':'flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;')+'gap:5px;text-decoration:none;background:rgba(41,171,226,0.14);border:1px solid rgba(41,171,226,0.4);color:#29abe2;border-radius:9px;padding:'+(flex?'11px':'8px 11px')+';font-size:'+(flex?'12px':'11px')+';font-weight:800;">✈️ Ver no Telegram</a>';
+        }
+
         // 🔥 OFERTAS DO GRUPO (Telegram) — busca e mostra as ofertas postadas no grupo
         window.tgOffersInit = function(){
             var mount=document.getElementById('tgOffersMount'); if(!mount) return;
@@ -10893,6 +10909,7 @@ Poderia me ajudar? 🙏"
                     var body=(o.text||o.title||'').replace(/</g,'&lt;').replace(/\n/g,'<br>');
                     var cupom=o.cupom?('<div style="margin:9px 0;display:inline-flex;align-items:center;gap:7px;background:rgba(0,224,160,0.12);border:1px dashed rgba(0,224,160,0.5);border-radius:10px;padding:8px 13px;"><span style="font-size:9px;font-weight:900;color:#00e0a0;letter-spacing:.5px;">🎟️ CUPOM</span><span style="font-size:14px;font-weight:900;color:#fff;letter-spacing:1px;">'+o.cupom.replace(/</g,'')+'</span><button onclick="navigator.clipboard&&navigator.clipboard.writeText(\''+o.cupom.replace(/'/g,'')+'\');if(typeof showToast===\'function\')showToast(\'Cupom copiado!\',\'🎟️\')" style="background:rgba(0,224,160,0.2);border:none;border-radius:7px;color:#00e0a0;font-size:10px;font-weight:900;padding:4px 9px;cursor:pointer;">copiar</button></div>'):'';
                     var btn=o.link?('<a href="'+String(o.link).replace(/"/g,'&quot;')+'" target="_blank" rel="noopener sponsored" onclick="if(typeof iaTrackClick===\'function\')iaTrackClick(\'telegram\')" style="display:block;text-align:center;text-decoration:none;background:linear-gradient(135deg,#29abe2,#1f8fc0);color:#fff;border-radius:11px;padding:12px;font-size:13px;font-weight:900;margin-top:6px;">🛒 Ver oferta →</a>'):'';
+                    var tgBtn=_tgViewBtn(o,false);
                     var when=''; try{ var dt=new Date(o.ts); when=dt.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'})+' '+dt.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}); }catch(e){}
                     html+='<div style="background:linear-gradient(160deg,rgba(41,171,226,0.06),rgba(0,0,0,0.02));border:1px solid rgba(41,171,226,0.22);border-radius:14px;overflow:hidden;margin-bottom:15px;box-shadow:0 6px 20px rgba(0,0,0,0.2);">'
                         +img
@@ -10901,6 +10918,7 @@ Poderia me ajudar? 🙏"
                           +'<div style="font-size:13px;color:#e8ecf2;line-height:1.55;">'+body+'</div>'
                           +cupom
                           +btn
+                          +(tgBtn?('<div style="margin-top:7px;">'+tgBtn+'</div>'):'')
                         +'</div>'
                       +'</div>';
                 });
@@ -10964,6 +10982,7 @@ Poderia me ajudar? 🙏"
                     // 🗓️ data e hora da postagem
                     var quando=''; if(o.ts){ try{ var dt=new Date(o.ts); quando='<div style="font-size:10px;color:#7a8494;margin-top:3px;">🗓️ Postado em '+dt.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'})+' às '+dt.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})+'</div>'; }catch(e){} }
                     var verBtn=o.link?('<a href="'+String(o.link).replace(/"/g,'&quot;')+'" target="_blank" rel="noopener sponsored" onclick="if(typeof iaTrackClick===\'function\')iaTrackClick(\'corredores\')" style="flex:1;text-align:center;text-decoration:none;background:linear-gradient(135deg,#00e0a0,#00b894);color:#022;border-radius:9px;padding:11px;font-size:12px;font-weight:900;">🛒 Ver oferta →</a>'):'';
+                    var tgBtn=_tgViewBtn(o,false);
                     htmlOf+='<div class="corrCard" style="background:linear-gradient(160deg,rgba(0,224,160,0.05),rgba(0,0,0,0.02));border:1px solid rgba(0,224,160,0.2);border-radius:14px;overflow:hidden;margin-bottom:13px;box-shadow:0 5px 16px rgba(0,0,0,0.2);">'
                         +img
                         +'<div style="padding:13px;">'
@@ -10971,7 +10990,7 @@ Poderia me ajudar? 🙏"
                           +preco
                           +timer
                           +quando
-                          +'<div style="display:flex;gap:7px;margin-top:10px;">'+verBtn+shareBtn(o)+'</div>'
+                          +'<div style="display:flex;gap:7px;margin-top:10px;flex-wrap:wrap;">'+verBtn+tgBtn+shareBtn(o)+'</div>'
                         +'</div>'
                       +'</div>';
                 });
@@ -11316,6 +11335,15 @@ Poderia me ajudar? 🙏"
                 if(!invGatewayOn()) return;
                 // 👉 SEMPRE aparece ao abrir/atualizar (sem "ver só 1x")
                 try{ var ap=document.getElementById('adminPanelOverlay'); if(ap && ap.style.display && ap.style.display!=='none') return; }catch(e){}
+                // 🔗 LINK DIRETO: se o visitante entrou por um link de página específica
+                // (#fotos, #ofertas, #cupons, #edicao, #procuratenis, #inicio...), NÃO mostra
+                // a tela de entrada — deixa o roteador (invRoute) levar direto pra página certa.
+                // Isso corrige o bug de o site "virgem"/tela de escolha aparecer por cima da
+                // página que devia abrir quando alguém clica num link compartilhado.
+                try{
+                    var _gwHash=(location.hash||'').replace(/^#/,'').toLowerCase().trim();
+                    if(_gwHash) return;
+                }catch(e){}
             }
             if(document.getElementById('invGateway')) return;
             function _gw(k){ try{ return localStorage.getItem(k)||''; }catch(e){ return ''; } }
@@ -11545,7 +11573,11 @@ Poderia me ajudar? 🙏"
             if(document.readyState==='complete' || document.readyState==='interactive'){ _trigger(); }
             else { document.addEventListener('DOMContentLoaded', _trigger); }
             // reforço: tenta de novo no load (caso algo tenha atrasado)
-            window.addEventListener('load', function(){ setTimeout(function(){ try{ if(typeof invShowGateway==='function' && !document.getElementById('invGateway') && (typeof invGatewayOn!=='function'||invGatewayOn())){ var seen=false; invShowGateway(); } }catch(e){} }, 600); });
+            window.addEventListener('load', function(){ setTimeout(function(){ try{
+                // se tem link direto na URL, garante que a rota certa é aplicada em vez de mostrar a tela de entrada
+                if(location.hash){ if(typeof invRoute==='function') invRoute(); return; }
+                if(typeof invShowGateway==='function' && !document.getElementById('invGateway') && (typeof invGatewayOn!=='function'||invGatewayOn())){ invShowGateway(); }
+            }catch(e){} }, 600); });
         })();
 
         // ⚡ Central de ações rápidas (FAB) do admin
