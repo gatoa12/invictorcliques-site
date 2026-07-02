@@ -5734,7 +5734,7 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v371.0006</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v371.0007</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -11086,6 +11086,8 @@ Poderia me ajudar? 🙏"
                     var timer=(o.fonte==='grupo'&&o.expires)?('<div style="margin:6px 0 2px;font-size:11px;font-weight:800;color:#ff9a3d;display:flex;align-items:center;gap:6px;"><span>🔥</span><span>Essa oferta está se esgotando</span></div>'):'';
                     // 🗓️ data e hora da postagem
                     var quando=''; if(o.ts){ try{ var dt=new Date(o.ts); quando='<div style="font-size:10px;color:#7a8494;margin-top:3px;">🗓️ Postado em '+dt.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'})+' às '+dt.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})+'</div>'; }catch(e){} }
+                    // 🎟️ cupom (quando a oferta também tem um código, mesmo não sendo um post "só de cupom")
+                    var cupomBox=o.cupom?('<div style="display:flex;align-items:center;gap:8px;margin-top:8px;flex-wrap:wrap;"><div style="flex:1;min-width:100px;display:inline-flex;align-items:center;gap:8px;background:rgba(255,106,0,0.1);border:1px dashed rgba(255,106,0,0.5);border-radius:10px;padding:8px 11px;"><span style="font-size:9px;font-weight:900;color:#FF6A00;">🎟️ CUPOM</span><span style="font-size:14px;font-weight:900;color:#fff;letter-spacing:1px;">'+String(o.cupom).replace(/</g,'')+'</span></div><button onclick="navigator.clipboard&&navigator.clipboard.writeText(\''+String(o.cupom).replace(/'/g,'')+'\');if(typeof showToast===\'function\')showToast(\'Cupom copiado!\',\'🎟️\')" style="background:#FF6A00;border:none;border-radius:9px;color:#111;font-size:11px;font-weight:900;padding:8px 12px;cursor:pointer;">Copiar</button></div>'):'';
                     var verBtn=o.link?('<a href="'+String(o.link).replace(/"/g,'&quot;')+'" target="_blank" rel="noopener sponsored" onclick="if(typeof iaTrackClick===\'function\')iaTrackClick(\'corredores\')" style="flex:1;text-align:center;text-decoration:none;background:linear-gradient(135deg,#00e0a0,#00b894);color:#022;border-radius:9px;padding:11px;font-size:12px;font-weight:900;">🛒 Ver oferta →</a>'):'';
                     // ✈️ SEMPRE tenta montar o botão do Telegram — mesmo sem link de afiliado, mesmo sem canal configurado
                     // (usa o canal padrão como último recurso, então isso não fica em branco)
@@ -11097,6 +11099,7 @@ Poderia me ajudar? 🙏"
                           +preco
                           +timer
                           +quando
+                          +cupomBox
                           +'<div style="display:flex;gap:7px;margin-top:10px;flex-wrap:wrap;">'+verBtn+tgBtn+shareBtn(o)+'</div>'
                         +'</div>'
                       +'</div>';
