@@ -5734,7 +5734,7 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v369.0002</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v369.0003</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -6716,6 +6716,13 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                                 </div>
                                 <button onclick="corrBgSave()" style="width:100%;padding:11px;background:linear-gradient(135deg,#00e0a0,#00b894);color:#022;border:none;border-radius:10px;font-weight:900;font-size:12px;cursor:pointer;margin-bottom:8px;">💾 Salvar fundo da tela</button>
                                 <button onclick="openCorredores()" style="width:100%;padding:9px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);color:#cdd6e4;border-radius:10px;font-weight:800;font-size:11px;cursor:pointer;">👁️ Ver a tela agora</button>
+                                <!-- 📋 GERENCIAR OFERTAS DO TELEGRAM (editar título/preço/link ou apagar) -->
+                                <div style="margin-top:16px;border-top:1px solid rgba(0,224,160,0.18);padding-top:14px;">
+                                    <button onclick="tgOffersAdminToggle()" id="tgOffersAdminToggleBtn" style="width:100%;padding:10px;background:rgba(41,171,226,0.1);border:1px solid rgba(41,171,226,0.3);color:#29abe2;border-radius:10px;font-weight:800;font-size:11.5px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;">
+                                        <span>📋 Gerenciar ofertas do Telegram (editar / apagar)</span><span id="tgOffersAdminArrow">▾</span>
+                                    </button>
+                                    <div id="tgOffersAdminBox" style="display:none;margin-top:10px;"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -10910,6 +10917,67 @@ Poderia me ajudar? 🙏"
             if(!link) return '';
             return '<a href="'+link+'" target="_blank" rel="noopener" onclick="event.stopPropagation()" style="'+(flex?'flex:1;text-align:center;':'flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;')+'gap:5px;text-decoration:none;background:rgba(41,171,226,0.14);border:1px solid rgba(41,171,226,0.4);color:#29abe2;border-radius:9px;padding:'+(flex?'11px':'8px 11px')+';font-size:'+(flex?'12px':'11px')+';font-weight:800;">✈️ Ver no Telegram</a>';
         }
+
+        // 📋 GERENCIAR OFERTAS DO TELEGRAM — editar título/preço/link/cupom ou apagar direto do painel
+        window.tgOffersAdminToggle = function(){
+            var box=document.getElementById('tgOffersAdminBox'), arrow=document.getElementById('tgOffersAdminArrow');
+            if(!box) return;
+            var open = box.style.display!=='none';
+            box.style.display = open ? 'none' : 'block';
+            if(arrow) arrow.textContent = open ? '▾' : '▴';
+            if(!open) tgOffersAdminRender();
+        };
+        window.tgOffersAdminRender = async function(){
+            var box=document.getElementById('tgOffersAdminBox'); if(!box) return;
+            box.innerHTML='<div style="text-align:center;color:#889;padding:16px;font-size:12px;">⏳ Carregando ofertas do Telegram…</div>';
+            var offers=[];
+            try{ var r=await fetch('/api/tg/offers'); var d=await r.json(); offers=(d&&d.offers)||[]; }catch(e){}
+            if(!offers.length){ box.innerHTML='<div style="text-align:center;color:#889;padding:16px;font-size:12px;">Nenhuma oferta do Telegram ativa no momento.</div>'; return; }
+            var html='';
+            offers.forEach(function(o){
+                var when=''; try{ var dt=new Date(o.ts); when=dt.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'})+' '+dt.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}); }catch(e){}
+                html+='<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:11px;margin-bottom:9px;">'
+                    +(o.img?('<img src="'+String(o.img).replace(/"/g,'&quot;')+'" style="width:100%;max-height:110px;object-fit:contain;border-radius:8px;background:#0a0a12;margin-bottom:8px;">'):'')
+                    +'<div style="font-size:10px;color:#667;margin-bottom:6px;">🗓️ '+when+' · id '+o.id+'</div>'
+                    +'<label style="font-size:9px;color:#888;">Título</label>'
+                    +'<input id="tgAdmTitle_'+o.id+'" value="'+String(o.title||'').replace(/"/g,'&quot;')+'" style="width:100%;margin:3px 0 7px;padding:8px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:#fff;font-size:11px;outline:none;box-sizing:border-box;">'
+                    +'<label style="font-size:9px;color:#888;">Preço</label>'
+                    +'<input id="tgAdmPreco_'+o.id+'" value="'+String(o.preco||'').replace(/"/g,'&quot;')+'" style="width:100%;margin:3px 0 7px;padding:8px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:#fff;font-size:11px;outline:none;box-sizing:border-box;">'
+                    +'<label style="font-size:9px;color:#888;">Link de afiliado</label>'
+                    +'<input id="tgAdmLink_'+o.id+'" value="'+String(o.link||'').replace(/"/g,'&quot;')+'" style="width:100%;margin:3px 0 7px;padding:8px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:#fff;font-size:11px;outline:none;box-sizing:border-box;">'
+                    +'<label style="font-size:9px;color:#888;">Cupom</label>'
+                    +'<input id="tgAdmCupom_'+o.id+'" value="'+String(o.cupom||'').replace(/"/g,'&quot;')+'" style="width:100%;margin:3px 0 9px;padding:8px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:#fff;font-size:11px;outline:none;box-sizing:border-box;">'
+                    +'<div style="display:flex;gap:7px;">'
+                      +'<button onclick="tgOfferSave(\''+o.id+'\')" style="flex:1;padding:9px;background:linear-gradient(135deg,#00e0a0,#00b894);color:#022;border:none;border-radius:8px;font-weight:800;font-size:11px;cursor:pointer;">💾 Salvar</button>'
+                      +'<button onclick="tgOfferDelete(\''+o.id+'\')" style="flex:1;padding:9px;background:rgba(239,68,68,0.14);border:1px solid rgba(239,68,68,0.35);color:#f88;border-radius:8px;font-weight:800;font-size:11px;cursor:pointer;">🗑️ Apagar</button>'
+                    +'</div>'
+                  +'</div>';
+            });
+            box.innerHTML=html;
+        };
+        window.tgOfferSave = async function(id){
+            var key=(typeof _kvAdminKey==='function')?_kvAdminKey():'';
+            if(!key){ if(typeof showToast==='function') showToast('Configure a chave do cofre primeiro (aba Cofre)','⚠️'); return; }
+            function v(pref){ var el=document.getElementById(pref+'_'+id); return el?el.value.trim():undefined; }
+            var patch={ title:v('tgAdmTitle'), preco:v('tgAdmPreco'), link:v('tgAdmLink'), cupom:v('tgAdmCupom') };
+            try{
+                var r=await fetch('/api/tg/offer?id='+encodeURIComponent(id), { method:'PUT', headers:{'Content-Type':'application/json','x-admin-key':key}, body:JSON.stringify(patch) });
+                var d=await r.json();
+                if(r.ok && d.ok){ if(typeof showToast==='function') showToast('Oferta atualizada! ✅','💾'); if(typeof corredoresInit==='function'){ corredoresInit(document.getElementById('corrOverlay')?'corrOvMount':undefined); } }
+                else { if(typeof showToast==='function') showToast('Não consegui salvar: '+(d.error||'erro'),'❌'); }
+            }catch(e){ if(typeof showToast==='function') showToast('Erro de conexão ao salvar','❌'); }
+        };
+        window.tgOfferDelete = async function(id){
+            var key=(typeof _kvAdminKey==='function')?_kvAdminKey():'';
+            if(!key){ if(typeof showToast==='function') showToast('Configure a chave do cofre primeiro (aba Cofre)','⚠️'); return; }
+            if(!confirm('Apagar essa oferta? Ela some do site na hora.')) return;
+            try{
+                var r=await fetch('/api/tg/offer?id='+encodeURIComponent(id), { method:'DELETE', headers:{'x-admin-key':key} });
+                var d=await r.json();
+                if(r.ok && d.ok){ if(typeof showToast==='function') showToast('Oferta apagada! 🗑️','✅'); tgOffersAdminRender(); if(typeof corredoresInit==='function'){ corredoresInit(document.getElementById('corrOverlay')?'corrOvMount':undefined); } }
+                else { if(typeof showToast==='function') showToast('Não consegui apagar: '+(d.error||'erro'),'❌'); }
+            }catch(e){ if(typeof showToast==='function') showToast('Erro de conexão ao apagar','❌'); }
+        };
 
         // 🔥 OFERTAS DO GRUPO (Telegram) — busca e mostra as ofertas postadas no grupo
         window.tgOffersInit = function(){

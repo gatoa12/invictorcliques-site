@@ -40,6 +40,7 @@ export default {
       if (path === "/api/refresh-foco") return await handleRefreshFoco(request, env);
       if (path === "/api/tg/webhook")   return await handleTgWebhook(request, env, url);
       if (path === "/api/tg/offers")    return await handleTgOffers(request, env);
+      if (path === "/api/tg/offer")     return await handleTgOfferEdit(request, env, url);
       if (path === "/api/tg/img")       return await handleTgImg(request, env, url);
     } catch (e) {
       return json({ error: String((e && e.message) || e) }, 500);
@@ -73,7 +74,7 @@ export default {
 
 const CORS = {
   "access-control-allow-origin": "*",
-  "access-control-allow-methods": "GET,POST,OPTIONS",
+  "access-control-allow-methods": "GET,POST,PUT,DELETE,OPTIONS",
   "access-control-allow-headers": "content-type,x-admin-key",
 };
 
@@ -179,6 +180,38 @@ async function handleTgOffers(request, env) {
     ts: o.ts, expires: (o.ts || now) + TTL
   }));
   return json({ offers: out });
+}
+
+// ── /api/tg/offer — editar (PUT) ou apagar (DELETE) UMA oferta do Telegram, direto do painel admin ──
+async function handleTgOfferEdit(request, env, url) {
+  if (request.method === "OPTIONS") return new Response(null, { headers: CORS });
+  const provided = request.headers.get("x-admin-key") || "";
+  if (!env.ADMIN_WRITE_KEY || provided !== env.ADMIN_WRITE_KEY) return json({ error: "unauthorized" }, 403);
+  const id = url.searchParams.get("id") || "";
+  if (!id) return json({ error: "id obrigatório" }, 400);
+
+  let list = [];
+  try { const raw = await env.INV_KV.get("tg_offers"); if (raw) list = JSON.parse(raw); } catch (e) {}
+
+  if (request.method === "DELETE") {
+    const before = list.length;
+    list = list.filter((o) => String(o.id) !== String(id));
+    try { await env.INV_KV.put("tg_offers", JSON.stringify(list)); } catch (e) {}
+    return json({ ok: true, deleted: before !== list.length });
+  }
+
+  if (request.method === "PUT" || request.method === "POST") {
+    let patch;
+    try { patch = await request.json(); } catch (e) { return json({ error: "json inválido" }, 400); }
+    const idx = list.findIndex((o) => String(o.id) === String(id));
+    if (idx === -1) return json({ error: "oferta não encontrada" }, 404);
+    const allow = ["title", "text", "link", "cupom", "preco", "loja", "chatUsername"];
+    allow.forEach((k) => { if (patch[k] !== undefined) list[idx][k] = patch[k]; });
+    try { await env.INV_KV.put("tg_offers", JSON.stringify(list)); } catch (e) {}
+    return json({ ok: true, offer: list[idx] });
+  }
+
+  return json({ error: "method_not_allowed" }, 405);
 }
 
 // ── /api/tg/img — proxy seguro da imagem (não expõe o token do bot) ──
