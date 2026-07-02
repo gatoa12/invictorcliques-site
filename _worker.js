@@ -128,12 +128,22 @@ async function handleTgWebhook(request, env, url) {
   const isCupom = /\bcupom\b/i.test(primeiraLinha);
 
   // cupom/código — REGRA: vem depois de "cupom:", ou depois do "-", "–" ou ":" (ex: "R$299 - SAIUNOPRIME")
-  const ignoraCod = ["CUPOM","AMAZON","SHOPEE","MAGALU","MAGAZINE","OFF","APP","NOAPP","NO","NA","DE","EM","LIMITE","AME","MERCADO","LIVRE","MELI","PIX","NETSHOSE","NETSHOES","CENTAURO","NIKE","ADIDAS","OLYMPIKUS","COM","POR","ATÉ","ATE"];
+  const ignoraCod = ["CUPOM","AMAZON","SHOPEE","MAGALU","MAGAZINE","OFF","APP","NOAPP","NO","NA","DE","DA","EM","LIMITE","AME","MERCADO","LIVRE","MELI","PIX","NETSHOSE","NETSHOES","CENTAURO","NIKE","ADIDAS","OLYMPIKUS","COM","POR","ATÉ","ATE","DO","PRODUTO","PRODUTOS","OU"];
   function _tryCod(re){ var m = text.match(re); if (m && m[1] && ignoraCod.indexOf(m[1].toUpperCase()) < 0) return m[1].toUpperCase(); return ""; }
   let cupom =
         _tryCod(/(?:cupom|c[oó]digo|coupon)[:\s]+([A-Za-z][A-Za-z0-9\-]{2,24})/i)   // "cupom: X"
      || _tryCod(/[-–—:]\s*([A-Z][A-Z0-9]{3,24})\b/)                                 // "...R$299 - SAIUNOPRIME"
      || _tryCod(/OFF[:\s]+([A-Z][A-Z0-9\-]{3,24})\b/);                              // "OFF: X"
+  // 🔧 formato mais solto: "resgate o cupom do produto X ou Y ou Z" — pega o primeiro código em
+  // CAIXA ALTA que aparecer logo depois da palavra "cupom", mesmo com frase enrolada no meio
+  if (!cupom) {
+    const idxCupom = text.search(/cupom/i);
+    if (idxCupom >= 0) {
+      const after = text.slice(idxCupom, idxCupom + 140);
+      const cands = after.match(/\b[A-Z][A-Z0-9]{3,24}\b/g) || [];
+      for (const c of cands) { if (ignoraCod.indexOf(c) < 0) { cupom = c; break; } }
+    }
+  }
   const isCupom0 = /\bcupom\b/i.test((text.split("\n").find((l) => l.trim()) || ""));
   if (!cupom && isCupom0) {
     var cands = (text.match(/\b[A-Z][A-Z0-9]{4,24}\b/g) || []).filter((w) => ignoraCod.indexOf(w) < 0);
