@@ -5734,7 +5734,7 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v370.0001</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v371.0005</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -6669,7 +6669,7 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                         <div style="font-size:11px;color:#8a9;margin-bottom:11px;line-height:1.5;">Ao abrir o site, mostra uma tela preta com <b>"Comprar Fotos"</b> ou <b>"Comprar Tênis"</b> que leva pra seção certa. Aparece sempre que o visitante abre.</div>
                         <div style="display:flex;gap:8px;flex-wrap:wrap;">
                             <button onclick="(function(){try{localStorage.setItem('gateway_on','1');if(typeof saveData==='function')saveData(false);if(typeof showToast==='function')showToast('Tela de entrada LIGADA','✅');}catch(e){}})()" style="flex:1;min-width:110px;padding:11px;background:linear-gradient(135deg,#51CF66,#2f9e44);color:#fff;border:none;border-radius:10px;font-weight:900;font-size:12px;cursor:pointer;">✅ Ligar</button>
-                            <button onclick="(function(){try{localStorage.setItem('gateway_on','0');if(typeof saveData==='function')saveData(false);if(typeof showToast==='function')showToast('Tela de entrada DESLIGADA','⚪');}catch(e){}})()" style="flex:1;min-width:110px;padding:11px;background:rgba(255,255,255,0.06);color:#fff;border:1px solid rgba(255,255,255,0.15);border-radius:10px;font-weight:800;font-size:12px;cursor:pointer;">⛔ Desligar</button>
+                            <button disabled title="Travada sempre ligada a pedido do Victor" style="flex:1;min-width:110px;padding:11px;background:rgba(255,255,255,0.03);color:#556;border:1px solid rgba(255,255,255,0.08);border-radius:10px;font-weight:800;font-size:12px;cursor:not-allowed;">🔒 Sempre ligada</button>
                             <button onclick="if(typeof invShowGateway==='function')invShowGateway(true)" style="flex:1;min-width:110px;padding:11px;background:linear-gradient(135deg,#FFD700,#FFA500);color:#111;border:none;border-radius:10px;font-weight:900;font-size:12px;cursor:pointer;">👁️ Testar</button>
                         </div>
                         <!-- fotos dos botões + fundo -->
@@ -11229,6 +11229,11 @@ Poderia me ajudar? 🙏"
         // 🔗 ROTEADOR DE LINKS DIRETOS (#cupons, #ofertas, #inicio, #fotos, #edicao, #procuratenis)
         window.invRoute = function(){
             var h=(location.hash||'').replace(/^#/,'').toLowerCase().trim();
+            if(!h){
+                // 🆕 aceita link "limpo" também: invictorcliques.com.br/fotos (sem #)
+                try{ h=(location.pathname||'').replace(/^\/+|\/+$/g,'').toLowerCase().trim(); }catch(e){ h=''; }
+                if(h==='index.html') h='';
+            }
             if(!h) return false;
             function closeGw(){ try{ var gw=document.getElementById('invGateway'); if(gw){ gw.remove(); } sessionStorage.setItem('inv_gateway_seen','1'); }catch(e){} }
             if(h==='cupons' || h==='ofertas'){
@@ -11254,9 +11259,17 @@ Poderia me ajudar? 🙏"
             if(typeof showToast==='function') showToast('Link copiado! 🔗','🔗');
             return url;
         };
+        // 🔗 tem uma "rota" pra seguir? (link com #hash OU link limpo tipo /fotos)
+        window._invHasRoute = function(){
+            try{
+                if(location.hash) return true;
+                var p=(location.pathname||'').replace(/^\/+|\/+$/g,'').toLowerCase();
+                return !!p && p!=='index.html';
+            }catch(e){ return false; }
+        };
         window.addEventListener('hashchange', function(){ try{ invRoute(); }catch(e){} });
-        try{ if(location.hash){ setTimeout(function(){ try{ invRoute(); }catch(e){} }, 300); setTimeout(function(){ try{ invRoute(); }catch(e){} }, 900); setTimeout(function(){ try{ invRoute(); }catch(e){} }, 1600); } }catch(e){}
-        window.addEventListener('load', function(){ try{ if(location.hash) invRoute(); }catch(e){} });
+        try{ if(_invHasRoute()){ setTimeout(function(){ try{ invRoute(); }catch(e){} }, 300); setTimeout(function(){ try{ invRoute(); }catch(e){} }, 900); setTimeout(function(){ try{ invRoute(); }catch(e){} }, 1600); } }catch(e){}
+        window.addEventListener('load', function(){ try{ if(_invHasRoute()) invRoute(); }catch(e){} });
 
         // ── ABA INICIAL DO VISITANTE (escolhida no admin) ───────────────
         // Garante que o visitante caia na seção que o Victor escolheu. Se essa
@@ -11421,7 +11434,7 @@ Poderia me ajudar? 🙏"
         }
 
         // ════ 🚪 TELA DE ENTRADA (Comprar Fotos / Comprar Tênis) ════
-        window.invGatewayOn = function(){ try{ var v=localStorage.getItem('gateway_on'); return v!=='0'; }catch(e){ return true; } };
+        window.invGatewayOn = function(){ return true; }; // 🔒 sempre ativa, travado — a "tela de entrada" (Comprar Fotos / Comprar Tênis / Ofertas) NUNCA fica desligada
         window.invGatewayChoose = function(dest){
             var ov=document.getElementById('invGateway');
             if(ov){ ov.style.opacity='0'; setTimeout(function(){ try{ ov.remove(); }catch(e){} }, 350); }
@@ -11445,8 +11458,7 @@ Poderia me ajudar? 🙏"
                 // Isso corrige o bug de o site "virgem"/tela de escolha aparecer por cima da
                 // página que devia abrir quando alguém clica num link compartilhado.
                 try{
-                    var _gwHash=(location.hash||'').replace(/^#/,'').toLowerCase().trim();
-                    if(_gwHash) return;
+                    if(typeof _invHasRoute==='function' && _invHasRoute()) return;
                 }catch(e){}
             }
             if(document.getElementById('invGateway')) return;
@@ -11678,8 +11690,8 @@ Poderia me ajudar? 🙏"
             else { document.addEventListener('DOMContentLoaded', _trigger); }
             // reforço: tenta de novo no load (caso algo tenha atrasado)
             window.addEventListener('load', function(){ setTimeout(function(){ try{
-                // se tem link direto na URL, garante que a rota certa é aplicada em vez de mostrar a tela de entrada
-                if(location.hash){ if(typeof invRoute==='function') invRoute(); return; }
+                // se tem link direto na URL (com # ou limpo), garante que a rota certa é aplicada em vez de mostrar a tela de entrada
+                if(typeof _invHasRoute==='function' && _invHasRoute()){ if(typeof invRoute==='function') invRoute(); return; }
                 if(typeof invShowGateway==='function' && !document.getElementById('invGateway') && (typeof invGatewayOn!=='function'||invGatewayOn())){ invShowGateway(); }
             }catch(e){} }, 600); });
         })();
@@ -12208,7 +12220,7 @@ Poderia me ajudar? 🙏"
                         // local é mais novo → preserva e tenta re-sincronizar
                         try { if (typeof saveData === 'function') setTimeout(function(){ saveData(false); }, 1200); } catch(e) {}
                         try { renderPromos(); renderTodosEventos(); } catch(e) {}
-                        try { if(location.hash && typeof invRoute==='function') invRoute(); } catch(e){}
+                        try { if(typeof _invHasRoute==='function' && _invHasRoute() && typeof invRoute==='function') invRoute(); } catch(e){}
                         try { if (typeof updateAdminPanel === 'function') updateAdminPanel(); } catch(e) {}
                         return; // não sobrescreve com a nuvem velha
                     }
@@ -12264,7 +12276,7 @@ Poderia me ajudar? 🙏"
                     // 🔗 se a pessoa entrou por um link direto (#fotos, #ofertas, #cupons...),
                     // roda o roteador de novo agora que os dados de verdade chegaram — assim a
                     // página não fica "vazia" esperando o próximo clique.
-                    try { if (location.hash && typeof invRoute === 'function') invRoute(); } catch(e){}
+                    try { if (typeof _invHasRoute==='function' && _invHasRoute() && typeof invRoute === 'function') invRoute(); } catch(e){}
                     try { if ((document.getElementById('corrOverlay')||document.querySelector('#corredoresSection.active')) && typeof corredoresInit === 'function') corredoresInit(document.getElementById('corrOverlay')?'corrOvMount':undefined); } catch(e){}
                     // Apply siteButtons from remote (labels + visibility for all visitors)
                     try {
@@ -12800,6 +12812,20 @@ Poderia me ajudar? 🙏"
             return window._invVisits||{total:0,today:0};
         };
         function _kvAdminKey() { try { return localStorage.getItem('_cfg_kvAdminKey') || ''; } catch(e) { return ''; } }
+        // 🔑 link privado de configuração — abre uma vez nesse aparelho e salva a chave sozinho,
+        // sem precisar digitar/colar nada no painel. Só funciona se a pessoa TEM o link exato.
+        // (a chave nunca fica escrita aqui no código — só passa pela URL na hora que você clica)
+        (function(){
+            try{
+                var m=(location.hash||'').match(/^#setkey=(.+)$/);
+                if(m && m[1]){
+                    var val=decodeURIComponent(m[1]);
+                    localStorage.setItem('_cfg_kvAdminKey', val);
+                    try{ history.replaceState(null,'',location.pathname+location.search); }catch(e){}
+                    setTimeout(function(){ try{ alert('✅ Chave de admin configurada nesse aparelho! Já pode usar o painel normalmente.'); }catch(e){} }, 300);
+                }
+            }catch(e){}
+        })();
         function _kvEnabled() { try { return localStorage.getItem('_cfg_kvDisabled') !== '1'; } catch(e) { return true; } }
         async function _kvGet() {
             if (!_kvEnabled()) return null;

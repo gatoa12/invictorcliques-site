@@ -49,7 +49,16 @@ export default {
     // Qualquer outra coisa = arquivos estáticos do site.
     // 🔄 Pra o site SEMPRE pegar a versão nova (sem ficar "preso" no cache),
     // o HTML é servido com no-cache. Imagens/JS continuam com cache normal.
-    const res = await env.ASSETS.fetch(request);
+    let res = await env.ASSETS.fetch(request);
+    // 🆕 LINK "LIMPO" (sem #): tipo invictorcliques.com.br/fotos, /ofertas, /cupons...
+    // Isso não é um arquivo de verdade, então cai em 404 — em vez disso, devolve o
+    // próprio site (index.html) e deixa o JAVASCRIPT do site decidir qual página abrir
+    // a partir do endereço. Só faz isso pra links "de página" (sem ponto no final,
+    // tipo .png/.js/.css), pra não esconder erro de imagem/arquivo faltando de verdade.
+    if (res.status === 404 && request.method === "GET" && !/\.[a-zA-Z0-9]+$/.test(path)) {
+      const idxRes = await env.ASSETS.fetch(new Request(new URL("/index.html", request.url), request));
+      if (idxRes.status === 200) res = idxRes;
+    }
     try {
       const ctype = res.headers.get("content-type") || "";
       if (ctype.includes("text/html")) {
@@ -69,8 +78,22 @@ export default {
   // ⏰ Roda automaticamente no horário definido no cron (wrangler.jsonc).
   async scheduled(event, env, ctx) {
     ctx.waitUntil(updateFocoFromPortal(env).catch(() => {}));
+    ctx.waitUntil(cleanupExpiredTgOffers(env).catch(() => {}));
   },
 };
+
+// 🧹 apaga de vez, do armazenamento, as ofertas do Telegram com mais de 10h (backup do
+// cron — a limpeza principal já acontece sozinha toda vez que alguém abre a página de ofertas).
+async function cleanupExpiredTgOffers(env) {
+  let list = [];
+  try { const raw = await env.INV_KV.get("tg_offers"); if (raw) list = JSON.parse(raw); } catch (e) { return; }
+  const TTL = 10 * 60 * 60 * 1000; // 10 horas
+  const now = Date.now();
+  const vivas = list.filter((o) => (now - (o.ts || 0)) < TTL);
+  if (vivas.length !== list.length) {
+    try { await env.INV_KV.put("tg_offers", JSON.stringify(vivas)); } catch (e) {}
+  }
+}
 
 const CORS = {
   "access-control-allow-origin": "*",
