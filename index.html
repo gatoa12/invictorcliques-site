@@ -5790,7 +5790,7 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v371.0010</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v371.0013</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -11153,6 +11153,7 @@ Poderia me ajudar? 🙏"
         window.corredoresInit = function(mountId){
             var mount=document.getElementById(mountId||'corredoresMount'); if(!mount) return;
             mount.innerHTML='<div style="text-align:center;color:#889;padding:34px;font-size:13px;">⏳ Carregando ofertas ativas…</div>';
+            function _g_corr_channel(){ try{ var tg=localStorage.getItem('tg_channel')||''; if(!tg) return ''; return tg.indexOf('http')===0?tg:('https://t.me/'+tg.replace(/^@/,'')); }catch(e){ return ''; } }
             // junta: ofertas cadastradas no site + ofertas do grupo (Telegram)
             function _derivaTitulo(o){
                 var t=o.title||'';
@@ -11254,17 +11255,37 @@ Poderia me ajudar? 🙏"
                     ofWrap='<div>'+(htmlOf||'<div style="color:#889;font-size:12px;padding:16px;text-align:center;">Nenhuma oferta ativa agora.</div>')+'</div>';
                 }
                 mount.innerHTML=
-                  // 🔥 OFERTAS (área própria, em cima)
-                  '<div style="margin-bottom:26px;">'
+                  // 🔥 OFERTAS (aberta por padrão)
+                  '<div id="corrOfertasView" style="display:block;margin-bottom:26px;">'
                     +'<div style="font-size:16px;font-weight:900;color:#00e0a0;margin-bottom:4px;display:flex;align-items:center;gap:8px;">🔥 Ofertas ativas <span style="background:rgba(0,224,160,0.15);font-size:11px;padding:2px 9px;border-radius:20px;">'+ofertas.length+'</span></div>'
                     +'<div style="height:2px;background:linear-gradient(90deg,rgba(0,224,160,0.5),transparent);border-radius:2px;margin-bottom:14px;"></div>'
                     +ofWrap
                   +'</div>'
-                  // 🎟️ CUPONS (área SÓ deles, embaixo)
-                  +'<div id="corrCupSection" style="background:rgba(255,106,0,0.03);border:1px solid rgba(255,106,0,0.18);border-radius:16px;padding:16px;">'
-                    +'<div style="font-size:16px;font-weight:900;color:var(--primary);margin-bottom:4px;display:flex;align-items:center;gap:8px;">🎟️ Cupons ativos <span style="background:rgba(255,106,0,0.15);font-size:11px;padding:2px 9px;border-radius:20px;">'+cupons.length+'</span></div>'
-                    +'<div style="height:2px;background:linear-gradient(90deg,rgba(255,106,0,0.5),transparent);border-radius:2px;margin-bottom:14px;"></div>'
-                    +'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));gap:13px;" id="corrCupGrid">'+(htmlCup||'<div style="color:#889;font-size:12px;padding:10px 4px;">Nenhum cupom ativo agora.</div>')+'</div>'
+                  // 🎟️ CUPONS (retraído — só aparece ao clicar na aba "Cupons" lá em cima)
+                  +'<div id="corrCuponsView" style="display:none;">'
+                    +'<div id="corrCupSection" style="background:rgba(255,106,0,0.03);border:1px solid rgba(255,106,0,0.18);border-radius:16px;padding:16px;margin-bottom:16px;">'
+                      +'<div style="font-size:16px;font-weight:900;color:var(--primary);margin-bottom:4px;display:flex;align-items:center;gap:8px;">🎟️ Cupons ativos <span style="background:rgba(255,106,0,0.15);font-size:11px;padding:2px 9px;border-radius:20px;">'+cupons.length+'</span></div>'
+                      +'<div style="height:2px;background:linear-gradient(90deg,rgba(255,106,0,0.5),transparent);border-radius:2px;margin-bottom:14px;"></div>'
+                      +'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));gap:13px;" id="corrCupGrid">'+(htmlCup||'<div style="color:#889;font-size:12px;padding:10px 4px;">Nenhum cupom ativo agora.</div>')+'</div>'
+                    +'</div>'
+                    // 📖 passo a passo de como usar o cupom nas principais lojas
+                    +'<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:16px;margin-bottom:16px;">'
+                      +'<div style="font-size:14px;font-weight:900;color:#fff;margin-bottom:12px;">📖 Como usar seu cupom</div>'
+                      +'<div style="display:flex;flex-direction:column;gap:10px;font-size:12.5px;color:#ccd;line-height:1.5;">'
+                        +'<div style="display:flex;gap:10px;"><span style="flex:0 0 22px;height:22px;border-radius:50%;background:rgba(255,106,0,0.18);color:var(--primary);font-weight:900;font-size:11px;display:flex;align-items:center;justify-content:center;">1</span><span>Toque em <b style="color:#fff;">Copiar</b> no cupom que você quer usar</span></div>'
+                        +'<div style="display:flex;gap:10px;"><span style="flex:0 0 22px;height:22px;border-radius:50%;background:rgba(255,106,0,0.18);color:var(--primary);font-weight:900;font-size:11px;display:flex;align-items:center;justify-content:center;">2</span><span>Toque em <b style="color:#fff;">Ver oferta</b> pra abrir o produto na loja</span></div>'
+                        +'<div style="display:flex;gap:10px;"><span style="flex:0 0 22px;height:22px;border-radius:50%;background:rgba(255,106,0,0.18);color:var(--primary);font-weight:900;font-size:11px;display:flex;align-items:center;justify-content:center;">3</span><span>Adicione o produto ao carrinho e vá pra tela de pagamento</span></div>'
+                        +'<div style="display:flex;gap:10px;"><span style="flex:0 0 22px;height:22px;border-radius:50%;background:rgba(255,106,0,0.18);color:var(--primary);font-weight:900;font-size:11px;display:flex;align-items:center;justify-content:center;">4</span><span>Procure o campo <b style="color:#fff;">"Cupom"</b> ou <b style="color:#fff;">"Código promocional"</b> e cole o código</span></div>'
+                        +'<div style="display:flex;gap:10px;"><span style="flex:0 0 22px;height:22px;border-radius:50%;background:rgba(255,106,0,0.18);color:var(--primary);font-weight:900;font-size:11px;display:flex;align-items:center;justify-content:center;">5</span><span>Confirme que o desconto apareceu antes de fechar a compra</span></div>'
+                      +'</div>'
+                      +'<div style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.08);display:flex;flex-direction:column;gap:8px;font-size:11.5px;color:#9aa;">'
+                        +'<div><b style="color:#ffd54f;">🛒 Mercado Livre:</b> o campo de cupom aparece no carrinho, antes de "Continuar a compra"</div>'
+                        +'<div><b style="color:#ff9900;">📦 Amazon:</b> em "Ver carrinho", procure "Aplicar cupom/vale-presente" perto do resumo do pedido</div>'
+                        +'<div><b style="color:#ee4d2d;">🧡 Shopee:</b> no carrinho ou no checkout, toque em "Cupons/Vouchers" e cole o código</div>'
+                      +'</div>'
+                    +'</div>'
+                    // 📢 convite pro canal
+                    +(function(){ var tg=_g_corr_channel(); if(!tg) return ''; return '<a href="'+tg.replace(/"/g,'&quot;')+'" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:11px;text-decoration:none;background:linear-gradient(135deg,rgba(41,171,226,0.15),rgba(41,171,226,0.05));border:1.5px solid rgba(41,171,226,0.4);border-radius:14px;padding:13px 15px;"><span style="font-size:26px;">📢</span><div style="flex:1;"><div style="font-size:13px;font-weight:900;color:#fff;">Inscreva-se no canal de ofertas</div><div style="font-size:11px;color:#8fc4e0;">Cupom novo sai primeiro lá, direto no seu Telegram</div></div><span style="background:#29abe2;color:#fff;font-weight:900;font-size:12px;padding:9px 14px;border-radius:10px;white-space:nowrap;">Entrar →</span></a>'; })()
                   +'</div>';
                 // ofertas: slider fixa largura; cupons já são responsivos (auto-fill)
                 try{ if(window.innerWidth>=760){ var sc=mount.querySelectorAll('.corrCard'); if(layout==='slider'){ sc.forEach(function(c){ c.style.minWidth='300px'; c.style.scrollSnapAlign='start'; }); } } }catch(e){}
@@ -11273,6 +11294,18 @@ Poderia me ajudar? 🙏"
                 // ⏱️ liga os timers regressivos (10h)
                 try{ if(window._corrTimerInt) clearInterval(window._corrTimerInt); corrTickTimers(); window._corrTimerInt=setInterval(corrTickTimers,1000); }catch(e){}
             }
+        };
+        // 🔀 troca entre "Ofertas" e "Cupons" (cupons fica retraído até a pessoa clicar)
+        window.corrSwitchView = function(view){
+            try{
+                var of=document.getElementById('corrOfertasView'), cu=document.getElementById('corrCuponsView');
+                var bOf=document.getElementById('corrTabOfertas'), bCu=document.getElementById('corrTabCupons');
+                if(of) of.style.display = view==='ofertas' ? 'block' : 'none';
+                if(cu) cu.style.display = view==='cupons' ? 'block' : 'none';
+                if(bOf) bOf.style.opacity = view==='ofertas' ? '1' : '0.6';
+                if(bCu) bCu.style.opacity = view==='cupons' ? '1' : '0.6';
+                var mnt=document.getElementById('corrOvMount'); if(mnt) mnt.scrollIntoView({behavior:'smooth',block:'start'});
+            }catch(e){}
         };
         window.corrTickTimers = function(){
             var els=document.querySelectorAll('.corrTimer'); if(!els.length){ if(window._corrTimerInt){clearInterval(window._corrTimerInt);window._corrTimerInt=null;} return; }
@@ -11302,10 +11335,10 @@ Poderia me ajudar? 🙏"
             ov.style.cssText='position:fixed;inset:0;z-index:99990;background:'+bg+';overflow-y:auto;animation:promoFadeIn .35s ease;';
             ov.innerHTML=
               '<div style="position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:14px 16px;background:linear-gradient(180deg,rgba(6,8,12,0.9),rgba(6,8,12,0));backdrop-filter:blur(6px);">'
-                +'<button onclick="closeCorredores()" style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:#fff;border-radius:12px;padding:10px 15px;font-size:13px;font-weight:800;cursor:pointer;">← Voltar</button>'
+                +'<button onclick="closeCorredores()" style="'+(window._invDirectEntry?'display:none;':'display:inline-flex;')+'align-items:center;gap:6px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:#fff;border-radius:12px;padding:10px 15px;font-size:13px;font-weight:800;cursor:pointer;">← Voltar</button>'
                 +'<div style="font-size:15px;font-weight:900;color:#fff;display:flex;align-items:center;gap:7px;flex:1;">🏃 Ofertas ativas</div>'
-                +'<button onclick="invShareLink(\'ofertas\')" title="Copiar link das ofertas" style="background:rgba(0,224,160,0.12);border:1px solid rgba(0,224,160,0.35);color:#00e0a0;border-radius:10px;padding:9px 12px;font-size:11px;font-weight:800;cursor:pointer;">🔗 Ofertas</button>'
-                +'<button onclick="invShareLink(\'cupons\')" title="Copiar link dos cupons" style="background:rgba(255,106,0,0.12);border:1px solid rgba(255,106,0,0.35);color:var(--primary);border-radius:10px;padding:9px 12px;font-size:11px;font-weight:800;cursor:pointer;">🔗 Cupons</button>'
+                +'<button id="corrTabOfertas" onclick="corrSwitchView(\'ofertas\')" style="background:rgba(0,224,160,0.16);border:1px solid rgba(0,224,160,0.45);color:#00e0a0;border-radius:10px;padding:9px 14px;font-size:11.5px;font-weight:900;cursor:pointer;">🔥 Ofertas</button>'
+                +'<button id="corrTabCupons" onclick="corrSwitchView(\'cupons\')" style="background:rgba(255,106,0,0.1);border:1px solid rgba(255,106,0,0.3);color:var(--primary);border-radius:10px;padding:9px 14px;font-size:11.5px;font-weight:900;cursor:pointer;opacity:0.6;">🎟️ Cupons</button>'
               +'</div>'
               +'<div style="max-width:940px;margin:0 auto;padding:6px 16px 40px;">'
                 +(function(){ var tg=_g('tg_channel'); if(!tg) return ''; var u=tg.indexOf('http')===0?tg:('https://t.me/'+tg.replace(/^@/,'')); return '<a href="'+u.replace(/"/g,'&quot;')+'" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:11px;text-decoration:none;background:linear-gradient(135deg,rgba(41,171,226,0.15),rgba(41,171,226,0.05));border:1.5px solid rgba(41,171,226,0.4);border-radius:14px;padding:13px 15px;margin-bottom:18px;"><span style="font-size:26px;">📢</span><div style="flex:1;"><div style="font-size:13px;font-weight:900;color:#fff;">Veja TUDO no canal do Telegram</div><div style="font-size:11px;color:#8fc4e0;">Ofertas e cupons em primeira mão, o dia todo</div></div><span style="background:#29abe2;color:#fff;font-weight:900;font-size:12px;padding:9px 14px;border-radius:10px;white-space:nowrap;">Entrar →</span></a>'; })()
@@ -11366,11 +11399,12 @@ Poderia me ajudar? 🙏"
             }
             if(!h) return false;
             function closeGw(){ try{ var gw=document.getElementById('invGateway'); if(gw){ gw.remove(); } sessionStorage.setItem('inv_gateway_seen','1'); }catch(e){} }
-            if(h==='cupons' || h==='ofertas'){
+            if(h==='cupons' || h==='ofertas' || h==='corridacomdesconto' || h==='corridacomdescontos'){
+                window._invDirectEntry = true; // 🔗 chegou por link direto — não é navegação de dentro do site
                 closeGw();
                 if(typeof openCorredores==='function'){
                     openCorredores();
-                    if(h==='cupons'){ setTimeout(function(){ try{ var s=document.getElementById('corrCupSection'); if(s) s.scrollIntoView({behavior:'smooth',block:'start'}); }catch(e){} }, 700); }
+                    if(h==='cupons'){ setTimeout(function(){ try{ if(typeof corrSwitchView==='function') corrSwitchView('cupons'); }catch(e){} }, 700); }
                 }
                 return true;
             }
