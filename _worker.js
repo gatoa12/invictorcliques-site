@@ -49,15 +49,27 @@ export default {
     // Qualquer outra coisa = arquivos estáticos do site.
     // 🔄 Pra o site SEMPRE pegar a versão nova (sem ficar "preso" no cache),
     // o HTML é servido com no-cache. Imagens/JS continuam com cache normal.
-    let res = await env.ASSETS.fetch(request);
-    // 🆕 LINK "LIMPO" (sem #): tipo invictorcliques.com.br/fotos, /ofertas, /cupons...
-    // Isso não é um arquivo de verdade, então cai em 404 — em vez disso, devolve o
-    // próprio site (index.html) e deixa o JAVASCRIPT do site decidir qual página abrir
-    // a partir do endereço. Só faz isso pra links "de página" (sem ponto no final,
-    // tipo .png/.js/.css), pra não esconder erro de imagem/arquivo faltando de verdade.
-    if (res.status === 404 && request.method === "GET" && !/\.[a-zA-Z0-9]+$/.test(path)) {
-      const idxRes = await env.ASSETS.fetch(new Request(new URL("/index.html", request.url), request));
-      if (idxRes.status === 200) res = idxRes;
+    //
+    // 🆕 LINK "LIMPO" (sem #): tipo invictorcliques.com.br/fotos, /ofertas, /corridacomdesconto...
+    // Isso não é um arquivo de verdade — em vez de deixar cair em 404, já sabemos de
+    // antemão quais nomes de página são válidos e servimos o próprio site (index.html)
+    // direto, sem depender de detectar erro 404 (mais confiável).
+    const ROTAS_LIMPAS = new Set([
+      "fotos","ofertas","cupons","cupom","edicao","procuratenis","procura","tenis",
+      "inicio","corridacomdesconto","corridacomdescontos"
+    ]);
+    const pathSlug = path.replace(/^\/+|\/+$/g, "").toLowerCase();
+    let res;
+    if (ROTAS_LIMPAS.has(pathSlug)) {
+      res = await env.ASSETS.fetch(new Request(new URL("/index.html", request.url), request));
+    } else {
+      res = await env.ASSETS.fetch(request);
+      // rede de segurança: se por algum motivo ainda cair em 404 numa rota sem "." no final
+      // (arquivo, não link de página), tenta servir o index.html mesmo assim.
+      if (res.status === 404 && request.method === "GET" && !/\.[a-zA-Z0-9]+$/.test(path)) {
+        const idxRes = await env.ASSETS.fetch(new Request(new URL("/index.html", request.url), request));
+        if (idxRes.status === 200) res = idxRes;
+      }
     }
     try {
       const ctype = res.headers.get("content-type") || "";
