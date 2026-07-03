@@ -5505,6 +5505,62 @@
             }
         }
 
+/* ============================================================
+   ✨ CAMADA DE MODERNIZAÇÃO — PÁGINA PRINCIPAL (v371.0010)
+   Só estilo (cores, sombras, espaçamento, brilho). Não mexe em
+   nenhum HTML, onclick ou dado — só deixa mais bonito por cima
+   do que já existia. Fácil de identificar/reverter se precisar.
+   ============================================================ */
+.header {
+    position: relative;
+    padding-top: 34px !important;
+    padding-bottom: 22px !important;
+}
+.header::before {
+    content: '';
+    position: absolute;
+    top: -60px; left: 50%;
+    transform: translateX(-50%);
+    width: 340px; height: 260px;
+    background: radial-gradient(circle, rgba(255,106,0,0.22) 0%, rgba(255,106,0,0) 70%);
+    pointer-events: none;
+    z-index: 0;
+}
+.profile-photo {
+    box-shadow: 0 0 0 3px rgba(255,106,0,0.35), 0 0 40px rgba(255,106,0,0.35), 0 14px 30px rgba(0,0,0,0.45) !important;
+    position: relative;
+    z-index: 1;
+}
+.subtitle {
+    opacity: 0.85;
+    letter-spacing: 0.2px;
+}
+.coupon-btn {
+    box-shadow: 0 10px 26px rgba(255,106,0,0.32), inset 0 1px 0 rgba(255,255,255,0.18) !important;
+    border: 1px solid rgba(255,255,255,0.15) !important;
+}
+.social-btn {
+    transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease !important;
+}
+.social-btn:hover {
+    transform: translateY(-2px) scale(1.08) !important;
+    box-shadow: 0 8px 18px rgba(0,0,0,0.35) !important;
+}
+.menu-btn {
+    position: relative;
+    backdrop-filter: blur(6px);
+    border-width: 1.5px !important;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.05) !important;
+}
+.menu-icon {
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.35));
+    transition: transform .22s cubic-bezier(.2,.7,.3,1) !important;
+}
+.btn-label {
+    letter-spacing: 0.15px;
+}
+/* ============================================================ */
+
 </style>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -5734,7 +5790,7 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v371.0008</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v371.0010</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -5827,6 +5883,7 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                         <!-- CONTEÚDO -->
                         <div class="ap-nav-group">
                             <div class="admin-section-label">📦 Conteúdo</div>
+                            <button class="admin-tab-btn ap-tab-gold" id="sideTab27" onclick="switchAdminTab(27)"><span>📊</span>Visão Geral</button>
                             <button class="admin-tab-btn active" id="sideTab0" onclick="switchAdminTab(0)"><span>📋</span>Ofertas</button>
                             <button class="admin-tab-btn ap-tab-blue" id="sideTab26" onclick="switchAdminTab(26)"><span>✈️</span>Ofertas Telegram</button>
                             <button class="admin-tab-btn" id="sideTab1" onclick="switchAdminTab(1)"><span>📸</span>Eventos Foco <span id="focoCountBadge" class="focoCountBadge" style="background:rgba(255,215,0,0.18);color:var(--ap-gold,#FFD24D);border-radius:9px;padding:0 6px;font-size:10px;font-weight:900;margin-left:auto;">0</span></button>
@@ -11000,6 +11057,68 @@ Poderia me ajudar? 🙏"
             }catch(e){ if(typeof showToast==='function') showToast('Erro de conexão ao apagar','❌'); }
         };
 
+        // 📊 VISÃO GERAL — painel novo, moderno, só de leitura (não muda nenhum dado seu).
+        // Mostra um resumo rápido + atalhos pras outras abas, sem precisar caçar cada coisa.
+        window.adminOverviewRender = async function(){
+            var anchor=document.getElementById('adminTab0'); var panel=document.getElementById('adminTab27');
+            if(!panel && anchor && anchor.parentNode){ panel=document.createElement('div'); panel.className='admin-section'; panel.id='adminTab27'; anchor.parentNode.appendChild(panel); }
+            if(!panel) return;
+            panel.style.display='block'; panel.classList.add('active');
+
+            var ofertasSite=(currentData.ofertas||[]).filter(function(o){return o.ativo!==false;}).length;
+            var eventosFoco=(currentData.eventos||[]).length;
+            var depo=(currentData.depoimentos||[]).length;
+            var tgCount=0, tgCupons=0;
+            try{ var r=await fetch('/api/tg/offers'); var d=await r.json(); var offs=(d&&d.offers)||[]; tgCount=offs.length; tgCupons=offs.filter(function(o){return o.cupom;}).length; }catch(e){}
+
+            function card(icon,label,val,color,tabIdx){
+                return '<div onclick="'+(tabIdx!=null?('switchAdminTab('+tabIdx+')'):'')+'" style="cursor:'+(tabIdx!=null?'pointer':'default')+';background:linear-gradient(160deg,'+color+'14,rgba(0,0,0,0.15));border:1px solid '+color+'35;border-radius:16px;padding:18px;flex:1;min-width:150px;transition:transform .15s ease;" onmouseover="this.style.transform=\'translateY(-3px)\'" onmouseout="this.style.transform=\'translateY(0)\'">'
+                    +'<div style="font-size:24px;margin-bottom:8px;">'+icon+'</div>'
+                    +'<div style="font-size:26px;font-weight:900;color:#fff;line-height:1;">'+val+'</div>'
+                    +'<div style="font-size:11.5px;color:#9aa;margin-top:5px;font-weight:700;">'+label+'</div>'
+                  +'</div>';
+            }
+            function shortcut(icon,label,desc,tabIdx,color){
+                return '<button onclick="switchAdminTab('+tabIdx+')" style="text-align:left;display:flex;align-items:center;gap:12px;width:100%;padding:13px 15px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:13px;cursor:pointer;margin-bottom:9px;transition:background .15s ease;" onmouseover="this.style.background=\'rgba(255,255,255,0.06)\'" onmouseout="this.style.background=\'rgba(255,255,255,0.03)\'">'
+                    +'<div style="width:38px;height:38px;border-radius:10px;background:'+color+'22;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">'+icon+'</div>'
+                    +'<div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:800;color:#fff;">'+label+'</div><div style="font-size:10.5px;color:#889;margin-top:1px;">'+desc+'</div></div>'
+                    +'<div style="color:#556;font-size:16px;">›</div>'
+                  +'</button>';
+            }
+
+            panel.innerHTML =
+                '<div style="margin-bottom:20px;">'
+                  +'<div style="font-size:23px;font-weight:900;color:#fff;">📊 Visão Geral</div>'
+                  +'<div style="font-size:12.5px;color:#9aa;margin-top:4px;">Resumo rápido do site — clica em qualquer card ou atalho pra ir direto na aba certa.</div>'
+                +'</div>'
+                +'<div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:26px;">'
+                  +card('📋', 'Ofertas do site', ofertasSite, '#00e0a0', 0)
+                  +card('✈️', 'Ofertas do Telegram', tgCount, '#29abe2', 26)
+                  +card('🎟️', 'Cupons ativos agora', tgCupons, '#FFD600', 26)
+                  +card('📸', 'Eventos Foco Radical', eventosFoco, '#FF6A00', 1)
+                  +card('💬', 'Depoimentos', depo, '#a78bfa', null)
+                +'</div>'
+                +'<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:22px;">'
+                  +'<div>'
+                    +'<div style="font-size:13px;font-weight:900;color:#ccd;margin-bottom:10px;">⚡ Atalhos rápidos</div>'
+                    +shortcut('✈️','Ofertas do Telegram','Editar ou apagar ofertas que vieram do canal',26,'#29abe2')
+                    +shortcut('📋','Ofertas do site','Cadastrar ou remover ofertas manualmente',0,'#00e0a0')
+                    +shortcut('🎨','Cores & Tema','Mudar as cores do site inteiro',9,'#a78bfa')
+                    +shortcut('🔲','Botões & Seções','Ligar/desligar partes do site, tela de entrada',10,'#60a5fa')
+                    +shortcut('🔧','Storage / Cofre','Configurar a chave de admin (ADMIN_WRITE_KEY)',13,'#f59e0b')
+                  +'</div>'
+                  +'<div>'
+                    +'<div style="font-size:13px;font-weight:900;color:#ccd;margin-bottom:10px;">💡 Lembretes</div>'
+                    +'<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:13px;padding:14px;font-size:12px;color:#aab;line-height:1.7;">'
+                      +'• Ofertas do Telegram somem sozinhas depois de <b style="color:#fff;">10 horas</b><br>'
+                      +'• Cupom só aparece se o post tiver <b style="color:#FFD600;">"Cupom: CÓDIGO"</b> exatamente assim<br>'
+                      +'• Tela de entrada está <b style="color:#00e0a0;">travada sempre ligada</b><br>'
+                      +'• Link de configurar sua chave: <span style="color:#29abe2;">#setkey=...</span> (uma vez por aparelho)'
+                    +'</div>'
+                  +'</div>'
+                +'</div>';
+        };
+
         // 🔥 OFERTAS DO GRUPO (Telegram) — busca e mostra as ofertas postadas no grupo
         window.tgOffersInit = function(){
             var mount=document.getElementById('tgOffersMount'); if(!mount) return;
@@ -11049,19 +11168,13 @@ Poderia me ajudar? 🙏"
                 return m?('R$ '+m[1]):'';
             }
             function _derivaCupom(o){
-                var ig=['CUPOM','AMAZON','SHOPEE','MAGALU','MAGAZINE','OFF','APP','NOAPP','NO','NA','DE','EM','LIMITE','AME','MERCADO','LIVRE','MELI','PIX','CENTAURO','NIKE','ADIDAS','OLYMPIKUS','COM','POR','ATE','DO','DA','PRODUTO','PRODUTOS','OU','NETSHOES','NETSHOSE'];
+                var ig=['CUPOM','AMAZON','SHOPEE','MAGALU','MAGAZINE','OFF','APP','NOAPP','NO','NA','DE','DA','EM','LIMITE','AME','MERCADO','LIVRE','MELI','PIX','CENTAURO','NIKE','ADIDAS','OLYMPIKUS','COM','POR','ATE','DO','PRODUTO','PRODUTOS','OU','NETSHOES','NETSHOSE','AQUI','CLIQUE','LINK','VEJA','CONFIRA','ACESSE','COMPRE','COMPRAR'];
                 if(o.cupom && ig.indexOf(String(o.cupom).toUpperCase())<0) return o.cupom; // cupom já válido
                 var text=o.text||'';
-                function t(re){ var m=text.match(re); if(m&&m[1]&&ig.indexOf(m[1].toUpperCase())<0) return m[1].toUpperCase(); return ''; }
-                var direto = t(/(?:cupom|c[oó]digo|coupon)[:\s]+([A-Za-z][A-Za-z0-9\-]{2,24})/i)||t(/[-–—:]\s*([A-Z][A-Z0-9]{3,24})\b/)||t(/OFF[:\s]+([A-Z][A-Z0-9\-]{3,24})\b/);
-                if(direto) return direto;
-                // 🔧 formato mais solto: "resgate o cupom do produto X ou Y ou Z" — pega o primeiro código em CAIXA ALTA depois da palavra "cupom"
-                var idx=text.search(/cupom/i);
-                if(idx>=0){
-                    var after=text.slice(idx, idx+140);
-                    var cands=after.match(/\b[A-Z][A-Z0-9]{3,24}\b/g)||[];
-                    for(var i=0;i<cands.length;i++){ if(ig.indexOf(cands[i])<0) return cands[i]; }
-                }
+                // 📏 REGRA FIXA: só considera cupom quando o post tem exatamente "Cupom: CÓDIGO" (com dois pontos).
+                // Sem esse formato, não mostra nada — evita pegar palavra errada (tipo "aqui", "clique") sem querer.
+                var m=text.match(/cupom\s*:\s*([A-Za-z0-9\-]{3,24})\b/i);
+                if(m && m[1] && ig.indexOf(m[1].toUpperCase())<0) return m[1].toUpperCase();
                 return '';
             }
             var regis=(currentData.ofertas||[]).filter(function(o){ return o.ativo!==false && (o.nome||o.imagem); }).map(function(o){
@@ -14519,12 +14632,13 @@ Poderia me ajudar? 🙏"
         // ALTERNAR ABA ADMIN — usa ID direto, não índice posicional
         const _ADMIN_TAB_LABELS = ['Ofertas','Eventos','Links & Redes','Geral','Segurança','Perfil','Integração','Catálogo','Histórico','🎨 Cores & Tema','🔲 Botões','🖼️ Imagens','🤖 APIs & IAs','🔧 Storage','🎟️ Cupons','📸 Instagram','💬 WhatsApp','🌐 Redes Sociais','👟 FOTOS TÊNIS BANCO','🏃 Strava','✨ Edição IA'];
         _ADMIN_TAB_LABELS[26] = '✈️ Ofertas Telegram';
+        _ADMIN_TAB_LABELS[27] = '📊 Visão Geral';
         function switchAdminTab(tabIndex) {
             // 1. Botões da sidebar
-            for(let i=0;i<=26;i++){const b=document.getElementById('sideTab'+i);if(b)b.classList.toggle('active',i===tabIndex);}
+            for(let i=0;i<=27;i++){const b=document.getElementById('sideTab'+i);if(b)b.classList.toggle('active',i===tabIndex);}
 
             // 2. Esconde todas as abas por ID — robusto, não depende de posição no DOM
-            for(let i=0;i<=26;i++){
+            for(let i=0;i<=27;i++){
                 const s=document.getElementById('adminTab'+i);
                 if(!s) continue;
                 if(i===tabIndex){
@@ -14574,6 +14688,7 @@ Poderia me ajudar? 🙏"
             if(tabIndex===24) { setTimeout(function(){ if(typeof contentAdminRender==='function') contentAdminRender(); }, 60); }
             if(tabIndex===25) { setTimeout(function(){ if(typeof chatAdminRender==='function') chatAdminRender(); }, 60); }
             if(tabIndex===26) { setTimeout(function(){ if(typeof tgOffersAdminRender==='function') tgOffersAdminRender('tgOffersAdminBox2'); }, 60); }
+            if(tabIndex===27) { setTimeout(function(){ if(typeof adminOverviewRender==='function') adminOverviewRender(); }, 60); }
             setTimeout(adminUpdateKPIs, 120);
 
             // 4. Breadcrumb
