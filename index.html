@@ -5633,6 +5633,17 @@
     box-shadow: 0 14px 30px rgba(0,224,160,0.18) !important;
     border-color: rgba(0,224,160,0.45) !important;
 }
+.corrHero {
+    background: linear-gradient(115deg, #ff6a00, #ff9a3d, #ffd54f, #ff6a00, #e6376b, #ff6a00);
+    background-size: 300% 300%;
+    animation: corrHeroShine 6s ease infinite;
+    box-shadow: 0 10px 26px rgba(255,106,0,0.35);
+}
+@keyframes corrHeroShine {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
 /* ============================================================ */
 
 </style>
@@ -5864,7 +5875,7 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v371.0025</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v371.0026</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -11296,63 +11307,55 @@ Poderia me ajudar? 🙏"
                 var htmlOf='';
                 ofertas.forEach(function(o){
                     // 📷 padrão único pra TODAS as fotos: mesma altura de card, imagem INTEIRA
-                    // (sem cortar nada — só encaixa dentro da caixa, com fundo neutro nas laterais/topo/baixo se sobrar espaço)
-                    var img=o.img?('<div style="width:100%;height:206px;border-radius:12px 12px 0 0;overflow:hidden;background:#0a0a12;display:flex;align-items:center;justify-content:center;"><img src="'+String(o.img).replace(/"/g,'&quot;')+'" alt="" loading="lazy" style="max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;display:block;"></div>'):'';
-                    // 💰 preço: do grupo (o.preco) ou do site (orig/sale) — força de novo a partir do texto se vier vazio
+                    var img=o.img?('<div style="width:100%;height:190px;border-radius:12px 12px 0 0;overflow:hidden;background:#0a0a12;display:flex;align-items:center;justify-content:center;"><img src="'+String(o.img).replace(/"/g,'&quot;')+'" alt="" loading="lazy" style="max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;display:block;"></div>'):'';
                     var _precoVal = o.preco || (typeof _derivaPreco==='function' ? _derivaPreco(o) : '');
                     var preco='';
-                    if(_precoVal){ preco='<div style="margin:7px 0 2px;"><span style="color:#00e0a0;font-weight:900;font-size:20px;">'+String(_precoVal).replace(/</g,'')+'</span></div>'; }
-                    else if(o.orig&&o.sale){ var _org=String(o.orig).replace(/R\$\s*/gi,'').trim(); var _sal=String(o.sale).replace(/R\$\s*/gi,'').trim(); preco='<div style="margin:7px 0 2px;"><span style="text-decoration:line-through;color:#889;font-size:12px;margin-right:6px;">R$ '+_org+'</span><span style="color:#00e0a0;font-weight:900;font-size:20px;">R$ '+_sal+'</span></div>'; }
-                    // ⏱️ timer de expiração (10h)
-                    var timer=(o.fonte==='grupo'&&o.expires)?('<div style="margin:6px 0 2px;font-size:11px;font-weight:800;color:#ff9a3d;display:flex;align-items:center;gap:6px;"><span>🔥</span><span>Essa oferta está se esgotando</span></div>'):'';
-                    // 🗓️ data e hora da postagem
-                    var quando=''; if(o.ts){ try{ var dt=new Date(o.ts); quando='<div style="font-size:10px;color:#7a8494;margin-top:3px;">🗓️ Postado em '+dt.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'})+' às '+dt.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})+'</div>'; }catch(e){} }
-                    // 🎟️ cupom (quando a oferta também tem um código, mesmo não sendo um post "só de cupom")
-                    // 🔧 força de novo a partir do texto original, caso o campo pronto tenha vindo vazio
+                    if(_precoVal){ preco='<span style="color:#00e0a0;font-weight:900;font-size:19px;">'+String(_precoVal).replace(/</g,'')+'</span>'; }
+                    else if(o.orig&&o.sale){ var _org=String(o.orig).replace(/R\$\s*/gi,'').trim(); var _sal=String(o.sale).replace(/R\$\s*/gi,'').trim(); preco='<span style="text-decoration:line-through;color:#889;font-size:12px;margin-right:6px;">R$ '+_org+'</span><span style="color:#00e0a0;font-weight:900;font-size:19px;">R$ '+_sal+'</span>'; }
+                    // ⏱️+🗓️ uma linha só (esgotando + data), bem discreta
+                    var infoLinha=''; var partes=[];
+                    if(o.fonte==='grupo'&&o.expires) partes.push('<span style="color:#ff9a3d;">🔥 Esgotando</span>');
+                    if(o.ts){ try{ var dt=new Date(o.ts); partes.push('🗓️ '+dt.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'})+' '+dt.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})); }catch(e){} }
+                    if(partes.length) infoLinha='<div style="font-size:10.5px;color:#7a8494;margin-top:4px;display:flex;gap:10px;flex-wrap:wrap;">'+partes.join('')+'</div>';
+                    // 🎟️ cupom
                     var _cupomVal = o.cupom || (typeof _derivaCupom==='function' ? _derivaCupom(o) : '');
-                    var cupomBox=_cupomVal?('<div style="display:flex;align-items:stretch;gap:8px;margin-top:8px;flex-wrap:wrap;"><div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;background:rgba(255,214,0,0.12);border:1px dashed rgba(255,214,0,0.55);border-radius:10px;padding:8px 11px;overflow:hidden;"><span style="font-size:9px;font-weight:900;color:#FFD600;">🎟️ CUPOM</span><span style="font-size:13px;font-weight:900;color:#FFD600;letter-spacing:0.5px;word-break:break-all;line-height:1.25;">'+String(_cupomVal).replace(/</g,'')+'</span></div><button onclick="navigator.clipboard&&navigator.clipboard.writeText(\''+String(_cupomVal).replace(/'/g,'')+'\');if(typeof showToast===\'function\')showToast(\'Cupom copiado!\',\'🎟️\')" style="flex:0 0 auto;background:#FFD600;border:none;border-radius:9px;color:#111;font-size:11px;font-weight:900;padding:8px 12px;cursor:pointer;align-self:center;">Copiar</button></div>'):'';
-                    var verBtn=o.link?('<a href="'+String(o.link).replace(/"/g,'&quot;')+'" target="_blank" rel="noopener sponsored" onclick="if(typeof iaTrackClick===\'function\')iaTrackClick(\'corredores\')" style="flex:1;text-align:center;text-decoration:none;background:linear-gradient(135deg,#00e0a0,#00b894);color:#022;border-radius:9px;padding:11px;font-size:12px;font-weight:900;">🛒 Ver oferta →</a>'):'';
-                    // ✈️ SEMPRE tenta montar o botão do Telegram — mesmo sem link de afiliado, mesmo sem canal configurado
-                    // (usa o canal padrão como último recurso, então isso não fica em branco)
-                    var tgBtn=(typeof _tgViewBtn==='function')?_tgViewBtn(o,!o.link):'';
-                    // 🔥❄️ reação estilo "quente/frio" (igual sites de promoção conhecidos) — só em ofertas de verdade
-                    var reactBtn='';
+                    var cupomBox=_cupomVal?('<div style="display:flex;align-items:stretch;gap:7px;margin-top:9px;"><div style="flex:1;min-width:0;display:flex;align-items:center;gap:6px;background:rgba(255,214,0,0.12);border:1px dashed rgba(255,214,0,0.55);border-radius:9px;padding:7px 10px;overflow:hidden;"><span style="font-size:9px;font-weight:900;color:#FFD600;flex-shrink:0;">🎟️</span><span style="font-size:12.5px;font-weight:900;color:#FFD600;word-break:break-all;line-height:1.2;">'+String(_cupomVal).replace(/</g,'')+'</span></div><button onclick="navigator.clipboard&&navigator.clipboard.writeText(\''+String(_cupomVal).replace(/'/g,'')+'\');if(typeof showToast===\'function\')showToast(\'Cupom copiado!\',\'🎟️\')" style="flex:0 0 auto;background:#FFD600;border:none;border-radius:9px;color:#111;font-size:11px;font-weight:900;padding:0 12px;cursor:pointer;">Copiar</button></div>'):'';
+                    var verBtn=o.link?('<a href="'+String(o.link).replace(/"/g,'&quot;')+'" target="_blank" rel="noopener sponsored" onclick="if(typeof iaTrackClick===\'function\')iaTrackClick(\'corredores\')" style="flex:1;text-align:center;text-decoration:none;background:linear-gradient(135deg,#00e0a0,#00b894);color:#022;border-radius:9px;padding:10px;font-size:12px;font-weight:900;">🛒 Ver oferta →</a>'):'';
+                    // ✈️📤 ícones compactos (sem texto), pra não empilhar linha extra
+                    var _tgLink=(typeof window._tgPostLink==='function')?window._tgPostLink(o):'';
+                    var tgIconBtn=_tgLink?('<a href="'+_tgLink+'" target="_blank" rel="noopener" title="Ver no Telegram" style="flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;width:40px;text-decoration:none;background:rgba(41,171,226,0.14);border:1px solid rgba(41,171,226,0.4);color:#29abe2;border-radius:9px;font-size:15px;">✈️</a>'):'';
+                    var shareIconBtn='<a href="https://wa.me/?text='+encodeURIComponent((o.title||'Oferta')+(_cupomVal?(' — Cupom: '+_cupomVal):'')+(o.link?('\n'+o.link):''))+'" target="_blank" rel="noopener" title="Compartilhar" onclick="event.stopPropagation()" style="flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;width:40px;text-decoration:none;background:rgba(37,211,102,0.14);border:1px solid rgba(37,211,102,0.4);color:#25D366;border-radius:9px;font-size:15px;">📤</a>';
+                    // 🔥❄️💬 uma linha só: quente / frio / comentários — compacto, com números
+                    var socialRow='';
                     if(o.fonte==='grupo' && o.id){
                         var _votou=''; try{ _votou = localStorage.getItem('_votou_'+o.id)||''; }catch(e){}
                         var _q = (o.reacoes && o.reacoes.quente) || 0;
                         var _f = (o.reacoes && o.reacoes.frio) || 0;
-                        function _vBtn(tipo, emoji, label, cor, cnt){
-                            var ativo = _votou===tipo;
-                            var trava = _votou ? 'disabled' : '';
-                            return '<button id="reactBtn_'+tipo+'_'+o.id+'" onclick="corrReagir(\''+o.id+'\',\''+tipo+'\')" '+trava+' style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;background:'+(ativo?cor+'22':'rgba(255,255,255,0.04)')+';border:1px solid '+(ativo?cor+'55':'rgba(255,255,255,0.12)')+';color:'+(ativo?cor:'#cdd6e4')+';border-radius:10px;padding:9px;font-size:12px;font-weight:800;cursor:'+(_votou?'default':'pointer')+';opacity:'+(_votou&&!ativo?'0.45':'1')+';">'
-                                +'<span>'+emoji+'</span><span>'+label+'</span>'
-                                +'<span id="reactCount_'+tipo+'_'+o.id+'" style="background:rgba(255,255,255,0.1);padding:1px 7px;border-radius:20px;font-size:10.5px;">'+cnt+'</span>'
+                        function _vBtn(tipo, emoji, cor, cnt){
+                            var ativo = _votou===tipo; var trava = _votou ? 'disabled' : '';
+                            return '<button id="reactBtn_'+tipo+'_'+o.id+'" onclick="corrReagir(\''+o.id+'\',\''+tipo+'\')" '+trava+' style="flex:1;display:flex;align-items:center;justify-content:center;gap:5px;background:'+(ativo?cor+'22':'rgba(255,255,255,0.04)')+';border:1px solid '+(ativo?cor+'55':'rgba(255,255,255,0.1)')+';color:'+(ativo?cor:'#9aa5b3')+';border-radius:9px;padding:7px;font-size:11.5px;font-weight:800;cursor:'+(_votou?'default':'pointer')+';opacity:'+(_votou&&!ativo?'0.5':'1')+';">'
+                                +'<span>'+emoji+'</span><span id="reactCount_'+tipo+'_'+o.id+'">'+cnt+'</span>'
                               +'</button>';
                         }
-                        reactBtn = '<div style="display:flex;gap:7px;margin-top:8px;">'+_vBtn('quente','🔥','Quente','#ff6a00',_q)+_vBtn('frio','❄️','Frio','#29abe2',_f)+'</div>';
+                        var comentBtn = '<button onclick="corrComentToggle(\''+o.id+'\')" style="flex:1;display:flex;align-items:center;justify-content:center;gap:5px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#9aa5b3;border-radius:9px;padding:7px;font-size:11.5px;font-weight:800;cursor:pointer;"><span>💬</span><span id="comentCount_'+o.id+'">…</span></button>';
+                        socialRow = '<div style="display:flex;gap:6px;margin-top:8px;">'+_vBtn('quente','🔥','#ff6a00',_q)+_vBtn('frio','❄️','#29abe2',_f)+comentBtn+'</div>';
                     }
+                    var comentBox = (o.fonte==='grupo' && o.id) ? ('<div id="comentBox_'+o.id+'" style="display:none;margin-top:9px;"></div>') : '';
                     var _lojaVal = o.loja || (typeof _derivaLoja==='function' ? _derivaLoja(o) : '');
-                    var lojaBadge = _lojaVal ? ('<span style="background:rgba(255,106,0,0.18);color:var(--primary);font-size:9px;font-weight:900;padding:2px 8px;border-radius:20px;margin-left:6px;white-space:nowrap;">'+String(_lojaVal).replace(/</g,'')+'</span>') : '';
-                    var verifBadge = (o.fonte==='grupo') ? ('<span style="background:rgba(41,171,226,0.18);color:#29abe2;font-size:9px;font-weight:900;padding:2px 8px;border-radius:20px;margin-left:6px;white-space:nowrap;">✅ Verificado</span>') : '';
-                    // 💬 comentários — cada oferta tem os seus, guardados pelo id real do post
-                    var comentBtn=''; var comentBox='';
-                    if(o.fonte==='grupo' && o.id){
-                        comentBtn = '<button onclick="corrComentToggle(\''+o.id+'\')" style="width:100%;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:7px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.12);color:#cdd6e4;border-radius:10px;padding:9px;font-size:12px;font-weight:800;cursor:pointer;">'
-                            +'<span>💬</span><span>Comentários</span><span id="comentCount_'+o.id+'" style="background:rgba(255,255,255,0.1);padding:1px 7px;border-radius:20px;font-size:10.5px;">…</span>'
-                          +'</button>';
-                        comentBox = '<div id="comentBox_'+o.id+'" style="display:none;margin-top:9px;"></div>';
-                    }
+                    var badges=''; if(_lojaVal||o.fonte==='grupo'){ badges='<div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:5px;">'
+                        +(_lojaVal?('<span style="background:rgba(255,106,0,0.16);color:var(--primary);font-size:9px;font-weight:900;padding:2px 8px;border-radius:20px;">'+String(_lojaVal).replace(/</g,'')+'</span>'):'')
+                        +(o.fonte==='grupo'?('<span style="background:rgba(41,171,226,0.16);color:#29abe2;font-size:9px;font-weight:900;padding:2px 8px;border-radius:20px;">✅ Verificado</span>'):'')
+                      +'</div>'; }
                     htmlOf+='<div class="corrCard" data-loja="'+String(_lojaVal).toUpperCase().replace(/"/g,'')+'" style="background:linear-gradient(160deg,rgba(0,224,160,0.05),rgba(0,0,0,0.02));border:1px solid rgba(0,224,160,0.2);border-radius:14px;overflow:hidden;margin-bottom:13px;box-shadow:0 5px 16px rgba(0,0,0,0.2);">'
                         +img
-                        +'<div style="padding:13px;">'
-                          +'<div style="font-size:13px;font-weight:800;color:#fff;line-height:1.4;">'+String(o.title).replace(/</g,'&lt;')+lojaBadge+verifBadge+'</div>'
-                          +preco
-                          +timer
-                          +quando
+                        +'<div style="padding:12px;">'
+                          +'<div style="font-size:13px;font-weight:800;color:#fff;line-height:1.35;">'+String(o.title).replace(/</g,'&lt;')+'</div>'
+                          +badges
+                          +'<div style="margin-top:7px;">'+preco+'</div>'
+                          +infoLinha
                           +cupomBox
-                          +'<div style="display:flex;gap:7px;margin-top:10px;flex-wrap:wrap;">'+verBtn+tgBtn+shareBtn(o)+'</div>'
-                          +reactBtn
-                          +comentBtn
+                          +'<div style="display:flex;gap:7px;margin-top:9px;">'+verBtn+tgIconBtn+shareIconBtn+'</div>'
+                          +socialRow
                           +comentBox
                         +'</div>'
                       +'</div>';
@@ -11385,18 +11388,37 @@ Poderia me ajudar? 🙏"
                 // 🏬 filtro por loja — pega as lojas que realmente aparecem agora nas ofertas
                 var lojasSet={}; ofertas.forEach(function(o){ var l=(o.loja||(typeof _derivaLoja==='function'?_derivaLoja(o):'')); if(l) lojasSet[l.toUpperCase()]=true; });
                 var lojasList=Object.keys(lojasSet).sort();
+                // ícone colorido por loja (cor de identidade, sem usar o logo oficial de cada marca)
+                var _lojaCores={ 'AMAZON':'#000000','MERCADO LIVRE':'#FFE600','MELI':'#FFE600','MAGALU':'#0086FF','MAGAZINE':'#0086FF','NETSHOES':'#FF6A00','SHOPEE':'#EE4D2D','ALIEXPRESS':'#FF4747','SHEIN':'#000000','KABUM':'#FF6500','CENTAURO':'#00A650','DECATHLON':'#0082C3','NIKE':'#000000','ADIDAS':'#000000','OLYMPIKUS':'#E4002B','FILA':'#001489','ASICS':'#003057','MIZUNO':'#0033A0','CASAS BAHIA':'#E30613','AMERICANAS':'#E60014','SUBMARINO':'#7A1FA2','PONTOFRIO':'#00A19A','EXTRA':'#E4002B','AME':'#FFE600' };
+                function _lojaIconHtml(l, size){ var c=_lojaCores[l]||'#607080'; var letra=l.charAt(0); var escuro=(c==='#FFE600'); return '<span style="width:'+size+'px;height:'+size+'px;border-radius:50%;background:'+c+';color:'+(escuro?'#000':'#fff')+';display:inline-flex;align-items:center;justify-content:center;font-size:'+Math.round(size*0.55)+'px;font-weight:900;flex-shrink:0;">'+letra+'</span>'; }
                 var filtroLojas='';
                 if(lojasList.length>1){
-                    filtroLojas='<div style="display:flex;gap:7px;overflow-x:auto;padding-bottom:10px;margin-bottom:4px;-webkit-overflow-scrolling:touch;">'
-                        +'<button onclick="corrFiltrarLoja(this,\'\')" class="corrLojaBtn corrLojaAtiva" data-loja="" style="flex:0 0 auto;background:rgba(0,224,160,0.18);border:1px solid rgba(0,224,160,0.5);color:#00e0a0;border-radius:20px;padding:7px 14px;font-size:11px;font-weight:800;cursor:pointer;white-space:nowrap;">Todas</button>'
-                        +lojasList.map(function(l){ return '<button onclick="corrFiltrarLoja(this,\''+l.replace(/'/g,'')+'\')" class="corrLojaBtn" data-loja="'+l+'" style="flex:0 0 auto;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.14);color:#cdd6e4;border-radius:20px;padding:7px 14px;font-size:11px;font-weight:800;cursor:pointer;white-space:nowrap;">'+l.charAt(0)+l.slice(1).toLowerCase()+'</button>'; }).join('')
+                    filtroLojas='<div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:10px;margin-bottom:4px;-webkit-overflow-scrolling:touch;">'
+                        +'<button onclick="corrFiltrarLoja(this,\'\')" class="corrLojaBtn corrLojaAtiva" data-loja="" style="flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;background:rgba(0,224,160,0.18);border:1px solid rgba(0,224,160,0.5);color:#00e0a0;border-radius:20px;padding:6px 14px 6px 6px;font-size:11px;font-weight:800;cursor:pointer;white-space:nowrap;">'+_lojaIconHtml('★',20)+'<span>Todas</span></button>'
+                        +lojasList.map(function(l){ return '<button onclick="corrFiltrarLoja(this,\''+l.replace(/'/g,'')+'\')" class="corrLojaBtn" data-loja="'+l+'" style="flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.14);color:#cdd6e4;border-radius:20px;padding:6px 14px 6px 6px;font-size:11px;font-weight:800;cursor:pointer;white-space:nowrap;">'+_lojaIconHtml(l,20)+'<span>'+l.charAt(0)+l.slice(1).toLowerCase()+'</span></button>'; }).join('')
                       +'</div>';
+                }
+                // 🌟 banner de destaque — a oferta mais "quente" agora, com fundo animado (chama a atenção tipo banner de promoção)
+                var heroHtml='';
+                if(ofertas.length){
+                    var _hero = ofertas.slice().sort(function(a,b){ return ((b.reacoes&&b.reacoes.quente)||0)-((a.reacoes&&a.reacoes.quente)||0); })[0];
+                    var _hPreco = _hero.preco || (typeof _derivaPreco==='function'?_derivaPreco(_hero):'');
+                    heroHtml = '<a href="'+(_hero.link?String(_hero.link).replace(/"/g,'&quot;'):'#corrOvMount')+'" '+(_hero.link?'target="_blank" rel="noopener"':'')+' class="corrHero" style="display:flex;align-items:center;gap:14px;text-decoration:none;border-radius:16px;padding:16px;margin-bottom:14px;position:relative;overflow:hidden;">'
+                        +(_hero.img?('<img src="'+String(_hero.img).replace(/"/g,'&quot;')+'" style="width:64px;height:64px;object-fit:contain;background:rgba(255,255,255,0.9);border-radius:12px;flex-shrink:0;position:relative;z-index:1;">'):'')
+                        +'<div style="flex:1;min-width:0;position:relative;z-index:1;">'
+                          +'<div style="font-size:10px;font-weight:900;color:#fff;text-transform:uppercase;letter-spacing:0.5px;opacity:0.85;">🔥 Destaque do momento</div>'
+                          +'<div style="font-size:13.5px;font-weight:900;color:#fff;line-height:1.3;margin-top:2px;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;">'+String(_hero.title).replace(/</g,'&lt;')+'</div>'
+                          +(_hPreco?('<div style="font-size:16px;font-weight:900;color:#fff;margin-top:3px;">'+String(_hPreco).replace(/</g,'')+'</div>'):'')
+                        +'</div>'
+                        +'<span style="position:relative;z-index:1;background:rgba(255,255,255,0.22);color:#fff;font-weight:900;font-size:11.5px;padding:8px 13px;border-radius:10px;white-space:nowrap;flex-shrink:0;">Ver →</span>'
+                      +'</a>';
                 }
                 mount.innerHTML=
                   // 🔥 OFERTAS (aberta por padrão)
                   '<div id="corrOfertasView" style="display:block;margin-bottom:26px;">'
                     +'<div style="font-size:16px;font-weight:900;color:#00e0a0;margin-bottom:4px;display:flex;align-items:center;gap:8px;">🔥 Ofertas ativas <span style="background:rgba(0,224,160,0.15);font-size:11px;padding:2px 9px;border-radius:20px;">'+ofertas.length+'</span></div>'
                     +'<div style="height:2px;background:linear-gradient(90deg,rgba(0,224,160,0.5),transparent);border-radius:2px;margin-bottom:14px;"></div>'
+                    +heroHtml
                     +filtroLojas
                     +ofWrap
                   +'</div>'
