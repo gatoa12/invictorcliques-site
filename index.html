@@ -5561,6 +5561,67 @@
 }
 /* ============================================================ */
 
+/* ============================================================
+   ✨ CAMADA DE MODERNIZAÇÃO — PAINEL ADMIN (v371.0015)
+   Só estilo (cores, sombras, espaçamento, hierarquia visual).
+   Não mexe em nenhuma função, botão ou dado — só deixa o painel
+   mais organizado e com cara mais profissional por cima do que
+   já existia.
+   ============================================================ */
+.admin-panel {
+    background: linear-gradient(160deg, #14161c 0%, #0d0f14 100%) !important;
+}
+.admin-header {
+    box-shadow: 0 2px 14px rgba(0,0,0,0.35) !important;
+    border-bottom: 1px solid rgba(255,255,255,0.06) !important;
+}
+.admin-section-label {
+    font-size: 10px !important;
+    letter-spacing: 0.9px !important;
+    color: #6b7280 !important;
+    margin-top: 24px !important;
+    margin-bottom: 9px !important;
+    padding-left: 4px !important;
+}
+.admin-tab-btn {
+    border-radius: 11px !important;
+    margin-bottom: 6px !important;
+    padding-top: 11px !important;
+    padding-bottom: 11px !important;
+    font-weight: 700 !important;
+}
+.admin-tab-btn.active {
+    box-shadow: 0 4px 14px rgba(255,106,0,0.25), inset 0 1px 0 rgba(255,255,255,0.08) !important;
+}
+.admin-tab-btn:hover:not(.active) {
+    background: rgba(255,255,255,0.045) !important;
+}
+.admin-section {
+    animation: adminFadeIn .22s ease;
+    padding: 4px 2px !important;
+}
+@keyframes adminFadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.form-group {
+    margin-bottom: 16px !important;
+}
+.form-group label {
+    letter-spacing: 0.2px !important;
+}
+.form-group input, .form-group select, .form-group textarea {
+    border-radius: 10px !important;
+}
+#adminPanelOverlay button:not(.admin-tab-btn):not([disabled]) {
+    border-radius: 10px !important;
+}
+/* barra de rolagem mais discreta dentro do painel */
+.admin-panel ::-webkit-scrollbar { width: 8px; height: 8px; }
+.admin-panel ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 8px; }
+.admin-panel ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+/* ============================================================ */
+
 </style>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -5790,7 +5851,7 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v371.0013</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v371.0016</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -11399,6 +11460,12 @@ Poderia me ajudar? 🙏"
             }
             if(!h) return false;
             function closeGw(){ try{ var gw=document.getElementById('invGateway'); if(gw){ gw.remove(); } sessionStorage.setItem('inv_gateway_seen','1'); }catch(e){} }
+            if(h==='admin'){
+                closeGw();
+                try{ history.replaceState(null,'',location.pathname+location.search); }catch(e){} // tira o #admin da barra de endereço depois de abrir
+                if(typeof adminStarClick==='function') adminStarClick();
+                return true;
+            }
             if(h==='cupons' || h==='ofertas' || h==='corridacomdesconto' || h==='corridacomdescontos'){
                 window._invDirectEntry = true; // 🔗 chegou por link direto — não é navegação de dentro do site
                 closeGw();
@@ -11411,7 +11478,24 @@ Poderia me ajudar? 🙏"
             if(typeof closeCorredores==='function') closeCorredores();
             closeGw();
             if(h==='inicio'){ if(typeof switchTab==='function') switchTab('foco'); try{ window.scrollTo({top:0,behavior:'smooth'}); }catch(e){} return true; }
-            var map={ fotos:'foco', edicao:'edicao', procuratenis:'procure', procura:'procure', tenis:'procure' };
+            var map={
+                // 📸 Suas Fotos
+                fotos:'foco', suasfotos:'foco', focoradical:'foco',
+                banlek:'banlek', suasfotosbanlek:'banlek',
+                // 👟 Tênis / Ofertas
+                procuratenis:'procure', procura:'procure', tenis:'procure', procure:'procure', procureseustenis:'procure',
+                tenisofertas:'ofertas', ofertastenis:'ofertas',
+                // 🏃 Corridas
+                minhascorridas:'strava', corridas:'strava', strava:'strava',
+                // ✨ Edição
+                edicao:'edicao', edicaoia:'edicao',
+                copiarestilo:'edicao', seupreset:'edicao',
+                // 📷 Outros
+                previewinsta:'preview', preview:'preview',
+                figurinhas:'figurinhas',
+                verificar:'verificar', verificarfotos:'verificar', verificarminhasfotos:'verificar',
+                ofertastelegram:'telegram', telegram:'telegram'
+            };
             if(map[h] && typeof switchTab==='function'){ switchTab(map[h]); try{ window.scrollTo({top:0}); }catch(e){} return true; }
             return false;
         };

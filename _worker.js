@@ -55,8 +55,15 @@ export default {
     // antemão quais nomes de página são válidos e servimos o próprio site (index.html)
     // direto, sem depender de detectar erro 404 (mais confiável).
     const ROTAS_LIMPAS = new Set([
-      "fotos","ofertas","cupons","cupom","edicao","procuratenis","procura","tenis",
-      "inicio","corridacomdesconto","corridacomdescontos"
+      "fotos","suasfotos","focoradical","banlek","suasfotosbanlek",
+      "ofertas","cupons","cupom","corridacomdesconto","corridacomdescontos",
+      "procuratenis","procura","tenis","procure","procureseustenis","tenisofertas","ofertastenis",
+      "edicao","edicaoia","copiarestilo","seupreset",
+      "minhascorridas","corridas","strava",
+      "previewinsta","preview","figurinhas",
+      "verificar","verificarfotos","verificarminhasfotos",
+      "ofertastelegram","telegram",
+      "inicio","admin"
     ]);
     const pathSlug = path.replace(/^\/+|\/+$/g, "").toLowerCase();
     let res;
