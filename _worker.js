@@ -146,14 +146,26 @@ async function handleTgWebhook(request, env, url) {
   const primeiraLinha = (text.split("\n").find((l) => l.trim()) || "").trim();
   const isCupom = /\bcupom\b/i.test(primeiraLinha);
 
-  // cupom/código — 📏 REGRA FIXA a pedido do Victor: só considera cupom quando o post tem
-  // EXATAMENTE "Cupom: CÓDIGO" (com dois pontos). Sem esse formato, não extrai nada — evita
-  // pegar palavra errada por engano (tipo "aqui", "clique", "compre").
-  const ignoraCod = ["CUPOM","AMAZON","SHOPEE","MAGALU","MAGAZINE","OFF","APP","NOAPP","NO","NA","DE","DA","EM","LIMITE","AME","MERCADO","LIVRE","MELI","PIX","NETSHOSE","NETSHOES","CENTAURO","NIKE","ADIDAS","OLYMPIKUS","COM","POR","ATÉ","ATE","DO","PRODUTO","PRODUTOS","OU","AQUI","CLIQUE","LINK","VEJA","CONFIRA","ACESSE","COMPRE","COMPRAR"];
+  // cupom/código — 📏 REGRA: prioridade é "Cupom: CÓDIGO" (com dois pontos). Se não tiver esse
+  // formato, aceita também quando o CÓDIGO já vem em CAIXA ALTA logo perto da palavra "cupom"
+  // (ex: "Resgate o cupom DATADUPLA") — isso funciona porque você sempre digita o código de
+  // verdade em maiúsculas, enquanto palavras comuns tipo "aqui"/"clique" ficam em minúscula no
+  // seu texto — então nunca confunde uma com a outra.
+  const ignoraCod = ["CUPOM","AMAZON","SHOPEE","MAGALU","MAGAZINE","OFF","APP","NOAPP","NO","NA","DE","DA","EM","LIMITE","AME","MERCADO","LIVRE","MELI","PIX","NETSHOSE","NETSHOES","CENTAURO","NIKE","ADIDAS","OLYMPIKUS","COM","POR","ATÉ","ATE","DO","PRODUTO","PRODUTOS","OU","AQUI","CLIQUE","LINK","VEJA","CONFIRA","ACESSE","COMPRE","COMPRAR","RESGATE","SEU","SUA","VIA","ANUNCIO","ANÚNCIO"];
   let cupom = "";
   {
     const m = text.match(/cupom\s*:\s*([A-Za-z0-9\-]{3,24})\b/i);
     if (m && m[1] && ignoraCod.indexOf(m[1].toUpperCase()) < 0) cupom = m[1].toUpperCase();
+  }
+  if (!cupom) {
+    const idxCupom = text.search(/cupom/i);
+    if (idxCupom >= 0) {
+      const after = text.slice(idxCupom, idxCupom + 150);
+      // 🔧 código pode começar com número (ex: "7DO7CHEGOUU") — só exige ter PELO MENOS 1 letra
+      // maiúscula no meio, pra não confundir com um número puro (preço, ano, etc)
+      const cands = after.match(/\b(?=[A-Z0-9]*[A-Z])[A-Z0-9]{3,24}\b/g) || [];
+      for (const c of cands) { if (ignoraCod.indexOf(c) < 0) { cupom = c; break; } }
+    }
   }
 
   // loja (alternância de lojas): 1ª palavra "conhecida" que aparecer — cobre todos os afiliados
