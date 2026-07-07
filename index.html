@@ -5851,7 +5851,7 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v371.0016</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v371.0018</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -11227,7 +11227,15 @@ Poderia me ajudar? 🙏"
             function _derivaPreco(o){
                 if(o.preco) return o.preco;
                 var m=(o.text||'').match(/R\$\s?(\d{1,3}(?:\.\d{3})*(?:,\d{2})?|\d+(?:[.,]\d{2})?)/i);
-                return m?('R$ '+m[1]):'';
+                if(m) return 'R$ '+m[1];
+                var mu=(o.text||'').match(/US\$\s?(\d+(?:[.,]\d{2})?)|\$\s?(\d+(?:[.,]\d{2})?)/i);
+                if(mu) return 'US$ '+(mu[1]||mu[2]);
+                return '';
+            }
+            function _derivaLoja(o){
+                if(o.loja) return o.loja;
+                var m=(o.text||'').match(/\b(amazon|shopee|aliexpress|ali\s?express|shein|kabum|magalu|magazine\s?(?:voc[eê])?|mercado\s?livre|meli|netshoes|centauro|decathlon|nike|adidas|olympikus|fila|asics|mizuno|casas\s?bahia|americanas|submarino|pontofrio|extra|ame)\b/i);
+                return m?m[1].replace(/\s+/g,' ').toUpperCase():'';
             }
             function _derivaCupom(o){
                 var ig=['CUPOM','AMAZON','SHOPEE','MAGALU','MAGAZINE','OFF','APP','NOAPP','NO','NA','DE','DA','EM','LIMITE','AME','MERCADO','LIVRE','MELI','PIX','CENTAURO','NIKE','ADIDAS','OLYMPIKUS','COM','POR','ATE','DO','PRODUTO','PRODUTOS','OU','NETSHOES','NETSHOSE','AQUI','CLIQUE','LINK','VEJA','CONFIRA','ACESSE','COMPRE','COMPRAR'];
@@ -11246,7 +11254,7 @@ Poderia me ajudar? 🙏"
             function finish(tg){
                 // assinatura pra saber quando mudou (auto-atualização)
                 try{ window._corrLastSig = tg.map(function(o){return o.id+'_'+(o.ts||'');}).join('|')+'#'+((currentData.ofertas||[]).length); }catch(e){}
-                var tgo=tg.map(function(o){ return { title:_derivaTitulo(o), text:o.text||'', link:o.link||'', img:o.img||'', cupom:_derivaCupom(o), preco:_derivaPreco(o), loja:o.loja||'', isCupom:!!o.isCupom, orig:'', sale:'', fonte:'grupo', expires:o.expires||0, ts:o.ts||0, id:o.id, chatUsername:o.chatUsername||'' }; });
+                var tgo=tg.map(function(o){ return { title:_derivaTitulo(o), text:o.text||'', link:o.link||'', img:o.img||'', cupom:_derivaCupom(o), preco:_derivaPreco(o), loja:_derivaLoja(o), isCupom:!!o.isCupom, orig:'', sale:'', fonte:'grupo', expires:o.expires||0, ts:o.ts||0, id:o.id, chatUsername:o.chatUsername||'' }; });
                 var all=regis.concat(tgo);
                 // 🆕 mais novas primeiro (por data de postagem)
                 all.sort(function(a,b){ return (b.ts||b.id||0)-(a.ts||a.id||0); });
@@ -11262,9 +11270,10 @@ Poderia me ajudar? 🙏"
                     // 📷 padrão único pra TODAS as fotos: mesma altura de card, imagem INTEIRA
                     // (sem cortar nada — só encaixa dentro da caixa, com fundo neutro nas laterais/topo/baixo se sobrar espaço)
                     var img=o.img?('<div style="width:100%;height:206px;border-radius:12px 12px 0 0;overflow:hidden;background:#0a0a12;display:flex;align-items:center;justify-content:center;"><img src="'+String(o.img).replace(/"/g,'&quot;')+'" alt="" loading="lazy" style="max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;display:block;"></div>'):'';
-                    // 💰 preço: do grupo (o.preco) ou do site (orig/sale)
+                    // 💰 preço: do grupo (o.preco) ou do site (orig/sale) — força de novo a partir do texto se vier vazio
+                    var _precoVal = o.preco || (typeof _derivaPreco==='function' ? _derivaPreco(o) : '');
                     var preco='';
-                    if(o.preco){ preco='<div style="margin:7px 0 2px;"><span style="color:#00e0a0;font-weight:900;font-size:20px;">'+String(o.preco).replace(/</g,'')+'</span></div>'; }
+                    if(_precoVal){ preco='<div style="margin:7px 0 2px;"><span style="color:#00e0a0;font-weight:900;font-size:20px;">'+String(_precoVal).replace(/</g,'')+'</span></div>'; }
                     else if(o.orig&&o.sale){ var _org=String(o.orig).replace(/R\$\s*/gi,'').trim(); var _sal=String(o.sale).replace(/R\$\s*/gi,'').trim(); preco='<div style="margin:7px 0 2px;"><span style="text-decoration:line-through;color:#889;font-size:12px;margin-right:6px;">R$ '+_org+'</span><span style="color:#00e0a0;font-weight:900;font-size:20px;">R$ '+_sal+'</span></div>'; }
                     // ⏱️ timer de expiração (10h)
                     var timer=(o.fonte==='grupo'&&o.expires)?('<div style="margin:6px 0 2px;font-size:11px;font-weight:800;color:#ff9a3d;display:flex;align-items:center;gap:6px;"><span>🔥</span><span>Essa oferta está se esgotando</span></div>'):'';
@@ -11292,7 +11301,7 @@ Poderia me ajudar? 🙏"
                 });
                 var htmlCup='';
                 cupons.forEach(function(o){
-                    var lojaBadge=o.loja?('<span style="background:rgba(255,106,0,0.2);color:var(--primary);font-size:9px;font-weight:900;padding:2px 8px;border-radius:20px;margin-left:6px;">'+String(o.loja).replace(/</g,'')+'</span>'):'';
+                    var lojaBadge=(o.loja||(typeof _derivaLoja==='function'?_derivaLoja(o):''))?('<span style="background:rgba(255,106,0,0.2);color:var(--primary);font-size:9px;font-weight:900;padding:2px 8px;border-radius:20px;margin-left:6px;">'+String(o.loja||_derivaLoja(o)).replace(/</g,'')+'</span>'):'';
                     var img=o.img?('<img src="'+String(o.img).replace(/"/g,'&quot;')+'" alt="" loading="lazy" style="width:100%;max-height:130px;object-fit:cover;display:block;border-radius:11px;margin-bottom:9px;background:#0a0a12;">'):'';
                     var when=''; if(o.ts){ try{ var dt=new Date(o.ts); when='<span style="font-size:9px;color:#7a8494;">· '+dt.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'})+' '+dt.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})+'</span>'; }catch(e){} }
                     var timer=(o.fonte==='grupo'&&o.expires)?('<span style="font-size:10px;font-weight:800;color:#ff9a3d;margin-left:6px;">🔥 Se esgotando</span>'):'';

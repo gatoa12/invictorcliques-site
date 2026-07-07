@@ -156,15 +156,19 @@ async function handleTgWebhook(request, env, url) {
     if (m && m[1] && ignoraCod.indexOf(m[1].toUpperCase()) < 0) cupom = m[1].toUpperCase();
   }
 
-  // loja (alternância de lojas): 1ª palavra "conhecida" que aparecer
+  // loja (alternância de lojas): 1ª palavra "conhecida" que aparecer — cobre todos os afiliados
   let loja = "";
-  const lojaM = text.match(/\b(amazon|shopee|magalu|magazine|mercado\s?livre|meli|netshoes|centauro|nike|adidas|olympikus|ame)\b/i);
+  const lojaM = text.match(/\b(amazon|shopee|aliexpress|ali\s?express|shein|kabum|magalu|magazine\s?(?:voc[eê])?|mercado\s?livre|meli|netshoes|centauro|decathlon|nike|adidas|olympikus|fila|asics|mizuno|casas\s?bahia|americanas|submarino|pontofrio|extra|ame)\b/i);
   if (lojaM) loja = lojaM[1].replace(/\s+/g, " ").toUpperCase();
 
-  // preço (ex: "Por: R$159", "R$ 159,90")
+  // preço (ex: "Por: R$159", "R$ 159,90") — se não achar em reais, tenta em dólar (comum em AliExpress)
   let preco = "";
   const pm = text.match(/R\$\s?(\d{1,3}(?:\.\d{3})*(?:,\d{2})?|\d+(?:[.,]\d{2})?)/i);
   if (pm) preco = "R$ " + pm[1];
+  if (!preco) {
+    const pmUsd = text.match(/US\$\s?(\d+(?:[.,]\d{2})?)|\$\s?(\d+(?:[.,]\d{2})?)/i);
+    if (pmUsd) preco = "US$ " + (pmUsd[1] || pmUsd[2]);
+  }
 
   // imagem: guarda o file_id (a imagem é servida pelo proxy /api/tg/img, sem expor o token)
   let imgId = "";
