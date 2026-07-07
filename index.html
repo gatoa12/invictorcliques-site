@@ -5851,7 +5851,7 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v371.0018</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v371.0019</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -11218,10 +11218,17 @@ Poderia me ajudar? 🙏"
             // junta: ofertas cadastradas no site + ofertas do grupo (Telegram)
             function _derivaTitulo(o){
                 var t=o.title||'';
-                if(t && !/^#/.test(t) && !/publi/i.test(t)) return t;
+                var _ehLinhaDeInfo=function(c){ return /^(por|cupom|c[oó]digo|compre|assine|encontre|link|p[aá]gina|via\s*pix)/i.test(c); };
+                // 🔧 só confia no título pronto se ele não parecer uma linha de preço/cupom (ex: "Por: R$260,99 Via pix")
+                if(t && !/^#/.test(t) && !/publi/i.test(t) && !_ehLinhaDeInfo(t)) return t;
                 var lines=(o.text||'').split('\n').map(function(s){return s.trim();}).filter(Boolean);
-                for(var i=0;i<lines.length;i++){ if(/🔥/.test(lines[i])) return lines[i].replace(/🔥/g,'').replace(/^[^0-9A-Za-zÀ-ÿ]+/,'').trim().slice(0,120); }
-                for(var j=0;j<lines.length;j++){ var ln=lines[j]; if(/^#/.test(ln)||/^https?:/i.test(ln)) continue; var c=ln.replace(/^[^0-9A-Za-zÀ-ÿ]+/,'').trim(); if(/^(por|cupom|c[oó]digo|compre|assine|encontre|link|p[aá]gina)/i.test(c)) continue; if(c.length<4) continue; return c.slice(0,120); }
+                for(var i=0;i<lines.length;i++){
+                    if(!/🔥/.test(lines[i])) continue;
+                    var c1=lines[i].replace(/🔥/g,'').replace(/^[^0-9A-Za-zÀ-ÿ]+/,'').trim();
+                    if(_ehLinhaDeInfo(c1) || c1.length<4) continue;
+                    return c1.slice(0,120);
+                }
+                for(var j=0;j<lines.length;j++){ var ln=lines[j]; if(/^#/.test(ln)||/^https?:/i.test(ln)) continue; var c=ln.replace(/^[^0-9A-Za-zÀ-ÿ]+/,'').trim(); if(_ehLinhaDeInfo(c)) continue; if(c.length<4) continue; return c.slice(0,120); }
                 return t||'Oferta';
             }
             function _derivaPreco(o){

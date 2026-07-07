@@ -175,17 +175,22 @@ async function handleTgWebhook(request, env, url) {
   if (hasPhoto) { imgId = msg.photo[msg.photo.length - 1].file_id || ""; }
 
   // título limpo = a linha com 🔥 (você sempre marca o produto com fogo); senão 1ª linha real
+  // 🔧 mas pula linha de preço/cupom mesmo que tenha 🔥 (ex: "🔥 Por: R$260,99 Via pix" NÃO é o nome do produto)
   let title = "";
   const linhas = text.split("\n").map((s) => s.trim()).filter(Boolean);
+  const _ehLinhaDeInfo = (c) => /^(por|cupom|c[oó]digo|compre|compre aqui|assine|encontre|link|p[aá]gina|via\s*pix)/i.test(c);
   for (const ln of linhas) {
-    if (/🔥/.test(ln)) { title = ln.replace(/🔥/g, "").replace(/^[^0-9A-Za-zÀ-ÿ]+/, "").trim().slice(0, 120); break; }
+    if (!/🔥/.test(ln)) continue;
+    const c = ln.replace(/🔥/g, "").replace(/^[^0-9A-Za-zÀ-ÿ]+/, "").trim();
+    if (_ehLinhaDeInfo(c) || c.length < 4) continue;
+    title = c.slice(0, 120); break;
   }
   if (!title) {
     for (const ln of linhas) {
       if (/^#/.test(ln)) continue;
       if (/^https?:\/\//i.test(ln)) continue;
       const c = ln.replace(/^[^0-9A-Za-zÀ-ÿ]+/, "").trim();
-      if (/^(por|cupom|c[oó]digo|compre aqui|assine|encontre|link|p[aá]gina)/i.test(c)) continue;
+      if (_ehLinhaDeInfo(c)) continue;
       if (c.length < 4) continue;
       title = c.slice(0, 120); break;
     }
