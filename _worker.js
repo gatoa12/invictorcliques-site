@@ -42,6 +42,7 @@ export default {
       if (path === "/api/tg/offers")    return await handleTgOffers(request, env);
       if (path === "/api/tg/offer")     return await handleTgOfferEdit(request, env, url);
       if (path === "/api/tg/reagir")    return await handleTgReagir(request, env, url);
+      if (path === "/api/tg/comentarios") return await handleTgComentarios(request, env, url);
       if (path === "/api/tg/img")       return await handleTgImg(request, env, url);
     } catch (e) {
       return json({ error: String((e && e.message) || e) }, 500);
@@ -113,6 +114,26 @@ async function cleanupExpiredTgOffers(env) {
   if (vivas.length !== list.length) {
     try { await env.INV_KV.put("tg_offers", JSON.stringify(vivas)); } catch (e) {}
   }
+  // 🧹 também limpa reações e comentários de ofertas que já sumiram, pra não acumular pra sempre
+  const idsVivos = new Set(vivas.map((o) => String(o.id)));
+  try {
+    const raw = await env.INV_KV.get("tg_reactions");
+    if (raw) {
+      const r = JSON.parse(raw);
+      const limpo = {};
+      for (const k in r) { if (idsVivos.has(k)) limpo[k] = r[k]; }
+      await env.INV_KV.put("tg_reactions", JSON.stringify(limpo));
+    }
+  } catch (e) {}
+  try {
+    const raw = await env.INV_KV.get("tg_comments");
+    if (raw) {
+      const c = JSON.parse(raw);
+      const limpo = {};
+      for (const k in c) { if (idsVivos.has(k)) limpo[k] = c[k]; }
+      await env.INV_KV.put("tg_comments", JSON.stringify(limpo));
+    }
+  } catch (e) {}
 }
 
 const CORS = {
@@ -241,23 +262,51 @@ async function handleTgOffers(request, env) {
     id: o.id, title: o.title, text: o.text, link: o.link || "", cupom: o.cupom || "", preco: o.preco || "",
     loja: o.loja || "", isCupom: !!o.isCupom, chatUsername: o.chatUsername || "",
     img: o.imgId ? ("/api/tg/img?id=" + encodeURIComponent(o.imgId)) : "",
-    reacoes: reacoes[String(o.id)] || 0,
+    reacoes: (reacoes[String(o.id)] && typeof reacoes[String(o.id)]==='object') ? reacoes[String(o.id)] : { quente: 0, frio: 0 },
     ts: o.ts, expires: (o.ts || now) + TTL
   }));
   return json({ offers: out });
 }
 
-// ── /api/tg/reagir — qualquer visitante pode reagir (🔥) numa oferta; não precisa de senha ──
+// ── /api/tg/reagir — qualquer visitante pode reagir (🔥 quente / ❄️ frio) numa oferta; não precisa de senha ──
 async function handleTgReagir(request, env, url) {
   if (request.method === "OPTIONS") return new Response(null, { headers: CORS });
   if (request.method !== "POST") return json({ error: "method_not_allowed" }, 405);
   const id = url.searchParams.get("id") || "";
+  const tipo = url.searchParams.get("tipo") === "frio" ? "frio" : "quente";
   if (!id) return json({ error: "id obrigatório" }, 400);
   let reacoes = {};
   try { const raw = await env.INV_KV.get("tg_reactions"); if (raw) reacoes = JSON.parse(raw); } catch (e) {}
-  reacoes[id] = (reacoes[id] || 0) + 1;
+  if (!reacoes[id] || typeof reacoes[id] !== "object") reacoes[id] = { quente: 0, frio: 0 };
+  reacoes[id][tipo] = (reacoes[id][tipo] || 0) + 1;
   try { await env.INV_KV.put("tg_reactions", JSON.stringify(reacoes)); } catch (e) {}
-  return json({ ok: true, reacoes: reacoes[id] });
+  return json({ ok: true, reacoes: reacoes[id][tipo] });
+}
+
+// ── /api/tg/comentarios — ver (GET) ou postar (POST) comentários numa oferta; qualquer visitante pode comentar ──
+async function handleTgComentarios(request, env, url) {
+  if (request.method === "OPTIONS") return new Response(null, { headers: CORS });
+  const id = url.searchParams.get("id") || "";
+  if (!id) return json({ error: "id obrigatório" }, 400);
+  let all = {};
+  try { const raw = await env.INV_KV.get("tg_comments"); if (raw) all = JSON.parse(raw); } catch (e) {}
+
+  if (request.method === "GET") {
+    return json({ comentarios: all[id] || [] });
+  }
+  if (request.method === "POST") {
+    let body;
+    try { body = await request.json(); } catch (e) { return json({ error: "json inválido" }, 400); }
+    const nome = String(body.nome || "").trim().slice(0, 40) || "Corredor anônimo";
+    const texto = String(body.texto || "").trim().slice(0, 300);
+    if (!texto) return json({ error: "comentário vazio" }, 400);
+    if (!all[id]) all[id] = [];
+    all[id].push({ nome, texto, ts: Date.now() });
+    if (all[id].length > 60) all[id] = all[id].slice(-60); // limite por oferta, pra não crescer sem fim
+    try { await env.INV_KV.put("tg_comments", JSON.stringify(all)); } catch (e) {}
+    return json({ ok: true, total: all[id].length });
+  }
+  return json({ error: "method_not_allowed" }, 405);
 }
 
 // ── /api/tg/offer — editar (PUT) ou apagar (DELETE) UMA oferta do Telegram, direto do painel admin ──

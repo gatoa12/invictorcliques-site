@@ -5864,7 +5864,7 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v371.0023</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v371.0025</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -11282,7 +11282,7 @@ Poderia me ajudar? 🙏"
             function finish(tg){
                 // assinatura pra saber quando mudou (auto-atualização)
                 try{ window._corrLastSig = tg.map(function(o){return o.id+'_'+(o.ts||'');}).join('|')+'#'+((currentData.ofertas||[]).length); }catch(e){}
-                var tgo=tg.map(function(o){ return { title:_derivaTitulo(o), text:o.text||'', link:o.link||'', img:o.img||'', cupom:_derivaCupom(o), preco:_derivaPreco(o), loja:_derivaLoja(o), isCupom:!!o.isCupom, orig:'', sale:'', fonte:'grupo', expires:o.expires||0, ts:o.ts||0, id:o.id, chatUsername:o.chatUsername||'', reacoes:o.reacoes||0 }; });
+                var tgo=tg.map(function(o){ return { title:_derivaTitulo(o), text:o.text||'', link:o.link||'', img:o.img||'', cupom:_derivaCupom(o), preco:_derivaPreco(o), loja:_derivaLoja(o), isCupom:!!o.isCupom, orig:'', sale:'', fonte:'grupo', expires:o.expires||0, ts:o.ts||0, id:o.id, chatUsername:o.chatUsername||'', reacoes:o.reacoes||{} }; });
                 var all=regis.concat(tgo);
                 // 🆕 mais novas primeiro (por data de postagem)
                 all.sort(function(a,b){ return (b.ts||b.id||0)-(a.ts||a.id||0); });
@@ -11315,26 +11315,45 @@ Poderia me ajudar? 🙏"
                     // ✈️ SEMPRE tenta montar o botão do Telegram — mesmo sem link de afiliado, mesmo sem canal configurado
                     // (usa o canal padrão como último recurso, então isso não fica em branco)
                     var tgBtn=(typeof _tgViewBtn==='function')?_tgViewBtn(o,!o.link):'';
-                    // 👍 botão de reação — só faz sentido em ofertas de verdade (que vieram do grupo, com id real)
+                    // 🔥❄️ reação estilo "quente/frio" (igual sites de promoção conhecidos) — só em ofertas de verdade
                     var reactBtn='';
                     if(o.fonte==='grupo' && o.id){
-                        var _reagido=false; try{ _reagido = localStorage.getItem('_reagiu_'+o.id)==='1'; }catch(e){}
-                        var _cont = o.reacoes||0;
-                        reactBtn = '<button id="reactBtn_'+o.id+'" onclick="corrReagir(\''+o.id+'\')" '+(_reagido?'disabled':'')+' style="width:100%;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:7px;background:'+(_reagido?'rgba(255,106,0,0.18)':'rgba(255,255,255,0.04)')+';border:1px solid '+(_reagido?'rgba(255,106,0,0.4)':'rgba(255,255,255,0.12)')+';color:'+(_reagido?'var(--primary)':'#cdd6e4')+';border-radius:10px;padding:9px;font-size:12px;font-weight:800;cursor:'+(_reagido?'default':'pointer')+';">'
-                            +'<span>🔥</span><span>'+(_reagido?'Você reagiu':'Gostei dessa oferta')+'</span>'
-                            +'<span id="reactCount_'+o.id+'" style="background:rgba(255,255,255,0.08);padding:1px 8px;border-radius:20px;font-size:11px;">'+_cont+'</span>'
-                          +'</button>';
+                        var _votou=''; try{ _votou = localStorage.getItem('_votou_'+o.id)||''; }catch(e){}
+                        var _q = (o.reacoes && o.reacoes.quente) || 0;
+                        var _f = (o.reacoes && o.reacoes.frio) || 0;
+                        function _vBtn(tipo, emoji, label, cor, cnt){
+                            var ativo = _votou===tipo;
+                            var trava = _votou ? 'disabled' : '';
+                            return '<button id="reactBtn_'+tipo+'_'+o.id+'" onclick="corrReagir(\''+o.id+'\',\''+tipo+'\')" '+trava+' style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;background:'+(ativo?cor+'22':'rgba(255,255,255,0.04)')+';border:1px solid '+(ativo?cor+'55':'rgba(255,255,255,0.12)')+';color:'+(ativo?cor:'#cdd6e4')+';border-radius:10px;padding:9px;font-size:12px;font-weight:800;cursor:'+(_votou?'default':'pointer')+';opacity:'+(_votou&&!ativo?'0.45':'1')+';">'
+                                +'<span>'+emoji+'</span><span>'+label+'</span>'
+                                +'<span id="reactCount_'+tipo+'_'+o.id+'" style="background:rgba(255,255,255,0.1);padding:1px 7px;border-radius:20px;font-size:10.5px;">'+cnt+'</span>'
+                              +'</button>';
+                        }
+                        reactBtn = '<div style="display:flex;gap:7px;margin-top:8px;">'+_vBtn('quente','🔥','Quente','#ff6a00',_q)+_vBtn('frio','❄️','Frio','#29abe2',_f)+'</div>';
                     }
-                    htmlOf+='<div class="corrCard" style="background:linear-gradient(160deg,rgba(0,224,160,0.05),rgba(0,0,0,0.02));border:1px solid rgba(0,224,160,0.2);border-radius:14px;overflow:hidden;margin-bottom:13px;box-shadow:0 5px 16px rgba(0,0,0,0.2);">'
+                    var _lojaVal = o.loja || (typeof _derivaLoja==='function' ? _derivaLoja(o) : '');
+                    var lojaBadge = _lojaVal ? ('<span style="background:rgba(255,106,0,0.18);color:var(--primary);font-size:9px;font-weight:900;padding:2px 8px;border-radius:20px;margin-left:6px;white-space:nowrap;">'+String(_lojaVal).replace(/</g,'')+'</span>') : '';
+                    var verifBadge = (o.fonte==='grupo') ? ('<span style="background:rgba(41,171,226,0.18);color:#29abe2;font-size:9px;font-weight:900;padding:2px 8px;border-radius:20px;margin-left:6px;white-space:nowrap;">✅ Verificado</span>') : '';
+                    // 💬 comentários — cada oferta tem os seus, guardados pelo id real do post
+                    var comentBtn=''; var comentBox='';
+                    if(o.fonte==='grupo' && o.id){
+                        comentBtn = '<button onclick="corrComentToggle(\''+o.id+'\')" style="width:100%;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:7px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.12);color:#cdd6e4;border-radius:10px;padding:9px;font-size:12px;font-weight:800;cursor:pointer;">'
+                            +'<span>💬</span><span>Comentários</span><span id="comentCount_'+o.id+'" style="background:rgba(255,255,255,0.1);padding:1px 7px;border-radius:20px;font-size:10.5px;">…</span>'
+                          +'</button>';
+                        comentBox = '<div id="comentBox_'+o.id+'" style="display:none;margin-top:9px;"></div>';
+                    }
+                    htmlOf+='<div class="corrCard" data-loja="'+String(_lojaVal).toUpperCase().replace(/"/g,'')+'" style="background:linear-gradient(160deg,rgba(0,224,160,0.05),rgba(0,0,0,0.02));border:1px solid rgba(0,224,160,0.2);border-radius:14px;overflow:hidden;margin-bottom:13px;box-shadow:0 5px 16px rgba(0,0,0,0.2);">'
                         +img
                         +'<div style="padding:13px;">'
-                          +'<div style="font-size:13px;font-weight:800;color:#fff;line-height:1.4;">'+String(o.title).replace(/</g,'&lt;')+'</div>'
+                          +'<div style="font-size:13px;font-weight:800;color:#fff;line-height:1.4;">'+String(o.title).replace(/</g,'&lt;')+lojaBadge+verifBadge+'</div>'
                           +preco
                           +timer
                           +quando
                           +cupomBox
                           +'<div style="display:flex;gap:7px;margin-top:10px;flex-wrap:wrap;">'+verBtn+tgBtn+shareBtn(o)+'</div>'
                           +reactBtn
+                          +comentBtn
+                          +comentBox
                         +'</div>'
                       +'</div>';
                 });
@@ -11359,15 +11378,26 @@ Poderia me ajudar? 🙏"
                 var layout=''; try{ layout=localStorage.getItem('corr_layout')||'lista'; }catch(e){ layout='lista'; }
                 var ofWrap;
                 if(layout==='slider'){
-                    ofWrap='<div class="corrSlider" style="display:flex;gap:13px;overflow-x:auto;padding:2px 2px 12px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;">'+(htmlOf||'<div style="color:#889;font-size:12px;padding:16px;">Nenhuma oferta ativa agora.</div>')+'</div>';
+                    ofWrap='<div class="corrSlider" id="corrOfWrap" style="display:flex;gap:13px;overflow-x:auto;padding:2px 2px 12px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;">'+(htmlOf||'<div style="color:#889;font-size:12px;padding:16px;">Nenhuma oferta ativa agora.</div>')+'</div>';
                 } else {
-                    ofWrap='<div>'+(htmlOf||'<div style="color:#889;font-size:12px;padding:16px;text-align:center;">Nenhuma oferta ativa agora.</div>')+'</div>';
+                    ofWrap='<div id="corrOfWrap">'+(htmlOf||'<div style="color:#889;font-size:12px;padding:16px;text-align:center;">Nenhuma oferta ativa agora.</div>')+'</div>';
+                }
+                // 🏬 filtro por loja — pega as lojas que realmente aparecem agora nas ofertas
+                var lojasSet={}; ofertas.forEach(function(o){ var l=(o.loja||(typeof _derivaLoja==='function'?_derivaLoja(o):'')); if(l) lojasSet[l.toUpperCase()]=true; });
+                var lojasList=Object.keys(lojasSet).sort();
+                var filtroLojas='';
+                if(lojasList.length>1){
+                    filtroLojas='<div style="display:flex;gap:7px;overflow-x:auto;padding-bottom:10px;margin-bottom:4px;-webkit-overflow-scrolling:touch;">'
+                        +'<button onclick="corrFiltrarLoja(this,\'\')" class="corrLojaBtn corrLojaAtiva" data-loja="" style="flex:0 0 auto;background:rgba(0,224,160,0.18);border:1px solid rgba(0,224,160,0.5);color:#00e0a0;border-radius:20px;padding:7px 14px;font-size:11px;font-weight:800;cursor:pointer;white-space:nowrap;">Todas</button>'
+                        +lojasList.map(function(l){ return '<button onclick="corrFiltrarLoja(this,\''+l.replace(/'/g,'')+'\')" class="corrLojaBtn" data-loja="'+l+'" style="flex:0 0 auto;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.14);color:#cdd6e4;border-radius:20px;padding:7px 14px;font-size:11px;font-weight:800;cursor:pointer;white-space:nowrap;">'+l.charAt(0)+l.slice(1).toLowerCase()+'</button>'; }).join('')
+                      +'</div>';
                 }
                 mount.innerHTML=
                   // 🔥 OFERTAS (aberta por padrão)
                   '<div id="corrOfertasView" style="display:block;margin-bottom:26px;">'
                     +'<div style="font-size:16px;font-weight:900;color:#00e0a0;margin-bottom:4px;display:flex;align-items:center;gap:8px;">🔥 Ofertas ativas <span style="background:rgba(0,224,160,0.15);font-size:11px;padding:2px 9px;border-radius:20px;">'+ofertas.length+'</span></div>'
                     +'<div style="height:2px;background:linear-gradient(90deg,rgba(0,224,160,0.5),transparent);border-radius:2px;margin-bottom:14px;"></div>'
+                    +filtroLojas
                     +ofWrap
                   +'</div>'
                   // 🎟️ CUPONS (retraído — só aparece ao clicar na aba "Cupons" lá em cima)
@@ -11404,18 +11434,80 @@ Poderia me ajudar? 🙏"
                 try{ if(window._corrTimerInt) clearInterval(window._corrTimerInt); corrTickTimers(); window._corrTimerInt=setInterval(corrTickTimers,1000); }catch(e){}
             }
         };
-        // 🔥 registra a reação de "gostei" numa oferta — qualquer visitante pode clicar 1x por aparelho
-        window.corrReagir = async function(id){
+        // 🔥❄️ registra o voto "quente" ou "frio" numa oferta — 1 voto por aparelho, pode trocar de ideia antes de confirmar
+        window.corrReagir = async function(id, tipo){
             try{
-                if(localStorage.getItem('_reagiu_'+id)==='1') return;
-                localStorage.setItem('_reagiu_'+id, '1');
-                var btn=document.getElementById('reactBtn_'+id);
-                if(btn){ btn.disabled=true; btn.style.background='rgba(255,106,0,0.18)'; btn.style.borderColor='rgba(255,106,0,0.4)'; btn.style.color='var(--primary)'; btn.style.cursor='default'; btn.innerHTML='<span>🔥</span><span>Você reagiu</span><span id="reactCount_'+id+'" style="background:rgba(255,255,255,0.08);padding:1px 8px;border-radius:20px;font-size:11px;">…</span>'; }
-                var r=await fetch('/api/tg/reagir?id='+encodeURIComponent(id), { method:'POST' });
+                if(localStorage.getItem('_votou_'+id)) return;
+                localStorage.setItem('_votou_'+id, tipo);
+                ['quente','frio'].forEach(function(t){
+                    var btn=document.getElementById('reactBtn_'+t+'_'+id);
+                    if(btn){
+                        btn.disabled=true;
+                        if(t===tipo){ btn.style.opacity='1'; var cor=t==='quente'?'#ff6a00':'#29abe2'; btn.style.background=cor+'22'; btn.style.borderColor=cor+'55'; btn.style.color=cor; }
+                        else { btn.style.opacity='0.45'; }
+                        btn.style.cursor='default';
+                    }
+                });
+                var r=await fetch('/api/tg/reagir?id='+encodeURIComponent(id)+'&tipo='+encodeURIComponent(tipo), { method:'POST' });
                 var d=await r.json();
-                var cnt=document.getElementById('reactCount_'+id);
+                var cnt=document.getElementById('reactCount_'+tipo+'_'+id);
                 if(cnt && d && typeof d.reacoes!=='undefined') cnt.textContent=d.reacoes;
             }catch(e){}
+        };
+        // 🏬 filtro por loja — mostra só os cards da loja escolhida (ou todas)
+        window.corrFiltrarLoja = function(btn, loja){
+            try{
+                document.querySelectorAll('.corrLojaBtn').forEach(function(b){
+                    var ativa=b===btn;
+                    b.style.background = ativa ? 'rgba(0,224,160,0.18)' : 'rgba(255,255,255,0.05)';
+                    b.style.borderColor = ativa ? 'rgba(0,224,160,0.5)' : 'rgba(255,255,255,0.14)';
+                    b.style.color = ativa ? '#00e0a0' : '#cdd6e4';
+                });
+                var wrap=document.getElementById('corrOfWrap'); if(!wrap) return;
+                wrap.querySelectorAll('.corrCard').forEach(function(card){
+                    var mostra = !loja || card.getAttribute('data-loja')===loja;
+                    card.style.display = mostra ? '' : 'none';
+                });
+            }catch(e){}
+        };
+        // 💬 comentários — abre/fecha e carrega a lista + formulário de uma oferta
+        window.corrComentToggle = async function(id){
+            var box=document.getElementById('comentBox_'+id); if(!box) return;
+            var abrir = box.style.display==='none';
+            box.style.display = abrir ? 'block' : 'none';
+            if(abrir) await corrComentRender(id);
+        };
+        window.corrComentRender = async function(id){
+            var box=document.getElementById('comentBox_'+id); if(!box) return;
+            box.innerHTML='<div style="text-align:center;color:#889;padding:10px;font-size:11.5px;">⏳ Carregando comentários…</div>';
+            var comentarios=[];
+            try{ var r=await fetch('/api/tg/comentarios?id='+encodeURIComponent(id)); var d=await r.json(); comentarios=(d&&d.comentarios)||[]; }catch(e){}
+            var cnt=document.getElementById('comentCount_'+id); if(cnt) cnt.textContent=comentarios.length;
+            var lista=comentarios.map(function(c){
+                var when=''; try{ when=new Date(c.ts).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'})+' '+new Date(c.ts).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}); }catch(e){}
+                return '<div style="background:rgba(255,255,255,0.03);border-radius:9px;padding:8px 10px;margin-bottom:6px;">'
+                    +'<div style="font-size:11px;font-weight:800;color:#fff;">'+String(c.nome||'Corredor anônimo').replace(/</g,'')+' <span style="color:#667;font-weight:400;font-size:9.5px;">'+when+'</span></div>'
+                    +'<div style="font-size:12px;color:#cdd6e4;margin-top:2px;">'+String(c.texto||'').replace(/</g,'')+'</div>'
+                  +'</div>';
+            }).join('') || '<div style="color:#889;font-size:11.5px;padding:6px 2px;">Seja o primeiro a comentar essa oferta.</div>';
+            box.innerHTML = '<div style="background:rgba(0,0,0,0.15);border:1px solid rgba(255,255,255,0.08);border-radius:11px;padding:10px;">'
+                +lista
+                +'<div style="display:flex;gap:6px;margin-top:6px;">'
+                  +'<input id="comentTxt_'+id+'" maxlength="300" placeholder="Escreva um comentário…" style="flex:1;min-width:0;padding:9px 10px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.15);border-radius:9px;color:#fff;font-size:12px;outline:none;">'
+                  +'<button onclick="corrComentEnviar(\''+id+'\')" style="flex:0 0 auto;background:linear-gradient(135deg,#00e0a0,#00b894);color:#022;border:none;border-radius:9px;padding:9px 13px;font-size:12px;font-weight:900;cursor:pointer;">Enviar</button>'
+                +'</div>'
+              +'</div>';
+        };
+        window.corrComentEnviar = async function(id){
+            var inp=document.getElementById('comentTxt_'+id); if(!inp) return;
+            var texto=inp.value.trim(); if(!texto) return;
+            var nome=''; try{ nome=localStorage.getItem('_corr_nome')||''; }catch(e){}
+            inp.disabled=true;
+            try{
+                var r=await fetch('/api/tg/comentarios?id='+encodeURIComponent(id), { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({nome:nome, texto:texto}) });
+                if(r.ok){ if(typeof showToast==='function') showToast('Comentário enviado!','💬'); await corrComentRender(id); }
+            }catch(e){}
+            inp.disabled=false;
         };
         // 🔀 troca entre "Ofertas" e "Cupons" (cupons fica retraído até a pessoa clicar)
         window.corrSwitchView = function(view){
@@ -11471,7 +11563,6 @@ Poderia me ajudar? 🙏"
                   +'<span style="background:linear-gradient(135deg,#f09433,#dc2743,#bc1888);color:#fff;font-weight:900;font-size:12px;padding:9px 14px;border-radius:10px;white-space:nowrap;">Seguir →</span>'
                 +'</a>'
                 +(function(){ var tg=_g('tg_channel'); if(!tg) return ''; var u=tg.indexOf('http')===0?tg:('https://t.me/'+tg.replace(/^@/,'')); return '<a href="'+u.replace(/"/g,'&quot;')+'" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:11px;text-decoration:none;background:linear-gradient(135deg,rgba(41,171,226,0.15),rgba(41,171,226,0.05));border:1.5px solid rgba(41,171,226,0.4);border-radius:14px;padding:13px 15px;margin-bottom:18px;"><span style="font-size:26px;">📢</span><div style="flex:1;"><div style="font-size:13px;font-weight:900;color:#fff;">Veja TUDO no canal do Telegram</div><div style="font-size:11px;color:#8fc4e0;">Ofertas e cupons em primeira mão, o dia todo</div></div><span style="background:#29abe2;color:#fff;font-weight:900;font-size:12px;padding:9px 14px;border-radius:10px;white-space:nowrap;">Entrar →</span></a>'; })()
-                +'<p style="text-align:center;color:#aeb8c4;font-size:13px;margin:0 0 20px;line-height:1.55;">Tudo em promoção agora, <b style="color:#00e0a0;">organizado pra você</b> — ofertas de um lado, cupons do outro. Toque nos botões pra comprar ou copiar. 🎯</p>'
                 +'<div id="corrOvMount"></div>'
               +'</div>';
             document.body.appendChild(ov);
