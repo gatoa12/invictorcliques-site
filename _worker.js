@@ -41,6 +41,7 @@ export default {
       if (path === "/api/tg/webhook")   return await handleTgWebhook(request, env, url);
       if (path === "/api/tg/offers")    return await handleTgOffers(request, env);
       if (path === "/api/tg/offer")     return await handleTgOfferEdit(request, env, url);
+      if (path === "/api/tg/reagir")    return await handleTgReagir(request, env, url);
       if (path === "/api/tg/img")       return await handleTgImg(request, env, url);
     } catch (e) {
       return json({ error: String((e && e.message) || e) }, 500);
@@ -233,13 +234,30 @@ async function handleTgOffers(request, env) {
   const vivas = list.filter((o) => (now - (o.ts || 0)) < TTL);
   // se limpou alguma, regrava a lista enxuta
   if (vivas.length !== list.length) { try { await env.INV_KV.put("tg_offers", JSON.stringify(vivas)); } catch (e) {} }
+  // 🔥 reações (contador de "gostei" por oferta)
+  let reacoes = {};
+  try { const raw2 = await env.INV_KV.get("tg_reactions"); if (raw2) reacoes = JSON.parse(raw2); } catch (e) {}
   const out = vivas.map((o) => ({
     id: o.id, title: o.title, text: o.text, link: o.link || "", cupom: o.cupom || "", preco: o.preco || "",
     loja: o.loja || "", isCupom: !!o.isCupom, chatUsername: o.chatUsername || "",
     img: o.imgId ? ("/api/tg/img?id=" + encodeURIComponent(o.imgId)) : "",
+    reacoes: reacoes[String(o.id)] || 0,
     ts: o.ts, expires: (o.ts || now) + TTL
   }));
   return json({ offers: out });
+}
+
+// ── /api/tg/reagir — qualquer visitante pode reagir (🔥) numa oferta; não precisa de senha ──
+async function handleTgReagir(request, env, url) {
+  if (request.method === "OPTIONS") return new Response(null, { headers: CORS });
+  if (request.method !== "POST") return json({ error: "method_not_allowed" }, 405);
+  const id = url.searchParams.get("id") || "";
+  if (!id) return json({ error: "id obrigatório" }, 400);
+  let reacoes = {};
+  try { const raw = await env.INV_KV.get("tg_reactions"); if (raw) reacoes = JSON.parse(raw); } catch (e) {}
+  reacoes[id] = (reacoes[id] || 0) + 1;
+  try { await env.INV_KV.put("tg_reactions", JSON.stringify(reacoes)); } catch (e) {}
+  return json({ ok: true, reacoes: reacoes[id] });
 }
 
 // ── /api/tg/offer — editar (PUT) ou apagar (DELETE) UMA oferta do Telegram, direto do painel admin ──

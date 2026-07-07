@@ -5622,6 +5622,19 @@
 .admin-panel ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
 /* ============================================================ */
 
+/* ============================================================
+   ✨ CAMADA DE MODERNIZAÇÃO — CARDS DE OFERTA (v371.0023)
+   ============================================================ */
+.corrCard {
+    transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+}
+.corrCard:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 14px 30px rgba(0,224,160,0.18) !important;
+    border-color: rgba(0,224,160,0.45) !important;
+}
+/* ============================================================ */
+
 </style>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -5851,7 +5864,7 @@ button:active, .menu-btn:active, a[onclick]:active { transform: scale(.97); }
                     <div class="ap-brand-text">
                         <div class="ap-brand-row">
                             <h2>Painel Admin</h2>
-                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v371.0021</span>
+                            <span style="background:#FF6A00;color:#000;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;margin-left:8px;">v371.0023</span>
                             <span id="adminTabBreadcrumb" class="ap-breadcrumb">· Ofertas</span>
                         </div>
                         <div id="adminLastSaved" class="ap-last-saved" onclick="adminUpdateKPIs()">@invictorcliques · toque para atualizar</div>
@@ -11269,7 +11282,7 @@ Poderia me ajudar? 🙏"
             function finish(tg){
                 // assinatura pra saber quando mudou (auto-atualização)
                 try{ window._corrLastSig = tg.map(function(o){return o.id+'_'+(o.ts||'');}).join('|')+'#'+((currentData.ofertas||[]).length); }catch(e){}
-                var tgo=tg.map(function(o){ return { title:_derivaTitulo(o), text:o.text||'', link:o.link||'', img:o.img||'', cupom:_derivaCupom(o), preco:_derivaPreco(o), loja:_derivaLoja(o), isCupom:!!o.isCupom, orig:'', sale:'', fonte:'grupo', expires:o.expires||0, ts:o.ts||0, id:o.id, chatUsername:o.chatUsername||'' }; });
+                var tgo=tg.map(function(o){ return { title:_derivaTitulo(o), text:o.text||'', link:o.link||'', img:o.img||'', cupom:_derivaCupom(o), preco:_derivaPreco(o), loja:_derivaLoja(o), isCupom:!!o.isCupom, orig:'', sale:'', fonte:'grupo', expires:o.expires||0, ts:o.ts||0, id:o.id, chatUsername:o.chatUsername||'', reacoes:o.reacoes||0 }; });
                 var all=regis.concat(tgo);
                 // 🆕 mais novas primeiro (por data de postagem)
                 all.sort(function(a,b){ return (b.ts||b.id||0)-(a.ts||a.id||0); });
@@ -11297,11 +11310,21 @@ Poderia me ajudar? 🙏"
                     // 🎟️ cupom (quando a oferta também tem um código, mesmo não sendo um post "só de cupom")
                     // 🔧 força de novo a partir do texto original, caso o campo pronto tenha vindo vazio
                     var _cupomVal = o.cupom || (typeof _derivaCupom==='function' ? _derivaCupom(o) : '');
-                    var cupomBox=_cupomVal?('<div style="display:flex;align-items:center;gap:8px;margin-top:8px;flex-wrap:wrap;"><div style="flex:1;min-width:100px;display:inline-flex;align-items:center;gap:8px;background:rgba(255,214,0,0.12);border:1px dashed rgba(255,214,0,0.55);border-radius:10px;padding:8px 11px;"><span style="font-size:9px;font-weight:900;color:#FFD600;">🎟️ CUPOM</span><span style="font-size:14px;font-weight:900;color:#FFD600;letter-spacing:1px;">'+String(_cupomVal).replace(/</g,'')+'</span></div><button onclick="navigator.clipboard&&navigator.clipboard.writeText(\''+String(_cupomVal).replace(/'/g,'')+'\');if(typeof showToast===\'function\')showToast(\'Cupom copiado!\',\'🎟️\')" style="background:#FFD600;border:none;border-radius:9px;color:#111;font-size:11px;font-weight:900;padding:8px 12px;cursor:pointer;">Copiar</button></div>'):'';
+                    var cupomBox=_cupomVal?('<div style="display:flex;align-items:stretch;gap:8px;margin-top:8px;flex-wrap:wrap;"><div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;background:rgba(255,214,0,0.12);border:1px dashed rgba(255,214,0,0.55);border-radius:10px;padding:8px 11px;overflow:hidden;"><span style="font-size:9px;font-weight:900;color:#FFD600;">🎟️ CUPOM</span><span style="font-size:13px;font-weight:900;color:#FFD600;letter-spacing:0.5px;word-break:break-all;line-height:1.25;">'+String(_cupomVal).replace(/</g,'')+'</span></div><button onclick="navigator.clipboard&&navigator.clipboard.writeText(\''+String(_cupomVal).replace(/'/g,'')+'\');if(typeof showToast===\'function\')showToast(\'Cupom copiado!\',\'🎟️\')" style="flex:0 0 auto;background:#FFD600;border:none;border-radius:9px;color:#111;font-size:11px;font-weight:900;padding:8px 12px;cursor:pointer;align-self:center;">Copiar</button></div>'):'';
                     var verBtn=o.link?('<a href="'+String(o.link).replace(/"/g,'&quot;')+'" target="_blank" rel="noopener sponsored" onclick="if(typeof iaTrackClick===\'function\')iaTrackClick(\'corredores\')" style="flex:1;text-align:center;text-decoration:none;background:linear-gradient(135deg,#00e0a0,#00b894);color:#022;border-radius:9px;padding:11px;font-size:12px;font-weight:900;">🛒 Ver oferta →</a>'):'';
                     // ✈️ SEMPRE tenta montar o botão do Telegram — mesmo sem link de afiliado, mesmo sem canal configurado
                     // (usa o canal padrão como último recurso, então isso não fica em branco)
                     var tgBtn=(typeof _tgViewBtn==='function')?_tgViewBtn(o,!o.link):'';
+                    // 👍 botão de reação — só faz sentido em ofertas de verdade (que vieram do grupo, com id real)
+                    var reactBtn='';
+                    if(o.fonte==='grupo' && o.id){
+                        var _reagido=false; try{ _reagido = localStorage.getItem('_reagiu_'+o.id)==='1'; }catch(e){}
+                        var _cont = o.reacoes||0;
+                        reactBtn = '<button id="reactBtn_'+o.id+'" onclick="corrReagir(\''+o.id+'\')" '+(_reagido?'disabled':'')+' style="width:100%;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:7px;background:'+(_reagido?'rgba(255,106,0,0.18)':'rgba(255,255,255,0.04)')+';border:1px solid '+(_reagido?'rgba(255,106,0,0.4)':'rgba(255,255,255,0.12)')+';color:'+(_reagido?'var(--primary)':'#cdd6e4')+';border-radius:10px;padding:9px;font-size:12px;font-weight:800;cursor:'+(_reagido?'default':'pointer')+';">'
+                            +'<span>🔥</span><span>'+(_reagido?'Você reagiu':'Gostei dessa oferta')+'</span>'
+                            +'<span id="reactCount_'+o.id+'" style="background:rgba(255,255,255,0.08);padding:1px 8px;border-radius:20px;font-size:11px;">'+_cont+'</span>'
+                          +'</button>';
+                    }
                     htmlOf+='<div class="corrCard" style="background:linear-gradient(160deg,rgba(0,224,160,0.05),rgba(0,0,0,0.02));border:1px solid rgba(0,224,160,0.2);border-radius:14px;overflow:hidden;margin-bottom:13px;box-shadow:0 5px 16px rgba(0,0,0,0.2);">'
                         +img
                         +'<div style="padding:13px;">'
@@ -11311,6 +11334,7 @@ Poderia me ajudar? 🙏"
                           +quando
                           +cupomBox
                           +'<div style="display:flex;gap:7px;margin-top:10px;flex-wrap:wrap;">'+verBtn+tgBtn+shareBtn(o)+'</div>'
+                          +reactBtn
                         +'</div>'
                       +'</div>';
                 });
@@ -11380,6 +11404,19 @@ Poderia me ajudar? 🙏"
                 try{ if(window._corrTimerInt) clearInterval(window._corrTimerInt); corrTickTimers(); window._corrTimerInt=setInterval(corrTickTimers,1000); }catch(e){}
             }
         };
+        // 🔥 registra a reação de "gostei" numa oferta — qualquer visitante pode clicar 1x por aparelho
+        window.corrReagir = async function(id){
+            try{
+                if(localStorage.getItem('_reagiu_'+id)==='1') return;
+                localStorage.setItem('_reagiu_'+id, '1');
+                var btn=document.getElementById('reactBtn_'+id);
+                if(btn){ btn.disabled=true; btn.style.background='rgba(255,106,0,0.18)'; btn.style.borderColor='rgba(255,106,0,0.4)'; btn.style.color='var(--primary)'; btn.style.cursor='default'; btn.innerHTML='<span>🔥</span><span>Você reagiu</span><span id="reactCount_'+id+'" style="background:rgba(255,255,255,0.08);padding:1px 8px;border-radius:20px;font-size:11px;">…</span>'; }
+                var r=await fetch('/api/tg/reagir?id='+encodeURIComponent(id), { method:'POST' });
+                var d=await r.json();
+                var cnt=document.getElementById('reactCount_'+id);
+                if(cnt && d && typeof d.reacoes!=='undefined') cnt.textContent=d.reacoes;
+            }catch(e){}
+        };
         // 🔀 troca entre "Ofertas" e "Cupons" (cupons fica retraído até a pessoa clicar)
         window.corrSwitchView = function(view){
             try{
@@ -11387,8 +11424,8 @@ Poderia me ajudar? 🙏"
                 var bOf=document.getElementById('corrTabOfertas'), bCu=document.getElementById('corrTabCupons');
                 if(of) of.style.display = view==='ofertas' ? 'block' : 'none';
                 if(cu) cu.style.display = view==='cupons' ? 'block' : 'none';
-                if(bOf) bOf.style.opacity = view==='ofertas' ? '1' : '0.6';
-                if(bCu) bCu.style.opacity = view==='cupons' ? '1' : '0.6';
+                if(bOf){ bOf.style.background = view==='ofertas' ? 'linear-gradient(135deg,#00e0a0,#00b894)' : 'transparent'; bOf.style.color = view==='ofertas' ? '#022' : '#8a94a3'; }
+                if(bCu){ bCu.style.background = view==='cupons' ? 'linear-gradient(135deg,#FF6A00,#e65c00)' : 'transparent'; bCu.style.color = view==='cupons' ? '#fff' : '#8a94a3'; }
                 var mnt=document.getElementById('corrOvMount'); if(mnt) mnt.scrollIntoView({behavior:'smooth',block:'start'});
             }catch(e){}
         };
@@ -11422,10 +11459,17 @@ Poderia me ajudar? 🙏"
               '<div style="position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:14px 16px;background:linear-gradient(180deg,rgba(6,8,12,0.9),rgba(6,8,12,0));backdrop-filter:blur(6px);">'
                 +'<button onclick="closeCorredores()" style="'+(window._invDirectEntry?'display:none;':'display:inline-flex;')+'align-items:center;gap:6px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:#fff;border-radius:12px;padding:10px 15px;font-size:13px;font-weight:800;cursor:pointer;">← Voltar</button>'
                 +'<div style="font-size:15px;font-weight:900;color:#fff;display:flex;align-items:center;gap:7px;flex:1;">🏃 Ofertas ativas</div>'
-                +'<button id="corrTabOfertas" onclick="corrSwitchView(\'ofertas\')" style="background:rgba(0,224,160,0.16);border:1px solid rgba(0,224,160,0.45);color:#00e0a0;border-radius:10px;padding:9px 14px;font-size:11.5px;font-weight:900;cursor:pointer;">🔥 Ofertas</button>'
-                +'<button id="corrTabCupons" onclick="corrSwitchView(\'cupons\')" style="background:rgba(255,106,0,0.1);border:1px solid rgba(255,106,0,0.3);color:var(--primary);border-radius:10px;padding:9px 14px;font-size:11.5px;font-weight:900;cursor:pointer;opacity:0.6;">🎟️ Cupons</button>'
+                +'<div style="display:flex;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:13px;padding:4px;gap:3px;">'
+                  +'<button id="corrTabOfertas" onclick="corrSwitchView(\'ofertas\')" style="background:linear-gradient(135deg,#00e0a0,#00b894);color:#022;border:none;border-radius:10px;padding:9px 15px;font-size:11.5px;font-weight:900;cursor:pointer;transition:all .18s ease;">🔥 Ofertas</button>'
+                  +'<button id="corrTabCupons" onclick="corrSwitchView(\'cupons\')" style="background:transparent;color:#8a94a3;border:none;border-radius:10px;padding:9px 15px;font-size:11.5px;font-weight:900;cursor:pointer;transition:all .18s ease;">🎟️ Cupons</button>'
+                +'</div>'
               +'</div>'
               +'<div style="max-width:940px;margin:0 auto;padding:6px 16px 40px;">'
+                +'<a href="https://instagram.com/invictorcliques" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:12px;text-decoration:none;background:linear-gradient(120deg,rgba(240,90,145,0.16),rgba(255,159,60,0.10),rgba(120,80,220,0.14));border:1.5px solid rgba(240,90,145,0.4);border-radius:14px;padding:13px 15px;margin-bottom:14px;">'
+                  +'<span style="width:44px;height:44px;border-radius:13px;background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">📸</span>'
+                  +'<div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:900;color:#fff;">@invictorcliques no Instagram</div><div style="font-size:11px;color:#e8a8c0;">Fotos das corridas, bastidores e novidades</div></div>'
+                  +'<span style="background:linear-gradient(135deg,#f09433,#dc2743,#bc1888);color:#fff;font-weight:900;font-size:12px;padding:9px 14px;border-radius:10px;white-space:nowrap;">Seguir →</span>'
+                +'</a>'
                 +(function(){ var tg=_g('tg_channel'); if(!tg) return ''; var u=tg.indexOf('http')===0?tg:('https://t.me/'+tg.replace(/^@/,'')); return '<a href="'+u.replace(/"/g,'&quot;')+'" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:11px;text-decoration:none;background:linear-gradient(135deg,rgba(41,171,226,0.15),rgba(41,171,226,0.05));border:1.5px solid rgba(41,171,226,0.4);border-radius:14px;padding:13px 15px;margin-bottom:18px;"><span style="font-size:26px;">📢</span><div style="flex:1;"><div style="font-size:13px;font-weight:900;color:#fff;">Veja TUDO no canal do Telegram</div><div style="font-size:11px;color:#8fc4e0;">Ofertas e cupons em primeira mão, o dia todo</div></div><span style="background:#29abe2;color:#fff;font-weight:900;font-size:12px;padding:9px 14px;border-radius:10px;white-space:nowrap;">Entrar →</span></a>'; })()
                 +'<p style="text-align:center;color:#aeb8c4;font-size:13px;margin:0 0 20px;line-height:1.55;">Tudo em promoção agora, <b style="color:#00e0a0;">organizado pra você</b> — ofertas de um lado, cupons do outro. Toque nos botões pra comprar ou copiar. 🎯</p>'
                 +'<div id="corrOvMount"></div>'
